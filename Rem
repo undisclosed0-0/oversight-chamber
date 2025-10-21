@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redeem Payment Card</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      padding: 40px;
+      color: #333;
+      text-align: center;
+    }
+
+    .card-status {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .card-status h1 {
+      color: #4b3f72;
+      margin-bottom: 20px;
+    }
+
+    .card-status p {
+      font-size: 1.1em;
+      margin: 10px 0;
+    }
+
+    .used {
+      color: #dc3545;
+    }
+
+    .valid {
+      color: #2e8b57;
+    }
+
+    .card-id {
+      font-family: monospace;
+      font-size: 1em;
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-status" id="statusDisplay">
+    <h1>Redeem Your Card</h1>
+    <p>Checking card status...</p>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const cardId = urlParams.get('card');
+    const statusDisplay = document.getElementById('statusDisplay');
+
+    if (!cardId) {
+      statusDisplay.innerHTML = "<h1>Error</h1><p>No card ID provided.</p>";
+    } else {
+      const cardStatus = localStorage.getItem(cardId);
+
+      if (cardStatus === 'unused') {
+        localStorage.setItem(cardId, 'used');
+        statusDisplay.innerHTML = `
+          <h1 class="valid">Card Redeemed</h1>
+          <p>This card has been successfully redeemed.</p>
+          <p class="card-id">Card ID: ${cardId}</p>
+        `;
+      } else if (cardStatus === 'used') {
+        statusDisplay.innerHTML = `
+          <h1 class="used">Already Used</h1>
+          <p>This card has already been redeemed and cannot be reused.</p>
+          <p class="card-id">Card ID: ${cardId}</p>
+        `;
+      } else {
+        statusDisplay.innerHTML = `
+          <h1 class="used">Invalid Card</h1>
+          <p>This card is not recognized. Please contact an administrator.</p>
+          <p class="card-id">Card ID: ${cardId}</p>
+        `;
+      }
+    }
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cardId = urlParams.get('card');
+
+    if (localStorage.getItem(cardId) === 'unused') {
+      // Proceed with redemption
+      localStorage.setItem(cardId, 'used');
+      alert("Card redeemed successfully!");
+    } else {
+      alert("This card has already been used or is invalid.");
+    }
+  });
+</script>
+</body>
+</html>
