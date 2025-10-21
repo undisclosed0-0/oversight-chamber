@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unified Front Oversight Chamber</title>
+  <link rel="stylesheet" href="oversight.css" />
+  
+  <style> 
+  body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+  padding: 40px;
+  color: #333;
+  transition: background 1s ease-in-out;
+}
+
+.admin-panel, .masteradmin-panel {
+  max-width: 800px;
+  margin: auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 30px;
+  transition: box-shadow 0.5s ease-in-out;
+}
+
+h1 {
+  color: #4b3f72;
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 0 1px 1px #ccc;
+}
+
+.crest, .floating-crest {
+  width: 80px;
+  height: 80px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.f3aab80e-2293-47d7-825a-7172f668887f.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+  margin: 0 auto 10px;
+  transition: opacity 1s ease-in-out;
+}
+
+.floating-crest {
+  position: fixed;
+  top: 70px;
+  left: 30px;
+  z-index: 100;
+  opacity: 0;
+}
+
+.masteradmin-sigil {
+  width: 120px;
+  height: 120px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.95;
+  z-index: 100;
+  animation: sigilGlow 6s infinite alternate;
+  filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72);
+}
+
+@keyframes sigilGlow {
+  0%   { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
+  50%  { filter: drop-shadow(0 0 20px #dcdcdc) drop-shadow(0 0 30px #6a5acd); }
+  100% { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
+}
+
+.login-role {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+input, select {
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 5px;
+}
+
+button {
+  background-color: #6a5acd;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #4b3f72;
+}
+
+.card-entry {
+  border-left: 6px solid #ccc;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: background 0.3s ease;
+}
+
+.card-id {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.status.used { color: #dc3545; }
+.status.unused { color: #2e8b57; }
+
+.manual-issue {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.qr-preview {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.action-log {
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 40px;
+  font-size: 0.9em;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.log-entry {
+  border-bottom: 1px dashed #ddd;
+  padding: 5px 0;
+}
+
+.masteradmin-panel {
+  background: linear-gradient(to right, #fdf6e3, #e8e4d9);
+  border-left: 8px solid #c2a76d;
+  box-shadow: 0 0 30px rgba(194, 167, 109, 0.4);
+  padding: 30px;
+  border-radius: 12px;
+  margin: 40px auto;
+  color: #3b2f2f;
+}
+
+.masteradmin-panel h3 {
+  color: #6b4f3b;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 2px #c2a76d;
+}
+
+.masteradmin-panel button {
+  background-color: #c2a76d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 1em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.masteradmin-panel button:hover {
+  background-color: #a88c5f;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+/* 🌈 Tier Auras */
+.aura-Initiate {
+  border-left-color: #87cefa;
+  background-color: #f0f8ff;
+}
+
+.aura-Steward {
+  border-left-color: #32cd32;
+  background-color: #f5fff0;
+}
+
+.aura-Admin {
+  border-left-color: #ffa500;
+  background-color: #fffaf0;
+}
+
+.aura-Masteradmin {
+ border-left-color: #6a5acd; /* Soft purple */
+background: linear-gradient(to right, #f3f0ff, #eae6f9);
+}
+    
+    
+    /* 📜 Registry Viewer Container */
+#registryViewer {
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 40px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  border-left: 8px solid #c2a76d;
+  transition: box-shadow 0.5s ease-in-out;
+}
+
+/* 🧾 Registry Entry */
+#registryEntries .card-entry {
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  border-left: 6px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: background 0.3s ease;
+}
+
+/* 🧠 Tier Auras */
+.aura-Initiate {
+  border-left-color: #87cefa;
+  background-color: #f0f8ff;
+}
+
+.aura-Steward {
+  border-left-color: #32cd32;
+  background-color: #f5fff0;
+}
+
+.aura-Admin {
+  border-left-color: #ffa500;
+  background-color: #fffaf0;
+}
+
+.aura-Masteradmin {
+  border-left-color: #6a5acd;
+  background: linear-gradient(to right, #f3f0ff, #eae6f9);
+}
+
+/* 🟢 Status Colors */
+.card-entry span[style*="#28a745"] {
+  text-shadow: 0 0 4px #28a745;
+}
+
+.card-entry span[style*="#f0ad4e"] {
+  text-shadow: 0 0 4px #f0ad4e;
+}
+
+/* 🖋 Typography */
+.card-entry strong {
+  font-size: 1.1em;
+  color: #4b3f72;
+}
+
+.card-entry .card-id {
+  font-family: monospace;
+  font-weight: bold;
+  color: #333;
+}
+    
+    #masteradminPanel {
+  transition: opacity 0.8s ease, transform 0.6s ease;
+}
+
+#floatingCrest {
+  transition: opacity 0.8s ease;
+}
+    
+    @keyframes shimmerFade {
+  0%   { opacity: 1; filter: drop-shadow(0 0 12px #c2a76d); }
+  50%  { opacity: 0.5; filter: drop-shadow(0 0 24px #f0e68c); }
+  100% { opacity: 0; filter: none; }
+}
+
+.masteradmin-panel.logout-fade {
+  animation: shimmerFade 1s ease forwards;
+}
+
+#floatingCrest.logout-fade {
+  animation: shimmerFade 1s ease forwards;
+}
+    
+    
+    #masteradminPanel,
+#adminPanel,
+#employeePanel {
+  display: none !important;
+  visibility: hidden;
+  opacity: 0;
+}
+  </style>  
+</head>
+<body>
+  <audio id="logoutSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <div id="sigilContainer"></div>
+  <div class="floating-crest" id="floatingCrest"></div>
+
+  <div class="admin-panel">
+    <h1>UnifiedFront Oversight Chamber</h1>
+    <div class="crest"></div>
+
+    <div class="login-role">
+      <h3>Enter Role to Access Chamber</h3>
+      <input type="text" id="roleInput" placeholder="admin only" />
+      <input type="password" id="adminPassword" placeholder="Enter admin password" />
+      <button onclick="setRole()">Enter</button>
+    </div>
+
+    <div class="card-list" id="cardList"><p>Loading issued cards...</p></div>
+
+    <div class="issue-panel aura-Masteradmin">
+     <h3>Gild a New Marker</h3>
+      
+      <input type="text" id="newCardName" placeholder="Ceremonial Name" />
+
+<input type="text" id="newCardId" placeholder="Enter Card ID (e.g. CARD-XYZ123)" />
+     
+      <select id="newCardTier">
+        <option value="">Select Tier</option>
+        <option value="Initiate">Initiate</option>
+        <option value="Steward">Steward</option>
+        <option value="Admin">Admin</option>
+        <option value="Masteradmin">Masteradmin</option>
+      </select>
+      <button onclick="issueCard()">Issue</button>
+    </div>
+
+    <div class="qr-preview" id="qrPreview"></div>
+
+    <div class="action-log" id="actionLog">
+      <h3>Oversight Log</h3>
+      <div id="logEntries"></div>
+    </div>
+  </div>
+  
+  
+  <div class="action-log" id="registryViewer">
+  <h3>Local Registry Viewer</h3>
+  <div id="registryEntries"></div>
+  <button onclick="exportRegistry()">Download Registry</button>
+</div>
+  
+  
+  
+  <!-- 🟣 Masteradmin Panel -->
+<div class="masteradmin-panel" id="masteradminPanel" style="display:none;">
+  <h3>Masteradmin Oversight Activated</h3>
+  <button onclick="rotateSigilManually()">Rotate Sigil</button>
+  <button onclick="exportLog()">Export Oversight Log</button>
+  <button onclick="triggerLockout()">Trigger Lockout</button>
+  <button onclick="liftLockout()">Lift Lockout</button>
+  <input type="password" id="newAdminPassword" placeholder="New admin password" />
+  <button onclick="updateAdminPassword()">Update Admin Password</button>
+  <button onclick="logoutMasteradmin()">Logout</button>
+</div>
+
+
+  <!-- 🔶 Admin Panel -->
+<div class="admin-panel" id="adminPanel" style="display:none;">
+  <h3>Admin Panel Activated</h3>
+  <p>Welcome, Admin. You may issue cards, view registry, and manage tier assignments.</p>
+  <!-- Add admin-specific tools here -->
+</div>
+
+<!-- 🟢 Employee Panel -->
+<div class="admin-panel" id="employeePanel" style="display:none;">
+  <h3>Employee Panel Activated</h3>
+  <p>Welcome, Employee. You may preview QR codes and view issued cards.</p>
+  <!-- Add read-only or QR preview tools here -->
+</div>
+  
+  
+  <label for="tierFilter">Filter by Tier:</label>
+  <select id="tierFilter" onchange="renderLedger()">
+    <option value="">All Tiers</option>
+    <option value="Initiate">Initiate</option>
+    <option value="Steward">Steward</option>
+    <option value="Admin">Admin</option>
+    <option value="Masteradmin">Masteradmin</option>
+  </select>
+
+  <label><input type="checkbox" id="crossTierOnly" onchange="renderLedger()" /> Show only cross-tier transactions</label>
+
+  <div id="ledgerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="crest"></div>
+      <h2>Prestige Triumph Transaction Ledger</h2>
+      <div id="transactionList"></div>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script sessionStorage.clear(); // ✅ Add this at the top></script>
+  
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script src="oversight.js"></script>
+ 
+  
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  const log = document.getElementById('logEntries');
+
+  function logAction(text) {
+    const time = new Date().toLocaleString();
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.textContent = `[${time}] ${text}`;
+    log.prepend(entry);
+  }
+
+  function loadCards() {
+    const list = document.getElementById('cardList');
+    list.innerHTML = '';
+    let found = false;
+
+    for (let key in localStorage) {
+      if (key.startsWith('CARD-')) {
+        found = true;
+        const status = localStorage.getItem(key);
+        const tier = registry[key]?.tier || 'Unknown';
+        const entry = document.createElement('div');
+        entry.className = `card-entry aura-${tier}`;
+        entry.innerHTML = `
+          <div class="card-id">${key}</div>
+          <div class="status ${status}">Status: ${status}</div>
+          <div>Tier: ${tier}</div>
+          <button onclick="activateCard('${key}')">Activate</button>
+          <button onclick="resetCard('${key}')">Reset</button>
+          <button onclick="deleteCard('${key}')">Delete</button>
+          <button onclick="previewQRCode('${key}')">QR Preview</button>
+        `;
+        list.appendChild(entry);
+      }
+    }
+
+    if (!found) list.innerHTML = '<p>No cards found.</p>';
+  }
+
+  window.activateCard = function(id) {
+    if (localStorage.getItem('lockoutActive') === 'true') {
+      alert('Card actions are currently locked.');
+      return;
+    }
+
+    localStorage.setItem(id, 'used');
+
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    for (let name in registry) {
+      if (registry[name].card === id) {
+        registry[name].activated = true;
+        localStorage.setItem('userRegistry', JSON.stringify(registry));
+        logAction(`Activated ${id} and updated registry for ${name}`);
+        break;
+      }
+    }
+
+    loadCards();
+    renderRegistryViewer();
+  };
+
+  window.resetCard = function(id) {
+    if (localStorage.getItem('lockoutActive') === 'true') {
+      alert('Card actions are currently locked.');
+      return;
+    }
+
+    localStorage.setItem(id, 'unused');
+
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    for (let name in registry) {
+      if (registry[name].card === id) {
+        registry[name].activated = false;
+        localStorage.setItem('userRegistry', JSON.stringify(registry));
+        logAction(`Reset ${id} and deactivated registry for ${name}`);
+        break;
+      }
+    }
+
+    loadCards();
+    renderRegistryViewer();
+  };
+
+  window.renameEntry = function(oldName) {
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  const entry = registry[oldName];
+  if (!entry) return;
+
+  const newName = prompt(`Rename "${oldName}" to:`)?.trim();
+  if (!newName || newName === oldName) return;
+
+  // Prevent overwriting another entry
+  if (registry[newName]) {
+    alert('That name is already in use.');
+    return;
+  }
+
+  registry[newName] = entry;
+  delete registry[oldName];
+  localStorage.setItem('userRegistry', JSON.stringify(registry));
+  logAction(`Renamed "${oldName}" to "${newName}"`);
+  renderRegistryViewer();
+};
+  
+  
+  
+  window.deleteCard = function(id) {
+    if (localStorage.getItem('lockoutActive') === 'true') {
+      alert('Card actions are currently locked.');
+      return;
+    }
+    if (confirm(`Delete ${id}?`)) {
+      localStorage.removeItem(id);
+      delete registry[id];
+      localStorage.setItem('userRegistry', JSON.stringify(registry));
+      logAction(`Deleted ${id}`);
+      loadCards();
+      renderRegistryViewer();
+    }
+  };
+
+  
+  function generateCeremonialName(tier) {
+  const titles = {
+    Initiate: ['of the First Flame', 'of Quiet Resolve', 'of the Outer Ring'],
+    Steward: ['of the Third Tier', 'of the Bound Sigil', 'of the Vigilant Fold'],
+    Admin: ['of the Silent Crest', 'of the Inner Vault', 'of the Iron Seal'],
+    Masteradmin: ['of the Final Chamber', 'of the Oversight Flame', 'of the Eternal Archive']
+  };
+
+  const prefix = ['Solenne', 'Thalos', 'Velan', 'Nyra', 'Kael', 'Orin', 'Seren', 'Dren'];
+  const titleSet = titles[tier] || ['of the Unknown Tier'];
+  const name = prefix[Math.floor(Math.random() * prefix.length)];
+  const title = titleSet[Math.floor(Math.random() * titleSet.length)];
+
+  return `${name} ${title}`;
+}
+  
+ window.issueCard = function() {
+  if (localStorage.getItem('lockoutActive') === 'true') {
+    alert('Card actions are currently locked.');
+    return;
+  }
+
+  const id = document.getElementById('newCardId').value.trim();
+  const tier = document.getElementById('newCardTier')?.value || 'Initiate';
+ let name = document.getElementById('newCardName').value.trim();
+if (!name) name = generateCeremonialName(tier); // ✅ Auto-generate if blank
+
+  if (id && id.startsWith('CARD-')) {
+    if (localStorage.getItem(id)) {
+      alert('Card ID already exists.');
+      return;
+    }
+
+    // ✅ NEW BLOCK: Prevent duplicate card ID in registry
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    for (let existing in registry) {
+      if (registry[existing].card === id) {
+        alert('This card ID is already assigned.');
+        return;
+      }
+    }
+
+    localStorage.setItem(id, 'unused');
+
+    // ✅ NEW BLOCK: Store ceremonial name as registry key
+    registry[name || id] = {
+      tier,
+      card: id,
+      activated: false,
+      created: Date.now()
+    };
+
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
+    logAction(`Issued ${id} to ${name || id} with tier ${tier}`);
+    document.getElementById('newCardId').value = '';
+    document.getElementById('newCardName').value = ''; // ✅ Clear name field
+    loadCards();
+    renderRegistryViewer();
+  } else {
+    alert('Use a valid ID starting with "CARD-"');
+  }
+};
+  window.previewQRCode = function(id) {
+    const tier = registry[id]?.tier || 'Unknown';
+    const qr = document.getElementById('qrPreview');
+    qr.innerHTML = `
+      <h4>Sigil Preview for ${id}</h4>
+      <div class="crest" style="margin: 10px auto;"></div>
+      <div>Tier: ${tier}</div>
+      <div id="qrCode"></div>
+    `;
+    new QRCode(document.getElementById("qrCode"), {
+      text: `redeem.html?card=${id}`,
+      width: 120,
+      height: 120
+    });
+    logAction(`Previewed sigil for ${id}`);
+  };
+
+  window.exportRegistry = function() {
+    const registry = localStorage.getItem('userRegistry') || '{}';
+    const blob = new Blob([registry], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'userRegistry.json';
+    link.click();
+    logAction('Registry exported as JSON');
+  };
+
+  function renderRegistryViewer() {
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    const container = document.getElementById('registryEntries');
+    container.innerHTML = '';
+
+    for (let name in registry) {
+      const entry = registry[name];
+      const auraClass = `aura-${entry.tier}`;
+      const status = entry.activated ? 'Active' : 'Pending';
+      const statusColor = entry.activated ? '#28a745' : '#f0ad4e';
+
+      const div = document.createElement('div');
+      div.className = `card-entry ${auraClass}`;
+      div.innerHTML = `
+  <strong>${name}</strong><br>
+  Card ID: <span class="card-id">${entry.card}</span><br>
+  Tier: ${entry.tier}<br>
+  Status: <span style="color:${statusColor}; font-weight:bold;">${status}</span><br>
+  Created: ${new Date(entry.created).toLocaleString()}<br>
+  <button onclick="renameEntry('${name}')">Rename</button>
+`;
+      container.appendChild(div);
+    }
+  }
+
+  // Final Invocation
+  loadCards();
+  showSigilIfMasteradmin();
+  renderRegistryViewer();
+});
+</script>
+  
+  <script>
+window.setRole = function() {
+  const role = document.getElementById('roleInput').value.trim().toLowerCase();
+  const password = document.getElementById('adminPassword').value;
+
+  const passwords = {
+    masteradmin: 'triumph2025',
+    admin: 'admin2025',
+    employee: 'employee2025'
+  };
+
+  if (passwords[role] && password === passwords[role]) {
+    sessionStorage.setItem('activeRole', role);
+    location.reload(); // Reload to trigger reveal
+  } else {
+    alert('Access denied.');
+  }
+};
+
+function revealPanelForRole(role) {
+  if (role === 'masteradmin') {
+    document.getElementById('masteradminPanel')?.style.display = 'block';
+    document.getElementById('floatingCrest')?.style.opacity = 1;
+  }
+
+  if (role === 'admin') {
+    document.getElementById('adminPanel')?.style.display = 'block';
+  }
+
+  if (role === 'employee') {
+    document.getElementById('employeePanel')?.style.display = 'block';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const role = sessionStorage.getItem('activeRole');
+  if (role) {
+    revealPanelForRole(role);
+  } else {
+    // 🔒 Hide all panels if no role
+    document.getElementById('masteradminPanel')?.style.display = 'none';
+    document.getElementById('adminPanel')?.style.display = 'none';
+    document.getElementById('employeePanel')?.style.display = 'none';
+  }
+});
+
+window.logoutMasteradmin = function() {
+  const sound = document.getElementById('logoutSound');
+  sound.play();
+
+  document.getElementById('masteradminPanel')?.classList.add('logout-fade');
+  document.getElementById('adminPanel')?.classList.add('logout-fade');
+  document.getElementById('employeePanel')?.classList.add('logout-fade');
+  document.getElementById('floatingCrest')?.classList.add('logout-fade');
+
+  setTimeout(() => {
+    sessionStorage.removeItem('activeRole');
+    location.reload();
+  }, 1000);
+};
+</script>
+</body>
+</html>
