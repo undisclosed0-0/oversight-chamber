@@ -252,10 +252,13 @@ if (role) {
   document.getElementById('roleContent').style.display = 'block';
   document.getElementById('logoutBar').style.display = 'block';
   document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-
+document.getElementById('sigilContainer').style.display = 'block';
+document.getElementById('floatingCrest').style.display = 'block';
+  
   if (role === 'admin' || role === 'masteradmin') {
     document.getElementById('cardIssuance').style.display = 'block';
     logAction(`Card issuance panel revealed for ${role}`);
   }
 }
+
 
