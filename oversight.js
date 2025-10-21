@@ -100,13 +100,12 @@ function setRole() {
   localStorage.setItem('userRole', role);
   localStorage.setItem('sessionActive', 'true');
 
-  document.getElementById('roleContent').style.display = 'block';
-  document.getElementById('logoutBar').style.display = 'block';
+  document.getElementById('roleContent')?.style.display = 'block';
+  document.getElementById('logoutBar')?.style.display = 'block';
   document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
 
   if (role === 'admin' || role === 'masteradmin') {
-    const issuance = document.getElementById('cardIssuance');
-    if (issuance) issuance.style.display = 'block';
+    document.getElementById('cardIssuance')?.style.display = 'block';
   }
 
   revealPanelForRole(role);
@@ -119,7 +118,6 @@ function setRole() {
     window.logout();
   }, 15 * 60 * 1000);
 }
-
 function revealPanelForRole(role) {
   ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
     const el = document.getElementById(id);
@@ -182,3 +180,4 @@ window.logout = function() {
     logAction('User logged out. Session ended.');
   }, 1000);
 };
+
