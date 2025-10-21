@@ -125,7 +125,7 @@ if (crest) {
   if (role === 'masteradmin') {
     const p=document.getElementById('masteradminPanel');
     p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
-    document.getElementById('floatingCrest').style.opacity = 1;
+    document.getElementById('floatingCrest').style.opacity = "1";
   }
   if (role === 'admin') {
     const p=document.getElementById('adminPanel');
@@ -147,4 +147,5 @@ window.logout = function() {
       const el=document.getElementById(id);
 
       if(el){ el.classList.remove('logout-fade'); el.style.display='none'; el.style.visibility='hidden';
+
 
