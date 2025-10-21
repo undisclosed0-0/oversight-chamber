@@ -110,9 +110,18 @@ window.setRole = function() {
 function revealPanelForRole(role) {
   ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.style.display='none'; el.style.visibility='hidden'; el.style.opacity='0'; }
+    if (el) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      el.style.opacity = '0';
+    }
   });
-  document.getElementById('floatingCrest')?.style.opacity = 0;
+
+  const crest = document.getElementById('floatingCrest');
+  if (crest) {
+    crest.style.opacity = '0';
+  }
+}
 
   if (role === 'masteradmin') {
     const p=document.getElementById('masteradminPanel');
@@ -137,4 +146,5 @@ window.logout = function() {
     currentRole=null; if(sessionTimer) clearTimeout(sessionTimer); sessionTimer=null;
     ['masteradminPanel','adminPanel','employeePanel'].forEach(id=>{
       const el=document.getElementById(id);
+
       if(el){ el.classList.remove('logout-fade'); el.style.display='none'; el.style.visibility='hidden';
