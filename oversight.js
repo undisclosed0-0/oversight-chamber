@@ -231,7 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (role) {
     document.getElementById('logoutBar').style.display = 'block';
     document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
+    const role = localStorage.getItem('userRole');
+if (role === 'admin' || role === 'masteradmin') {
+  document.getElementById('cardIssuance').style.display = 'block';
+  logAction(`Card issuance panel revealed for ${role}`);
+}
   }
 });
+
 
 
