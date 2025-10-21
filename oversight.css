@@ -1,10 +1,7 @@
 /* === Base Atmosphere === */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top center, #1a1a1a 0%, #000 100%);
-  padding: 40px;
-  color: #e0e0e0;
-  margin: 0;
+  background: radial-gradient(circle at top, #1a1a1a, #000) !important;
+  color: #e0e0e0 !important;
 }
 
 /* === Crest + Sigil === */
@@ -162,3 +159,4 @@ button:hover {
   max-height: 80vh;
   color: #e0e0e0;
 }
+
