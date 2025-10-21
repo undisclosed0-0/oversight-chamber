@@ -247,7 +247,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCards();
   showSigilIfMasteradmin();
 
-  const role = localStorage.getItem('userRole');
-  if (role) {
-    document.getElementById('logoutBar').style.display = 'block';
-    document.getElementById('sessionStatus').textContent = `Logged in
+ const role = localStorage.getItem('userRole');
+if (role) {
+  document.getElementById('roleContent').style.display = 'block';
+  document.getElementById('logoutBar').style.display = 'block';
+  document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
+
+  if (role === 'admin' || role === 'masteradmin') {
+    document.getElementById('cardIssuance').style.display = 'block';
+    logAction(`Card issuance panel revealed for ${role}`);
+  }
+}
+
