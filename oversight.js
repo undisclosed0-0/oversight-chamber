@@ -293,4 +293,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (role === 'masteradmin' && controls) controls.style.display = 'block';
     }
   }
+
+  if (role === 'admin') {
+  document.getElementById('adminPanel').style.display = 'block';
+}
+
+if (role === 'employee') {
+  document.getElementById('employeePanel').style.display = 'block';
+}
 });
+
