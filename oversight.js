@@ -142,10 +142,19 @@ window.logout = function() {
     document.getElementById(id)?.classList.add('logout-fade');
   });
   setTimeout(() => {
-    currentRole=null; if(sessionTimer) clearTimeout(sessionTimer); sessionTimer=null;
+    currentRole = null;
+    if (sessionTimer) clearTimeout(sessionTimer);
+    sessionTimer = null;
     ['masteradminPanel','adminPanel','employeePanel'].forEach(id=>{
-      const el=document.getElementById(id);
-
-      if(el){ el.classList.remove('logout-fade'); el.style.display='none'; el.style.visibility='hidden';
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('logout-fade');
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.opacity = '0';
+      }
+    });
+  }, 1000); // 1 second fade-out before reset
+};
 
 
