@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prestige Triumph: Create Account</title>
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(75, 63, 114, 0.2);
+      backdrop-filter: blur(6px);
+      position: relative;
+    }
+
+    h1 {
+      color: #4b3f72;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #4b3f72, #6a5acd);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(75, 63, 114, 0.3);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #6a5acd, #4b3f72);
+      transform: translateY(-2px);
+    }
+
+    .crest-header {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+    }
+
+    .floating-crest {
+      position: fixed;
+      bottom: 30px;
+      right: -130px;
+      width: 80px;
+      height: 80px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+      z-index: 101;
+      opacity: 0.95;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="crest-header"></div>
+    <h1>Prestige Triumph: Create Account</h1>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter name">
+
+    <label for="tier">Select Tier</label>
+    <select id="tier">
+      <option value="Initiate">Initiate</option>
+      <option value="Steward">Steward</option>
+      <option value="Admin">Admin</option>
+      <option value="Masteradmin">Masteradmin</option>
+    </select>
+
+    <button onclick="createAccount()">Create Account</button>
+  </div>
+
+  <div class="floating-crest"></div>
+
+  <!-- Hidden Blogger Contact Form -->
+  <form id="hiddenBloggerForm"
+        class="contact-form-widget"
+        method="POST"
+        action="https://www.blogger.com/contact-form.do"
+        target="hidden_iframe"
+        style="display:none;">
+    <input type="text" name="name" id="bloggerName">
+    <input type="email" name="email" id="bloggerEmail">
+    <textarea name="message" id="bloggerMessage"></textarea>
+    <input type="submit" value="Send">
+  </form>
+
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+  <script>
+    function generateCardID() {
+      return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    }
+
+    function createAccount() {
+      const name = document.getElementById('username').value.trim();
+      const tier = document.getElementById('tier').value;
+      if (!name) {
+        alert("Username is required.");
+        return;
+      }
+
+      const card = generateCardID();
+
+      // Fill hidden Blogger form fields
+      document.getElementById('bloggerName').value = name;
+      document.getElementById('bloggerEmail').value = "prestige@triumph.org"; // placeholder
+      document.getElementById('bloggerMessage').value =
+        `Tier: ${tier}\nCard: ${card}\nActivated: false`;
+
+      // Submit hidden Blogger form
+      document.getElementById('hiddenBloggerForm').submit();
+
+      // Ritual feedback + redirect
+      alert(`Your account is being prepared. Please allow 24 to 72 hours for setup.\n\nYou will now be redirected to your setup page.`);
+      window.location.href = `https://mrhim00.blogspot.com/2025/10/setup.html?card=${encodeURIComponent(card)}`;
+    }
+  </script>
+</body>
+</html>
