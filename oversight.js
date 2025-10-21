@@ -1,166 +1,37 @@
-// ===== Logging =====
-function logAction(text) {
-  const log = document.getElementById('logEntries');
-  if (!log) return;
-  const time = new Date().toLocaleString();
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
-  entry.textContent = `[${time}] ${text}`;
-  log.prepend(entry);
-}
-
-// ===== Card mechanics (simplified placeholders) =====
-function generateCeremonialName(tier) {
-  const titles = {
-    Initiate: ['of the First Flame','of Quiet Resolve','of the Outer Ring'],
-    Steward: ['of the Third Tier','of the Bound Sigil','of the Vigilant Fold'],
-    Admin: ['of the Silent Crest','of the Inner Vault','of the Iron Seal'],
-    Masteradmin: ['of the Final Chamber','of the Oversight Flame','of the Eternal Archive']
-  };
-  const prefix = ['Solenne','Thalos','Velan','Nyra','Kael','Orin','Seren','Dren'];
-  const titleSet = titles[tier] || ['of the Unknown Tier'];
-  return `${prefix[Math.floor(Math.random()*prefix.length)]} ${titleSet[Math.floor(Math.random()*titleSet.length)]}`;
-}
-
-function loadCards() {
-  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-  const list = document.getElementById('cardList');
-  if (!list) return;
-  list.innerHTML = '';
-  let found = false;
-  for (let i=0;i<localStorage.length;i++) {
-    const key = localStorage.key(i);
-    if (!key || !key.startsWith('CARD-')) continue;
-    found = true;
-    const status = localStorage.getItem(key);
-    const tier = registry[key]?.tier || 'Unknown';
-    const entry = document.createElement('div');
-    entry.className = `card-entry aura-${tier}`;
-    entry.innerHTML = `
-      <div class="card-id">${key}</div>
-      <div class="status ${status}">Status: ${status}</div>
-      <div>Tier: ${tier}</div>
-      <button onclick="activateCard('${key}')">Activate</button>
-      <button onclick="resetCard('${key}')">Reset</button>
-      <button onclick="deleteCard('${key}')">Delete</button>
-      <button onclick="previewQRCode('${key}')">QR Preview</button>
-    `;
-    list.appendChild(entry);
-  }
-  if (!found) list.innerHTML = '<p>No cards found.</p>';
-}
-
-function renderRegistryViewer() {
-  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-  const container = document.getElementById('registryEntries');
-  if (!container) return;
-  container.innerHTML = '';
-  for (let name in registry) {
-    const entry = registry[name];
-    const auraClass = `aura-${entry.tier}`;
-    const status = entry.activated ? 'Active' : 'Pending';
-    const statusColor = entry.activated ? '#28a745' : '#f0ad4e';
-    const div = document.createElement('div');
-    div.className = `card-entry ${auraClass}`;
-    div.innerHTML = `
-      <strong>${name}</strong><br>
-      Card ID: <span class="card-id">${entry.card}</span><br>
-      Tier: ${entry.tier}<br>
-      Status: <span style="color:${statusColor}; font-weight:bold;">${status}</span><br>
-      Created: ${new Date(entry.created).toLocaleString()}<br>
-      <button onclick="renameEntry('${name}')">Rename</button>
-    `;
-    container.appendChild(div);
-  }
-}
-
-// Placeholder stubs for card actions
-window.issueCard = function() { alert("Issue card logic here"); };
-window.activateCard = function(id) { alert("Activate " + id); };
-window.resetCard = function(id) { alert("Reset " + id); };
-window.deleteCard = function(id) { alert("Delete " + id); };
-window.renameEntry = function(oldName) { alert("Rename " + oldName); };
-window.previewQRCode = function(id) { alert("Preview QR for " + id); };
-window.exportRegistry = function() { alert("Export registry"); };
-
-// ===== Access control =====
-let currentRole = null;
-let sessionTimer = null;
-
 function setRole() {
-  const role = document.getElementById('roleInput').value.toLowerCase();
+  const role = document.getElementById('roleInput').value.trim().toLowerCase();
   const password = document.getElementById('adminPassword').value;
+  const storedPassword = localStorage.getItem('adminPassword') || 'Triumph123';
 
-  if (role === 'masteradmin' && password === 'Triumph123') {
-    document.getElementById('masteradminPanel').style.display = 'block';
-  } else if (role === 'admin' && password === 'Triumph123') {
-    document.getElementById('adminPanel').style.display = 'block';
-  } else if (role === 'employee' && password === 'Triumph123') {
-    document.getElementById('employeePanel').style.display = 'block';
+  if (role === 'admin' && password === storedPassword) {
+    localStorage.setItem('userRole', role);
+    location.reload();
   } else {
-    alert('Invalid role or password');
+    alert('Invalid role or password.');
   }
 }
 
-  currentRole = role;
-  revealPanelForRole(role);
-
-  if (sessionTimer) clearTimeout(sessionTimer);
-  sessionTimer = setTimeout(() => {
-    alert('Session expired. Please log in again.');
-    window.logout();
-  }, 15 * 60 * 1000);
-};
-
-function revealPanelForRole(role) {
-  ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.style.display = 'none';
-      el.style.visibility = 'hidden';
-      el.style.opacity = '0';
-    }
-  });
-
-  const crest = document.getElementById('floatingCrest');
-if (crest) {
-  crest.style.opacity = "0";  // use a string for CSS values
-}
-
+function showSigilIfMasteradmin() {
+  const role = localStorage.getItem('userRole');
   if (role === 'masteradmin') {
-    const p=document.getElementById('masteradminPanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
-    document.getElementById('floatingCrest').style.opacity = "1";
-  }
-  if (role === 'admin') {
-    const p=document.getElementById('adminPanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
-  }
-  if (role === 'employee') {
-    const p=document.getElementById('employeePanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
+    document.querySelector('.admin-panel').classList.add('masteradmin-aura');
+    document.getElementById('masteradminPanel').style.display = 'block';
+    rotateSigilImage();
+  } else if (role === 'admin') {
+    document.querySelector('.admin-panel').classList.add('admin-aura');
+    document.getElementById('adminPanel').style.display = 'block';
   }
 }
 
-window.logout = function() {
-  ['masteradminPanel','adminPanel','employeePanel','floatingCrest'].forEach(id=>{
-    document.getElementById(id)?.classList.add('logout-fade');
-  });
-  setTimeout(() => {
-    currentRole = null;
-    if (sessionTimer) clearTimeout(sessionTimer);
-    sessionTimer = null;
-    ['masteradminPanel','adminPanel','employeePanel'].forEach(id=>{
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.remove('logout-fade');
-        el.style.display = 'none';
-        el.style.visibility = 'hidden';
-        el.style.opacity = '0';
-      }
-    });
-  }, 1000); // 1 second fade-out before reset
-};
+function rotateSigilImage() {
+  const sigilContainer = document.getElementById('sigilContainer');
+  const sigil = document.createElement('div');
+  sigil.className = 'masteradmin-sigil';
+  sigil.style.backgroundImage = `url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png')`;
+  sigilContainer.innerHTML = '';
+  sigilContainer.appendChild(sigil);
+}
 
-
-
+document.addEventListener('DOMContentLoaded', () => {
+  showSigilIfMasteradmin();
+});
