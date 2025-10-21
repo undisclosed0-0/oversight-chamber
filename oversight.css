@@ -1,82 +1,88 @@
-/* === Oversight Chamber Aura === */
+/* === Prestige Atmosphere === */
 body {
-  background: radial-gradient(circle at top, #1a1a1a, #000) !important;
-}
-
-
-
-/* Crest + Header */
-header, .crest {
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(145deg, #111, #1c1c1c);
-  border-bottom: 2px solid #444;
-  box-shadow: 0 0 20px rgba(0,255,200,0.3);
-}
-
-/* Panels */
-.panel {
-  background: rgba(20,20,20,0.9);
-  border: 1px solid #333;
-  border-radius: 8px;
-  margin: 1.5rem auto;
-  padding: 1.5rem;
-  max-width: 800px;
-  box-shadow: 0 0 15px rgba(0,255,150,0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.panel:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 25px rgba(0,255,200,0.4);
-}
-
-/* Buttons */
-button {
-  background: linear-gradient(145deg, #0a0a0a, #1f1f1f);
-  border: 1px solid #00ffc8;
-  color: #00ffc8;
-  padding: 0.6rem 1.2rem;
-  margin: 0.3rem;
-  border-radius: 4px;
   font-family: 'Cinzel', serif;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+  color: #e0e0e0;
+  padding: 40px;
+  margin: 0;
+}
+
+/* === Crest + Sigil === */
+.crest, .floating-crest {
+  width: 80px;
+  height: 80px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.f3aab80e-2293-47d7-825a-7172f668887f.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0,255,200,0.6);
+  margin: 0 auto;
+}
+
+.masteradmin-sigil {
+  width: 120px;
+  height: 120px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.95;
+  z-index: 100;
+  animation: sigilGlow 6s infinite alternate;
+  filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72);
+}
+
+@keyframes sigilGlow {
+  0%, 100% { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
+  50% { filter: drop-shadow(0 0 20px #dcdcdc) drop-shadow(0 0 30px #6a5acd); }
+}
+
+/* === Panels + Auras === */
+.admin-panel, .masteradmin-panel {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0,255,200,0.2);
+}
+
+.masteradmin-aura {
+  border-left: 6px solid #8b0000;
+  background: linear-gradient(to right, #fff0f0, #fdf6f6);
+}
+
+.admin-aura {
+  border-left: 6px solid #ffa500;
+  background: linear-gradient(to right, #fffaf0, #fdf6e3);
+}
+
+.tier-Initiate { border-left-color: #87cefa; background-color: #f0f8ff; }
+.tier-Steward { border-left-color: #32cd32; background-color: #f5fff0; }
+.tier-Admin { border-left-color: #ffa500; background-color: #fffaf0; }
+.tier-Masteradmin { border-left-color: #8b0000; background-color: #fff0f0; }
+
+/* === Buttons + Inputs === */
+button {
+  background-color: #00ffc8;
+  color: #111;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  font-size: 1em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 button:hover {
-  background: #00ffc8;
-  color: #111;
-  box-shadow: 0 0 12px #00ffc8;
+  background-color: #00ccaa;
 }
 
-/* Logs + Registry */
-.log, .registry {
-  background: rgba(10,10,10,0.85);
-  border-left: 3px solid #00ffc8;
-  padding: 1rem;
-  margin: 1rem 0;
-  font-family: 'Source Code Pro', monospace;
-  font-size: 0.9rem;
-  color: #b0f5e6;
-  max-height: 300px;
-  overflow-y: auto;
-}
-#adminPanel, #masteradminPanel, #employeePanel {
-  display: none;
-}
-/* Inputs */
 input, select {
-  background: #111;
-  border: 1px solid #444;
-  color: #e0e0e0;
-  padding: 0.5rem;
-  border-radius: 4px;
-  margin: 0.3rem 0;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 5px 0;
   width: 100%;
 }
-input:focus, select:focus {
-  border-color: #00ffc8;
-  outline: none;
-  box-shadow: 0 0 8px #00ffc8;
-}
-
-
