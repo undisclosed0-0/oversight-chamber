@@ -231,12 +231,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (role) {
     document.getElementById('logoutBar').style.display = 'block';
     document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-    const role = localStorage.getItem('userRole');
-if (role === 'admin' || role === 'masteradmin') {
-  document.getElementById('cardIssuance').style.display = 'block';
-  logAction(`Card issuance panel revealed for ${role}`);
-}
+
+    // 🔍 Registry Acknowledgment Block
+    const cardID = localStorage.getItem('activeCard');
+    const registry = JSON.parse(localStorage.getItem('userRegistry') || '{}');
+    const entry = registry[cardID];
+
+    if (entry) {
+      document.getElementById('roleStatus').textContent = `Tier: ${entry.tier}`;
+      document.getElementById('approvalStatus').textContent = entry.activated ? '✅ Approved' : '⏳ Pending';
+      document.getElementById('userName').textContent = `Name: ${entry.name}`;
+      logAction(`Registry acknowledged for ${entry.name} (${entry.tier})`);
+    } else {
+      document.getElementById('roleStatus').textContent = 'No registry entry found';
+      document.getElementById('approvalStatus').textContent = 'Unknown';
+      document.getElementById('userName').textContent = 'Unknown';
+      logAction('No registry entry matched for activeCard');
+    }
+
+    // 🔐 Role-based panel reveal
+    if (role === 'admin' || role === 'masteradmin') {
+      document.getElementById('cardIssuance').style.display = 'block';
+      logAction(`Card issuance panel revealed for ${role}`);
+    }
   }
 });
+
 
 
