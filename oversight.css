@@ -60,7 +60,9 @@ button:hover {
   max-height: 300px;
   overflow-y: auto;
 }
-
+#adminPanel, #masteradminPanel, #employeePanel {
+  display: none;
+}
 /* Inputs */
 input, select {
   background: #111;
@@ -76,4 +78,5 @@ input:focus, select:focus {
   outline: none;
   box-shadow: 0 0 8px #00ffc8;
 }
+
 
