@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnifiedFront Oversight Chamber</title>
+
+  <!-- Prestige Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Source+Code+Pro&display=swap" rel="stylesheet">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://undisclosed0-0.github.io/oversight-chamber/oversight.css?v=20251021">
+
+  <!-- External JS -->
+  <script src="https://undisclosed0-0.github.io/oversight-chamber/oversight.js?v=20251021"></script>
+</head>
+<body>
+  <!-- Crest + Sigil Containers -->
+  <div id="sigilContainer"></div>
+  <div class="floating-crest" id="floatingCrest"></div>
+
+  <!-- Login Panel -->
+  <div class="admin-panel">
+    <h1>UnifiedFront Oversight Chamber</h1>
+    <div class="branding-markers"><div class="crest"></div></div>
+    <div class="login-role">
+      <h3>Enter Role to Access Chamber</h3>
+      <input type="text" id="roleInput" placeholder="admin, employee, masteradmin">
+      <input type="password" id="adminPassword" placeholder="Enter access code">
+      <button onclick="setRole()">Enter</button>
+    </div>
+
+    <div class="card-list" id="cardList"><p>Loading issued cards...</p></div>
+
+    <div class="manual-issue" id="cardIssuance" style="display:none;">
+  <h3>Gild a New Marker</h3>
+  <input type="text" id="newCardId" placeholder="Enter Card ID (e.g. CARD-XYZ123)">
+  <button onclick="issueCard()">Issue</button>
+</div>
+
+    <div class="qr-preview" id="qrPreview"></div>
+
+    <div class="action-log" id="actionLog">
+      <h3>Oversight Log</h3>
+      <div id="logEntries"></div>
+    </div>
+  </div>
+
+  <!-- 🔐 Admin Panel -->
+  <div id="adminPanel" style="display:none;">
+    <h3>Admin Panel Activated</h3>
+    <p>Welcome, Admin. You may issue cards, view registry, and manage tier assignments.</p>
+
+    <label for="tierFilter">Filter by Tier:</label>
+    <select id="tierFilter" onchange="renderLedger()">
+      <option value="">All Tiers</option>
+      <option value="Initiate">Initiate</option>
+      <option value="Steward">Steward</option>
+      <option value="Admin">Admin</option>
+      <option value="Masteradmin">Masteradmin</option>
+    </select>
+
+    <label><input type="checkbox" id="crossTierOnly" onchange="renderLedger()"> Show only cross-tier transactions</label>
+  </div>
+
+  <!-- 🔐 Masteradmin Panel -->
+  <div class="masteradmin-panel" id="masteradminPanel" style="display:none;">
+    <h3>Masteradmin Oversight Activated</h3>
+    <button onclick="rotateSigilManually()">Rotate Sigil</button>
+    <button onclick="exportLog()">Export Oversight Log</button>
+    <button onclick="triggerLockout()">Trigger Lockout</button>
+    <button onclick="liftLockout()">Lift Lockout</button>
+    <input type="password" id="newAdminPassword" placeholder="New admin password">
+    <button onclick="updateAdminPassword()">Update Admin Password</button>
+  </div>
+
+  <!-- 🧾 Ledger Modal -->
+  <div id="ledgerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="crest-header"></div>
+      <h2>Prestige Triumph Transaction Ledger</h2>
+      <div id="transactionList"></div>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- 🔓 Logout Bar (Role-Gated) -->
+  <div class="logout-bar" id="logoutBar" style="display:none;">
+  <span id="sessionStatus" class="session-status"></span>
+  <button onclick="logout()">Logout</button>
+</div>
+
+  <!-- QR Code Library -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  
+  <div class="logout-bar" id="logoutBar" style="display:none;">
+  <button onclick="logout()">Logout</button>
+</div>
+  
+  
+  
+</body>
+</html>
