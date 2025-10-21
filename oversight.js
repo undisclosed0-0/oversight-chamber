@@ -244,4 +244,17 @@ function renameCard() {
 }
 
 function deleteCard() {
-  const cardID = localStorage.get
+  const cardID = localStorage.getItem('activeCard');
+  const registry = JSON.parse(localStorage.getItem('userRegistry') || '{}');
+
+  if (registry[cardID]) {
+    delete registry[cardID];
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
+    logAction(`Card ${cardID} deleted`);
+    alert(`Card ${cardID} deleted`);
+    location.reload();
+  } else {
+    alert('No active card found.');
+  }
+}
+
