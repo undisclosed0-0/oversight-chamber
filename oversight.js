@@ -1,6 +1,7 @@
-// 📜 Log Action
+// ===== Logging =====
 function logAction(text) {
   const log = document.getElementById('logEntries');
+  if (!log) return;
   const time = new Date().toLocaleString();
   const entry = document.createElement('div');
   entry.className = 'log-entry';
@@ -8,193 +9,157 @@ function logAction(text) {
   log.prepend(entry);
 }
 
-// 🧬 Load Cards
+// ===== Card mechanics (simplified placeholders) =====
+function generateCeremonialName(tier) {
+  const titles = {
+    Initiate: ['of the First Flame','of Quiet Resolve','of the Outer Ring'],
+    Steward: ['of the Third Tier','of the Bound Sigil','of the Vigilant Fold'],
+    Admin: ['of the Silent Crest','of the Inner Vault','of the Iron Seal'],
+    Masteradmin: ['of the Final Chamber','of the Oversight Flame','of the Eternal Archive']
+  };
+  const prefix = ['Solenne','Thalos','Velan','Nyra','Kael','Orin','Seren','Dren'];
+  const titleSet = titles[tier] || ['of the Unknown Tier'];
+  return `${prefix[Math.floor(Math.random()*prefix.length)]} ${titleSet[Math.floor(Math.random()*titleSet.length)]}`;
+}
+
 function loadCards() {
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
   const list = document.getElementById('cardList');
+  if (!list) return;
   list.innerHTML = '';
   let found = false;
-
-  for (let key in localStorage) {
-    if (key.startsWith('CARD-')) {
-      found = true;
-      const status = localStorage.getItem(key);
-      const entry = document.createElement('div');
-      entry.className = 'card-entry';
-      entry.innerHTML = `
-        <div class="card-id">${key}</div>
-        <div class="status ${status}">Status: ${status}</div>
-        <button onclick="resetCard('${key}')">Reset</button>
-        <button onclick="deleteCard('${key}')">Delete</button>
-        <button onclick="previewQRCode('${key}')">QR Preview</button>
-      `;
-      list.appendChild(entry);
-    }
+  for (let i=0;i<localStorage.length;i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('CARD-')) continue;
+    found = true;
+    const status = localStorage.getItem(key);
+    const tier = registry[key]?.tier || 'Unknown';
+    const entry = document.createElement('div');
+    entry.className = `card-entry aura-${tier}`;
+    entry.innerHTML = `
+      <div class="card-id">${key}</div>
+      <div class="status ${status}">Status: ${status}</div>
+      <div>Tier: ${tier}</div>
+      <button onclick="activateCard('${key}')">Activate</button>
+      <button onclick="resetCard('${key}')">Reset</button>
+      <button onclick="deleteCard('${key}')">Delete</button>
+      <button onclick="previewQRCode('${key}')">QR Preview</button>
+    `;
+    list.appendChild(entry);
   }
-
   if (!found) list.innerHTML = '<p>No cards found.</p>';
 }
 
-// 🔄 Reset Card
-function resetCard(id) {
-  if (localStorage.getItem('lockoutActive') === 'true') {
-    alert('Card actions are currently locked.');
-    return;
-  }
-  localStorage.setItem(id, 'unused');
-  logAction(`Reset ${id} to unused`);
-  loadCards();
-}
-
-// 🗑️ Delete Card
-function deleteCard(id) {
-  if (localStorage.getItem('lockoutActive') === 'true') {
-    alert('Card actions are currently locked.');
-    return;
-  }
-  if (confirm(`Delete ${id}?`)) {
-    localStorage.removeItem(id);
-    logAction(`Deleted ${id}`);
-    loadCards();
-  }
-}
-
-// 🪄 Issue Card
-function issueCard() {
-  if (localStorage.getItem('lockoutActive') === 'true') {
-    alert('Card actions are currently locked.');
-    return;
-  }
-  const id = document.getElementById('newCardId').value.trim();
-  if (id && id.startsWith('CARD-')) {
-    localStorage.setItem(id, 'unused');
-    logAction(`Issued ${id}`);
-    document.getElementById('newCardId').value = '';
-    loadCards();
-  } else {
-    alert('Use a valid ID starting with "CARD-"');
+function renderRegistryViewer() {
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  const container = document.getElementById('registryEntries');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let name in registry) {
+    const entry = registry[name];
+    const auraClass = `aura-${entry.tier}`;
+    const status = entry.activated ? 'Active' : 'Pending';
+    const statusColor = entry.activated ? '#28a745' : '#f0ad4e';
+    const div = document.createElement('div');
+    div.className = `card-entry ${auraClass}`;
+    div.innerHTML = `
+      <strong>${name}</strong><br>
+      Card ID: <span class="card-id">${entry.card}</span><br>
+      Tier: ${entry.tier}<br>
+      Status: <span style="color:${statusColor}; font-weight:bold;">${status}</span><br>
+      Created: ${new Date(entry.created).toLocaleString()}<br>
+      <button onclick="renameEntry('${name}')">Rename</button>
+    `;
+    container.appendChild(div);
   }
 }
 
-// 🧿 QR Preview
-function previewQRCode(id) {
-  const qr = document.getElementById('qrPreview');
-  qr.innerHTML = `<h4>Sigil Preview for ${id}</h4><div id="qrCode"></div>`;
-  new QRCode(document.getElementById("qrCode"), {
-    text: `redeem.html?card=${id}`,
-    width: 120,
-    height: 120
-  });
-  logAction(`Previewed sigil for ${id}`);
-}
+// Placeholder stubs for card actions
+window.issueCard = function() { alert("Issue card logic here"); };
+window.activateCard = function(id) { alert("Activate " + id); };
+window.resetCard = function(id) { alert("Reset " + id); };
+window.deleteCard = function(id) { alert("Delete " + id); };
+window.renameEntry = function(oldName) { alert("Rename " + oldName); };
+window.previewQRCode = function(id) { alert("Preview QR for " + id); };
+window.exportRegistry = function() { alert("Export registry"); };
 
-// 🌀 Sigil Rotation
-function rotateSigilImage() {
-  const sigilContainer = document.getElementById('sigilContainer');
-  const sigil = document.createElement('div');
-  sigil.className = 'masteradmin-sigil';
+// ===== Access control =====
+let currentRole = null;
+let sessionTimer = null;
 
-  const sigilImages = [
-    'https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png'
-  ];
+function setRole() {
+  const role = document.getElementById('roleInput').value.toLowerCase();
+  const password = document.getElementById('adminPassword').value;
 
-  const index = Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % sigilImages.length;
-  sigil.style.backgroundImage = `url('${sigilImages[index]}')`;
-
-  sigilContainer.innerHTML = '';
-  sigilContainer.appendChild(sigil);
-}
-
-// 🌀 Manual Sigil Rotation
-function rotateSigilManually() {
-  const sigilContainer = document.getElementById('sigilContainer');
-  const sigil = document.createElement('div');
-  sigil.className = 'masteradmin-sigil';
-
-  const sigilImages = [
-    'https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png'
-  ];
-
-  let currentIndex = parseInt(localStorage.getItem('sigilIndex') || '0');
-  currentIndex = (currentIndex + 1) % sigilImages.length;
-  localStorage.setItem('sigilIndex', currentIndex);
-
-  sigil.style.backgroundImage = `url('${sigilImages[currentIndex]}')`;
-  sigilContainer.innerHTML = '';
-  sigilContainer.appendChild(sigil);
-  logAction('Sigil manually rotated');
-}
-
-// 📤 Export Log
-function exportLog() {
-  const entries = document.getElementById('logEntries').innerText;
-  const blob = new Blob([entries], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'prestigetriumph_log.txt';
-  link.click();
-  logAction('Oversight log exported');
-}
-
-// 🔐 Lockout Controls
-function triggerLockout() {
-  localStorage.setItem('lockoutActive', 'true');
-  alert('Lockout triggered. Card actions are now disabled.');
-  logAction('Masteradmin triggered lockout');
-}
-
-function liftLockout() {
-  localStorage.removeItem('lockoutActive');
-  alert('Lockout lifted. Card actions are now enabled.');
-  logAction('Masteradmin lifted lockout');
-}
-
-// 🧭 Role Reveal Logic
-function showSigilIfMasteradmin() {
-  const role = localStorage.getItem('userRole');
-  if (role === 'masteradmin') {
-    rotateSigilImage();
-    document.querySelector('.admin-panel').classList.add('masteradmin-aura');
+  if (role === 'masteradmin' && password === 'Triumph123') {
     document.getElementById('masteradminPanel').style.display = 'block';
-    showFloatingCrest();
-    logAction('Masteradmin sigil activated');
-  } else if (role === 'admin') {
-    document.querySelector('.admin-panel').classList.add('admin-aura');
+  } else if (role === 'admin' && password === 'Triumph123') {
+    document.getElementById('adminPanel').style.display = 'block';
+  } else if (role === 'employee' && password === 'Triumph123') {
+    document.getElementById('employeePanel').style.display = 'block';
+  } else {
+    alert('Invalid role or password');
   }
 }
 
-// 🪄 Crest Reveal
-function showFloatingCrest() {
+  currentRole = role;
+  revealPanelForRole(role);
+
+  if (sessionTimer) clearTimeout(sessionTimer);
+  sessionTimer = setTimeout(() => {
+    alert('Session expired. Please log in again.');
+    window.logout();
+  }, 15 * 60 * 1000);
+};
+
+function revealPanelForRole(role) {
+  ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      el.style.opacity = '0';
+    }
+  });
+
   const crest = document.getElementById('floatingCrest');
-  if (crest) {
-    crest.style.opacity = '1';
-    crest.style.transition = 'opacity 0.5s ease-in-out';
-    logAction('Unifiedfront crest revealed');
+if (crest) {
+  crest.style.opacity = "0";  // use a string for CSS values
+}
+
+  if (role === 'masteradmin') {
+    const p=document.getElementById('masteradminPanel');
+    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
+    document.getElementById('floatingCrest').style.opacity = "1";
+  }
+  if (role === 'admin') {
+    const p=document.getElementById('adminPanel');
+    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
+  }
+  if (role === 'employee') {
+    const p=document.getElementById('employeePanel');
+    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
   }
 }
 
-// 🧼 Hide Crest
-function hideFloatingCrest() {
-  const crest = document.getElementById('floatingCrest');
-  if (crest) {
-    crest.style.opacity = '0';
-    logAction('Floating crest hidden');
-  }
-}
+window.logout = function() {
+  ['masteradminPanel','adminPanel','employeePanel','floatingCrest'].forEach(id=>{
+    document.getElementById(id)?.classList.add('logout-fade');
+  });
+  setTimeout(() => {
+    currentRole = null;
+    if (sessionTimer) clearTimeout(sessionTimer);
+    sessionTimer = null;
+    ['masteradminPanel','adminPanel','employeePanel'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('logout-fade');
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.opacity = '0';
+      }
+    });
+  }, 1000); // 1 second fade-out before reset
+};
 
-// 🧭 DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
-  validateRegistry();
-  loadCards();
-  showSigilIfMasteradmin();
 
-  const role = localStorage.getItem('userRole');
-  if (role) {
-    document.getElementById('logoutBar').style.display = 'block';
-    document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-    const role = localStorage.getItem('userRole');
-if (role === 'admin' || role === 'masteradmin') {
-  document.getElementById('cardIssuance').style.display = 'block';
-  logAction(`Card issuance panel revealed for ${role}`);
-}
-  }
-});
