@@ -60,13 +60,22 @@ function loadCards() {
       const status = localStorage.getItem(key);
       const entry = document.createElement('div');
       entry.className = 'card-entry';
-      entry.innerHTML = `
-        <div class="card-id">${key}</div>
-        <div class="status ${status}">Status: ${status}</div>
-        <button onclick="resetCard('${key}')">Reset</button>
-        <button onclick="deleteCard('${key}')">Delete</button>
-        <button onclick="previewQRCode('${key}')">QR Preview</button>
-      `;
+     const role = localStorage.getItem('userRole');
+let controls = '';
+
+if (role === 'admin' || role === 'masteradmin') {
+  controls = `
+    <button onclick="resetCard('${key}')">Reset</button>
+    <button onclick="deleteCard('${key}')">Delete</button>
+    <button onclick="previewQRCode('${key}')">QR Preview</button>
+  `;
+}
+
+entry.innerHTML = `
+  <div class="card-id">${key}</div>
+  <div class="status ${status}">Status: ${status}</div>
+  ${controls}
+`;
       list.appendChild(entry);
     }
   }
@@ -238,6 +247,7 @@ if (role === 'admin' || role === 'masteradmin') {
 }
   }
 });
+
 
 
 
