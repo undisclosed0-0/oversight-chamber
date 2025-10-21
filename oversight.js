@@ -9,7 +9,7 @@ function logAction(text) {
   log.prepend(entry);
 }
 
-// ===== Card mechanics (simplified placeholders) =====
+// ===== Card mechanics =====
 function generateCeremonialName(tier) {
   const titles = {
     Initiate: ['of the First Flame','of Quiet Resolve','of the Outer Ring'],
@@ -28,7 +28,7 @@ function loadCards() {
   if (!list) return;
   list.innerHTML = '';
   let found = false;
-  for (let i=0;i<localStorage.length;i++) {
+  for (let i=0; i<localStorage.length; i++) {
     const key = localStorage.key(i);
     if (!key || !key.startsWith('CARD-')) continue;
     found = true;
@@ -74,7 +74,7 @@ function renderRegistryViewer() {
   }
 }
 
-// Placeholder stubs for card actions
+// ===== Placeholder stubs =====
 window.issueCard = function() { alert("Issue card logic here"); };
 window.activateCard = function(id) { alert("Activate " + id); };
 window.resetCard = function(id) { alert("Reset " + id); };
@@ -91,26 +91,34 @@ function setRole() {
   const role = document.getElementById('roleInput').value.toLowerCase();
   const password = document.getElementById('adminPassword').value;
 
-  if (role === 'masteradmin' && password === 'Triumph123') {
-    document.getElementById('masteradminPanel').style.display = 'block';
-  } else if (role === 'admin' && password === 'Triumph123') {
-    document.getElementById('adminPanel').style.display = 'block';
-  } else if (role === 'employee' && password === 'Triumph123') {
-    document.getElementById('employeePanel').style.display = 'block';
-  } else {
+  if (password !== 'Triumph123') {
     alert('Invalid role or password');
+    return;
   }
-}
 
   currentRole = role;
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('sessionActive', 'true');
+
+  document.getElementById('roleContent').style.display = 'block';
+  document.getElementById('logoutBar').style.display = 'block';
+  document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
+
+  if (role === 'admin' || role === 'masteradmin') {
+    const issuance = document.getElementById('cardIssuance');
+    if (issuance) issuance.style.display = 'block';
+  }
+
   revealPanelForRole(role);
+  loadCards();
+  logAction(`--- Session Start: ${role.toUpperCase()} ---`);
 
   if (sessionTimer) clearTimeout(sessionTimer);
   sessionTimer = setTimeout(() => {
     alert('Session expired. Please log in again.');
     window.logout();
   }, 15 * 60 * 1000);
-};
+}
 
 function revealPanelForRole(role) {
   ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
@@ -123,34 +131,42 @@ function revealPanelForRole(role) {
   });
 
   const crest = document.getElementById('floatingCrest');
-if (crest) {
-  crest.style.opacity = "0";  // use a string for CSS values
-}
+  if (crest) crest.style.opacity = "0";
 
   if (role === 'masteradmin') {
-    const p=document.getElementById('masteradminPanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
-    document.getElementById('floatingCrest').style.opacity = "1";
+    const p = document.getElementById('masteradminPanel');
+    p.style.display = 'block';
+    p.style.visibility = 'visible';
+    p.style.opacity = '1';
+    if (crest) crest.style.opacity = "1";
   }
   if (role === 'admin') {
-    const p=document.getElementById('adminPanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
+    const p = document.getElementById('adminPanel');
+    p.style.display = 'block';
+    p.style.visibility = 'visible';
+    p.style.opacity = '1';
   }
   if (role === 'employee') {
-    const p=document.getElementById('employeePanel');
-    p.style.display='block'; p.style.visibility='visible'; p.style.opacity='1';
+    const p = document.getElementById('employeePanel');
+    p.style.display = 'block';
+    p.style.visibility = 'visible';
+    p.style.opacity = '1';
   }
 }
 
 window.logout = function() {
-  ['masteradminPanel','adminPanel','employeePanel','floatingCrest'].forEach(id=>{
+  ['masteradminPanel','adminPanel','employeePanel','floatingCrest'].forEach(id => {
     document.getElementById(id)?.classList.add('logout-fade');
   });
+
   setTimeout(() => {
     currentRole = null;
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('sessionActive');
     if (sessionTimer) clearTimeout(sessionTimer);
     sessionTimer = null;
-    ['masteradminPanel','adminPanel','employeePanel'].forEach(id=>{
+
+    ['masteradminPanel','adminPanel','employeePanel'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.classList.remove('logout-fade');
@@ -159,7 +175,10 @@ window.logout = function() {
         el.style.opacity = '0';
       }
     });
-  }, 1000); // 1 second fade-out before reset
+
+    document.getElementById('roleContent').style.display = 'none';
+    document.getElementById('logoutBar').style.display = 'none';
+    document.getElementById('sessionStatus').textContent = '';
+    logAction('User logged out. Session ended.');
+  }, 1000);
 };
-
-
