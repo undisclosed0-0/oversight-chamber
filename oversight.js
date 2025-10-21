@@ -227,10 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCards();
   showSigilIfMasteradmin();
 
-  // 🔓 Reveal logout button if role is active
   const role = localStorage.getItem('userRole');
   if (role) {
     document.getElementById('logoutBar').style.display = 'block';
+    document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
   }
 });
+
 
