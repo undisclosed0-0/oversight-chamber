@@ -188,81 +188,60 @@ function liftLockout() {
   logAction('Masteradmin lifted lockout');
 }
 
-// 🧭 Role Reveal Logic
-function showSigilIfMasteradmin() {
+// ⏱️ Clock In / Out
+function clockIn() {
+  const cardID = localStorage.getItem('activeCard');
+  const log = JSON.parse(localStorage.getItem('loginLog') || '[]');
+  log.push({ cardID, action: 'Clock In', time: Date.now() });
+  localStorage.setItem('loginLog', JSON.stringify(log));
+  logAction(`Clock In by ${cardID}`);
+  alert('Clocked in.');
+}
+
+function clockOut() {
+  const cardID = localStorage.getItem('activeCard');
+  const log = JSON.parse(localStorage.getItem('loginLog') || '[]');
+  log.push({ cardID, action: 'Clock Out', time: Date.now() });
+  localStorage.setItem('loginLog', JSON.stringify(log));
+  logAction(`Clock Out by ${cardID}`);
+  alert('Clocked out.');
+}
+
+// 🧾 Login Log Viewer
+function renderLoginLog() {
   const role = localStorage.getItem('userRole');
-  if (role === 'masteradmin') {
-    rotateSigilImage();
-    document.querySelector('.admin-panel').classList.add('masteradmin-aura');
-    document.getElementById('masteradminPanel').style.display = 'block';
-    showFloatingCrest();
-    logAction('Masteradmin sigil activated');
-  } else if (role === 'admin') {
-    document.querySelector('.admin-panel').classList.add('admin-aura');
+  if (role === 'admin' || role === 'masteradmin') {
+    const panel = document.getElementById('loginLogPanel');
+    if (panel) panel.style.display = 'block';
+
+    const log = JSON.parse(localStorage.getItem('loginLog') || '[]');
+    const container = document.getElementById('loginLogEntries');
+    if (container) {
+      container.innerHTML = '';
+      log.forEach(entry => {
+        const time = new Date(entry.time).toLocaleString();
+        container.innerHTML += `<p>${entry.cardID} — ${entry.action} at ${time}</p>`;
+      });
+    }
   }
 }
 
-// 🪄 Crest Reveal
-function showFloatingCrest() {
-  const crest = document.getElementById('floatingCrest');
-  if (crest) {
-    crest.style.opacity = '1';
-    crest.style.transition = 'opacity 0.5s ease-in-out';
-    logAction('Unifiedfront crest revealed');
+// 🔐 Masteradmin Card Controls
+function renameCard() {
+  const cardID = localStorage.getItem('activeCard');
+  const newName = document.getElementById('renameCardInput').value;
+  const registry = JSON.parse(localStorage.getItem('userRegistry') || '{}');
+
+  if (registry[cardID]) {
+    registry[cardID].name = newName;
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
+    logAction(`Card ${cardID} renamed to ${newName}`);
+    alert(`Card renamed to ${newName}`);
+    location.reload();
+  } else {
+    alert('No active card found.');
   }
 }
 
-// 🧼 Hide Crest
-function hideFloatingCrest() {
-  const crest = document.getElementById('floatingCrest');
-  if (crest) {
-    crest.style.opacity = '0';
-    logAction('Floating crest hidden');
-  }
-}
-
-// 🧭 DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
-  validateRegistry();
-  loadCards();
-  showSigilIfMasteradmin();
-
-  const role = localStorage.getItem('userRole');
-  if (role) {
-    document.getElementById('logoutBar').style.display = 'block';
-    document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-
-    // 🔍 Registry Acknowledgment Block
-    const cardID = localStorage.getItem('activeCard');
-    const registry = JSON.parse(localStorage.getItem('userRegistry') || '{}');
-    const entry = registry[cardID];
-
-    if (entry) {
-      document.getElementById('roleStatus').textContent = `Tier: ${entry.tier}`;
-      document.getElementById('approvalStatus').textContent = entry.activated ? '✅ Approved' : '⏳ Pending';
-      document.getElementById('userName').textContent = `Name: ${entry.name}`;
-      logAction(`Registry acknowledged for ${entry.name} (${entry.tier})`);
-    } else {
-      document.getElementById('roleStatus').textContent = 'No registry entry found';
-      document.getElementById('approvalStatus').textContent = 'Unknown';
-      document.getElementById('userName').textContent = 'Unknown';
-      logAction('No registry entry matched for activeCard');
-    }
-
-    if (role === 'admin' || role === 'masteradmin') {
-      document.getElementById('cardIssuance').style.display = 'block';
-      logAction(`Card issuance panel revealed for ${role}`);
-    }
-  }
-});
-    // 🔐 Role-based panel reveal
-    if (role === 'admin' || role === 'masteradmin') {
-      document.getElementById('cardIssuance').style.display = 'block';
-      logAction(`Card issuance panel revealed for ${role}`);
-    }
-  }
-});
-
-
-
-
+function deleteCard() {
+  const cardID = localStorage.get
