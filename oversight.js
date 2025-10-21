@@ -87,15 +87,20 @@ window.exportRegistry = function() { alert("Export registry"); };
 let currentRole = null;
 let sessionTimer = null;
 
-window.setRole = function() {
-  const role = document.getElementById('roleInput').value.trim().toLowerCase();
+function setRole() {
+  const role = document.getElementById('roleInput').value.toLowerCase();
   const password = document.getElementById('adminPassword').value;
-  const passwords = { masteradmin:'triumph2025', admin:'admin2025', employee:'employee2025' };
 
-  if (!passwords[role] || password !== passwords[role]) {
-    alert('Access denied.');
-    return;
+  if (role === 'masteradmin' && password === 'Triumph123') {
+    document.getElementById('masteradminPanel').style.display = 'block';
+  } else if (role === 'admin' && password === 'Triumph123') {
+    document.getElementById('adminPanel').style.display = 'block';
+  } else if (role === 'employee' && password === 'Triumph123') {
+    document.getElementById('employeePanel').style.display = 'block';
+  } else {
+    alert('Invalid role or password');
   }
+}
 
   currentRole = role;
   revealPanelForRole(role);
@@ -156,5 +161,6 @@ window.logout = function() {
     });
   }, 1000); // 1 second fade-out before reset
 };
+
 
 
