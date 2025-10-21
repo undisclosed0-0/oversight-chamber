@@ -1,11 +1,9 @@
 /* === Oversight Chamber Aura === */
 body {
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #e0e0e0;
-  font-family: 'Cinzel', serif;
-  margin: 0;
-  padding: 0;
+  background: radial-gradient(circle at top, #1a1a1a, #000) !important;
 }
+
+
 
 /* Crest + Header */
 header, .crest {
@@ -78,3 +76,4 @@ input:focus, select:focus {
   outline: none;
   box-shadow: 0 0 8px #00ffc8;
 }
+
