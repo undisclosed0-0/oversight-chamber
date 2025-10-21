@@ -249,6 +249,12 @@ document.addEventListener('DOMContentLoaded', () => {
       logAction('No registry entry matched for activeCard');
     }
 
+    if (role === 'admin' || role === 'masteradmin') {
+      document.getElementById('cardIssuance').style.display = 'block';
+      logAction(`Card issuance panel revealed for ${role}`);
+    }
+  }
+});
     // 🔐 Role-based panel reveal
     if (role === 'admin' || role === 'masteradmin') {
       document.getElementById('cardIssuance').style.display = 'block';
@@ -256,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
 
 
 
