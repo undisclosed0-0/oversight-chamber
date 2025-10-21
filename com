@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prestige Triumph: Create Account</title>
+  
+  <style>
+    body {
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(75, 63, 114, 0.2);
+  backdrop-filter: blur(6px);
+}
+
+h1 {
+  color: #4b3f72;
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+label, .cer-label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #4b3f72;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+button, .cer-btn {
+  margin-top: 30px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(75, 63, 114, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover, .cer-btn:hover {
+  background: linear-gradient(to right, #6a5acd, #4b3f72);
+  transform: translateY(-2px);
+}
+
+.crest-header {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+}
+
+.floating-crest {
+  position: fixed;
+  bottom: 30px;
+  right: -130px;
+  width: 80px;
+  height: 80px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+  z-index: 101;
+  opacity: 0.95;
+}
+
+.seal-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.85);
+  color: #d4af37;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  border: 1px solid #d4af37;
+  box-shadow: 0 0 20px #d4af37;
+  z-index: 9999;
+}
+  </style>
+</head>
+<body>
+
+<header class="cer-head">
+  <div class="cer-sigil-wrap">
+    <div id="cerSigil" class="cer-sigil" aria-hidden="true"></div>
+  </div>
+  <div id="cerCrest" class="cer-crest" aria-hidden="true"></div>
+  <div id="cerRole" class="cer-role"></div>
+</header>
+<div>
+<main class="cer-panel">
+  <div class="container">
+    <div class="crest-header"></div>
+    <h1>Prestige Triumph: Create Account</h1>
+    <!-- 🌒 Visible Ceremonial Form -->
+<form id="love-form" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
+  <label class="cer-label" for="name">Account Name</label>
+  <input type="text" id="name" name="name" class="cer-input" required
+         title="Enter your ceremonial name"
+         placeholder="e.g., Solenne of the Third Tier" />
+
+ <!-- <label class="cer-label" for="email">Your Email</label>
+  <input type="email" id="email" name="email" class="cer-input" required
+         title="Enter your email address"
+         placeholder="e.g., solenne@domain.com" />-->
+
+  <label class="cer-label" for="role">Select Tier</label>
+  <select id="role" class="cer-select" required
+          title="Select your ceremonial role">
+    <option value="">Select your role</option>
+    <option value="Initate">Initate</option>
+    <option value="Steward">Steward</option>
+    <option value="Admin">Admin</option>
+  </select>
+
+  <!--<label class="cer-label" for="title">Title</label>
+  <input type="text" id="title" class="cer-input" required
+         title="Enter the title of your offering"
+         placeholder="e.g., The Golden Echo" />
+
+
+
+  <label class="cer-label" for="description">Description</label>
+  <textarea id="description" class="cer-textarea" rows="4" required
+            title="Describe your offering"
+            placeholder="Describe the ritual, the artifact, or the story it carries"></textarea>
+
+  <label class="cer-label" for="fileLink">Artifact File Link (optional)</label>
+  <input type="url" id="fileLink" class="cer-input"
+         title="Provide a link to your artifact file"
+         placeholder="https://..." />-->
+
+  <!-- Hidden message field for Blogger widget -->
+  <textarea id="message" name="message" style="display:none;"></textarea>
+  <input type="email" name="email" id="bloggerEmail" style="display:none;">
+  
+  <button type="submit" class="cer-btn">Create Account</button>
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+</form>
+  </section>
+</main>
+</div>
+ <div class="floating-crest"></div>
+<script>
+function generateCardID() {
+  return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+}
+
+function submitCeremonialForm() {
+  const name = document.getElementById('name').value.trim();
+  const role = document.getElementById('role').value;
+  const card = generateCardID();
+
+  const message = `
+🪔 Account Request
+👤 Name: ${name}
+🎖 Tier: ${role}
+🆔 Card ID: ${card}
+🔒 Status: Pending
+`.trim();
+
+  document.getElementById('message').value = message;
+  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  window.generatedCardID = card;
+
+  // Ritual feedback only
+  alert(`Your account is being prepared. Please allow 24 to 72 hours for setup.\n\nYou will now be redirected to your setup page.`);
+
+  // Redirect after delay (no overlay)
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/setup.html?card=${encodeURIComponent(card)}`;
+  }, 2000);
+
+  return true; // allow form to submit
+}
+</script>
+  
+  
+ 
