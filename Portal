@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Payment</title>
+    <link rel="stylesheet" href="style.css">
+ <style> /* Shared Base Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f8ff; /* Alice Blue */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+}
+<div class="section">
+  <button id="resetLedgerBtn" class="reset-button">Reset Transaction Ledger</button>
+</div>
+
+
+h1 {
+    color: #4682b4; /* Steel Blue */
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #6a5acd; /* Slate Blue */
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+p {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Inputs */
+input[type="text"], input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin: 15px 0;
+    border: 2px solid #a9a9a9;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #6a5acd;
+    box-shadow: 0 0 8px rgba(106, 90, 205, 0.3);
+    outline: none;
+}
+
+/* Buttons */
+button {
+    background-color: #20b2aa; /* Light Sea Green */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 10px;
+    box-shadow: 0 4px 10px rgba(32, 178, 170, 0.3);
+}
+
+button:hover {
+    background-color: #1e8e86;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(32, 178, 170, 0.4);
+}
+
+/* Sections */
+.section {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #eee;
+}
+
+.section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Payment Message */
+#paymentMessage {
+    margin-top: 15px;
+    font-weight: bold;
+  }/* Prestige Atmosphere Enhancements */
+body {
+    background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 20px rgba(75, 63, 114, 0.2);
+    backdrop-filter: blur(6px);
+    transition: box-shadow 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 0 0 30px rgba(75, 63, 114, 0.4);
+}
+
+h1, h2 {
+    color: #4b3f72;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+button {
+    background: linear-gradient(to right, #2e8b57, #3cb371);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+}
+
+button:hover {
+    background: linear-gradient(to right, #3cb371, #2e8b57);
+    transform: translateY(-2px);
+}
+
+/* Tier-Based Aura Classes */
+.initiate-aura {
+    border-left: 6px solid #a2d2ff;
+    background: #f0f8ff;
+}
+
+.journeyman-aura {
+    border-left: 6px solid #6a5acd;
+    background: #f5f7fa;
+}
+
+.elder-aura {
+    border-left: 6px solid #4b3f72;
+    background: #eaeaea;
+}
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Make a Payment</h1>
+        <div class="section">
+            <h2 id="recipientInfo">Paying: Loading recipient...</h2>
+            <p>Enter the amount you wish to transfer.</p>
+            <input type="number" id="amountInput" placeholder="Amount to send" step="0.01" min="0.01">
+            <input type="text" id="payerIdInput" placeholder="Your Student ID (Payer)">
+            <button id="sendPaymentBtn">Send Payment</button>
+            <p id="paymentMessage"></p>
+        </div>
+        <div class="section">
+            <button onclick="window.location.href='index.html'">Go back to main page</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const recipientId = urlParams.get('recipient');
+            const recipientInfo = document.getElementById('recipientInfo');
+            const amountInput = document.getElementById('amountInput');
+            const payerIdInput = document.getElementById('payerIdInput');
+            const sendPaymentBtn = document.getElementById('sendPaymentBtn');
+            const paymentMessage = document.getElementById('paymentMessage');
+
+            if (recipientId) {
+                recipientInfo.textContent = `Paying: ${recipientId}`;
+            } else {
+                recipientInfo.textContent = 'Recipient not specified. Please go back and scan a QR code.';
+                sendPaymentBtn.disabled = true;
+            }
+
+            sendPaymentBtn.addEventListener('click', () => {
+                const amount = parseFloat(amountInput.value);
+                const payerId = payerIdInput.value.trim();
+
+                if (!recipientId || !payerId || isNaN(amount) || amount <= 0) {
+                    paymentMessage.textContent = 'Please enter valid recipient, payer ID, and a positive amount.';
+                    paymentMessage.style.color = 'red';
+                    return;
+                }
+
+                let balances = JSON.parse(localStorage.getItem('studentBalances')) || {};
+
+                if (!balances[payerId]) {
+                    paymentMessage.textContent = `Payer ID '${payerId}' not found. Please ensure it's correct.`;
+                    paymentMessage.style.color = 'red';
+                    return;
+                }
+
+                if (balances[payerId] < amount) {
+                    paymentMessage.textContent = `Insufficient funds for '${payerId}'. Current balance: $${balances[payerId].toFixed(2)}`;
+                    paymentMessage.style.color = 'red';
+                    return;
+                }
+
+                // Ensure recipient exists, initialize if not
+                if (!balances[recipientId]) {
+                    balances[recipientId] = 0;
+                }
+
+                balances[payerId] -= amount;
+                balances[recipientId] += amount;
+
+                localStorage.setItem('studentBalances', JSON.stringify(balances));
+
+                paymentMessage.textContent = `Successfully transferred $${amount.toFixed(2)} from ${payerId} to ${recipientId}!`;
+                paymentMessage.style.color = 'green';
+// Record transaction in ledger
+let history = JSON.parse(localStorage.getItem('transactionHistory')) || [];
+history.push({
+  from: payerId,
+  to: recipientId,
+  amount: amount,
+  time: Date.now()
+});
+localStorage.setItem('transactionHistory', JSON.stringify(history));
+                // Optional: Update balances on the main page after a short delay or redirect
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Go back to view updated balances
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
