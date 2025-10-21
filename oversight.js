@@ -118,9 +118,8 @@ function revealPanelForRole(role) {
   });
 
   const crest = document.getElementById('floatingCrest');
-  if (crest) {
-    crest.style.opacity = '0';
-  }
+if (crest) {
+  crest.style.opacity = "0";  // use a string for CSS values
 }
 
   if (role === 'masteradmin') {
@@ -148,3 +147,4 @@ window.logout = function() {
       const el=document.getElementById(id);
 
       if(el){ el.classList.remove('logout-fade'); el.style.display='none'; el.style.visibility='hidden';
+
