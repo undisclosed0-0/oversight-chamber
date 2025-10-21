@@ -11,14 +11,15 @@ function setRole() {
   const code = document.getElementById('adminPassword').value;
 
   if (accessCodes[role] && code === accessCodes[role]) {
-    localStorage.setItem('userRole', role);
-    localStorage.setItem('sessionActive', 'true');
-    logAction(`--- Session Start: ${role.toUpperCase()} ---`);
-    location.reload();
-  } else {
-    alert('Invalid role or access code.');
-    logAction(`⚠️ Access denied for role: ${role}`);
-  }
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('sessionActive', 'true');
+  document.getElementById('loginError').textContent = ''; // Clear error
+  logAction(`--- Session Start: ${role.toUpperCase()} ---`);
+  location.reload();
+} else {
+  document.getElementById('loginError').textContent = 'Invalid role or access code.';
+  logAction(`⚠️ Access denied for role: ${role}`);
+}
 }
 
 // 🧼 Logout Ritual
@@ -302,4 +303,5 @@ if (role === 'employee') {
   document.getElementById('employeePanel').style.display = 'block';
 }
 });
+
 
