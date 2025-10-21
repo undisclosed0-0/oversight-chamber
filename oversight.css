@@ -1,20 +1,38 @@
-/* === Base Atmosphere === */
 body {
-  background: radial-gradient(circle at top, #1a1a1a, #000) !important;
-  color: #e0e0e0 !important;
+  font-family: 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%) !important;
+  padding: 40px;
+  color: #333 !important;
 }
 
-/* === Crest + Sigil === */
-.crest, .floating-crest {
-  width: 80px;
-  height: 80px;
+.admin-panel {
+  max-width: 800px;
+  margin: auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 30px;
+}
+
+h1 {
+  color: #4b3f72;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.branding-markers {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.crest {
+  width: 60px;
+  height: 60px;
   background-image: url('https://copilot.microsoft.com/th/id/BCO.f3aab80e-2293-47d7-825a-7172f668887f.png');
   background-size: cover;
   background-position: center;
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
-  opacity: 0.95;
-  margin: 0 auto;
+  margin: 0 auto 10px;
 }
 
 .masteradmin-sigil {
@@ -29,105 +47,87 @@ body {
   opacity: 0.95;
   z-index: 100;
   animation: sigilGlow 6s infinite alternate;
+  transition: background-image 1s ease-in-out;
   filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72);
 }
 
 @keyframes sigilGlow {
-  0%, 100% { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
-  50% { filter: drop-shadow(0 0 20px #dcdcdc) drop-shadow(0 0 30px #6a5acd); }
+  0%   { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
+  50%  { filter: drop-shadow(0 0 20px #dcdcdc) drop-shadow(0 0 30px #6a5acd); }
+  100% { filter: drop-shadow(0 0 12px #b8a9d1) drop-shadow(0 0 24px #4b3f72); }
 }
 
-/* === Panels === */
-.admin-panel {
-  max-width: 800px;
-  margin: auto;
-  background-color: #111;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,255,200,0.2);
-  padding: 30px;
+.masteradmin-aura {
+  border-left: 6px solid #4b3f72;
+  background: linear-gradient(to right, #eaeaea, #f5f7fa);
 }
 
-.masteradmin-panel {
-  background: linear-gradient(to right, #2c1f1f, #1a0f0f);
-  border-left: 8px solid #c2a76d;
-  box-shadow: 0 0 30px rgba(194, 167, 109, 0.4);
-  padding: 30px;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: 40px auto;
-  color: #e0e0e0;
+.admin-aura {
+  border-left: 6px solid #6a5acd;
+  background: #f0f8ff;
 }
 
-.masteradmin-panel h3 {
-  color: #c2a76d;
+.login-role {
   text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 0 1px 2px #6b4f3b;
+  margin-bottom: 30px;
 }
 
-/* === Auras by Tier === */
-.aura-Initiate {
-  border-left-color: #87cefa;
-  background-color: #1a1f2f;
-}
-
-.aura-Steward {
-  border-left-color: #32cd32;
-  background-color: #1f2f1f;
-}
-
-.aura-Admin {
-  border-left-color: #ffa500;
-  background-color: #2f2a1f;
-}
-
-.aura-Masteradmin {
-  border-left-color: #8b0000;
-  background-color: #2f1f1f;
-}
-
-/* === Inputs + Buttons === */
-input, select {
+.login-role input {
   padding: 8px;
   font-size: 1em;
-  border: 1px solid #444;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  margin: 5px 0;
-  width: 100%;
-  background: #000;
-  color: #e0e0e0;
+  margin-right: 10px;
 }
+
+.card-list, .action-log {
+  margin-top: 20px;
+}
+
+.card-entry {
+  border-bottom: 1px dashed #ccc;
+  padding: 10px 0;
+}
+
+.card-id {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.status {
+  font-size: 0.9em;
+  margin: 5px 0;
+}
+
+.status.used { color: #dc3545; }
+.status.unused { color: #2e8b57; }
 
 button {
-  background-color: #00ffc8;
-  color: #111;
+  background-color: #6a5acd;
+  color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1em;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-button:hover {
-  background-color: #00ccaa;
-}
-
-/* === Logs + QR Preview === */
-.action-log {
-  background-color: #0f0f0f;
-  border-radius: 10px;
-  padding: 15px;
-  margin-top: 40px;
+  margin-right: 10px;
   font-size: 0.9em;
-  max-height: 200px;
-  overflow-y: auto;
-  border-left: 3px solid #00ffc8;
 }
 
-.log-entry {
-  border-bottom: 1px dashed #444;
-  padding: 5px 0;
-  color: #b0f5e6;
+button:hover {
+  background-color: #4b3f72;
+}
+
+.manual-issue {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.manual-issue input {
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-right: 10px;
 }
 
 .qr-preview {
@@ -135,7 +135,75 @@ button:hover {
   text-align: center;
 }
 
-/* === Modal Overlay === */
+.action-log {
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 40px;
+  font-size: 0.9em;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.log-entry {
+  border-bottom: 1px dashed #ddd;
+  padding: 5px 0;
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.masteradmin-panel {
+  background: linear-gradient(to right, #fdf6e3, #e8e4d9);
+  border-left: 8px solid #c2a76d;
+  box-shadow: 0 0 30px rgba(194, 167, 109, 0.4);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: 40px auto;
+  color: #3b2f2f;
+}
+
+.masteradmin-panel h3 {
+  color: #6b4f3b;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 2px #c2a76d;
+}
+
+.masteradmin-panel button {
+  background-color: #c2a76d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 1em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.masteradmin-panel button:hover {
+  background-color: #a88c5f;
+}
+
+.floating-crest {
+  position: fixed;
+  top: 70px;
+  left: 30px;
+  width: 80px;
+  height: 80px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.f3aab80e-2293-47d7-825a-7172f668887f.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+  z-index: 100;
+  opacity: 0.95;
+  transition: opacity 0.5s ease-in-out;
+}
+
 .modal-overlay {
   display: none;
   position: fixed;
@@ -149,17 +217,32 @@ button:hover {
 }
 
 .modal-content {
-  background: #111;
+  background: #fff;
   padding: 30px;
   border-radius: 12px;
   max-width: 800px;
   width: 90%;
-  box-shadow: 0 0 20px rgba(0,255,200,0.3);
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
   overflow-y: auto;
   max-height: 80vh;
-  color: #e0e0e0;
-}
-#adminPanel, #masteradminPanel, #employeePanel {
-  display: none !important;
 }
 
+.aura-Initiate {
+  border-left-color: #87cefa;
+  background-color: #f0f8ff;
+}
+
+.aura-Steward {
+  border-left-color: #32cd32;
+  background-color: #f5fff0;
+}
+
+.aura-Admin {
+  border-left-color: #ffa500;
+  background-color: #fffaf0;
+}
+
+.aura-Masteradmin {
+  border-left-color: #8b0000;
+  background-color: #fff0f0;
+}
