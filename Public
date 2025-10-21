@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prestige Triumph Account Ledger</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(75, 63, 114, 0.2);
+      backdrop-filter: blur(6px);
+      position: relative;
+    }
+
+    h1, h2 {
+      color: #4b3f72;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    #balanceDisplay {
+      font-size: 1.4em;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2e8b57;
+    }
+
+    .transaction-entry {
+      background: #f5f7fa;
+      border-left: 6px solid #6a5acd;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .transaction-entry.sent {
+      border-left-color: #dc143c;
+    }
+
+    .transaction-entry.received {
+      border-left-color: #2e8b57;
+    }
+
+    .back-button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 25px;
+      background: linear-gradient(to right, #2e8b57, #3cb371);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(to right, #3cb371, #2e8b57);
+      transform: translateY(-2px);
+    }
+
+    .crest-header {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+    }
+
+    .floating-crest {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 80px;
+      height: 80px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+      z-index: 101;
+      opacity: 0.95;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="crest-header"></div>
+    <h1>Prestige Triumph Account Ledger</h1>
+    <h2 id="userIdDisplay">Loading user...</h2>
+    <p id="balanceDisplay">Balance: $0.00</p>
+    <div id="transactionList"></div>
+    <button class="back-button" onclick="window.location.href='index.html'">Return to Main Chamber</button>
+  </div>
+
+  <div class="floating-crest"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const cardId = params.get('card');
+
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    const balances = JSON.parse(localStorage.getItem('studentBalances')) || {};
+    const history = JSON.parse(localStorage.getItem('transactionHistory')) || [];
+
+    const userEntry = Object.entries(registry).find(([id, data]) => data.card === cardId);
+
+    if (userEntry) {
+      const [userId] = userEntry;
+      document.getElementById('userIdDisplay').textContent = `User: ${userId}`;
+      document.getElementById('balanceDisplay').textContent = `Balance: $${(balances[userId] || 0).toFixed(2)}`;
+
+      const userHistory = history.filter(tx => tx.from === userId || tx.to === userId);
+      const list = document.getElementById('transactionList');
+
+      if (userHistory.length === 0) {
+        list.innerHTML = `<p>No transactions found for this user.</p>`;
+      } else {
+        userHistory.forEach(tx => {
+          const entry = document.createElement('div');
+          entry.className = 'transaction-entry ' + (tx.from === userId ? 'sent' : 'received');
+          entry.innerHTML = `
+            <strong>${tx.from === userId ? 'Sent' : 'Received'}:</strong> $${tx.amount.toFixed(2)}<br>
+            <strong>Counterparty:</strong> ${tx.from === userId ? tx.to : tx.from}<br>
+            <strong>Time:</strong> ${new Date(tx.time).toLocaleString()}
+          `;
+          list.appendChild(entry);
+        });
+      }
+    } else {
+      document.getElementById('userIdDisplay').textContent = 'Unknown card. Please scan a valid QR.';
+      document.getElementById('balanceDisplay').textContent = '';
+    }
+  </script>
+</body>
+</html>
