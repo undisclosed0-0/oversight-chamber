@@ -1,44 +1,3 @@
-<script>
-// 🔐 Role Access Codes
-const accessCodes = {
-  admin: 'admin123',
-  employee: 'emp456',
-  masteradmin: 'triumph789'
-};
-
-// 🧭 Validate Role + Access Code
-function setRole() {
-  const role = document.getElementById('roleInput').value.trim().toLowerCase();
-  const code = document.getElementById('adminPassword').value;
-
-  if (accessCodes[role] && code === accessCodes[role]) {
-    localStorage.setItem('userRole', role);
-    localStorage.setItem('sessionActive', 'true');
-    logAction(`--- Session Start: ${role.toUpperCase()} ---`);
-    location.reload();
-  } else {
-    alert('Invalid role or access code.');
-    logAction(`⚠️ Access denied for role: ${role}`);
-  }
-}
-
-// 🧼 Logout Ritual
-function logout() {
-  localStorage.removeItem('userRole');
-  localStorage.removeItem('sessionActive');
-  logAction('User logged out. Session ended.');
-  location.reload();
-}
-
-// 🧪 Registry Integrity Check
-function validateRegistry() {
-  const registry = JSON.parse(localStorage.getItem('userRegistry') || '{}');
-  if (!registry || typeof registry !== 'object') {
-    logAction('⚠️ Registry invalid or missing. Resetting.');
-    localStorage.setItem('userRegistry', JSON.stringify({}));
-  }
-}
-
 // 📜 Log Action
 function logAction(text) {
   const log = document.getElementById('logEntries');
@@ -61,24 +20,12 @@ function loadCards() {
       const status = localStorage.getItem(key);
       const entry = document.createElement('div');
       entry.className = 'card-entry';
-
-      const role = localStorage.getItem('userRole');
-      let controls = '';
-
-      if (role === 'admin' || role === 'masteradmin') {
-        controls = `
-          <button onclick="resetCard('${key}')">Reset</button>
-          <button onclick="deleteCard('${key}')">Delete</button>
-          <button onclick="previewQRCode('${key}')">QR Preview</button>
-        `;
-      } else {
-        logAction(`Card controls hidden for role: ${role}`);
-      }
-
       entry.innerHTML = `
         <div class="card-id">${key}</div>
         <div class="status ${status}">Status: ${status}</div>
-        ${controls}
+        <button onclick="resetCard('${key}')">Reset</button>
+        <button onclick="deleteCard('${key}')">Delete</button>
+        <button onclick="previewQRCode('${key}')">QR Preview</button>
       `;
       list.appendChild(entry);
     }
@@ -128,15 +75,8 @@ function issueCard() {
   }
 }
 
-// 🧿 QR Preview (Role-Gated)
+// 🧿 QR Preview
 function previewQRCode(id) {
-  const role = localStorage.getItem('userRole');
-  if (role !== 'admin' && role !== 'masteradmin') {
-    alert('QR preview is restricted to authorized roles.');
-    logAction(`QR preview blocked for role: ${role}`);
-    return;
-  }
-
   const qr = document.getElementById('qrPreview');
   qr.innerHTML = `<h4>Sigil Preview for ${id}</h4><div id="qrCode"></div>`;
   new QRCode(document.getElementById("qrCode"), {
@@ -247,18 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCards();
   showSigilIfMasteradmin();
 
- const role = localStorage.getItem('userRole');
-if (role) {
-  document.getElementById('roleContent').style.display = 'block';
-  document.getElementById('logoutBar').style.display = 'block';
-  document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-document.getElementById('sigilContainer').style.display = 'block';
-document.getElementById('floatingCrest').style.display = 'block';
-  
-  if (role === 'admin' || role === 'masteradmin') {
-    document.getElementById('cardIssuance').style.display = 'block';
-    logAction(`Card issuance panel revealed for ${role}`);
-  }
+  const role = localStorage.getItem('userRole');
+  if (role) {
+    document.getElementById('logoutBar').style.display = 'block';
+    document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
+    const role = localStorage.getItem('userRole');
+if (role === 'admin' || role === 'masteradmin') {
+  document.getElementById('cardIssuance').style.display = 'block';
+  logAction(`Card issuance panel revealed for ${role}`);
 }
-
-
+  }
+});
