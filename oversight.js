@@ -226,4 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
   validateRegistry();
   loadCards();
   showSigilIfMasteradmin();
+
+  // 🔓 Reveal logout button if role is active
+  const role = localStorage.getItem('userRole');
+  if (role) {
+    document.getElementById('logoutBar').style.display = 'block';
+  }
 });
+
