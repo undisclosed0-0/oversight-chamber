@@ -159,4 +159,7 @@ button:hover {
   max-height: 80vh;
   color: #e0e0e0;
 }
+#adminPanel, #masteradminPanel, #employeePanel {
+  display: none !important;
+}
 
