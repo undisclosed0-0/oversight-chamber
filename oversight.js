@@ -1,3 +1,4 @@
+<script>
 // 🔐 Role Access Codes
 const accessCodes = {
   admin: 'admin123',
@@ -60,22 +61,25 @@ function loadCards() {
       const status = localStorage.getItem(key);
       const entry = document.createElement('div');
       entry.className = 'card-entry';
-     const role = localStorage.getItem('userRole');
-let controls = '';
 
-if (role === 'admin' || role === 'masteradmin') {
-  controls = `
-    <button onclick="resetCard('${key}')">Reset</button>
-    <button onclick="deleteCard('${key}')">Delete</button>
-    <button onclick="previewQRCode('${key}')">QR Preview</button>
-  `;
-}
+      const role = localStorage.getItem('userRole');
+      let controls = '';
 
-entry.innerHTML = `
-  <div class="card-id">${key}</div>
-  <div class="status ${status}">Status: ${status}</div>
-  ${controls}
-`;
+      if (role === 'admin' || role === 'masteradmin') {
+        controls = `
+          <button onclick="resetCard('${key}')">Reset</button>
+          <button onclick="deleteCard('${key}')">Delete</button>
+          <button onclick="previewQRCode('${key}')">QR Preview</button>
+        `;
+      } else {
+        logAction(`Card controls hidden for role: ${role}`);
+      }
+
+      entry.innerHTML = `
+        <div class="card-id">${key}</div>
+        <div class="status ${status}">Status: ${status}</div>
+        ${controls}
+      `;
       list.appendChild(entry);
     }
   }
@@ -124,8 +128,15 @@ function issueCard() {
   }
 }
 
-// 🧿 QR Preview
+// 🧿 QR Preview (Role-Gated)
 function previewQRCode(id) {
+  const role = localStorage.getItem('userRole');
+  if (role !== 'admin' && role !== 'masteradmin') {
+    alert('QR preview is restricted to authorized roles.');
+    logAction(`QR preview blocked for role: ${role}`);
+    return;
+  }
+
   const qr = document.getElementById('qrPreview');
   qr.innerHTML = `<h4>Sigil Preview for ${id}</h4><div id="qrCode"></div>`;
   new QRCode(document.getElementById("qrCode"), {
@@ -239,15 +250,4 @@ document.addEventListener('DOMContentLoaded', () => {
   const role = localStorage.getItem('userRole');
   if (role) {
     document.getElementById('logoutBar').style.display = 'block';
-    document.getElementById('sessionStatus').textContent = `Logged in as: ${role.toUpperCase()}`;
-    const role = localStorage.getItem('userRole');
-if (role === 'admin' || role === 'masteradmin') {
-  document.getElementById('cardIssuance').style.display = 'block';
-  logAction(`Card issuance panel revealed for ${role}`);
-}
-  }
-});
-
-
-
-
+    document.getElementById('sessionStatus').textContent = `Logged in
