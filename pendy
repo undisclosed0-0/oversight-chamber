@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prestige Triumph: Account Setup</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      text-align: center;
+      padding: 50px;
+      color: #333;
+    }
+    h1 {
+      color: #4b3f72;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    .status {
+      margin-top: 30px;
+      font-size: 1.2em;
+    }
+    .spinner {
+      margin: 20px auto;
+      width: 60px;
+      height: 60px;
+      border: 6px solid #ddd;
+      border-top: 6px solid #4b3f72;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .id-card {
+      width: 320px;
+      margin: 30px auto;
+      padding: 20px;
+      border: 2px solid #4b3f72;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .id-card h2 {
+      color: #4b3f72;
+      margin-bottom: 10px;
+    }
+    .crest {
+      height: 80px;
+      width: 80px;
+      margin: 0 auto 10px;
+      background:url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png') center/cover no-repeat;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(194,167,109,0.6);
+    }
+    .pending-note {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prestige Triumph: Account Setup</h1>
+
+  <div class="status">
+    <div class="spinner"></div>
+    <p>Setup in progress. Please check back after 24–72 hours.</p>
+  </div>
+
+  <div id="idCard" class="id-card">
+    <h2>Prestige Triumph</h2>
+    <div class="crest"></div>
+    <p id="cardName" style="font-weight:bold;"></p>
+    <p id="cardTier"></p>
+    <div style="display:flex; justify-content:center; gap:15px; align-items:center; margin-top:10px;">
+      <span id="cardId" style="color:#4b3f72; font-weight:bold;"></span>
+      <span id="statusBanner" style="
+        background:#f0ad4e;
+        color:#fff;
+        font-weight:bold;
+        padding:4px 10px;
+        border-radius:6px;
+        text-transform:uppercase;
+        font-size:0.9em;
+      ">Pending</span>
+    </div>
+    <p class="pending-note">QR code will be available after activation.</p>
+  </div>
+
+  <div id="setupStatus" class="setup-display aura-frame"></div>
+  <!-- Fold Two: Restricted Page -->
+  <div id="foldTwo" style="display:none;">
+    <h1>Restricted Chamber</h1>
+    <p>This is the restricted view shown after refresh or return visits.</p>
+    <p>Limited functions only.</p>
+    <!-- Reset button for testing -->
+  <button onclick="localStorage.removeItem('firstVisitDone'); location.reload();">
+    Reset Fold Test
+  </button>
+</div>
+
+
+  </div>
+
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const cardId = urlParams.get("card");
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    let foundUser = null;
+
+    for (const [name, data] of Object.entries(registry)) {
+      if (data.card === cardId) {
+        foundUser = { name, ...data };
+        break;
+      }
+    }
+
+    if (foundUser && !foundUser.created) {
+      foundUser.created = Date.now();
+      registry[foundUser.name].created = foundUser.created;
+      localStorage.setItem('userRegistry', JSON.stringify(registry));
+    }
+
+    if (foundUser) {
+      document.getElementById("cardName").textContent = foundUser.name;
+      document.getElementById("cardTier").textContent = "Tier: " + foundUser.tier;
+      document.getElementById("cardId").textContent = "Card ID: " + foundUser.card;
+
+      const banner = document.getElementById("statusBanner");
+      const container = document.getElementById("setupStatus");
+
+      if (foundUser.activated) {
+        banner.textContent = "Active";
+        banner.style.background = "#28a745";
+      }
+
+      container.innerHTML = `
+        <h3>Setup for ${foundUser.name}</h3>
+        <p>Card ID: ${foundUser.card}</p>
+        <p>Tier: ${foundUser.tier}</p>
+        <p>Status: <span style="color:${foundUser.activated ? '#28a745' : '#f0ad4e'}; font-weight:bold;">
+          ${foundUser.activated ? 'Active' : 'Pending Activation'}
+        </span></p>
+      `;
+
+      if (foundUser.activated) {
+        const btn = document.createElement('button');
+        btn.textContent = 'Begin Setup';
+        btn.onclick = () => {
+          alert(`Setup ritual initiated for ${foundUser.name}`);
+        };
+        container.appendChild(btn);
+      }
+    } else if (cardId) {
+      document.getElementById("cardId").textContent = "Card ID: " + cardId;
+    } else {
+      document.getElementById("cardId").textContent = "No card ID found.";
+    }
+
+    function updateCountdown() {
+      if (!foundUser || !foundUser.created) return;
+      const now = Date.now();
+      const elapsed = now - foundUser.created;
+      const total = 72 * 60 * 60 * 1000;
+      const remaining = total - elapsed;
+
+      const banner = document.getElementById("statusBanner");
+      if (remaining > 0 && !foundUser.activated) {
+        const hours = Math.floor(remaining / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        banner.textContent = `Pending Activation – approx ${hours}h ${minutes}m remaining`;
+      } else if (!foundUser.activated) {
+        banner.textContent = "Activation window complete – awaiting manual approval";
+        banner.style.background = "#dc3545";
+      }
+    }
+
+    setInterval(updateCountdown, 60000);
+    updateCountdown();
+  </script>
+  
+  <script>
+  function applyFoldGate() {
+    const foldOne = document.getElementById('foldOne');
+    const foldTwo = document.getElementById('foldTwo');
+    const firstVisitDone = localStorage.getItem('firstVisitDone');
+
+    if (!firstVisitDone) {
+      // First time → show Fold One
+      if (foldOne) foldOne.style.display = 'block';
+      if (foldTwo) foldTwo.style.display = 'none';
+      localStorage.setItem('firstVisitDone', 'true');
+      console.log("Fold One shown (first visit)");
+    } else{
+    // Subsequent visits → redirect to restricted page
+    window.location.href = "restricted.html"; 
+    // or if you want to stay on same page but show Fold Two:
+    // if (foldOne) foldOne.style.display = 'none';
+    // if (foldTwo) foldTwo.style.display = 'block';
+    console.log("Redirected to restricted page");
+
+
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', applyFoldGate);
+</script>
+</body>
+</html>
