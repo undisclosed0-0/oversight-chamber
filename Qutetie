@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prestige Triumph: QR Card Issuance</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <style>
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 40px;
+      gap: 30px;
+    }
+
+    .payment-card {
+      width: 320px;
+      height: 200px;
+      perspective: 1000px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .payment-card > div {
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: absolute;
+      backface-visibility: hidden;
+      transition: transform 0.8s ease;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .card-front {
+      background: linear-gradient(to right, #4b3f72, #6a5acd);
+      color: white;
+    }
+
+    .card-back {
+      background: #f8f8f8;
+      color: #333;
+      transform: rotateY(180deg);
+    }
+
+    .payment-card.flipped .card-front {
+      transform: rotateY(180deg);
+    }
+
+    .payment-card.flipped .card-back {
+      transform: rotateY(360deg);
+    }
+
+    .brand {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-name, .card-number, .card-id {
+      font-family: monospace;
+      margin: 8px 0;
+    }
+
+    .card-instructions {
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    .qr-code {
+      margin-top: 10px;
+    }
+
+    .tier-aura-Initiate { border: 3px solid #a2d2ff; }
+    .tier-aura-Steward { border: 3px solid #6a5acd; }
+    .tier-aura-Admin { border: 3px solid #4b3f72; }
+    .tier-aura-Masteradmin { border: 3px solid gold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QR Payment Cards Issued</h1>
+    <p>Click any card to flip and view its sigil and ID.</p>
+  </header>
+
+  <div class="card-container" id="cardContainer"></div>
+
+  <script>
+    function flipCard(cardElement) {
+      cardElement.classList.toggle('flipped');
+    }
+
+    function generateCardHTML(name, tier, cardId) {
+      const qrPayload = `ledger.html?card=${cardId}`;
+      const cardNumber = '•••• •••• •••• ' + Math.floor(1000 + Math.random() * 9000);
+      const auraClass = 'tier-aura-' + tier;
+
+      const card = document.createElement('div');
+      card.className = `payment-card ${auraClass}`;
+      card.onclick = () => flipCard(card);
+
+      card.innerHTML = `
+        <div class="card-front">
+          <h3 class="brand">PrestigePay</h3>
+          <p class="card-name">${name}</p>
+          <p class="card-number">${cardNumber}</p>
+          <div class="qr-code" id="qrFront-${cardId}"></div>
+        </div>
+        <div class="card-back">
+          <p class="card-instructions">Scan to view ledger. Publicly declared.</p>
+          <div class="qr-code" id="qrBack-${cardId}"></div>
+          <p class="card-id">Card ID: ${cardId}</p>
+        </div>
+      `;
+
+      document.getElementById('cardContainer').appendChild(card);
+
+      new QRCode(document.getElementById(`qrFront-${cardId}`), {
+        text: qrPayload,
+        width: 80,
+        height: 80
+      });
+
+      new QRCode(document.getElementById(`qrBack-${cardId}`), {
+        text: qrPayload,
+        width: 80,
+        height: 80
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+      const activationLog = JSON.parse(localStorage.getItem('activationLog')) || [];
+
+      for (const name in registry) {
+        const account = registry[name];
+        if (!account.activated) {
+          account.activated = true;
+          activationLog.push({
+            account: name,
+            tier: account.tier,
+            card: account.card,
+            time: Date.now()
+          });
+          registry[name] = account;
+        }
+        generateCardHTML(name, account.tier, account.card);
+      }
+
+      localStorage.setItem('userRegistry', JSON.stringify(registry));
+      localStorage.setItem('activationLog', JSON.stringify(activationLog));
+    });
+  </script>
+</body>
+</html>
