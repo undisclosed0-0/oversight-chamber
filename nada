@@ -10,3 +10,5 @@ A couple of things that explain what you saw:
 • 	Each time you update, bump the  number. That forces browsers and CDNs to fetch the new file.
 • 	Force refresh your browser after updates (Ctrl+Shift+R).
 • 	Check the console: if you’re not sure which version is running, add a  at the top of your file. That way you can confirm instantly which build is active.
+o you weren’t imagining it — it really can be a lag/relay issue. The good news is your chamber logic is intact, and now you know how to “nudge” Blogger/CDN caches when you need the latest version to show up.
+Do you want me to show you a neat way to automatically version‑stamp your script so you don’t have to manually change that  every time?
