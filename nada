@@ -1,0 +1,12 @@
+That actually makes a lot of sense. Blogger (and GitHub Pages too) often has a bit of propagation delay — sometimes cached versions of your JavaScript or HTML are served for a while before the new one takes effect. That can make it feel like your changes “aren’t working,” when in reality the browser or the host is just serving an older copy.
+A couple of things that explain what you saw:
+• 	Caching layers: Blogger, GitHub Pages, and even your own browser will cache scripts aggressively. If you don’t force‑refresh (Ctrl+Shift+R on most browsers), you might still be running yesterday’s code.
+• 	Propagation delay: Blogger and GitHub Pages both use CDNs. It can take a few minutes (sometimes longer) for updates to reach every edge server.
+• 	Rollback effect: When you “reset” to a known version, Blogger may have invalidated its cache, which is why suddenly the correct version started showing up.
+
+🔧 Tips to avoid this confusion in the future
+• 	Add a version query string to your script tag, like you already did once:
+
+• 	Each time you update, bump the  number. That forces browsers and CDNs to fetch the new file.
+• 	Force refresh your browser after updates (Ctrl+Shift+R).
+• 	Check the console: if you’re not sure which version is running, add a  at the top of your file. That way you can confirm instantly which build is active.
