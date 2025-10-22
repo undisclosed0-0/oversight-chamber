@@ -4,20 +4,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prestige Triumph: QR Card Issuance</title>
-  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <style>
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .ritual-tracker {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #6a5acd;
+      border-radius: 12px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 12px rgba(106, 90, 205, 0.3);
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .crest-icon {
+      width: 32px;
+      height: 32px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      margin-right: 12px;
+      animation: rotateCrest 10s linear infinite;
+    }
+
+    .ritual-text {
+      font-weight: bold;
+      color: #4b3f72;
+      font-size: 1em;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
     .card-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      margin-top: 40px;
+      margin-top: 80px;
       gap: 30px;
+      min-height: 200px;
     }
 
     .payment-card {
-      width: 320px;
-      height: 200px;
+      width: 340px;
+      height: 220px;
       perspective: 1000px;
       cursor: pointer;
       position: relative;
@@ -38,6 +79,7 @@
     .card-front {
       background: linear-gradient(to right, #4b3f72, #6a5acd);
       color: white;
+      animation: pulseGlow 3s infinite;
     }
 
     .card-back {
@@ -55,36 +97,123 @@
     }
 
     .brand {
-      font-size: 1.2em;
+      font-size: 1.4em;
       font-weight: bold;
       margin-bottom: 10px;
+      text-align: center;
     }
 
     .card-name, .card-number, .card-id {
       font-family: monospace;
       margin: 8px 0;
+      text-align: center;
     }
 
     .card-instructions {
       font-size: 0.9em;
       margin-bottom: 10px;
+      text-align: center;
     }
 
     .qr-code {
-      margin-top: 10px;
+      width: 80px;
+      height: 80px;
+      margin: 10px auto;
+    }
+
+    .crest {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 10px;
+      background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(194, 167, 109, 0.6);
+      animation: rotateCrest 12s linear infinite;
     }
 
     .tier-aura-Initiate { border: 3px solid #a2d2ff; }
     .tier-aura-Steward { border: 3px solid #6a5acd; }
     .tier-aura-Admin { border: 3px solid #4b3f72; }
     .tier-aura-Masteradmin { border: 3px solid gold; }
+
+    @keyframes rotateCrest {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(75, 63, 114, 0.3); }
+      50% { box-shadow: 0 0 30px rgba(75, 63, 114, 0.6); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .prestige-black {
+  background: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.pn') center/cover no-repeat;
+  color: white;
+  position: relative;
+  animation: pulseGlow 3s infinite;
+}
+
+
+    
+    .crest-orbit {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 10px;
+}
+
+.crest.spartan-crest {
+  width: 60px;
+  height: 60px;
+  background-image: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png'); /* Spartan crest */
+  background-size: contain;
+  background-position: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
+  animation: pulseCrest 3s ease-in-out infinite;
+  z-index: 2;
+}
+
+.orbiter {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed rgba(255, 0, 0, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: orbitCrest 6s linear infinite;
+  z-index: 1;
+}
+
+@keyframes orbitCrest {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseCrest {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); transform: scale(1); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); transform: scale(1.05); }
+}
+    
+    
+    
   </style>
 </head>
 <body>
-  <header>
-    <h1>QR Payment Cards Issued</h1>
-    <p>Click any card to flip and view its sigil and ID.</p>
-  </header>
+  <div class="ritual-tracker">
+    <div class="crest-icon"></div>
+    <div class="ritual-text">Fold 2 of 5: QR Issuance</div>
+  </div>
 
   <div class="card-container" id="cardContainer"></div>
 
@@ -94,7 +223,7 @@
     }
 
     function generateCardHTML(name, tier, cardId) {
-      const qrPayload = `ledger.html?card=${cardId}`;
+      const qrPayload = const qrPayload = `https://mrhim00.blogspot.com/p/ledger.html?card=${cardId}`;
       const cardNumber = '•••• •••• •••• ' + Math.floor(1000 + Math.random() * 9000);
       const auraClass = 'tier-aura-' + tier;
 
@@ -103,18 +232,22 @@
       card.onclick = () => flipCard(card);
 
       card.innerHTML = `
-        <div class="card-front">
-          <h3 class="brand">PrestigePay</h3>
-          <p class="card-name">${name}</p>
-          <p class="card-number">${cardNumber}</p>
-          <div class="qr-code" id="qrFront-${cardId}"></div>
-        </div>
-        <div class="card-back">
-          <p class="card-instructions">Scan to view ledger. Publicly declared.</p>
-          <div class="qr-code" id="qrBack-${cardId}"></div>
-          <p class="card-id">Card ID: ${cardId}</p>
-        </div>
-      `;
+  <div class="card-front">
+    <div class="crest-orbit">
+      <div class="orbiter"></div>
+      <div class="crest spartan-crest"></div>
+    </div>
+    <h3 class="brand">PrestigePay</h3>
+    <p class="card-name">${name}</p>
+    <p class="card-number">${cardNumber}</p>
+    <div class="qr-code" id="qrFront-${cardId}"></div>
+  </div>
+  <div class="card-back">
+    <p class="card-instructions">Scan to view ledger. Publicly declared.</p>
+    <div class="qr-code" id="qrBack-${cardId}"></div>
+    <p class="card-id">Card ID: ${cardId}</p>
+  </div>
+`;
 
       document.getElementById('cardContainer').appendChild(card);
 
@@ -131,9 +264,29 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+       document.addEventListener('DOMContentLoaded', () => {
       const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
       const activationLog = JSON.parse(localStorage.getItem('activationLog')) || [];
+
+      if (Object.keys(registry).length === 0) {
+        document.getElementById('cardContainer').innerHTML = `
+          <div class="payment-card">
+            <div class="card-front">
+              <div class="crest"></div>
+              <h3 class="brand">PrestigePay</h3>
+              <p class="card-name">Awaiting Identity</p>
+              <p class="card-number">•••• •••• •••• 0000</p>
+              <div class="qr-code"></div>
+            </div>
+            <div class="card-back">
+              <p class="card-instructions">No accounts found. Return to Fold 1.</p>
+              <div class="qr-code"></div>
+              <p class="card-id">Card ID: —</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
 
       for (const name in registry) {
         const account = registry[name];
@@ -154,5 +307,6 @@
       localStorage.setItem('activationLog', JSON.stringify(activationLog));
     });
   </script>
+
 </body>
 </html>
