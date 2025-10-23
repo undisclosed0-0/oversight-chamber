@@ -39,7 +39,6 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 1em;
-      box-sizing: border-box;
     }
     button {
       margin-top: 30px;
@@ -81,50 +80,57 @@
       z-index: 101;
       opacity: 0.95;
     }
-    .verification-plaque {
-      max-width: 600px;
-      margin: 20px auto 0;
-      padding: 20px;
-      border: 2px solid #c2a76d;
-      border-radius: 12px;
-      background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
-      box-shadow: 0 0 15px rgba(194,167,109,0.4);
-      text-align: center;
-      display: none;
-    }
-    .verification-plaque textarea {
-      width: 100%;
-      height: 140px;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #c2a76d;
-      font-family: 'Courier New', monospace;
-      font-size: 0.95em;
-      resize: none;
-      background: #fffdf8;
-    }
-    .verification-plaque button {
-      margin-top: 12px;
-      padding: 10px 20px;
-      background: linear-gradient(to right, #4b3f72, #6a5acd);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-    .verification-plaque button:hover {
-      background: linear-gradient(to right, #6a5acd, #4b3f72);
-    }
-    #googleFormFrame {
-      width: 100%;
-      height: 800px;
-      border: 0;
-      display: none;
-      margin-top: 20px;
-    }
+    
+    
   </style>
+  
+  <style>
+.verification-plaque {
+  margin-top: 25px;
+  padding: 20px;
+  border: 2px solid #c2a76d;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
+  box-shadow: 0 0 15px rgba(194,167,109,0.4);
+  text-align: center;
+}
+.verification-plaque textarea {
+  width: 100%;
+  height: 120px;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #c2a76d;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  resize: none;
+  background: #fffdf8;
+}
+.verification-plaque button {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+}
+.verification-plaque button:hover {
+  background: linear-gradient(to right, #6a5acd, #4b3f72);
+}
+</style>
+
+<script>
+function copyVerification() {
+  const textArea = document.getElementById("verificationText");
+  textArea.select();
+  textArea.setSelectionRange(0, 99999); // mobile support
+  document.execCommand("copy");
+  alert("Verification text copied. Please paste it into the Google Form field.");
+}
+</script>
+  
 </head>
 <body>
   <div class="container">
@@ -157,55 +163,60 @@
     </form>
   </div>
 
-  <!-- Copy Box Plaque -->
-  <div class="verification-plaque" id="verificationPlaque">
-    <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
-    <textarea id="verificationText" readonly></textarea>
-    <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
-  </div>
-
-  <!-- Prefilled Google Form iframe -->
-  <iframe id="googleFormFrame"></iframe>
-
   <div class="floating-crest"></div>
+  <!-- Copy Box Plaque -->
+<!-- Copy Box Plaque (hidden until submission) -->
+<div class="verification-plaque" id="verificationPlaque" style="display:none;">
+  <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
+  <textarea id="verificationText" readonly></textarea>
+  <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
+</div>
+  
 
-  <script>
-    function generateCardID() {
-      return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-    }
-    function generateAccessCode() {
-      return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000);
-    }
+  
+<script>
+function copyVerification() {
+  const textArea = document.getElementById("verificationText");
+  textArea.select();
+  textArea.setSelectionRange(0, 99999); // for mobile
+  document.execCommand("copy");
+  alert("Verification text copied. Please paste it into the Google Form field.");
+}
+</script>
+  
+  
+  
+  
+  
+ <script>
+  function generateCardID() {
+    return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+  }
+  function generateAccessCode() {
+    return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000);
+  }
 
-    function buildFormUrl(name, phone, role, card, accessCode, verificationText) {
-      const base = "https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url";
-      return base
-        + "&entry.1776715435=" + encodeURIComponent(verificationText)   // Verification Text
-               + "&entry.322841683="   + encodeURIComponent(name)              // Name
-        + "&entry.1525963662="  + encodeURIComponent(phone)             // Phone
-        + "&entry.2095863955="  + encodeURIComponent(role)              // Role / Tier
-        + "&entry.531430191="   + encodeURIComponent(card)              // Card ID
-        + "&entry.158063138="   + encodeURIComponent(accessCode);       // Access Code
-    }
+  function submitCeremonialForm() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const role = document.getElementById('role').value;
+    const card = generateCardID();
+    const accessCode = generateAccessCode();
 
-    function submitCeremonialForm() {
-      const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const role = document.getElementById('role').value;
-      const card = generateCardID();
-      const accessCode = generateAccessCode();
+    // Save to localStorage
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    registry[name] = {
+      role: role,
+      phone: phone,
+      card: card,
+      accessCode: accessCode,
+      created: Date.now(),
+      activated: false
+    };
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
 
-      // Save to localStorage
-      const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-      registry[name] = {
-        role, phone, card, accessCode,
-        created: Date.now(),
-        activated: false
-      };
-      localStorage.setItem('userRegistry', JSON.stringify(registry));
-
-      // Build ceremonial message
-      const message = `
+    // Build ceremonial message
+   const message = `
 🪔 Prestige Triumph Verification
 👤 Name: ${name}
 📞 Phone: ${phone}
@@ -214,33 +225,48 @@
 🔑 Access Code: ${accessCode}
 `.trim();
 
-      // Populate Blogger hidden fields
-      document.getElementById('message').value = message;
-      document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+// Populate Blogger hidden field
+document.getElementById('message').value = message;
+document.getElementById('bloggerEmail').value = "prestige@triumph.org";
 
-      // Reveal copy box plaque
-      document.getElementById('verificationText').value = message;
-      document.getElementById('verificationPlaque').style.display = "block";
+// Populate copy box
+document.getElementById('verificationText').value = message;
+document.getElementById('verificationPlaque').style.display = "block";
 
-      // Build prefilled Google Form URL
-      const formUrl = buildFormUrl(name, phone, role, card, accessCode, message);
-      const iframe = document.getElementById("googleFormFrame");
-      iframe.src = formUrl;
-      iframe.style.display = "block";
+// Build prefilled Google Form URL
+const formUrl = buildFormUrl(name, phone, role, card, accessCode, message);
+document.getElementById("googleFormFrame").src = formUrl;
+document.getElementById("googleFormFrame").style.display = "block";
 
-      // Relay to user
-      alert("Your account request has been received.\n\nPlease copy the verification text from the box below and paste it into the official Prestige Verification Form.");
 
-      return true; // allow Blogger submission
-    }
 
-    function copyVerification() {
-      const textArea = document.getElementById("verificationText");
-      textArea.select();
-      textArea.setSelectionRange(0, 99999); // mobile support
-      document.execCommand("copy");
-      alert("Verification text copied. Please paste it into the Google Form field.");
-    }
-  </script>
+    // Reveal the copy box plaque
+document.getElementById('verificationText').value = message;
+document.getElementById('verificationPlaque').style.display = "block";
+
+    
+    // ALSO put it into the visible copy box
+    document.getElementById('verificationText').value = message;
+
+    // Relay to user
+    alert("Your account request has been received.\n\nPlease copy the verification text from the box below and paste it into the official Prestige Verification Form.");
+
+    // Redirect to Fold Two
+    setTimeout(() => {
+      window.location.href = `issued.html?card=${encodeURIComponent(card)}`;
+    }, 2000);
+
+    return true; // allow Blogger submission
+  }
+
+  function copyVerification() {
+    const textArea = document.getElementById("verificationText");
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // for mobile
+    document.execCommand("copy");
+    alert("Verification text copied. Please paste it into the Google Form field.");
+  }
+</script>
+
 </body>
 </html>
