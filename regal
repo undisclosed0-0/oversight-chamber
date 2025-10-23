@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prestige Triumph: Royal Approval</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f8f5f0 0%, #3b2f2f 100%);
+      text-align: center;
+      padding: 50px;
+      color: #f8f5f0;
+    }
+
+    /* Circle Crest */
+    .circle-crest {
+      position: relative;
+      top: -50px;
+      margin: 0 auto -30px;
+      height: 160px;
+      width: 160px;
+      border-radius: 50%;
+      border: 5px solid #c2a76d;
+      background: radial-gradient(circle at 50% 40%, #3b2f2f 0%, #2f2520 70%);
+      box-shadow:
+        0 0 20px rgba(194,167,109,0.8),
+        inset 0 0 14px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .prestige-emblem {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: url('https://copilot.microsoft.com/th/id/BCO.185f3faa-1f2f-4180-bc3a-e898ae0b5bef.png') center/contain no-repeat;
+      background-color: #fdfcfb;
+      box-shadow: inset 0 0 8px rgba(255,255,255,0.3);
+    }
+
+    /* Gold Prestige Banner */
+    .prestige-header {
+      font-family: 'Georgia', serif;
+      color: #2f2520;
+      background: linear-gradient(to right, #d8b86a, #c2a76d, #a88947);
+      padding: 14px 28px;
+      display: inline-block;
+      position: relative;
+      border: 2px solid #a88947;
+      border-radius: 12px;
+      box-shadow:
+        0 4px 14px rgba(0,0,0,0.25),
+        inset 0 0 10px rgba(255,255,255,0.25);
+      margin-bottom: 30px;
+    }
+    .prestige-header::before,
+    .prestige-header::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px; height: 24px;
+      background: linear-gradient(to bottom, #c2a76d, #a88947);
+      border: 2px solid #a88947;
+      box-shadow: inset 0 0 6px rgba(255,255,255,0.2);
+    }
+    .prestige-header::before { left: -14px; border-radius: 6px 0 0 6px; }
+    .prestige-header::after  { right: -14px; border-radius: 0 6px 6px 0; }
+
+    /* Card Frame */
+    .card-frame {
+      padding: 30px;
+      background: #2c1e4a;
+      border: 3px solid #c2a76d;
+      border-radius: 24px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      max-width: 420px;
+      margin: auto;
+    }
+
+    .id-card {
+      width: 100%;
+      padding: 24px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #3b2f2f, #2c1e4a);
+      backdrop-filter: blur(4px);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,0.1),
+        0 0 25px rgba(194,167,109,0.3),
+        0 0 60px rgba(60,42,93,0.2);
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      border: 1px solid rgba(194,167,109,0.4);
+    }
+
+    .status-banner {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.95em;
+      background: linear-gradient(45deg, #5a463a, #c2a76d);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(90,70,58,0.6);
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 12px rgba(90,70,58,0.6); }
+      50% { box-shadow: 0 0 24px rgba(194,167,109,0.9); }
+    }
+
+    .celebration {
+      margin-top: 25px;
+      font-size: 1.2em;
+      color: #c2a76d;
+      font-weight: bold;
+    }
+    .confetti {
+      font-size: 2em;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Circle Crest with Prestige Emblem -->
+  <div class="circle-crest">
+    <div class="prestige-emblem"></div>
+  </div>
+
+  <!-- Middle Gold Prestige Banner -->
+  <div class="prestige-header">Prestige Triumph</div>
+
+  <!-- Card -->
+  <div class="card-frame">
+    <div class="id-card">
+      <h2 id="cardName">Royal Member</h2>
+
+      <!-- Unified Front Shield directly under heading -->
+      <div class="emblem-wrap" style="max-width:180px; margin:0 auto 20px;">
+        <svg class="emblem-shield" viewBox="0 0 200 240" width="100%" height="auto">
+          <defs>
+            <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#d8b86a"/>
+              <stop offset="50%" stop-color="#c2a76d"/>
+              <stop offset="100%" stop-color="#a88947"/>
+            </linearGradient>
+            <linearGradient id="innerShade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4a3a2f"/>
+              <stop offset="100%" stop-color="#2f2520"/>
+            </linearGradient>
+          </defs>
+          <!-- Shield border -->
+          <path d="M100,8 C135,8 160,18 176,35 C182,41 186,49 188,58
+                   C191,73 192,88 192,103 C192,128 186,151 172,172
+                   C158,193 135,212 100,230 C65,212 42,193 28,172
+                   C14,151 8,128 8,103 C8,88 9,73 12,58
+                   C14,49 18,41 24,35 C40,18 65,8 100,8 Z"
+                fill="url(#goldGrad)"/>
+          <!-- Inner shade -->
+          <path d="M100,20 C130,20 152,28 166,42 C171,47 174,54 176,62
+                   C178,75 179,88 179,101 C179,123 173,143 160,162
+                   C147,181 127,198 100,213 C73,198 53,181 40,162
+                   C27,143 21,123 21,101 C21,88 22,75 24,62
+                   C26,54 29,47 34,42 C48,28 70,20 100,20 Z"
+                fill="url(#innerShade)"/>
+          <!-- Castle base line -->
+          <rect x="40" y="132" width="120" height="8" fill="#c2a76d"/>
+          <!-- Side towers -->
+          <g fill="#c2a76d">
+            <rect x="48" y="94" width="28" height="38"/>
+            <rect x="48" y="90" width="28" height="6"/>
+                       <rect x="60" y="104" width="4" height="14" fill="#3b2f2f"/>
+            <!-- Right tower -->
+            <rect x="124" y="94" width="28" height="38"/>
+            <rect x="124" y="90" width="28" height="6"/>
+            <rect x="136" y="104" width="4" height="14" fill="#3b2f2f"/>
+          </g>
+
+          <!-- Central tower -->
+          <g fill="#c2a76d">
+            <rect x="84" y="76" width="32" height="56"/>
+            <rect x="84" y="72" width="32" height="6"/>
+            <!-- Merlons -->
+            <rect x="86" y="68" width="6" height="6"/>
+            <rect x="97" y="68" width="6" height="6"/>
+            <rect x="108" y="68" width="6" height="6"/>
+            <!-- Arched gate -->
+            <path d="M100,116 m -8,0 a 8,8 0 1,1 16,0 v 16 h -16 z" fill="#3b2f2f"/>
+            <!-- Arrow slit -->
+            <rect x="98" y="88" width="4" height="10" fill="#3b2f2f"/>
+          </g>
+
+          <!-- Text: UNIFIED FRONT -->
+          <text x="100" y="164" text-anchor="middle" fill="#c2a76d"
+                font-family="Georgia, 'Times New Roman', serif"
+                font-size="16" font-weight="700" letter-spacing="1">
+            UNIFIED FRONT
+          </text>
+        </svg>
+      </div>
+
+      <p id="cardTier">Tier: Royal</p>
+      <p id="cardId">Card ID: CAR001</p>
+      <div class="status-banner">Approved — Royal Clearance</div>
+      <div class="celebration">
+        <div class="confetti">🪶 🛡️ 🪶</div>
+        Your account has been officially approved with royal honors.
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
