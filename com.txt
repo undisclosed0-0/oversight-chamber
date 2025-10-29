@@ -98,7 +98,7 @@
   width: 100%;
   height: 120px;
   margin-top: 10px;
-  padding: 10px;
+  padding: 0px;
   border-radius: 8px;
   border: 1px solid #c2a76d;
   font-family: 'Courier New', monospace;
@@ -140,19 +140,25 @@ function copyVerification() {
     <!-- Blogger submission preserved -->
     <form id="love-form" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
       <label for="name">Account Name</label>
+      <button type="button" onclick="generateNameFromTier()" style="margin-top:10px; background:#c2a76d; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.95em; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+  ✨ Generate Prestige Name
+</button>
       <input type="text" id="name" name="name" required placeholder="e.g., Solenne of the Third Tier" />
 
       <label for="phone">Contact Number</label>
       <input type="tel" id="phone" name="phone" required placeholder="e.g., +1 616-555-1234" />
 
       <label for="role">Select Tier</label>
-      <select id="role" name="role" required>
-        <option value="">Select your role</option>
-        <option value="Initiate">Initiate</option>
-        <option value="Steward">Steward</option>
-        <option value="Admin">Admin</option>
-        <option value="MasterAdmin">Master Admin</option>
-      </select>
+<select id="role" name="role" required>
+  <option value="">Select your role</option>
+  <option value="Initiate">Initiate</option>
+  <option value="Steward">Steward</option>
+  <option value="Neighbor">Neighbor</option>
+  <option value="Contributor">Contributor</option>
+  <option value="Observer">Observer</option>
+  <option value="Supporter">Supporter</option>
+  <option value="Archivist">Archivist</option>
+</select>
 
       <!-- Hidden Blogger fields -->
       <textarea id="message" name="message" style="display:none;"></textarea>
@@ -161,6 +167,48 @@ function copyVerification() {
       <button type="submit">Create Account</button>
       <iframe name="hidden_iframe" style="display:none;"></iframe>
     </form>
+    <form id="adminForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitAdminForm();" style="display:none;">
+  <h2>Admin Access Form</h2>
+  <label for="adminName">Account Name</label>
+  <input id="adminName" name="adminName" required type="text" />
+
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">Master Admin</option>
+  </select>
+
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" required type="password" />
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="adminMessage" name="message" style="display:none;"></textarea>
+  <input type="email" name="email" id="adminEmail" style="display:none;">
+
+  <button type="submit">Submit Admin Form</button>
+</form>
+    
+    <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
+  <h2>Super-Level Access Form</h2>
+  <label for="superName">Account Holder</label>
+  <input id="superName" name="superName" required type="text" />
+
+  <label for="superTier">Tier</label>
+  <select id="superTier" name="superTier" required>
+    <option value="Sovereign">Sovereign</option>
+    <option value="Luminary">Luminary</option>
+    <option value="Legacy">Legacy Tier</option>
+  </select>
+
+  <label for="superCode">Clearance Code</label>
+  <input id="superCode" name="superCode" required type="password" />
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="superMessage" name="message" style="display:none;"></textarea>
+  <input type="email" name="email" id="superEmail" style="display:none;">
+
+  <button type="submit">Submit Super-Level Form</button>
+</form>
   </div>
 
   <div class="floating-crest"></div>
@@ -171,9 +219,9 @@ function copyVerification() {
   <textarea id="verificationText" readonly></textarea>
   <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
 </div>
-  
+  <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
 
-  
+  <iframe name="hidden_iframe" style="display: none;"></iframe>
 <script>
 function copyVerification() {
   const textArea = document.getElementById("verificationText");
@@ -189,84 +237,201 @@ function copyVerification() {
   
   
  <script>
-  function generateCardID() {
-    return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-  }
-  function generateAccessCode() {
-    return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000);
-  }
+function generateCardID() {
+  return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+}
+function generateAccessCode() {
+  return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000);
+}
 
-  function submitCeremonialForm() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const role = document.getElementById('role').value;
-    const card = generateCardID();
-    const accessCode = generateAccessCode();
+// 🔹 General Public Form
+function submitCeremonialForm() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const role = document.getElementById('role').value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
 
-    // Save to localStorage
-    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-    registry[name] = {
-      role: role,
-      phone: phone,
-      card: card,
-      accessCode: accessCode,
-      created: Date.now(),
-      activated: false
-    };
-    localStorage.setItem('userRegistry', JSON.stringify(registry));
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
+  localStorage.setItem('userRegistry', JSON.stringify(registry));
 
-    // Build ceremonial message
-   const message = `
+  const message = `
 🪔 Prestige Triumph Verification
 👤 Name: ${name}
 📞 Phone: ${phone}
 🎖 Tier: ${role}
-🆔 Card ID: ${card}
+🆔 Account ID: ${card}
 🔑 Access Code: ${accessCode}
 `.trim();
 
-// Populate Blogger hidden field
-document.getElementById('message').value = message;
-document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  document.getElementById('message').value = message;
+  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
 
-// Populate copy box
-document.getElementById('verificationText').value = message;
-document.getElementById('verificationPlaque').style.display = "block";
+  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
 
-// Build prefilled Google Form URL
-const formUrl = buildFormUrl(name, phone, role, card, accessCode, message);
-document.getElementById("googleFormFrame").src = formUrl;
-document.getElementById("googleFormFrame").style.display = "block";
+  return false;
+}
 
-
-
-    // Reveal the copy box plaque
-document.getElementById('verificationText').value = message;
-document.getElementById('verificationPlaque').style.display = "block";
-
-    
-    // ALSO put it into the visible copy box
-    document.getElementById('verificationText').value = message;
-
-    // Relay to user
-    alert("Your account request has been received.\n\nPlease copy the verification text from the box below and paste it into the official Prestige Verification Form.");
-
-    // Redirect to Fold Two
-    setTimeout(() => {
-      window.location.href = `issued.html?card=${encodeURIComponent(card)}`;
-    }, 2000);
-
-    return true; // allow Blogger submission
+// 🔸 Admin Form
+function submitAdminForm() {
+  const code = document.getElementById("adminCode").value.trim();
+  if (code !== "ADMIN-ACCESS") {
+    alert("Invalid admin clearance code.");
+    return false;
   }
 
-  function copyVerification() {
-    const textArea = document.getElementById("verificationText");
-    textArea.select();
-    textArea.setSelectionRange(0, 99999); // for mobile
-    document.execCommand("copy");
-    alert("Verification text copied. Please paste it into the Google Form field.");
+  const name = document.getElementById("adminName").value.trim();
+  const tier = document.getElementById("adminTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const message = `
+🔐 Admin Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}
+`.trim();
+
+  document.getElementById('adminMessage').value = message;
+  document.getElementById('adminEmail').value = "admin@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Admin form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/admin-issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+// 🔸 Super-Level Form
+function submitSuperForm() {
+  const code = document.getElementById("superCode").value.trim();
+  if (code !== "TRIUMPH-777") {
+    alert("Invalid super-level clearance code.");
+    return false;
   }
+
+  const name = document.getElementById("superName").value.trim();
+  const tier = document.getElementById("superTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const message = `
+👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}
+`.trim();
+
+  document.getElementById('superMessage').value = message;
+  document.getElementById('superEmail').value = "super@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Super-level form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+   
+   
+   function generateTieredName(tier) {
+  const pools = {
+    Initiate: {
+      names: ["Lena", "Jamal", "Sofia", "Kai", "Maya"],
+      suffixes: ["of the Welcome Ledger", "of the First Entry", "of the Community Fold"]
+    },
+    Steward: {
+      names: ["Elias", "Priya", "Malcolm", "Zara", "Omar"],
+      suffixes: ["of the Civic Watch", "of the Shared Archive", "of the Stewardship Line"]
+    },
+    Neighbor: {
+      names: ["Ava", "Noah", "Grace", "Leo", "Isla"],
+      suffixes: ["of the Local Registry", "of the Neighborhood Tier", "of the Common Fold"]
+    },
+    Contributor: {
+      names: ["Milan", "Tessa", "Jude", "Nina", "Arlo"],
+      suffixes: ["of the Support Ledger", "of the Contributor Line", "of the Community Archive"]
+    },
+    Observer: {
+      names: ["Theo", "Luna", "Miles", "Ivy", "Rowan"],
+      suffixes: ["of the Quiet Watch", "of the Passive Tier", "of the Ledger Periphery"]
+    },
+    Supporter: {
+      names: ["Elena", "Caleb", "Raya", "Finn", "Naomi"],
+      suffixes: ["of the Advocacy Fold", "of the Support Tier", "of the Donor Registry"]
+    },
+    Archivist: {
+      names: ["Solenne", "Idris", "Helena", "Lucan", "Amara"],
+      suffixes: ["of the Memory Vault", "of the Archivist Line", "of the Tiered Archive"]
+    }
+  };
+
+  const pool = pools[tier];
+  if (!pool) return "Unnamed of the Unknown Tier";
+
+  const name = pool.names[Math.floor(Math.random() * pool.names.length)];
+  const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
+  return `${name} ${suffix}`;
+}
+
+function generateNameFromTier() {
+  const tier = document.getElementById("role").value;
+  if (!tier) {
+    alert("Please select a tier first.");
+    return;
+  }
+  const generated = generateTieredName(tier);
+  document.getElementById("name").value = generated;
+}
+   
+   
+   
+   
+// 🔐 Unlock Logic
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("keydown", function (e) {
+    // Unlock Admin Form: Ctrl + Shift + A
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+      const adminForm = document.getElementById("adminForm");
+      if (adminForm) {
+        adminForm.style.display = "block";
+        alert("Admin access form unlocked.");
+      }
+    }
+
+    // Unlock Super Form: Ctrl + Alt + M
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+      const superForm = document.getElementById("superForm");
+      if (superForm) {
+        superForm.style.display = "block";
+        alert("Super-level access form unlocked.");
+      }
+    }
+  });
+});
+
+
 </script>
-
+  <script>
+function unlockSuperForm() {
+  document.getElementById("superForm").style.display = "block";
+  alert("Super-level access form unlocked.");
+}
+</script>
+  
 </body>
 </html>
