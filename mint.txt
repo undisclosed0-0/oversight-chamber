@@ -5,6 +5,8 @@
   <title>Prestige Vault</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+
   <style>
     body {
       background: radial-gradient(circle at top center, #f8f5f0 0%, #3b2f2f 100%);
@@ -12,7 +14,15 @@
       padding: 40px;
       color: #2f2520;
     }
-    h1 { text-align: center; margin-bottom: 20px; }
+   h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.2em;
+  color: #2f2520;
+  letter-spacing: 2px;
+  text-align: center;   /* centers the header */
+}
+
+
     hr { border: none; height: 2px; background: linear-gradient(to right, #a88947, #c2a76d, #d8b86a); margin: 20px auto 30px; max-width: 400px; }
 
     /* HUD */
@@ -48,6 +58,418 @@
     .card { perspective: 1000px; }
     .card-inner { position: relative; width: 320px; height: 360px; transition: transform 0.8s; transform-style: preserve-3d; }
     .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+    .card-front { background: transparent; flex-direction: column; }
+    .card-back {
+      transform: rotateY(180deg);
+      flex-direction: column; position: relative;
+      width: 300px; height: 180px; border-radius: 20px;
+      background: radial-gradient(circle at center, #fefcea, #d4af37);
+      border: 6px solid #c2a76d;
+      box-shadow: inset 0 0 12px #fff3b0, 0 0 24px rgba(194,167,109,0.6), 0 12px 24px rgba(60,42,93,0.3);
+      padding: 24px;
+    }
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+
+    /* Coin */
+    .token-coin { margin-top: -160px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle at center, #fefcea, #d4af37); border: 6px solid #c2a76d; display: flex; align-items: center; justify-content: center; flex-direction: column; animation: floatCoin 4s ease-in-out infinite; }
+    @keyframes floatCoin { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+    .crest-core { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle at center, #3b2f2f, #2f2520); border: 4px solid #a88947; display: flex; align-items: center; justify-content: center; }
+    .crest-text { font-size: 14px; color: #c2a76d; text-transform: uppercase; letter-spacing: 1px; }
+    .denomination { margin-top: 10px; font-size: 18px; font-weight: bold; }
+
+    /* Back face contents */
+    #qrCanvas { width: 120px; height: 120px; border: 3px solid #a88947; border-radius: 12px; background: radial-gradient(circle at center, #fefcea, #e0e0e0); }
+    .qr-info { font-size: 14px; font-weight: bold; text-align: center; margin-top: 8px; }
+    .select-btn { margin-top: 10px; }
+    .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; color: rgba(0,0,0,0.03); font-weight: bold; }
+
+    /* Vault Summary */
+    #vaultSummary { display: none; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #fffbe6; border: 4px solid #a88947; border-radius: 16px; padding: 24px; box-shadow: 0 0 30px rgba(194,167,109,0.4); z-index: 1000; opacity: 0.9; }
+
+    
+    /* Mobile fixes */
+@media (max-width: 768px) and (orientation: portrait) {
+  #dashboard .hud { grid-template-columns: 1fr; }
+  .hud-selected { justify-self: start; max-width: 100%; width: 100%; }
+  #scrollLog { border-left: none; border-top: 2px solid #a88947; margin-top: 8px; padding-left: 0; }
+
+  .card-inner {
+    width: 90vw;
+    max-width: 320px;
+    height: 360px;   /* keep fixed height */
+  }
+  .card-back {
+    width: 90%;
+    max-width: 280px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  #qrCanvas {
+    width: 40vw;
+    max-width: 160px;
+    height: auto;
+  }
+}
+
+/* Crest divider under header */
+.crest-divider {
+  height: 4px;
+  width: 60%;
+  margin: 12px auto 24px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #a88947, #ffd700, #a88947);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+}
+.original-divider {
+  height: 2px;
+  width: 60%;
+  margin: 20px auto 40px;
+  background: linear-gradient(to right, transparent, #a88947 40%, #c2a76d 60%, transparent);
+  position: relative;
+}
+.original-divider::before,
+.original-divider::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c2a76d;
+  box-shadow: 0 0 6px rgba(194,167,109,0.8);
+}
+.original-divider::before { left: 0; }
+.original-divider::after { right: 0; }
+
+
+/* Header emoji styling */
+.header-emoji {
+  font-size: 2.5em;
+  text-shadow: 1px 1px 2px #5a4520, 0 0 8px gold;
+}
+
+/* Coin with fantasy orbit */
+.token-coin {
+  margin-top: -160px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #fefcea, #d4af37);
+  border: 6px solid #c2a76d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: floatCoin 4s ease-in-out infinite;
+  position: relative;
+  overflow: visible;
+}
+
+.token-coin::before,
+.token-coin::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.8), transparent);
+  animation: orbit 6s linear infinite;
+}
+
+.token-coin::before {
+  width: 12px; height: 12px;
+  top: 50%; left: 50%;
+  transform-origin: -90px center; /* orbit radius */
+  animation-delay: 0s;
+}
+
+.token-coin::after {
+  width: 8px; height: 8px;
+  top: 50%; left: 50%;
+  transform-origin: -90px center;
+  animation-delay: 3s;
+}
+.particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, gold, transparent);
+  top: 50%; left: 50%;
+  transform-origin: -90px center;
+  animation: orbit 8s linear infinite;
+}
+.particle.delay1 { animation-delay: 2s; }
+.particle.delay2 { animation-delay: 4s; }
+
+@keyframes orbit {
+  0%   { transform: rotate(0deg) translateX(90px); }
+  100% { transform: rotate(360deg) translateX(90px); }
+}
+
+
+    /* Mobile fixes */
+    @media (max-width: 768px) and (orientation: portrait) {
+      #dashboard .hud { grid-template-columns: 1fr; }
+      .hud-selected { justify-self: start; max-width: 100%; width: 100%; }
+      #scrollLog { border-left: none; border-top: 2px solid #a88947; margin-top: 8px; padding-left: 0; }
+      
+    @media (max-width: 768px) and (orientation: portrait) {
+  .card-inner {
+    width: 90vw;
+    max-width: 320px;
+    height: 360px;   /* keep fixed height */
+  }
+  .card-back {
+    width: 90%;
+    max-width: 280px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  #qrCanvas {
+    width: 40vw;
+    max-width: 160px;
+    height: auto;
+  }
+}
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.6em;
+    letter-spacing: 1px;
+  }
+  .header-emoji {
+    font-size: 2em;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <h1>Prestige <span class="header-emoji">🏛️</span> Vault</h1>
+<hr style="border: none; height: 2px; background: linear-gradient(to right, #a88947, #c2a76d, #d8b86a); margin: 20px auto 40px; max-width: 400px;">
+
+
+  <div class="crest-divider"></div>
+ 
+
+  <div id="dashboard">
+    <div class="hud">
+      <div class="hud-section">🪙 Tokens: <span id="hudCount">0</span></div>
+      <div class="hud-section">🔥 Total Prestige: <span id="hudTotal">0.00</span></div>
+      <div class="hud-section hud-selected">
+        <div id="scrollLog">
+          <ul id="logList"></ul>
+          <button id="clearLedger" class="clear-btn">☑ Archive & Reset</button>
+        </div>
+      </div>
+    </div>
+    <!-- Proceed to Ritual -->
+    <a id="hudLink" href="#" target="_blank" class="hud-button proceed-btn">🔗 Proceed to Ritual</a>
+  </div>
+
+  <!-- Token Selector -->
+  <label for="denominationSelect">🔑 Choose Token:</label><br>
+  <select id="denominationSelect" class="hud-button" style="margin-top: 6px;">
+    <option value="">--</option>
+    <option value="0.01">0.01 Prestige</option>
+    <option value="0.10">0.10 Prestige</option>
+    <option value="0.25">0.25 Prestige</option>
+    <option value="1.00">1.00 Prestige</option>
+    <option value="5.00">5.00 Prestige</option>
+    <option value="10.00">10.00 Prestige</option>
+    <option value="20.00">20.00 Prestige</option>
+    <option value="50.00">50.00 Prestige</option>
+    <option value="100.00">100.00 Prestige</option>
+  </select>
+
+  <!-- Coin + Card Flip centerpiece -->
+  <div class="token-display" id="tokenDisplay">
+    <div class="card">
+      <div class="card-inner">
+        <!-- Front face: Coin -->
+        <div class="card-front">
+          <div class="token-coin">
+            <div class="crest-core">
+              <div class="crest-text">Prestige</div>
+            </div>
+            <div class="denomination" id="displayDenomination"></div>
+  <span class="particle"></span>
+  <span class="particle delay1"></span>
+  <span class="particle delay2"></span>
+  <div class="crest-core">…</div>
+</div>
+          </div>
+        </div>
+        <!-- Back face: Golden QR slab -->
+        <div class="card-back">
+          <canvas id="qrCanvas" width="120" height="120"></canvas>
+          <div class="qr-info" id="qrInfo">Serial: --<br>Issued: --</div>
+          <button id="selectBtn" class="select-btn" disabled>Select</button>
+          <div class="watermark">Prestige</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vault Summary -->
+  <div id="vaultSummary">
+    <h3 style="margin-top:0;">🏛️ Vault Summary</h3>
+    <p id="summaryText" style="font-size:14px; color:#2f2520;"></p>
+    <button onclick="document.getElementById('vaultSummary').style.display='none'" class="clear-btn">Close</button>
+  </div>
+
+<audio id="ceremonialSound" src="chime.mp3" preload="auto"></audio>
+
+  <!-- QR library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script>
+    const displayDenomination = document.getElementById('displayDenomination');
+    const qrInfo = document.getElementById('qrInfo');
+    const hudCount = document.getElementById('hudCount');
+    const hudTotal = document.getElementById('hudTotal');
+    const hudLink = document.getElementById('hudLink');
+    const qrCanvas = document.getElementById('qrCanvas');
+    const selectBtn = document.getElementById('selectBtn');
+    const logList = document.getElementById('logList');
+    const tokenDisplay = document.getElementById('tokenDisplay');
+    const denominationSelect = document.getElementById('denominationSelect');
+    const clearLedger = document.getElementById('clearLedger');
+    const vaultSummary = document.getElementById('vaultSummary');
+    const summaryText = document.getElementById('summaryText');
+
+    let selected = [];
+    let total = 0;
+
+    denominationSelect.onchange = (e) => {
+      const value = parseFloat(e.target.value);
+      if (!isNaN(value)) showToken(value);
+    };
+
+    clearLedger.onclick = () => {
+      logList.innerHTML = '';
+      selected = [];
+      total = 0;
+      hudCount.textContent = '0';
+      hudTotal.textContent = '0.00';
+      hudLink.href = '#';
+      vaultSummary.style.display = 'none';
+      document.querySelector('.card').classList.remove('flipped');
+      selectBtn.disabled = true;
+      selectBtn.textContent = 'Select';
+      displayDenomination.textContent = '--';
+      qrInfo.innerHTML = 'Serial: --<br>Issued: --';
+      document.querySelector('.token-coin').classList.remove('rarity-bronze','rarity-silver','rarity-gold');
+    };
+
+    function showToken(value) {
+      const serial = `PRG-${value.toFixed(2)}-${Date.now()}`;
+      const issued = new Date().toISOString().split('T')[0];
+      const payload = {
+        denomination: value.toFixed(2),
+        currency: "Prestige",
+        serial: serial,
+        issued: issued,
+        redeem_url: `https://prestige.exchange/redeem/${serial}`
+      };
+
+      const coin = document.querySelector('.token-coin');
+      coin.classList.remove('rarity-bronze','rarity-silver','rarity-gold');
+      if (value >= 20.00) coin.classList.add('rarity-gold');
+      else if (value >= 1.00) coin.classList.add('rarity-silver');
+      else coin.classList.add('rarity-bronze');
+
+      displayDenomination.textContent = payload.denomination;
+      qrInfo.innerHTML = `Serial: ${payload.serial}<br>Issued: ${payload.issued}`;
+      new QRious({ element: qrCanvas, value: JSON.stringify(payload), size: 120 });
+
+      tokenDisplay.style.display = 'flex';
+      selectBtn.disabled = false;
+      selectBtn.textContent = 'Select';
+      document.querySelector('.card').classList.add('flipped');
+
+      // Auto-flip back after 5s if not selected
+      setTimeout(() => {
+        if (!selectBtn.disabled) {
+          document.querySelector('.card').classList.remove('flipped');
+        }
+      }, 5000);
+
+      selectBtn.onclick = () => {
+        selected.push(payload);
+        total += parseFloat(payload.denomination);
+        hudCount.textContent = selected.length;
+        hudTotal.textContent = total.toFixed(2);
+        hudLink.href = payload.redeem_url;
+        selectBtn.textContent = 'Selected';
+        selectBtn.disabled = true;
+document.getElementById('ceremonialSound').play();
+
+        coin.classList.add('pulse');
+        setTimeout(() => coin.classList.remove('pulse'), 1200);
+
+        summaryText.innerHTML = `
+          You have selected <strong>${selected.length}</strong> tokens totaling <strong>${total.toFixed(2)} Prestige</strong>.
+          <br>Last token: ${payload.denomination} Prestige — ${payload.serial}
+        `;
+        vaultSummary.style.display = 'block';
+
+        const rarityIcon = value >= 20.00 ? '🟡' : value >= 1.00 ? '⚪' : '🟤';
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const li = document.createElement('li');
+        li.innerHTML = `${rarityIcon} ${payload.denomination} Prestige<br><small>🕰️ ${timestamp} — ${payload.serial}</small>`;
+        logList.appendChild(li);
+
+        document.querySelector('.card').classList.add('flipped');
+      };
+    }
+  </script>
+
+  <!-- Orientation Notice -->
+  <div id="orientationNotice" class="popup-notice" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;">
+    <div class="popup-content" style="background:#fffbe6; border:3px solid #a88947; border-radius:12px; padding:20px; max-width:300px; text-align:center; box-shadow:0 0 20px rgba(194,167,109,0.6); font-family:'Georgia', serif; color:#2f2520;">
+      <p id="orientationMessage"></p>
+      <label style="display:block; margin:8px 0; font-size:13px;">
+        <input type="checkbox" id="dontShowAgain"> Don’t show again
+      </label>
+      <button class="hud-button" style="padding:6px 12px;" onclick="dismissNotice()">OK</button>
+    </div>
+  </div>
+  <script>
+        function checkOrientation() {
+      const notice = document.getElementById("orientationNotice");
+      const message = document.getElementById("orientationMessage");
+      if (localStorage.getItem("hideOrientationNotice") === "true") {
+        notice.style.display = "none";
+        return;
+      }
+      if (window.innerWidth < 768) {
+        if (screen.orientation.type && screen.orientation.type.startsWith("portrait")) {
+          message.textContent = "📱 For best view: reduce size to 50% or rotate to landscape.";
+          notice.style.display = "flex";
+        } else {
+          message.textContent = "📱 Landscape mode detected. Adjust to your preference.";
+          notice.style.display = "flex";
+        }
+      } else {
+        notice.style.display = "none";
+      }
+    }
+
+    function dismissNotice() {
+      if (document.getElementById("dontShowAgain").checked) {
+        localStorage.setItem("hideOrientationNotice", "true");
+      }
+      document.getElementById("orientationNotice").style.display = "none";
+    }
+
+    window.addEventListener("load", checkOrientation);
+    if (screen.orientation && screen.orientation.addEventListener) {
+      screen.orientation.addEventListener("change", checkOrientation);
+    } else {
+      window.addEventListener("resize", checkOrientation);
+    }
+  </script>
+</body>
+</html>    .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; align-items: center; justify-content: center; }
     .card-front { background: transparent; flex-direction: column; }
     .card-back {
       transform: rotateY(180deg);
