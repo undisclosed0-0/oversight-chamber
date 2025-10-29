@@ -257,7 +257,7 @@
   animation: orbit 12s linear infinite;
   animation-delay: 1.5s;
 }
-    token-coin .particle.p7 {
+    .token-coin .particle.p7 {
   transform-origin: 90px center;
   animation: orbit 4s linear infinite;
 }
@@ -286,6 +286,146 @@
   50%  { transform: scale(1.5); opacity: 1; }
   100% { transform: scale(1); opacity: 0.6; }
 }
+    /* Half Tokens → Color A Glow
+🟨 Final Token → Joyous Celebration + Sound Cue */
+ body.half-glow {
+  background: radial-gradient(circle at center, rgba(173,216,230,0.1), transparent 70%);
+  transition: background 0.5s ease-in-out;
+}
+
+body.full-celebration {
+  animation: vaultAwakening 2.5s ease-in-out;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.2), transparent 70%);
+}
+
+@keyframes vaultAwakening {
+  0%   { transform: scale(1); filter: brightness(1); }
+  25%  { transform: scale(1.02); filter: brightness(1.3); }
+  50%  { transform: scale(0.98); filter: brightness(1.5); }
+  75%  { transform: scale(1.01); filter: brightness(1.2); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+  /* “Vault Awakened” */ 
+    #vaultMessage {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 215, 0, 0.85);
+  color: #2f2520;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2em;
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  z-index: 3000;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+    /* Prestige Half-Awakening */
+    body.half-glow {
+  animation: prestigeHalfAwaken 4s ease-in-out forwards;
+  background: radial-gradient(circle at center, rgba(255, 223, 100, 0.12), rgba(255, 215, 0, 0.06), transparent 80%);
+  backdrop-filter: blur(1.5px);
+}
+
+@keyframes prestigeHalfAwaken {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+    box-shadow: inset 0 0 0px rgba(255, 215, 0, 0);
+  }
+  25% {
+    transform: scale(1.01);
+    filter: brightness(1.15);
+    box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.15);
+  }
+  50% {
+    transform: scale(1.015);
+    filter: brightness(1.25);
+    box-shadow: inset 0 0 100px rgba(255, 215, 0, 0.25);
+  }
+  75% {
+    transform: scale(1.01);
+    filter: brightness(1.15);
+    box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+    box-shadow: inset 0 0 0px rgba(255, 215, 0, 0);
+  }
+}
+
+    /* Halfway Prestige Glow */
+body.half-glow {
+  animation: prestigeHalfAwaken 4s ease-in-out forwards;
+  background: radial-gradient(circle at center, rgba(255, 223, 100, 0.12), rgba(255, 215, 0, 0.06), transparent 80%);
+  backdrop-filter: blur(1.5px);
+}
+
+@keyframes prestigeHalfAwaken {
+  0%   { transform: scale(1); filter: brightness(1); box-shadow: inset 0 0 0px rgba(255, 215, 0, 0); }
+  25%  { transform: scale(1.01); filter: brightness(1.15); box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.15); }
+  50%  { transform: scale(1.015); filter: brightness(1.25); box-shadow: inset 0 0 100px rgba(255, 215, 0, 0.25); }
+  75%  { transform: scale(1.01); filter: brightness(1.15); box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.15); }
+  100% { transform: scale(1); filter: brightness(1); box-shadow: inset 0 0 0px rgba(255, 215, 0, 0); }
+}
+
+/* Floating Golden Particles */
+.particle-float {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, gold, transparent);
+  animation: floatParticle 12s linear infinite;
+  pointer-events: none;
+  z-index: 1500;
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+@keyframes floatParticle {
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+  50%  { transform: translateY(-100vh) scale(1.2); opacity: 0.3; }
+  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+}
+
+/* Fade-in Crest Seal */
+#crestSeal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3em;
+  color: gold;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 2000;
+}
+
+/* Fade-in Ceremony Phrase */
+#ceremonyPhrase {
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Georgia', serif;
+  font-size: 1.8em;
+  color: #c2a76d;
+  background: rgba(255, 255, 240, 0.85);
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 0 16px rgba(194, 167, 109, 0.4);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 2000;
+}
+
 /* #vaultShimmer */
 #vaultShimmer {
   position: fixed;
@@ -293,16 +433,33 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  background: radial-gradient(circle at center, rgba(255,215,0,0.2), transparent 70%);
-  animation: vaultShimmer 1.8s ease-out forwards;
   z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
 }
 
-@keyframes vaultShimmer {
-  0%   { opacity: 0; transform: scale(0.8); }
-  50%  { opacity: 0.6; transform: scale(1.05); }
+#vaultShimmer.half {
+  background: radial-gradient(circle at center, rgba(173,216,230,0.2), transparent 70%); /* soft blue glow */
+  animation: shimmerHalf 2s ease-out forwards;
+}
+
+#vaultShimmer.full {
+  background: radial-gradient(circle at center, rgba(255,215,0,0.3), transparent 70%); /* golden pulse */
+  animation: shimmerFull 2s ease-out forwards;
+}
+
+@keyframes shimmerHalf {
+  0%   { opacity: 0; transform: scale(0.9); }
+  50%  { opacity: 0.4; transform: scale(1.05); }
   100% { opacity: 0; transform: scale(1); }
 }
+
+@keyframes shimmerFull {
+  0%   { opacity: 0; transform: scale(0.8); }
+  50%  { opacity: 0.6; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
 #scrollLog.glow {
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
   transition: box-shadow 0.4s ease-in-out;
@@ -314,6 +471,15 @@
 @keyframes crestPulse {
   0%   { transform: scale(1); box-shadow: 0 0 0px gold; }
   50%  { transform: scale(1.2); box-shadow: 0 0 12px gold; }
+  100% { transform: scale(1); box-shadow: 0 0 0px gold; }
+}/* Prestige Crest Burst*/
+.crest-core.burst {
+  animation: crestBurst 1.2s ease-out;
+}
+
+@keyframes crestBurst {
+  0%   { transform: scale(1); box-shadow: 0 0 0px gold; }
+  50%  { transform: scale(1.4); box-shadow: 0 0 24px gold; }
   100% { transform: scale(1); box-shadow: 0 0 0px gold; }
 }
 
@@ -451,138 +617,190 @@
 
 <audio id="ceremonialSound" src="" preload="auto"></audio>
 <div id="vaultShimmer" style="display:none;"></div>
+<div id="vaultMessage">Vault Awakened</div>
+<audio id="chantSound" src="chant.mp3" preload="auto"></audio>
+<div id="crestSeal">🛡️</div>
+<div id="ceremonyPhrase">Ceremony Rising…</div>
+
+};
 
   <!-- QR library -->
   <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-  <script>
-    const displayDenomination = document.getElementById('displayDenomination');
-    const qrInfo = document.getElementById('qrInfo');
-    const hudCount = document.getElementById('hudCount');
-    const hudTotal = document.getElementById('hudTotal');
-    const hudLink = document.getElementById('hudLink');
-    const qrCanvas = document.getElementById('qrCanvas');
-    const selectBtn = document.getElementById('selectBtn');
-    const logList = document.getElementById('logList');
-    const tokenDisplay = document.getElementById('tokenDisplay');
-    const denominationSelect = document.getElementById('denominationSelect');
-    const clearLedger = document.getElementById('clearLedger');
-    const vaultSummary = document.getElementById('vaultSummary');
-    const summaryText = document.getElementById('summaryText');
-
-    let selected = [];
-    let total = 0;
-
-    denominationSelect.onchange = (e) => {
-      const value = parseFloat(e.target.value);
-      if (!isNaN(value)) showToken(value);
-    };
-
-    clearLedger.onclick = () => {
-      logList.innerHTML = '';
-      selected = [];
-      total = 0;
-      hudCount.textContent = '0';
-      hudTotal.textContent = '0.00';
-      hudLink.href = '#';
-      vaultSummary.style.display = 'none';
-      document.querySelector('.card').classList.remove('flipped');
-      selectBtn.disabled = true;
-      selectBtn.textContent = 'Select';
-      const scrollLog = document.getElementById('scrollLog');
-scrollLog.classList.add('glow');
-setTimeout(() => scrollLog.classList.remove('glow'), 1200);
+  <script>window.onload = () => {
+  // your entire script here
+const displayDenomination = document.getElementById('displayDenomination');
+const qrInfo = document.getElementById('qrInfo');
+const hudCount = document.getElementById('hudCount');
+const hudTotal = document.getElementById('hudTotal');
+const hudLink = document.getElementById('hudLink');
+const qrCanvas = document.getElementById('qrCanvas');
+const selectBtn = document.getElementById('selectBtn');
+const logList = document.getElementById('logList');
+const tokenDisplay = document.getElementById('tokenDisplay');
+const denominationSelect = document.getElementById('denominationSelect');
+const clearLedger = document.getElementById('clearLedger');
+const vaultSummary = document.getElementById('vaultSummary');
+const summaryText = document.getElementById('summaryText');
+const vaultMessage = document.getElementById('vaultMessage');
+const ceremonialSound = document.getElementById('ceremonialSound');
+const chantSound = document.getElementById('chantSound');
+const scrollLog = document.getElementById('scrollLog');
+const crest = document.querySelector('.crest-core');
+const coin = document.querySelector('.token-coin');
 const shimmer = document.getElementById('vaultShimmer');
-shimmer.style.display = 'block';
-shimmer.classList.remove('active'); // reset if needed
-void shimmer.offsetWidth; // force reflow
-shimmer.classList.add('active');
-setTimeout(() => shimmer.style.display = 'none', 1800);
-displayDenomination.textContent = '--';
-      qrInfo.innerHTML = 'Serial: --<br>Issued: --';
-      document.querySelector('.token-coin').classList.remove('rarity-bronze','rarity-silver','rarity-gold');
-    };
+const crestSeal = document.getElementById('crestSeal');
+const ceremonyPhrase = document.getElementById('ceremonyPhrase');
 
-    function showToken(value) {
-      const serial = `PRG-${value.toFixed(2)}-${Date.now()}`;
-      const issued = new Date().toISOString().split('T')[0];
-      const payload = {
-        denomination: value.toFixed(2),
-        currency: "Prestige",
-        serial: serial,
-        issued: issued,
-        redeem_url: `https://prestige.exchange/redeem/${serial}`
-      };
+let selected = [];
+let total = 0;
+const totalTokens = 9;
+let halfwayTriggered = false;
+let currentPayload = null;
 
-      const coin = document.querySelector('.token-coin');
-      coin.classList.remove('rarity-bronze','rarity-silver','rarity-gold');
-      if (value >= 20.00) coin.classList.add('rarity-gold');
-      else if (value >= 1.00) coin.classList.add('rarity-silver');
-      else coin.classList.add('rarity-bronze');
+denominationSelect.onchange = (e) => {
+  const value = parseFloat(e.target.value);
+  if (!isNaN(value)) showToken(value);
+};
 
-      displayDenomination.textContent = payload.denomination;
-      qrInfo.innerHTML = `Serial: ${payload.serial}<br>Issued: ${payload.issued}`;
-      new QRious({ element: qrCanvas, value: JSON.stringify(payload), size: 120 });
-
-      tokenDisplay.style.display = 'flex';
-      selectBtn.disabled = false;
-      selectBtn.textContent = 'Select';
-      document.querySelector('.card').classList.add('flipped');
-
-      // Auto-flip back after 5s if not selected
-      setTimeout(() => {
-  document.querySelector('.card').classList.remove('flipped');
+clearLedger.onclick = () => {
+  logList.innerHTML = '';
+  selected = [];
+  total = 0;
+  halfwayTriggered = false;
+  currentPayload = null;
+  hudCount.textContent = '0';
+  hudTotal.textContent = '0.00';
+  hudLink.href = '#';
   vaultSummary.style.display = 'none';
-}, 5000);
+  selectBtn.disabled = true;
+  selectBtn.textContent = 'Select';
+  displayDenomination.textContent = '--';
+  qrInfo.innerHTML = 'Serial: --<br>Issued: --';
+  coin.classList.remove('rarity-bronze','rarity-silver','rarity-gold');
+};
 
+function showToken(value) {
+  const serial = `PRG-${value.toFixed(2)}-${Date.now()}`;
+  const issued = new Date().toISOString().split('T')[0];
+  currentPayload = {
+    denomination: value.toFixed(2),
+    currency: "Prestige",
+    serial: serial,
+    issued: issued,
+    redeem_url: `https://prestige.exchange/redeem/${serial}`
+  };
 
-      selectBtn.onclick = () => {
-        selected.push(payload);
-        total += parseFloat(payload.denomination);
-        hudCount.textContent = selected.length;
-        hudTotal.textContent = total.toFixed(2);
-        hudLink.href = payload.redeem_url;
-        const crest = document.querySelector('.crest-core');
-crest.classList.add('pulse');
-setTimeout(() => crest.classList.remove('pulse'), 1200);
-selectBtn.textContent = 'Selected';
-        selectBtn.disabled = true;
-document.getElementById('ceremonialSound').play();
-const pulse = document.createElement('span');
-pulse.className = 'pulse-orb';
-document.querySelector('.token-coin').appendChild(pulse);
-setTimeout(() => pulse.remove(), 1200);
+  coin.classList.remove('rarity-bronze','rarity-silver','rarity-gold');
+  if (value >= 20.00) coin.classList.add('rarity-gold');
+  else if (value >= 1.00) coin.classList.add('rarity-silver');
+  else coin.classList.add('rarity-bronze');
 
-        coin.classList.add('pulse');
-        setTimeout(() => coin.classList.remove('pulse'), 1200);
+  displayDenomination.textContent = currentPayload.denomination;
+  qrInfo.innerHTML = `Serial: ${currentPayload.serial}<br>Issued: ${currentPayload.issued}`;
+  new QRious({ element: qrCanvas, value: JSON.stringify(currentPayload), size: 120 });
 
-        summaryText.innerHTML = `
-          You have selected <strong>${selected.length}</strong> tokens totaling <strong>${total.toFixed(2)} Prestige</strong>.
-          <br>Last token: ${payload.denomination} Prestige — ${payload.serial}
-        `;
-        vaultSummary.style.display = 'block';
+  tokenDisplay.style.display = 'flex';
+  selectBtn.disabled = false;
+  selectBtn.textContent = 'Select';
+  document.querySelector('.card').classList.add('flipped');
 
-        const rarityIcon = value >= 20.00 ? '🟡' : value >= 1.00 ? '⚪' : '🟤';
-        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const li = document.createElement('li');
-        li.innerHTML = `${rarityIcon} ${payload.denomination} Prestige<br><small>🕰️ ${timestamp} — ${payload.serial}</small>`;
-        logList.appendChild(li);
+  setTimeout(() => {
+    document.querySelector('.card').classList.remove('flipped');
+    vaultSummary.style.display = 'none';
+  }, 5000);
+}
 
-        document.querySelector('.card').classList.add('flipped');
-      };
+selectBtn.onclick = () => {
+  if (!currentPayload) return;
+
+  selected.push(currentPayload);
+  total += parseFloat(currentPayload.denomination);
+  hudCount.textContent = selected.length;
+  hudTotal.textContent = total.toFixed(2);
+  hudLink.href = currentPayload.redeem_url;
+  selectBtn.textContent = 'Selected';
+  selectBtn.disabled = true;
+
+  crest.classList.add('pulse');
+  coin.classList.add('pulse');
+  setTimeout(() => {
+    crest.classList.remove('pulse');
+    coin.classList.remove('pulse');
+  }, 1200);
+
+  scrollLog.classList.add('glow');
+  setTimeout(() => scrollLog.classList.remove('glow'), 1200);
+
+  const pulse = document.createElement('span');
+  pulse.className = 'pulse-orb';
+  coin.appendChild(pulse);
+  setTimeout(() => pulse.remove(), 1200);
+
+  summaryText.innerHTML = `
+    You have selected <strong>${selected.length}</strong> tokens totaling <strong>${total.toFixed(2)} Prestige</strong>.
+    <br>Last token: ${currentPayload.denomination} Prestige — ${currentPayload.serial}
+  `;
+  vaultSummary.style.display = 'block';
+
+  const rarityIcon = currentPayload.denomination >= 20.00 ? '🟡' : currentPayload.denomination >= 1.00 ? '⚪' : '🟤';
+  const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const li = document.createElement('li');
+  li.innerHTML = `${rarityIcon} ${currentPayload.denomination} Prestige<br><small>🕰️ ${timestamp} — ${currentPayload.serial}</small>`;
+  logList.appendChild(li);
+
+  document.body.classList.remove('half-glow', 'full-celebration');
+  shimmer.classList.remove('half', 'full');
+  shimmer.style.display = 'block';
+  void shimmer.offsetWidth;
+
+  if (selected.length === totalTokens) {
+    crest.classList.add('burst');
+    setTimeout(() => crest.classList.remove('burst'), 1200);
+    document.body.classList.add('full-celebration');
+    shimmer.classList.add('full');
+    ceremonialSound.play();
+
+    const finalEntry = document.createElement('li');
+    finalEntry.innerHTML = `🌟 Vault Awakened<br><small>🕰️ ${timestamp} — All tokens selected</small>`;
+    logList.appendChild(finalEntry);
+
+    vaultMessage.style.opacity = '1';
+    setTimeout(() => vaultMessage.style.opacity = '0', 3000);
+  }
+
+  if (!halfwayTriggered && selected.length === Math.ceil(totalTokens / 2)) {
+    halfwayTriggered = true;
+    document.body.classList.add('half-glow');
+    shimmer.classList.add('half');
+    shimmer.style.display = 'block';
+    void shimmer.offsetWidth;
+    setTimeout(() => shimmer.style.display = 'none', 2000);
+
+    chantSound.play();
+
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle-float';
+      p.style.left = `${Math.random() * 100}vw`;
+      p.style.top = `${Math.random() * 100}vh`;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 12000);
     }
-  </script>
 
-  <!-- Orientation Notice -->
-  <div id="orientationNotice" class="popup-notice" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; justify-content:center; align-items:center;">
-    <div class="popup-content" style="background:#fffbe6; border:3px solid #a88947; border-radius:12px; padding:20px; max-width:300px; text-align:center; box-shadow:0 0 20px rgba(194,167,109,0.6); font-family:'Georgia', serif; color:#2f2520;">
-      <p id="orientationMessage"></p>
-      <label style="display:block; margin:8px 0; font-size:13px;">
-        <input type="checkbox" id="dontShowAgain"> Don’t show again
-      </label>
-      <button class="hud-button" style="padding:6px 12px;" onclick="dismissNotice()">OK</button>
-    </div>
-  </div>
-  <script>
+    crestSeal.style.opacity = '1';
+    setTimeout(() => crestSeal.style.opacity = '0', 4000);
+
+    ceremonyPhrase.style.opacity = '1';
+    setTimeout(() => ceremonyPhrase.style.opacity = '0', 4000);
+  }
+
+  setTimeout(() => shimmer.style.display = 'none', 2000);
+  document.querySelector('.card').classList.add('flipped');
+};
+</script>
+
+
+<script>
         function checkOrientation() {
       const notice = document.getElementById("orientationNotice");
       const message = document.getElementById("orientationMessage");
