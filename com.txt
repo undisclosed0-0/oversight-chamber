@@ -119,6 +119,56 @@
 .verification-plaque button:hover {
   background: linear-gradient(to right, #6a5acd, #4b3f72);
 }
+    //*Mobile/Tablet Responsiveness*//
+    @media screen and (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  .container {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  input, select, textarea, button {
+    font-size: 1em;
+    padding: 10px;
+  }
+  h1, h2 {
+    font-size: 1.5em;
+  }
+  .crest-header {
+    width: 80px;
+    height: 80px;
+  }
+  .floating-crest {
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: -140px;
+  }
+}
+.tap-zone {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  z-index: 999;
+}
+
+#tapTopLeft { top: 0; left: 0; }
+#tapTopRight { top: 0; right: 0; }
+#tapBottomLeft { bottom: 0; left: 0; }
+#tapBottomRight { bottom: 0; right: 0; }
+#unlockShimmer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,215,0,0.2), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 1500;
+}
 </style>
 
 <script>
@@ -133,12 +183,22 @@ function copyVerification() {
   
 </head>
 <body>
+ <div id="tapTopLeft" class="tap-zone"></div>
+<div id="tapTopRight" class="tap-zone"></div>
+<div id="tapBottomLeft" class="tap-zone"></div>
+<div id="tapBottomRight" class="tap-zone"></div>
+<!-- Ritual Effects -->
+  <div id="unlockShimmer"></div>
+  <audio id="unlockSound" src="unlock.mp3" preload="auto"></audio>
+
   <div class="container">
     <div class="crest-header"></div>
+    <div class="crest-core" id="crestCore">...</div>
+
     <h1>Prestige Triumph: Create Account</h1>
 
     <!-- Blogger submission preserved -->
-    <form id="love-form" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
+    <form role="form"id="love-form" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
       <label for="name">Account Name</label>
       <button type="button" onclick="generateNameFromTier()" style="margin-top:10px; background:#c2a76d; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.95em; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
   ✨ Generate Prestige Name
@@ -146,7 +206,7 @@ function copyVerification() {
       <input type="text" id="name" name="name" required placeholder="e.g., Solenne of the Third Tier" />
 
       <label for="phone">Contact Number</label>
-      <input type="tel" id="phone" name="phone" required placeholder="e.g., +1 616-555-1234" />
+      <input type="tel" id="contactPhone" name="phone" required placeholder="e.g., +1 616-555-1234" inputmode="numeric" pattern="[0-9\-]*" required/>
 
       <label for="role">Select Tier</label>
 <select id="role" name="role" required>
@@ -163,11 +223,21 @@ function copyVerification() {
       <!-- Hidden Blogger fields -->
       <textarea id="message" name="message" style="display:none;"></textarea>
       <input type="email" name="email" id="bloggerEmail" style="display:none;">
+<!-- Copy Box Plaque -->
+<!-- Copy Box Plaque (hidden until submission) -->
+<div class="verification-plaque" id="verificationPlaque" style="display:none;">
+  <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
+  <textarea id="verificationText" readonly></textarea>
+  <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
+</div>
 
       <button type="submit">Create Account</button>
       <iframe name="hidden_iframe" style="display:none;"></iframe>
     </form>
-    <form id="adminForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitAdminForm();" style="display:none;">
+    <div id="tapAdmin" style="width:100px; height:100px; position:absolute; bottom:20px; left:20px;"></div>
+<div id="tapSuper" style="width:100px; height:100px; position:absolute; bottom:20px; right:20px;"></div>
+
+    <form role="form"id="adminForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitAdminForm();" style="display:none;">
   <h2>Admin Access Form</h2>
   <label for="adminName">Account Name</label>
   <input id="adminName" name="adminName" required type="text" />
@@ -184,11 +254,12 @@ function copyVerification() {
   <!-- Hidden Blogger fields -->
   <textarea id="adminMessage" name="message" style="display:none;"></textarea>
   <input type="email" name="email" id="adminEmail" style="display:none;">
+<input type="tel" name="phone" id="adminPhone" style="display:none;">
 
   <button type="submit">Submit Admin Form</button>
 </form>
     
-    <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
+    <form role="form"id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
   <h2>Super-Level Access Form</h2>
   <label for="superName">Account Holder</label>
   <input id="superName" name="superName" required type="text" />
@@ -206,6 +277,8 @@ function copyVerification() {
   <!-- Hidden Blogger fields -->
   <textarea id="superMessage" name="message" style="display:none;"></textarea>
   <input type="email" name="email" id="superEmail" style="display:none;">
+<input type="tel" name="phone" id="superPhone" style="display:none;">
+
 
   <button type="submit">Submit Super-Level Form</button>
 </form>
@@ -277,6 +350,23 @@ function submitCeremonialForm() {
 
   return false;
 }
+document.getElementById('generalForm').onsubmit = (e) => {
+  e.preventDefault();
+
+  const name = document.querySelector('#generalForm input[type="text"]').value;
+  const verification = `General Verification: ${name} — ${Date.now()}`;
+  document.getElementById('copyText').textContent = verification;
+  document.getElementById('copyPlaque').style.display = 'block';
+
+  setTimeout(() => {
+    const encoded = btoa(name + Date.now());
+    window.location.href = `https://prestige.exchange/ritual/${encoded}`;
+  }, 4000);
+};
+function copyToClipboard() {
+  const text = document.getElementById('copyText').textContent;
+  navigator.clipboard.writeText(text);
+}
 
 // 🔸 Admin Form
 function submitAdminForm() {
@@ -301,6 +391,7 @@ function submitAdminForm() {
 
   document.getElementById('adminMessage').value = message;
   document.getElementById('adminEmail').value = "admin@triumph.org";
+  document.getElementById('adminPhone').value = "313-000-0000";
   document.getElementById('verificationText').value = message;
   document.getElementById('verificationPlaque').style.display = "block";
 
@@ -335,6 +426,7 @@ function submitSuperForm() {
 
   document.getElementById('superMessage').value = message;
   document.getElementById('superEmail').value = "super@triumph.org";
+  document.getElementById('superPhone').value = "313-999-9999";
   document.getElementById('verificationText').value = message;
   document.getElementById('verificationPlaque').style.display = "block";
 
@@ -422,8 +514,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+});</script>
+<script>
+const phoneInput = document.getElementById('contactPhone');
+phoneInput.addEventListener('input', (e) => {
+  let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+  if (value.length > 3 && value.length <= 6) {
+    value = value.slice(0, 3) + '-' + value.slice(3);
+  } else if (value.length > 6) {
+    value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
+  }
+  e.target.value = value;
 });
-
 
 </script>
   <script>
@@ -431,7 +533,70 @@ function unlockSuperForm() {
   document.getElementById("superForm").style.display = "block";
   alert("Super-level access form unlocked.");
 }
+</script><script>
+  let adminTapCount = 0;
+let superTapCount = 0;
+let adminTimer, superTimer;
+
+const shimmer = document.getElementById('unlockShimmer');
+const sound = document.getElementById('unlockSound');
+
+function triggerRitual(formId) {
+  document.getElementById(formId).style.display = 'block';
+  shimmer.style.opacity = '1';
+  sound.play();
+  setTimeout(() => shimmer.style.opacity = '0', 3000);
+}
+
+function resetAdminTap() {
+  adminTapCount = 0;
+  clearTimeout(adminTimer);
+}
+
+function resetSuperTap() {
+  superTapCount = 0;
+  clearTimeout(superTimer);
+}
+
+function checkAdminUnlock() {
+  if (adminTapCount >= 2) {
+    triggerRitual('adminForm');
+    resetAdminTap();
+  } else {
+    adminTimer = setTimeout(resetAdminTap, 10000);
+  }
+}
+
+function checkSuperUnlock() {
+  if (superTapCount >= 3) {
+    triggerRitual('superForm');
+    resetSuperTap();
+  } else {
+    superTimer = setTimeout(resetSuperTap, 10000);
+  }
+}
+
+document.getElementById('tapTopLeft').addEventListener('click', () => {
+  adminTapCount++;
+  checkAdminUnlock();
+});
+document.getElementById('tapTopRight').addEventListener('click', () => {
+  adminTapCount++;
+  checkAdminUnlock();
+});
+document.getElementById('tapBottomLeft').addEventListener('click', () => {
+  superTapCount++;
+  checkSuperUnlock();
+});
+document.getElementById('tapBottomRight').addEventListener('click', () => {
+  superTapCount++;
+  checkSuperUnlock();
+});
+document.getElementById('crestCore').addEventListener('click', () => {
+  superTapCount++;
+  checkSuperUnlock();
+});
+
 </script>
-  
 </body>
 </html>
