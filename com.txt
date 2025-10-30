@@ -179,6 +179,115 @@
   .crest-header { width: 80px; height: 80px; }
   .floating-crest { width: 60px; height: 60px; bottom: 20px; right: 20px; }
 }
+  
+  /* Desktop: crest clickable */
+.floating-crest {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 20px;
+  right: 20px;
+  background-image: url('your-crest.png');
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194,167,109,0.6);
+  cursor: pointer;
+}
+
+/* Mobile: crest is decorative only */
+@media (max-width: 860px) {
+  .floating-crest {
+    pointer-events: none;
+    opacity: 0.7; /* optional, to signal it’s inactive */
+  }
+}/* access-panel */
+.access-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+  padding: 20px;
+  background: #2b2b2b url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+  border: 3px solid #555;
+  border-radius: 6px;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.7),
+              0 0 12px rgba(255,255,255,0.1);
+}
+
+/* Ghostly sigil */
+.panel-sigil {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5em;
+  font-family: 'Georgia', serif;
+  color: rgba(194,167,109,0.12);
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Buttons */
+.panel-btn {
+  height: 70px;
+  font-family: 'UnifrakturCook', 'Courier New', monospace;
+  font-size: 1.1em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fdfdfd;
+  border: 2px solid #222;
+  border-radius: 4px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7),
+              0 2px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  background-size: cover;
+}
+
+/* Press animation */
+.panel-btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.9);
+}
+
+/* Worn overlay */
+.panel-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.05) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* Flicker + mossy glow */
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.6; }
+}
+.panel-btn {
+  animation: flicker 5s infinite;
+}
+
+/* Color themes */
+.panel-btn[data-color="crimson"] { background: #7a2b2b; }
+.panel-btn[data-color="azure"]   { background: #2b3f7a; }
+.panel-btn[data-color="emerald"] { background: #2b7a3f; }
+.panel-btn[data-color="amber"]   { background: #7a6f2b; }
+.panel-btn[data-color="violet"]  { background: #5a2b7a; }
+.panel-btn[data-color="iron"]    { background: #555; color:#ddd; }
+
+
 </style>
 <script>
 function copyVerification() {
@@ -246,12 +355,22 @@ function copyVerification() {
 
   <button type="submit">Submit Admin Form</button>
       <button type="button" id="verifyTierBtn">Verify</button>
-      <div id="colorPanel">
-  <h3>Enter Color Sequence</h3>
-  <button class="colorBtn" data-color="gold">Gold</button>
-  <button class="colorBtn" data-color="violet">Violet</button>
-  <button class="colorBtn" data-color="silver">Silver</button>
+    <label>Access Panel</label>
+<div id="superCodePanel" class="access-panel">
+  <div class="panel-sigil">♛⚚⟁</div> <!-- ghostly sigil -->
+  <!-- Spoofed buttons -->
+  <button class="panel-btn" data-color="crimson">⟟⧫ 231</button>
+  <button class="panel-btn" data-color="azure">Ϟ 85/</button>
+  <button class="panel-btn" data-color="emerald">⟁ V2ζ</button>
+  <button class="panel-btn" data-color="amber">₣2 ᚠ</button>
+  <button class="panel-btn" data-color="violet">⧖ 77X</button>
+  <button class="panel-btn" data-color="iron">⟊ 9Ø</button>
 </div>
+<input type="hidden" id="superCode" name="superCode" />
+
+<input type="hidden" id="superCode" name="superCode" />
+
+
 </form>
     
     <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
@@ -539,25 +658,28 @@ document.getElementById('verifyTierBtn').addEventListener('click', () => {
 });
 
 /* Color ritual: Gold → Violet → Silver unlocks Super (mobile path) */
-let colorSequence = [];
-document.querySelectorAll('.colorBtn').forEach(btn => {
+let superSequence = [];
+// Example: require a longer, spoofed sequence
+const requiredSequence = ['crimson','violet','emerald','amber','azure','iron'];
+
+document.querySelectorAll('.panel-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    colorSequence.push(btn.dataset.color);
-    if (colorSequence.length === 3) { checkColorUnlock(); }
+    superSequence.push(btn.dataset.color);
+    if (superSequence.length === requiredSequence.length) {
+      if (superSequence.join(',') === requiredSequence.join(',')) {
+        document.getElementById('superCode').value = "TRIUMPH-777";
+        alert("Correct sequence entered. Super access granted.");
+      } else {
+        alert("Incorrect sequence. Try again.");
+      }
+      superSequence = [];
+    }
   });
 });
-function checkColorUnlock(){
-  const correct = ['gold','violet','silver'];
-  if (colorSequence.join(',') === correct.join(',')) {
-    document.getElementById('superForm').style.display = 'block';
-    shimmerPulse();
-  } else {
-    alert('Incorrect sequence. Try again.');
-    colorSequence = [];
-  }
-}</script><script>
-  
 
+</script><script>
+  
+I wanted symbols too ,maybe even a new sigil for the acess panel, a  symbol to embed on panel like a worn out symbol placed noticable somewhere  but not truly not visable, some royal prestige kinda of old glory kinda of artifact,one of the lights have to flicker ,buttons should not read words . all words should look like a fanasty foreign words or symbols , sctratches ,marks ,labels industrail ruins ,dirt moss covered areas and also some playful animations are video game like 
 
 </body>
 </html>
