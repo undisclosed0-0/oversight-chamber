@@ -120,54 +120,49 @@
   background: linear-gradient(to right, #6a5acd, #4b3f72);
 }
 </style>
-<style>/* Tap zones for mobile unlock */
-.tap-zone {
-  position: fixed;
-  width: 64px;
-  height: 64px;
-  top: 0;
-  z-index: 999;
-}
-#tapTopLeft { left: 0; }
-#tapTopRight { right: 0; }
-
-/* Shimmer overlay feedback for mobile taps */
-.tap-shimmer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 998;
-  background:
-    radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
-    radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(138,43,226,0.22), transparent 70%);
-  opacity: 0;
-  transition: opacity 260ms ease;
-}
-.tap-shimmer.active { opacity: 1; }
+<style>
 
 /* Color ritual panel (hidden until Verify on mobile) */
 /* === Global Panel Look === */
-#adminForm, #superCodePanel {
+/* === Base and container === */
+:root {
+  --gold: #ffd700;
+  --violet: #6a0dad;
+  --iron: #222;
+  --obsidian: #000;
+}
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% 0%, #0b0b0b 0%, #000 60%);
+  color: var(--gold);
+  font-family: 'Orbitron', 'Courier New', monospace;
+}
+.container {
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* === Panel shells === */
+.panel-shell {
   background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
   border: 3px solid #444;
   border-radius: 12px;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.8),
-              0 0 20px rgba(255,215,0,0.2);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
   padding: 20px;
   margin-top: 20px;
-  color: #ffd700;
-  font-family: 'Orbitron', 'Courier New', monospace;
 }
 
-/* === Headings === */
-#adminForm h2, #superCodePanel h3 {
-  color: #ffd700;
+/* === Headers === */
+h1 { text-align: center; letter-spacing: 1px; }
+h2, h3 {
+  color: var(--gold);
   text-transform: uppercase;
   text-shadow: 0 0 8px rgba(255,215,0,0.6);
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
 }
 
-/* === Input Fields === */
+/* === Admin form === */
 #adminForm input, #adminForm select {
   width: 100%;
   margin: 8px 0 16px 0;
@@ -175,18 +170,16 @@
   border-radius: 6px;
   border: 2px solid #333;
   background: #111;
-  color: #ffd700;
+  color: var(--gold);
   font-weight: bold;
   box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
 }
-
-/* === Verify Button === */
 #verifyTierBtn {
-  background: linear-gradient(#ffd700, #b8860b);
-  border: 2px solid #222;
+  background: linear-gradient(var(--gold), #b8860b);
+  border: 2px solid var(--iron);
   border-radius: 8px;
   padding: 10px 20px;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
   color: #111;
@@ -194,69 +187,37 @@
   box-shadow: 0 0 10px rgba(255,215,0,0.5);
   transition: transform 0.15s ease, box-shadow 0.3s ease;
 }
-#verifyTierBtn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255,215,0,0.8);
-}
+#verifyTierBtn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
-/* === Ritual Buttons (hidden logic only) === */
-#colorPanel { display:none; text-align:center; margin-top:16px; }
-.colorBtn {
-  margin: 6px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-}
-.colorBtn[data-color="gold"]   { background: gold; }
-.colorBtn[data-color="violet"] { background: rebeccapurple; color:#fff; }
-.colorBtn[data-color="silver"] { background: silver; }
-
-/* === Access Panel Grid === */
-#superCodePanel {
-  display: none;
-  text-align: center;
-  margin-top: 20px;
-  position: relative;
-}
+/* === Ritual panel (multi-panel grid) === */
+#colorPanel { display: none; margin-top: 16px; position: relative; }
 #panelButtons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 20px;
 }
-
-/* Spoof keypad buttons — rune style */
 .panel-btn {
   padding: 16px;
-  border-radius: 8px;
-  border: 2px solid #222;
+  border-radius: 10px;
+  border: 2px solid var(--iron);
   font-family: 'Courier New', monospace;
   font-size: 1.2em;
-  font-weight: bold;
+  font-weight: 700;
   color: #fdfdfd;
   cursor: pointer;
-  text-shadow: 0 0 6px rgba(255,255,255,0.6),
-               0 0 12px rgba(255,215,0,0.8);
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.7),
-              0 0 10px rgba(255,215,0,0.3);
-  transition: transform 0.15s ease, box-shadow 0.3s ease;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(255,215,0,0.8);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 0 10px rgba(255,215,0,0.28);
+  transition: transform 0.15s ease, box-shadow 0.3s ease, filter 0.2s ease;
   animation: runePulse 3s infinite;
 }
-
-.panel-btn:active {
-  transform: scale(0.95);
-  box-shadow: inset 0 0 14px rgba(0,0,0,0.9),
-              0 0 6px rgba(255,215,0,0.5);
-}
-
+.panel-btn:active { transform: scale(0.96); box-shadow: inset 0 0 14px rgba(0,0,0,0.9), 0 0 6px rgba(255,215,0,0.5); }
 @keyframes runePulse {
-  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
-  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); }
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); filter: brightness(1); }
+  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); filter: brightness(1.15); }
 }
 
-/* Color themes */
+/* Distinct color backgrounds */
 .panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
 .panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
 .panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
@@ -267,48 +228,88 @@
 .panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
 .panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
 
-/* Press effect */
-.panel-btn:active {
-  transform: scale(0.95);
-  box-shadow: inset 0 0 14px rgba(0,0,0,0.9),
-              0 0 6px rgba(255,215,0,0.5);
-}
-
-/* Rune glow animation */
-@keyframes runePulse {
-  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
-  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); }
-}
-
-/* Color themes (ceremonial metals & stones) */
-.panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
-.panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
-.panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
-.panel-btn[data-color="amber"]    { background: linear-gradient(#7a6f2b, #3a2f0d); }
-.panel-btn[data-color="violet"]   { background: linear-gradient(#5a2b7a, #2a0d3a); }
-.panel-btn[data-color="iron"]     { background: linear-gradient(#555, #222); }
-.panel-btn[data-color="gold"]     { background: linear-gradient(#ffd700, #b8860b); color:#222; }
-.panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
-.panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
-
-/* === Rune Glow Animation === */
-@keyframes runePulse {
-  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
-  50%      { text-shadow: 0 0 12px rgba(255,215,0,0.9); }
-}
-
-/* === Ghostly Sigil === */
+/* === Access Panel (normal branch) === */
+#superCodePanel { display: none; position: relative; }
 .panel-sigil {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 6em;
-  color: rgba(255,215,0,0.08);
-  text-shadow: 0 0 15px rgba(255,215,0,0.2);
-  pointer-events: none;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 6em; color: rgba(255,215,0,0.08);
+  text-shadow: 0 0 15px rgba(255,215,0,0.2); pointer-events: none;
+  z-index: 0;
+}
+#superCodePanel .panel-content { position: relative; z-index: 1; }
+
+/* === Mystery Box chamber (hidden branch) === */
+#mysteryBoxPanel {
+  display: none;
+  border: 3px solid var(--violet);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6);
+  color: #e0dfff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mystery-title { margin-bottom: 12px; }
+.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+
+/* Glowing cube aura behind Mystery Box */
+.cube-aura {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%),
+    radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: auraPulse 5s ease-in-out infinite;
+}
+@keyframes auraPulse {
+  0%, 100% { filter: saturate(1); opacity: 0.75; }
+  50%      { filter: saturate(1.3); opacity: 1; }
 }
 
+/* Super Level form */
+#superLevelForm input, #superLevelForm select {
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #444;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+#superLevelForm button {
+  margin-top: 15px; padding: 10px 20px;
+  border-radius: 8px; border: 2px solid var(--iron);
+  background: linear-gradient(var(--gold), #b8860b);
+  color: #111; font-weight: bold; text-transform: uppercase; cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#superLevelForm button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
+/* === Tap shimmer feedback (mobile unlock overlays retained) === */
+.tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
+#tapTopLeft { left: 0; }
+#tapTopRight { right: 0; }
+.tap-shimmer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 998;
+  background:
+    radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
+    radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(138,43,226,0.22), transparent 70%);
+  opacity: 0; transition: opacity 260ms ease;
+}
+.tap-shimmer.active { opacity: 1; }
+
+/* Desktop crest click (optional) */
+.floating-crest {
+  position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+  border-radius: 50%; box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer;
+}
+
+/* Responsive touches */
+@media (max-width: 480px) {
+  .container { padding: 0 12px; }
+  h1 { font-size: 1.35em; }
+}
 
 /* Verify button should only appear on mobile */
 @media (min-width: 861px) {
@@ -396,42 +397,59 @@ function copyVerification() {
       <button type="submit">Create Account</button>
       <iframe name="hidden_iframe" style="display:none;"></iframe>
     </form>
-   <form id="adminForm" style="display:none;">
-  <h2>Admin Access Form</h2>
+    
+    
+   <!-- Admin Access -->
+  <form id="adminForm" class="panel-shell">
+    <h2>Admin Access</h2>
+    <label for="adminTier">Tier</label>
+    <select id="adminTier" name="adminTier" required>
+      <option value="Admin">Admin</option>
+      <option value="MasterAdmin">Master Admin</option>
+    </select>
+    <label for="adminCode">Clearance Code</label>
+    <input id="adminCode" name="adminCode" required type="password" />
+    <button type="button" id="verifyTierBtn">Verify</button>
+  </form>
 
-  <label for="adminName">Account Name</label>
-  <input id="adminName" name="adminName" required type="text" />
-
-  <label for="adminTier">Tier</label>
-  <select id="adminTier" name="adminTier" required>
-    <option value="Admin">Admin</option>
-    <option value="MasterAdmin">Master Admin</option>
-  </select>
-
-  <label for="adminCode">Clearance Code</label>
-  <input id="adminCode" name="adminCode" required type="password" />
-
-  <!-- Hidden Blogger fields -->
-  <textarea id="adminMessage" name="message" style="display:none;"></textarea>
-  <input type="email" name="email" id="adminEmail" style="display:none;">
-
-  <!-- Verify button only -->
-  <button type="button" id="verifyTierBtn">Verify</button>
-
-  <!-- Ritual (hidden, logic only) -->
-  <div id="colorPanel">
-    <button class="colorBtn" data-color="gold">Gold</button>
-    <button class="colorBtn" data-color="violet">Violet</button>
-    <button class="colorBtn" data-color="silver">Silver</button>
-  </div>
-
-  <!-- Access Panel -->
-  <div id="superCodePanel">
-    <h3>Access Panel</h3>
-    <div class="panel-sigil">♛⚚⟁</div>
+  <!-- Ritual (multi-panel grid only) -->
+  <div id="colorPanel" class="panel-shell">
+    <h3>Ritual Sequence</h3>
     <div id="panelButtons"></div>
   </div>
-</form>
+
+  <!-- Normal branch: Access Panel -->
+  <div id="superCodePanel" class="panel-shell">
+    <h3>Access Panel</h3>
+    <div class="panel-sigil">♛</div>
+    <div class="panel-content">
+      <p>Rune keypad unlocked.</p>
+      <!-- Add rune keypad or next-stage elements here -->
+    </div>
+  </div>
+
+  <!-- Hidden branch: Mystery Box -->
+  <div id="mysteryBoxPanel" class="panel-shell">
+    <h2 class="mystery-title">Super Level Access</h2>
+    <div class="mystery-crest">♛ ⚚ ⟁</div>
+    <div class="cube-aura" aria-hidden="true"></div>
+
+    <form id="superLevelForm">
+      <label for="superName">Account Holder</label>
+      <input id="superName" name="superName" required type="text" />
+      <label for="superTier">Tier</label>
+      <select id="superTier" name="superTier" required>
+        <option value="Sovereign">Sovereign</option>
+        <option value="Luminary">Luminary</option>
+        <option value="Legacy">Legacy Tier</option>
+      </select>
+      <label for="superCode">Clearance Code</label>
+      <input id="superCode" name="superCode" required type="password" />
+      <button type="submit">Submit Super-Level Form</button>
+    </form>
+  </div>
+</div>
+
 
     
     <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
@@ -677,98 +695,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 </script>
-  <script>
-function unlockSuperForm() {
-  document.getElementById("superForm").style.display = "block";
-  alert("Super-level access form unlocked.");
-}
-</script><script>
-  /* Mobile shimmer + tap unlock */
-let adminTapSequence = [];
-let adminTapResetTimer, shimmerTimer;
-function shimmerPulse(){
-  const s = document.getElementById('tapShimmer');
-  s.classList.add('active');
-  clearTimeout(shimmerTimer);
-  shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
-}
-function resetAdminTap(){ adminTapSequence = []; clearTimeout(adminTapResetTimer); }
-function checkAdminMobileUnlock(){
-  const correct = ['tapTopLeft','tapTopRight'];
-  if (adminTapSequence.join(',') === correct.join(',')) {
-    document.getElementById('adminForm').style.display = 'block';
-    shimmerPulse();
-    resetAdminTap();
-  } else {
-    adminTapResetTimer = setTimeout(resetAdminTap, 8000);
-  }
-}
-document.getElementById('tapTopLeft').addEventListener('click', () => {
-  adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock();
-});
-document.getElementById('tapTopRight').addEventListener('click', () => {
-  adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock();
-});
-
-</script>
-
-<script>
-// Map tier → code
+  <script>/* === State and codes === */
 const TIER_CODES = {
   Admin: "A-231-GATE",
   MasterAdmin: "M-Q8/-CROWN"
 };
+const HIDDEN_CODE = "X-719-BOX";
 
-// Verify → check code → show ritual
+let hiddenPath = false;
+let superSequence = [];
+
+/* === On load: hide panels === */
+window.addEventListener('DOMContentLoaded', () => {
+  showPanel('adminForm');
+  hidePanel('colorPanel');
+  hidePanel('superCodePanel');
+  hidePanel('mysteryBoxPanel');
+});
+
+/* === Helpers === */
+function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
+function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+/* === Verify → show ritual (multi-panel only) === */
 document.getElementById('verifyTierBtn').addEventListener('click', () => {
-  const tier = document.getElementById('adminTier').value;
+  if (!adminGateUnlocked) {                  // ← hard stop
+    alert('Tap access required. Complete the tap unlock first.');
+    return;
+  }
+
   const code = document.getElementById('adminCode').value.trim();
-  if (!code) { 
-    alert('Enter clearance code.'); 
-    return; 
-  }
+  if (!code) { alert('Enter clearance code.'); return; }
 
-  const expected = TIER_CODES[tier];
-  if (code === expected) {
-    // ✅ Only reveal ritual here
-    document.getElementById('colorPanel').style.display = 'block';
-    colorSequence = [];
-  } else {
-    alert('Invalid code for selected tier.');
-  }
-});
+  // Reset panels on Verify
+  hidePanel('colorPanel');
+  hidePanel('superCodePanel');
+  hidePanel('mysteryBoxPanel');
 
-// Ritual → unlock Access Panel
-let colorSequence = [];
-document.querySelectorAll('.colorBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    colorSequence.push(btn.dataset.color);
-    if (colorSequence.length === 3) checkColorUnlock();
-  });
-});
-
-function checkColorUnlock() {
-  const correct = ['gold','violet','silver'];
-  if (colorSequence.join(',') === correct.join(',')) {
-    // ✅ Only here do we reveal the Access Panel
-    document.getElementById('superCodePanel').style.display = 'block';
+  if (code === TIER_CODES.Admin || code === TIER_CODES.MasterAdmin) {
+    hiddenPath = false;
+    superSequence = [];
+    showPanel('colorPanel');
+    generatePanel();
+  } else if (code === HIDDEN_CODE) {
+    hiddenPath = true;
+    superSequence = [];
+    showPanel('colorPanel');
     generatePanel();
   } else {
-    alert('Incorrect sequence. Try again.');
+    alert('Invalid clearance code.');
   }
-  colorSequence = [];
-}
+});
 
-// Spoof keypad generator
+
+/* === Ritual grid generator === */
 function generatePanel(){
   const panel = document.getElementById("panelButtons");
   panel.innerHTML = "";
+
   const colors = [
     {name:"crimson", bg:"crimson"},
-    {name:"azure", bg:"royalblue"},
+    {name:"violet", bg:"rebeccapurple"},
     {name:"emerald", bg:"seagreen"},
     {name:"amber", bg:"goldenrod"},
-    {name:"violet", bg:"rebeccapurple"},
+    {name:"azure", bg:"royalblue"},
     {name:"iron", bg:"dimgray"},
     {name:"gold", bg:"gold"},
     {name:"moss", bg:"darkolivegreen"},
@@ -783,15 +773,82 @@ function generatePanel(){
     btn.className = "panel-btn";
     btn.dataset.color = c.name;
     btn.style.background = c.bg;
+    btn.style.color = "#fff";
 
     const g1 = glyphs[Math.floor(Math.random()*glyphs.length)];
     const g2 = glyphs[Math.floor(Math.random()*glyphs.length)];
     const num = numbers[Math.floor(Math.random()*numbers.length)];
 
     btn.textContent = `${g1}${g2} ${num}`;
+    btn.addEventListener("click", () => handleSuperClick(c.name));
     panel.appendChild(btn);
   });
 }
+
+/* === Required multi-color sequence (single ritual path) === */
+const requiredSequence = [
+  'crimson','violet','emerald',
+  'amber','azure','iron',
+  'gold','moss','obsidian'
+];
+
+function handleSuperClick(color){
+  superSequence.push(color);
+  shimmerPulse();
+
+  if (superSequence.length === requiredSequence.length) {
+    const correct = superSequence.join(',') === requiredSequence.join(',');
+    superSequence = [];
+
+    if (!correct) {
+  alert("Incorrect sequence. Tap unlock required again.");
+  adminGateUnlocked = false;                 // ← re-lock gate
+  hidePanel('colorPanel');
+  return;
+}
+
+    }
+
+    hidePanel('colorPanel');
+    if (hiddenPath) {
+      showPanel('mysteryBoxPanel');
+    } else {
+      showPanel('superCodePanel');           // ← Admin Access Panel shows only now
+    }
+  }
+}
+
+/* === Mobile shimmer feedback (retained) === */
+let shimmerTimer;
+function shimmerPulse(){
+  const s = document.getElementById('tapShimmer');
+  s.classList.add('active');
+  clearTimeout(shimmerTimer);
+  shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
+}
+
+/* === Optional mobile tap zones to reveal Admin form === */
+let adminTapSequence = [];
+let adminTapResetTimer;
+function resetAdminTap(){ adminTapSequence = []; clearTimeout(adminTapResetTimer); }
+function checkAdminMobileUnlock(){
+  const correct = ['tapTopLeft','tapTopRight'];
+  if (adminTapSequence.join(',') === correct.join(',')) {
+    let adminGateUnlocked = false;// Gate: must be set by tap unlock before anything can reveal Admin panel
+showPanel('adminForm');// reveal admin form container
+    shimmerPulse();
+    shimmerPulse();
+    resetAdminTap();
+  } else {
+    adminTapResetTimer = setTimeout(resetAdminTap, 8000);
+  }
+}
+document.getElementById('tapTopLeft').addEventListener('click', () => {
+  adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock();
+});
+document.getElementById('tapTopRight').addEventListener('click', () => {
+  adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock();
+});
 </script>
   
 Okay update on test ,acess panel did show on admin form but not under the only reveal vefiy button logic . the verfiy button still worked and also presented the color sequence the same color as the verify button .everything worked but Access panel was revealed early and did not show any buttons after verify button was pressed .
@@ -799,10 +856,94 @@ Okay update on test ,acess panel did show on admin form but not under the only r
   went with option b ,everything works but now we have to get the verify button to take code and reveal panel .is panel a seperate panle ? or does the panel reveal itself after vreify in the same panel ? 
   
   
-  
  1. Tier code check (Admin vs MasterAdmin) → reveals the ritual buttons.
 
 2.Alternate ritual sequence (your hidden path, e.g. Silver → Gold → Violet + hidden clearance code) →3. the “mystery box” panel ->reveals the Super Level form 
 
+  
+  
+  You’re right — right now your code is spawning multiple panels because each successful ritual call runs generatePanel() and reveals a new block. If you only want one color‑coded rune panel, you should keep a single <div id="superCodePanel"> in your HTML and always re‑populate it, rather than creating new ones. And if you’d like the “hidden logic” to reveal a different style of access panel (like the puzzle‑box style in the Mystery Box game), you can branch your logic to show a different container instead of duplicating the rune grid.
+  
+  1.Verify button (Admin/MasterAdmin codes) User enters Admin or MasterAdmin clearance code. If correct → reveal the multi‑color ritual panel (#colorPanel). Nothing else is revealed yet. 2.Hidden sequence + hidden clearance code 
+ // Verify → show ritual
+document.getElementById('verifyTierBtn').addEventListener('click', () => {
+  const code = document.getElementById('adminCode').value.trim();
+  if (!code) {
+    alert('Enter admin clearance code.');
+    return;
+  }
+  document.getElementById('colorPanel').style.display = 'block';
+  colorSequence = [];
+});
+
+// Ritual → unlock Access Panel
+let colorSequence = [];
+document.querySelectorAll('.colorBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    colorSequence.push(btn.dataset.color);
+    if (colorSequence.length === 3) checkColorUnlock();
+  });
+});
+
+
+// Spoof keypad generator (3×3 grid)
+function generatePanel(){
+  const panel = document.getElementById("panelButtons");
+  panel.innerHTML = "";
+  panel.style.display = "grid";
+  panel.style.gridTemplateColumns = "repeat(3, 1fr)";
+  panel.style.gap = "8px";
+
+  const colors = [
+    {name:"crimson", bg:"crimson"},
+    {name:"azure", bg:"royalblue"},
+    {name:"emerald", bg:"seagreen"},
+    {name:"amber", bg:"goldenrod"},
+    {name:"violet", bg:"rebeccapurple"},
+    {name:"iron", bg:"dimgray"},
+    {name:"gold", bg:"gold"},
+    {name:"moss", bg:"darkolivegreen"},
+    {name:"obsidian", bg:"black"}
+  ];
+
+  const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+  const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31∆","8.98","27$","719"];
+
+  colors.forEach(c => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "panel-btn";
+    btn.dataset.color = c.name;
+    btn.style.background = c.bg;
+    btn.style.color = "#fff";
+
+    const g1 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const g2 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const num = numbers[Math.floor(Math.random()*numbers.length)];
+
+    btn.textContent = `${g1}${g2} ${num}`;
+    btn.addEventListener("click", () => handleSuperClick(c.name));
+    panel.appendChild(btn);
+  });
+}
+
+// Sequence check for spoof keypad
+let superSequence = [];
+const requiredSequence = ['crimson','violet','emerald','amber','azure','iron','gold','moss','obsidian'];
+
+function handleSuperClick(color){
+  superSequence.push(color);
+  if (superSequence.length === requiredSequence.length) {
+    if (superSequence.join(',') === requiredSequence.join(',')) {
+      document.getElementById('adminMessage').value = "Super access granted.";
+      alert("Correct sequence entered. Super access granted.");
+    } else {
+      alert("Incorrect sequence. Try again.");
+    }
+    superSequence = [];
+  }
+}
+
+  
 </body>
 </html>
