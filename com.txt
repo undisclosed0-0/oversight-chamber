@@ -202,25 +202,38 @@
   }
 }/* access-panel */
 .access-panel {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   margin-top: 12px;
-  padding: 14px;
-  background: #2b2b2b;
+  padding: 20px;
+  background: #2b2b2b url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
   border: 3px solid #555;
   border-radius: 6px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.6),
-              0 0 8px rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.7),
+              0 0 12px rgba(255,255,255,0.1);
 }
 
-/* Base button style */
+/* Ghostly sigil */
+.panel-sigil {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5em;
+  font-family: 'Georgia', serif;
+  color: rgba(194,167,109,0.12);
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Buttons */
 .panel-btn {
-  width: 100%;
   height: 70px;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
+  font-family: 'UnifrakturCook', 'Courier New', monospace;
   font-size: 1.1em;
+  font-weight: bold;
   letter-spacing: 1px;
   color: #fdfdfd;
   border: 2px solid #222;
@@ -232,6 +245,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
+  background-size: cover;
 }
 
 /* Press animation */
@@ -240,7 +254,7 @@
   box-shadow: inset 0 0 4px rgba(0,0,0,0.9);
 }
 
-/* Worn overlay (scratches, faded paint) */
+/* Worn overlay */
 .panel-btn::after {
   content: "";
   position: absolute;
@@ -252,24 +266,27 @@
     transparent 2px,
     transparent 6px
   );
-  opacity: 0.4;
+  opacity: 0.25;
   pointer-events: none;
 }
 
-/* Flicker animation for life */
+/* Flicker + mossy glow */
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
   20%, 24%, 55% { opacity: 0.6; }
 }
 .panel-btn {
-  animation: flicker 3s infinite;
+  animation: flicker 5s infinite;
 }
 
 /* Color themes */
-.panel-btn[data-color="red"]    { background: #7a2b2b; }
-.panel-btn[data-color="blue"]   { background: #2b3f7a; }
-.panel-btn[data-color="green"]  { background: #2b7a3f; }
-.panel-btn[data-color="yellow"] { background: #7a6f2b; }
+.panel-btn[data-color="crimson"] { background: #7a2b2b; }
+.panel-btn[data-color="azure"]   { background: #2b3f7a; }
+.panel-btn[data-color="emerald"] { background: #2b7a3f; }
+.panel-btn[data-color="amber"]   { background: #7a6f2b; }
+.panel-btn[data-color="violet"]  { background: #5a2b7a; }
+.panel-btn[data-color="iron"]    { background: #555; color:#ddd; }
+
 
 </style>
 <script>
@@ -340,11 +357,17 @@ function copyVerification() {
       <button type="button" id="verifyTierBtn">Verify</button>
     <label>Access Panel</label>
 <div id="superCodePanel" class="access-panel">
-  <button class="panel-btn" data-color="red">RED</button>
-  <button class="panel-btn" data-color="blue">BLUE</button>
-  <button class="panel-btn" data-color="green">GREEN</button>
-  <button class="panel-btn" data-color="yellow">YELLOW</button>
+  <div class="panel-sigil">♛⚚⟁</div> <!-- ghostly sigil -->
+  <!-- Spoofed buttons -->
+  <button class="panel-btn" data-color="crimson">⟟⧫ 231</button>
+  <button class="panel-btn" data-color="azure">Ϟ 85/</button>
+  <button class="panel-btn" data-color="emerald">⟁ V2ζ</button>
+  <button class="panel-btn" data-color="amber">₣2 ᚠ</button>
+  <button class="panel-btn" data-color="violet">⧖ 77X</button>
+  <button class="panel-btn" data-color="iron">⟊ 9Ø</button>
 </div>
+<input type="hidden" id="superCode" name="superCode" />
+
 <input type="hidden" id="superCode" name="superCode" />
 
 
@@ -636,14 +659,15 @@ document.getElementById('verifyTierBtn').addEventListener('click', () => {
 
 /* Color ritual: Gold → Violet → Silver unlocks Super (mobile path) */
 let superSequence = [];
-const requiredSequence = ['red','blue','green','yellow']; // example
+// Example: require a longer, spoofed sequence
+const requiredSequence = ['crimson','violet','emerald','amber','azure','iron'];
 
 document.querySelectorAll('.panel-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     superSequence.push(btn.dataset.color);
     if (superSequence.length === requiredSequence.length) {
       if (superSequence.join(',') === requiredSequence.join(',')) {
-        document.getElementById('superCode').value = "TRIUMPH-777"; // mark as valid
+        document.getElementById('superCode').value = "TRIUMPH-777";
         alert("Correct sequence entered. Super access granted.");
       } else {
         alert("Incorrect sequence. Try again.");
@@ -652,9 +676,12 @@ document.querySelectorAll('.panel-btn').forEach(btn => {
     }
   });
 });
+
 </script><script>
   
+I wanted symbols too ,maybe even a new sigil for the acess panel, a  symbol to embed on panel like a worn out symbol placed noticable somewhere  but not truly not visable, some royal prestige kinda of old glory kinda of artifact,one of the lights have to flicker ,buttons should not read words . all words should look like a fanasty foreign words or symbols , sctratches ,marks ,labels industrail ruins ,dirt moss covered areas and also some playful animations are video game like 
 
 
+https://raw.githubusercontent.com/undisclosed0-0/oversight-chamber/refs/heads/main/com.txt this is the version that we came up with so far work and look great but I am still at a disadavantge forthe tap swequence to work roperly and teh color combonation to only be revealed when verify button is pressed here is the file . https://raw.githubusercontent.com/undisclosed0-0/oversight-chamber/refs/heads/main/com.txt
 </body>
 </html>
