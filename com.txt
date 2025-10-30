@@ -163,7 +163,7 @@ h2, h3 {
 }
 
 /* === Admin form === */
-#adminForm input, #adminForm select {
+  #adminForm {display:none;} input, #adminForm select {
   width: 100%;
   margin: 8px 0 16px 0;
   padding: 10px;
@@ -707,7 +707,7 @@ let superSequence = [];
 
 /* === On load: hide panels === */
 window.addEventListener('DOMContentLoaded', () => {
-  showPanel('adminForm');
+  hidePanel('adminForm'); 
   hidePanel('colorPanel');
   hidePanel('superCodePanel');
   hidePanel('mysteryBoxPanel');
@@ -798,22 +798,21 @@ function handleSuperClick(color){
 
   if (superSequence.length === requiredSequence.length) {
     const correct = superSequence.join(',') === requiredSequence.join(',');
-    superSequence = [];
+    superSequence = []; // reset
 
     if (!correct) {
-  alert("Incorrect sequence. Tap unlock required again.");
-  adminGateUnlocked = false;                 // ← re-lock gate
-  hidePanel('colorPanel');
-  return;
-}
-
+      alert("Incorrect sequence. Tap unlock required again.");
+      adminGateUnlocked = false; // re-lock gate after failure
+      hidePanel('colorPanel');
+      return;
     }
 
+    // Correct sequence → branch here only
     hidePanel('colorPanel');
     if (hiddenPath) {
       showPanel('mysteryBoxPanel');
     } else {
-      showPanel('superCodePanel');           // ← Admin Access Panel shows only now
+      showPanel('superCodePanel');
     }
   }
 }
@@ -828,15 +827,16 @@ function shimmerPulse(){
 }
 
 /* === Optional mobile tap zones to reveal Admin form === */
+      adminGateUnlocked = false;// Gate: must be set by tap unlock before anything can reveal Admin panel
 let adminTapSequence = [];
 let adminTapResetTimer;
 function resetAdminTap(){ adminTapSequence = []; clearTimeout(adminTapResetTimer); }
+// In checkAdminMobileUnlock(), set the global flag (do NOT redeclare with let)
 function checkAdminMobileUnlock(){
   const correct = ['tapTopLeft','tapTopRight'];
   if (adminTapSequence.join(',') === correct.join(',')) {
-    let adminGateUnlocked = false;// Gate: must be set by tap unlock before anything can reveal Admin panel
-showPanel('adminForm');// reveal admin form container
-    shimmerPulse();
+    adminGateUnlocked = true; // set gate
+    showPanel('adminForm');
     shimmerPulse();
     resetAdminTap();
   } else {
