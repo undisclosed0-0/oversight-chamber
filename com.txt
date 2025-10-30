@@ -146,11 +146,61 @@
 .tap-shimmer.active { opacity: 1; }
 
 /* Color ritual panel (hidden until Verify on mobile) */
-#colorPanel {
-  display: none;
-  text-align: center;
-  margin-top: 16px;
+/* === Global Panel Look === */
+#adminForm, #superCodePanel {
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+  border: 3px solid #444;
+  border-radius: 12px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8),
+              0 0 20px rgba(255,215,0,0.2);
+  padding: 20px;
+  margin-top: 20px;
+  color: #ffd700;
+  font-family: 'Orbitron', 'Courier New', monospace;
 }
+
+/* === Headings === */
+#adminForm h2, #superCodePanel h3 {
+  color: #ffd700;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255,215,0,0.6);
+  margin-bottom: 12px;
+}
+
+/* === Input Fields === */
+#adminForm input, #adminForm select {
+  width: 100%;
+  margin: 8px 0 16px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  background: #111;
+  color: #ffd700;
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+
+/* === Verify Button === */
+#verifyTierBtn {
+  background: linear-gradient(#ffd700, #b8860b);
+  border: 2px solid #222;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #111;
+  text-shadow: 0 0 4px rgba(255,255,255,0.6);
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#verifyTierBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255,215,0,0.8);
+}
+
+/* === Ritual Buttons (hidden logic only) === */
+#colorPanel { display:none; text-align:center; margin-top:16px; }
 .colorBtn {
   margin: 6px;
   padding: 10px 16px;
@@ -159,9 +209,106 @@
   font-weight: 700;
   cursor: pointer;
 }
-.colorBtn[data-color="gold"] { background: gold; }
-.colorBtn[data-color="violet"] { background: rebeccapurple; color: #fff; }
+.colorBtn[data-color="gold"]   { background: gold; }
+.colorBtn[data-color="violet"] { background: rebeccapurple; color:#fff; }
 .colorBtn[data-color="silver"] { background: silver; }
+
+/* === Access Panel Grid === */
+#superCodePanel {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  position: relative;
+}
+#panelButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* Spoof keypad buttons — rune style */
+.panel-btn {
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid #222;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fdfdfd;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6),
+               0 0 12px rgba(255,215,0,0.8);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.7),
+              0 0 10px rgba(255,215,0,0.3);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+  animation: runePulse 3s infinite;
+}
+
+.panel-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.9),
+              0 0 6px rgba(255,215,0,0.5);
+}
+
+@keyframes runePulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
+  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); }
+}
+
+/* Color themes */
+.panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
+.panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
+.panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
+.panel-btn[data-color="amber"]    { background: linear-gradient(#7a6f2b, #3a2f0d); }
+.panel-btn[data-color="violet"]   { background: linear-gradient(#5a2b7a, #2a0d3a); }
+.panel-btn[data-color="iron"]     { background: linear-gradient(#555, #222); }
+.panel-btn[data-color="gold"]     { background: linear-gradient(#ffd700, #b8860b); color:#222; }
+.panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
+.panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
+
+/* Press effect */
+.panel-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.9),
+              0 0 6px rgba(255,215,0,0.5);
+}
+
+/* Rune glow animation */
+@keyframes runePulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
+  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); }
+}
+
+/* Color themes (ceremonial metals & stones) */
+.panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
+.panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
+.panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
+.panel-btn[data-color="amber"]    { background: linear-gradient(#7a6f2b, #3a2f0d); }
+.panel-btn[data-color="violet"]   { background: linear-gradient(#5a2b7a, #2a0d3a); }
+.panel-btn[data-color="iron"]     { background: linear-gradient(#555, #222); }
+.panel-btn[data-color="gold"]     { background: linear-gradient(#ffd700, #b8860b); color:#222; }
+.panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
+.panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
+
+/* === Rune Glow Animation === */
+@keyframes runePulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); }
+  50%      { text-shadow: 0 0 12px rgba(255,215,0,0.9); }
+}
+
+/* === Ghostly Sigil === */
+.panel-sigil {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6em;
+  color: rgba(255,215,0,0.08);
+  text-shadow: 0 0 15px rgba(255,215,0,0.2);
+  pointer-events: none;
+}
+
+
 
 /* Verify button should only appear on mobile */
 @media (min-width: 861px) {
@@ -200,93 +347,7 @@
     pointer-events: none;
     opacity: 0.7; /* optional, to signal it’s inactive */
   }
-}/* access-panel */
-.access-panel {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 12px;
-  padding: 20px;
-  background: #2b2b2b url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
-  border: 3px solid #555;
-  border-radius: 6px;
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.7),
-              0 0 12px rgba(255,255,255,0.1);
 }
-
-/* Ghostly sigil */
-.panel-sigil {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 5em;
-  font-family: 'Georgia', serif;
-  color: rgba(194,167,109,0.12);
-  text-shadow: 0 0 8px rgba(0,0,0,0.5);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Buttons */
-.panel-btn {
-  height: 70px;
-  font-family: 'UnifrakturCook', 'Courier New', monospace;
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: 1px;
-  color: #fdfdfd;
-  border: 2px solid #222;
-  border-radius: 4px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.7),
-              0 2px 4px rgba(0,0,0,0.5);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
-  background-size: cover;
-}
-
-/* Press animation */
-.panel-btn:active {
-  transform: translateY(2px);
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.9);
-}
-
-/* Worn overlay */
-.panel-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255,255,255,0.05),
-    rgba(255,255,255,0.05) 2px,
-    transparent 2px,
-    transparent 6px
-  );
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-/* Flicker + mossy glow */
-@keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-  20%, 24%, 55% { opacity: 0.6; }
-}
-.panel-btn {
-  animation: flicker 5s infinite;
-}
-
-/* Color themes */
-.panel-btn[data-color="crimson"] { background: #7a2b2b; }
-.panel-btn[data-color="azure"]   { background: #2b3f7a; }
-.panel-btn[data-color="emerald"] { background: #2b7a3f; }
-.panel-btn[data-color="amber"]   { background: #7a6f2b; }
-.panel-btn[data-color="violet"]  { background: #5a2b7a; }
-.panel-btn[data-color="iron"]    { background: #555; color:#ddd; }
-
 
 </style>
 <script>
@@ -335,8 +396,9 @@ function copyVerification() {
       <button type="submit">Create Account</button>
       <iframe name="hidden_iframe" style="display:none;"></iframe>
     </form>
-    <form id="adminForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitAdminForm();" style="display:none;">
+   <form id="adminForm" style="display:none;">
   <h2>Admin Access Form</h2>
+
   <label for="adminName">Account Name</label>
   <input id="adminName" name="adminName" required type="text" />
 
@@ -353,25 +415,24 @@ function copyVerification() {
   <textarea id="adminMessage" name="message" style="display:none;"></textarea>
   <input type="email" name="email" id="adminEmail" style="display:none;">
 
-  <button type="submit">Submit Admin Form</button>
-      <button type="button" id="verifyTierBtn">Verify</button>
-    <label>Access Panel</label>
-<div id="superCodePanel" class="access-panel">
-  <div class="panel-sigil">♛⚚⟁</div> <!-- ghostly sigil -->
-  <!-- Spoofed buttons -->
-  <button class="panel-btn" data-color="crimson">⟟⧫ 231</button>
-  <button class="panel-btn" data-color="azure">Ϟ 85/</button>
-  <button class="panel-btn" data-color="emerald">⟁ V2ζ</button>
-  <button class="panel-btn" data-color="amber">₣2 ᚠ</button>
-  <button class="panel-btn" data-color="violet">⧖ 77X</button>
-  <button class="panel-btn" data-color="iron">⟊ 9Ø</button>
-</div>
-<input type="hidden" id="superCode" name="superCode" />
+  <!-- Verify button only -->
+  <button type="button" id="verifyTierBtn">Verify</button>
 
-<input type="hidden" id="superCode" name="superCode" />
+  <!-- Ritual (hidden, logic only) -->
+  <div id="colorPanel">
+    <button class="colorBtn" data-color="gold">Gold</button>
+    <button class="colorBtn" data-color="violet">Violet</button>
+    <button class="colorBtn" data-color="silver">Silver</button>
+  </div>
 
-
+  <!-- Access Panel -->
+  <div id="superCodePanel">
+    <h3>Access Panel</h3>
+    <div class="panel-sigil">♛⚚⟁</div>
+    <div id="panelButtons"></div>
+  </div>
 </form>
+
     
     <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
   <h2>Super-Level Access Form</h2>
@@ -649,39 +710,99 @@ document.getElementById('tapTopRight').addEventListener('click', () => {
   adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock();
 });
 
-/* Verify → reveal color ritual (mobile only) */
+</script>
+
+<script>
+// Map tier → code
+const TIER_CODES = {
+  Admin: "A-231-GATE",
+  MasterAdmin: "M-Q8/-CROWN"
+};
+
+// Verify → check code → show ritual
 document.getElementById('verifyTierBtn').addEventListener('click', () => {
+  const tier = document.getElementById('adminTier').value;
   const code = document.getElementById('adminCode').value.trim();
-  if (!code) { alert('Enter admin clearance code.'); return; }
-  document.getElementById('colorPanel').style.display = 'block';
-  colorSequence = [];
+  if (!code) { 
+    alert('Enter clearance code.'); 
+    return; 
+  }
+
+  const expected = TIER_CODES[tier];
+  if (code === expected) {
+    // ✅ Only reveal ritual here
+    document.getElementById('colorPanel').style.display = 'block';
+    colorSequence = [];
+  } else {
+    alert('Invalid code for selected tier.');
+  }
 });
 
-/* Color ritual: Gold → Violet → Silver unlocks Super (mobile path) */
-let superSequence = [];
-// Example: require a longer, spoofed sequence
-const requiredSequence = ['crimson','violet','emerald','amber','azure','iron'];
-
-document.querySelectorAll('.panel-btn').forEach(btn => {
+// Ritual → unlock Access Panel
+let colorSequence = [];
+document.querySelectorAll('.colorBtn').forEach(btn => {
   btn.addEventListener('click', () => {
-    superSequence.push(btn.dataset.color);
-    if (superSequence.length === requiredSequence.length) {
-      if (superSequence.join(',') === requiredSequence.join(',')) {
-        document.getElementById('superCode').value = "TRIUMPH-777";
-        alert("Correct sequence entered. Super access granted.");
-      } else {
-        alert("Incorrect sequence. Try again.");
-      }
-      superSequence = [];
-    }
+    colorSequence.push(btn.dataset.color);
+    if (colorSequence.length === 3) checkColorUnlock();
   });
 });
 
-</script><script>
+function checkColorUnlock() {
+  const correct = ['gold','violet','silver'];
+  if (colorSequence.join(',') === correct.join(',')) {
+    // ✅ Only here do we reveal the Access Panel
+    document.getElementById('superCodePanel').style.display = 'block';
+    generatePanel();
+  } else {
+    alert('Incorrect sequence. Try again.');
+  }
+  colorSequence = [];
+}
+
+// Spoof keypad generator
+function generatePanel(){
+  const panel = document.getElementById("panelButtons");
+  panel.innerHTML = "";
+  const colors = [
+    {name:"crimson", bg:"crimson"},
+    {name:"azure", bg:"royalblue"},
+    {name:"emerald", bg:"seagreen"},
+    {name:"amber", bg:"goldenrod"},
+    {name:"violet", bg:"rebeccapurple"},
+    {name:"iron", bg:"dimgray"},
+    {name:"gold", bg:"gold"},
+    {name:"moss", bg:"darkolivegreen"},
+    {name:"obsidian", bg:"black"}
+  ];
+  const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+  const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31∆","8.98","27$","719"];
+
+  colors.forEach(c => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "panel-btn";
+    btn.dataset.color = c.name;
+    btn.style.background = c.bg;
+
+    const g1 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const g2 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const num = numbers[Math.floor(Math.random()*numbers.length)];
+
+    btn.textContent = `${g1}${g2} ${num}`;
+    panel.appendChild(btn);
+  });
+}
+</script>
   
-I wanted symbols too ,maybe even a new sigil for the acess panel, a  symbol to embed on panel like a worn out symbol placed noticable somewhere  but not truly not visable, some royal prestige kinda of old glory kinda of artifact,one of the lights have to flicker ,buttons should not read words . all words should look like a fanasty foreign words or symbols , sctratches ,marks ,labels industrail ruins ,dirt moss covered areas and also some playful animations are video game like 
+Okay update on test ,acess panel did show on admin form but not under the only reveal vefiy button logic . the verfiy button still worked and also presented the color sequence the same color as the verify button .everything worked but Access panel was revealed early and did not show any buttons after verify button was pressed .
+  
+  went with option b ,everything works but now we have to get the verify button to take code and reveal panel .is panel a seperate panle ? or does the panel reveal itself after vreify in the same panel ? 
+  
+  
+  
+ 1. Tier code check (Admin vs MasterAdmin) → reveals the ritual buttons.
 
+2.Alternate ritual sequence (your hidden path, e.g. Silver → Gold → Violet + hidden clearance code) →3. the “mystery box” panel ->reveals the Super Level form 
 
-https://raw.githubusercontent.com/undisclosed0-0/oversight-chamber/refs/heads/main/com.txt this is the version that we came up with so far work and look great but I am still at a disadavantge forthe tap swequence to work roperly and teh color combonation to only be revealed when verify button is pressed here is the file . https://raw.githubusercontent.com/undisclosed0-0/oversight-chamber/refs/heads/main/com.txt
 </body>
 </html>
