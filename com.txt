@@ -163,8 +163,10 @@ h2, h3 {
 }
 
 /* === Admin form === */
-  #adminForm { display:none; }adminForm input,
-#adminForm select { 
+ #adminForm input,
+#adminForm select {
+  /* styles */
+}
 
   width: 100%;
   margin: 8px 0 16px 0;
@@ -294,7 +296,9 @@ h2, h3 {
   transition: transform 0.15s ease, box-shadow 0.3s ease;
 }
 #superLevelForm button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
-
+.glowing-cube.active-glow {
+  animation: cubeGlow 3s infinite alternate;
+}
 /* === Tap shimmer feedback (mobile unlock overlays retained) === */
 .tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
 #tapTopLeft { left: 0; }
@@ -430,6 +434,24 @@ h2, h3 {
     color:#0f0;
     text-shadow:0 0 8px #0f0;
   }
+    .light.on {
+  background: #0f0;
+  color: #000;
+  box-shadow: 0 0 10px #0f0;
+}
+.letter {
+  display: none;
+  margin-top: 10px;
+  font-size: 1.5em;
+  color: #0f0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 </style>
 <script>
 function copyVerification() {
@@ -517,7 +539,7 @@ function copyVerification() {
 </div>
 
 <!-- Puzzle Box (interactive mechanism) -->
-    <div id="puzzleBoxPanel" class="panel-shell">
+    <div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
 <h1>Mystery Cube: PUZZLE</h1>
 <div class="cube-container">
   <div class="cube" id="puzzleCube">
@@ -567,6 +589,14 @@ function copyVerification() {
   </div>
 </div>
 <div id="unlockMessage">✨ The Mystery Cube Unlocks! ✨</div>
+      
+      <!-- Final Clearance Panel -->
+<div id="finalClearancePanel" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Final Clearance Code</h2>
+  <p>Enter the final code to unlock the Superform.</p>
+  <input id="finalClearanceCode" type="password" placeholder="Enter final code" />
+  <button id="finalClearanceUnlockBtn">Unlock</button>
+</div>
 <!-- Final stage: Superform -->
 <div id="superFormPanel" class="panel-shell" style="display:none;">
   <h2 class="mystery-title">Super Level Access</h2>
@@ -958,6 +988,8 @@ function handleSuperClick(color){
     }
 
     hidePanel('colorPanel');
+    ritualSolved = true; // ✅ mark ritual as solved
+
     if (hiddenPath) {
       showPanel('mysteryBoxChamber');
     } else {
@@ -965,10 +997,6 @@ function handleSuperClick(color){
     }
   }
 }
-if (hiddenPath && ritualSolved) {
-  showPanel('puzzleBoxPanel'); // reveal cube
-}
-
 /* === Mystery Box → Puzzle Box === */
 document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
   hidePanel('mysteryBoxChamber');
@@ -1086,14 +1114,28 @@ document.getElementById('mathInput').addEventListener('change', e=>{
     checkUnlock();
   }
 });
-
+function checkUnlock(){
+  if (Object.values(keys).every(v => v)) {
+    document.getElementById('unlockMessage').style.display = 'block';
+    document.getElementById('puzzleCube').style.boxShadow = "0 0 40px #0f0";
+    checkCubeUnlock(); // ✅ triggers final clearance panel
+  }
+}
 function checkCubeUnlock(){
   if (Object.values(keys).every(v => v)) {
     hidePanel('puzzleBoxPanel');
-    showPanel('superFormPanel');
+    showPanel('finalClearancePanel'); // ✅ show final code panel
   }
 }
-
+document.getElementById('finalClearanceUnlockBtn').addEventListener('click', () => {
+  const code = document.getElementById('finalClearanceCode').value.trim();
+  if (code === 'TRIUMPH-777') {
+    hidePanel('finalClearancePanel');
+    showPanel('superFormPanel'); // ✅ final unlock
+  } else {
+    alert('Invalid final clearance code.');
+  }
+});
 // Cube rotation
 const cube=document.getElementById('puzzleCube');
 let isDragging=false,startX,startY,rotX=-15,rotY=20;
