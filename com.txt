@@ -327,7 +327,28 @@ h2, h3 {
   .crest-header { width: 80px; height: 80px; }
   .floating-crest { width: 60px; height: 60px; bottom: 20px; right: 20px; }
 }
-  
+  .cube-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.glowing-cube {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #6a0dad, #ffd700);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(106,13,173,0.8),
+              0 0 40px rgba(255,215,0,0.6);
+  animation: cubeGlow 3s infinite alternate;
+}
+
+@keyframes cubeGlow {
+  0%   { transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+  50%  { transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+}
+
   /* Desktop: crest clickable */
 .floating-crest {
   position: fixed;
@@ -428,28 +449,38 @@ function copyVerification() {
     </div>
   </div>
 
-  <!-- Hidden branch: Mystery Box -->
-  <div id="mysteryBoxPanel" class="panel-shell">
-    <h2 class="mystery-title">Super Level Access</h2>
-    <div class="mystery-crest">♛ ⚚ ⟁</div>
-    <div class="cube-aura" aria-hidden="true"></div>
-
-    <form id="superLevelForm">
-      <label for="superName">Account Holder</label>
-      <input id="superName" name="superName" required type="text" />
-      <label for="superTier">Tier</label>
-      <select id="superTier" name="superTier" required>
-        <option value="Sovereign">Sovereign</option>
-        <option value="Luminary">Luminary</option>
-        <option value="Legacy">Legacy Tier</option>
-      </select>
-      <label for="superCode">Clearance Code</label>
-      <input id="superCode" name="superCode" required type="password" />
-      <button type="submit">Submit Super-Level Form</button>
-    </form>
+  <!-- Puzzle Box mechanism -->
+<div id="puzzleBoxPanel" style="display:none;" class="panel-shell">
+  <h2 class="mystery-title">Puzzle Box Mechanism</h2>
+  <div class="cube-container">
+    <div class="glowing-cube"></div>
   </div>
+  <p>Enter the final clearance code to unlock the Superform.</p>
+  <input id="puzzleBoxCode" type="password" placeholder="Enter final code" />
+  <button id="puzzleBoxUnlockBtn">Unlock</button>
 </div>
 
+<!-- Mystery Box / Superform -->
+<div id="mysteryBoxPanel" style="display:none;" class="panel-shell">
+  <h2 class="mystery-title">Super Level Access</h2>
+  <div class="mystery-crest">♛ ⚚ ⟁</div>
+  <form id="superLevelForm">
+    <label for="superName">Account Holder</label>
+    <input id="superName" name="superName" required type="text" />
+    <label for="superTier">Tier</label>
+    <select id="superTier" name="superTier" required>
+      <option value="Sovereign">Sovereign</option>
+      <option value="Luminary">Luminary</option>
+      <option value="Legacy">Legacy Tier</option>
+    </select>
+    <label for="superCode">Clearance Code</label>
+    <input id="superCode" name="superCode" required type="password" />
+    <button type="submit">Submit Super-Level Form</button>
+  </form>
+</div>
+
+
+  
 
     
     <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
@@ -492,6 +523,8 @@ function copyVerification() {
 <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
 
 <script>
+  let adminGateUnlocked = false;
+
 function copyVerification() {
   const textArea = document.getElementById("verificationText");
   textArea.select();
@@ -731,7 +764,7 @@ document.getElementById('verifyTierBtn').addEventListener('click', () => {
   hidePanel('colorPanel');
   hidePanel('superCodePanel');
   hidePanel('mysteryBoxPanel');
-
+  hidePanel('puzzleBoxPanel');
   if (code === TIER_CODES.Admin || code === TIER_CODES.MasterAdmin) {
     hiddenPath = false;
     superSequence = [];
@@ -798,24 +831,33 @@ function handleSuperClick(color){
 
   if (superSequence.length === requiredSequence.length) {
     const correct = superSequence.join(',') === requiredSequence.join(',');
-    superSequence = []; // reset
+    superSequence = [];
 
     if (!correct) {
-      alert("Incorrect sequence. Tap unlock required again.");
-      adminGateUnlocked = false; // re-lock gate after failure
+      alert("Incorrect sequence. Re-enter clearance and try again.");
       hidePanel('colorPanel');
       return;
     }
 
-    // Correct sequence → branch here only
     hidePanel('colorPanel');
     if (hiddenPath) {
-      showPanel('mysteryBoxPanel');
+      showPanel('puzzleBoxPanel');   // show Puzzle Box first
     } else {
       showPanel('superCodePanel');
     }
   }
 }
+
+// Puzzle Box unlock
+document.getElementById('puzzleBoxUnlockBtn').addEventListener('click', () => {
+  const code = document.getElementById('puzzleBoxCode').value.trim();
+  if (code === "FINAL-CLEARANCE-999") {   // your chosen last access code
+    hidePanel('puzzleBoxPanel');
+    showPanel('mysteryBoxPanel');        // now reveal Superform
+  } else {
+    alert("Incorrect final code. Try again.");
+  }
+});
 
 /* === Mobile shimmer feedback (retained) === */
 let shimmerTimer;
@@ -849,101 +891,7 @@ document.getElementById('tapTopLeft').addEventListener('click', () => {
 document.getElementById('tapTopRight').addEventListener('click', () => {
   adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock();
 });
-</script>
-  
-Okay update on test ,acess panel did show on admin form but not under the only reveal vefiy button logic . the verfiy button still worked and also presented the color sequence the same color as the verify button .everything worked but Access panel was revealed early and did not show any buttons after verify button was pressed .
-  
-  went with option b ,everything works but now we have to get the verify button to take code and reveal panel .is panel a seperate panle ? or does the panel reveal itself after vreify in the same panel ? 
-  
-  
- 1. Tier code check (Admin vs MasterAdmin) → reveals the ritual buttons.
 
-2.Alternate ritual sequence (your hidden path, e.g. Silver → Gold → Violet + hidden clearance code) →3. the “mystery box” panel ->reveals the Super Level form 
-
-  
-  
-  You’re right — right now your code is spawning multiple panels because each successful ritual call runs generatePanel() and reveals a new block. If you only want one color‑coded rune panel, you should keep a single <div id="superCodePanel"> in your HTML and always re‑populate it, rather than creating new ones. And if you’d like the “hidden logic” to reveal a different style of access panel (like the puzzle‑box style in the Mystery Box game), you can branch your logic to show a different container instead of duplicating the rune grid.
-  
-  1.Verify button (Admin/MasterAdmin codes) User enters Admin or MasterAdmin clearance code. If correct → reveal the multi‑color ritual panel (#colorPanel). Nothing else is revealed yet. 2.Hidden sequence + hidden clearance code 
- // Verify → show ritual
-document.getElementById('verifyTierBtn').addEventListener('click', () => {
-  const code = document.getElementById('adminCode').value.trim();
-  if (!code) {
-    alert('Enter admin clearance code.');
-    return;
-  }
-  document.getElementById('colorPanel').style.display = 'block';
-  colorSequence = [];
-});
-
-// Ritual → unlock Access Panel
-let colorSequence = [];
-document.querySelectorAll('.colorBtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    colorSequence.push(btn.dataset.color);
-    if (colorSequence.length === 3) checkColorUnlock();
-  });
-});
-
-
-// Spoof keypad generator (3×3 grid)
-function generatePanel(){
-  const panel = document.getElementById("panelButtons");
-  panel.innerHTML = "";
-  panel.style.display = "grid";
-  panel.style.gridTemplateColumns = "repeat(3, 1fr)";
-  panel.style.gap = "8px";
-
-  const colors = [
-    {name:"crimson", bg:"crimson"},
-    {name:"azure", bg:"royalblue"},
-    {name:"emerald", bg:"seagreen"},
-    {name:"amber", bg:"goldenrod"},
-    {name:"violet", bg:"rebeccapurple"},
-    {name:"iron", bg:"dimgray"},
-    {name:"gold", bg:"gold"},
-    {name:"moss", bg:"darkolivegreen"},
-    {name:"obsidian", bg:"black"}
-  ];
-
-  const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
-  const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31∆","8.98","27$","719"];
-
-  colors.forEach(c => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "panel-btn";
-    btn.dataset.color = c.name;
-    btn.style.background = c.bg;
-    btn.style.color = "#fff";
-
-    const g1 = glyphs[Math.floor(Math.random()*glyphs.length)];
-    const g2 = glyphs[Math.floor(Math.random()*glyphs.length)];
-    const num = numbers[Math.floor(Math.random()*numbers.length)];
-
-    btn.textContent = `${g1}${g2} ${num}`;
-    btn.addEventListener("click", () => handleSuperClick(c.name));
-    panel.appendChild(btn);
-  });
-}
-
-// Sequence check for spoof keypad
-let superSequence = [];
-const requiredSequence = ['crimson','violet','emerald','amber','azure','iron','gold','moss','obsidian'];
-
-function handleSuperClick(color){
-  superSequence.push(color);
-  if (superSequence.length === requiredSequence.length) {
-    if (superSequence.join(',') === requiredSequence.join(',')) {
-      document.getElementById('adminMessage').value = "Super access granted.";
-      alert("Correct sequence entered. Super access granted.");
-    } else {
-      alert("Incorrect sequence. Try again.");
-    }
-    superSequence = [];
-  }
-}
-
-  
 </body>
 </html>
+</script>
