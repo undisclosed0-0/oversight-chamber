@@ -1,3 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prestige Triumph: Create Account</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(75, 63, 114, 0.2);
+      backdrop-filter: blur(6px);
+    }
+    h1 {
+      color: #4b3f72;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #4b3f72;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #4b3f72, #6a5acd);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(75, 63, 114, 0.3);
+    }
+    button:hover {
+      background: linear-gradient(to right, #6a5acd, #4b3f72);
+      transform: translateY(-2px);
+    }
+    .crest-header {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+    }
+    .floating-crest {
+      position: fixed;
+      bottom: 30px;
+      right: -170px;
+      width: 80px;
+      height: 80px;
+      background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194, 167, 109, 0.6);
+      z-index: 101;
+      opacity: 0.95;
+    }
+    
+    
+  </style>
+  
+  <style>
+.verification-plaque {
+  margin-top: 25px;
+  padding: 20px;
+  border: 2px solid #c2a76d;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
+  box-shadow: 0 0 15px rgba(194,167,109,0.4);
+  text-align: center;
+}
+.verification-plaque textarea {
+  width: 100%;
+  height: 120px;
+  margin-top: 10px;
+  padding: 0px;
+  border-radius: 8px;
+  border: 1px solid #c2a76d;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  resize: none;
+  background: #fffdf8;
+}
+.verification-plaque button {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+}
+.verification-plaque button:hover {
+  background: linear-gradient(to right, #6a5acd, #4b3f72);
+}
+</style>
+<style>
+
+/* Color ritual panel (hidden until Verify on mobile) */
+/* === Global Panel Look === */
+/* === Base and container === */
+:root {
+  --gold: #ffd700;
+  --violet: #6a0dad;
+  --iron: #222;
+  --obsidian: #000;
+}
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% 0%, #0b0b0b 0%, #000 60%);
+  color: var(--gold);
+  font-family: 'Orbitron', 'Courier New', monospace;
+}
+.container {
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* === Panel shells === */
+.panel-shell {
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+  border: 3px solid #444;
+  border-radius: 12px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* === Headers === */
+h1 { text-align: center; letter-spacing: 1px; }
+h2, h3 {
+  color: var(--gold);
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255,215,0,0.6);
+  margin: 0 0 12px 0;
+}
+
+/* === Admin form === */
+  #adminForm { display:none; }adminForm input,
+#adminForm select { 
+
+  width: 100%;
+  margin: 8px 0 16px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+#verifyTierBtn {
+  background: linear-gradient(var(--gold), #b8860b);
+  border: 2px solid var(--iron);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #111;
+  text-shadow: 0 0 4px rgba(255,255,255,0.6);
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#verifyTierBtn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+
+/* === Ritual panel (multi-panel grid) === */
+#colorPanel { display: none; margin-top: 16px; position: relative; }
+#panelButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+.panel-btn { 
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid var(--iron);
+  font-family: 'Courier New', monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #fdfdfd;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(255,215,0,0.8);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 0 10px rgba(255,215,0,0.28);
+  transition: transform 0.15s ease, box-shadow 0.3s ease, filter 0.2s ease;
+  animation: runePulse 3s infinite;
+}
+.panel-btn:active { transform: scale(0.96); box-shadow: inset 0 0 14px rgba(0,0,0,0.9), 0 0 6px rgba(255,215,0,0.5); }
+@keyframes runePulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); filter: brightness(1); }
+  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); filter: brightness(1.15); }
+}
+
+/* Distinct color backgrounds */
+.panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
+.panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
+.panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
+.panel-btn[data-color="amber"]    { background: linear-gradient(#7a6f2b, #3a2f0d); }
+.panel-btn[data-color="violet"]   { background: linear-gradient(#5a2b7a, #2a0d3a); }
+.panel-btn[data-color="iron"]     { background: linear-gradient(#555, #222); }
+.panel-btn[data-color="gold"]     { background: linear-gradient(#ffd700, #b8860b); color:#222; }
+.panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
+.panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
+
+/* === Access Panel (normal branch) === */
+#superCodePanel { display: none; position: relative; }
+.panel-sigil {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 6em; color: rgba(255,215,0,0.08);
+  text-shadow: 0 0 15px rgba(255,215,0,0.2); pointer-events: none;
+  z-index: 0;
+}
+#superCodePanel .panel-content { position: relative; z-index: 1; }
+
+/* === Mystery Box chamber (hidden branch) === */
+#mysteryBoxPanel {
+  display: none;
+  border: 3px solid var(--violet);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6);
+  color: #e0dfff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mystery-title { margin-bottom: 12px; }
+.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+
+/* Glowing cube aura behind Mystery Box */
+.cube-auraPulseCube {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%),
+    radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: auraPulse 5s ease-in-out infinite;
+}
+@keyframes auraPulse {
+  0%, 100% { filter: saturate(1); opacity: 0.75; }
+  50%      { filter: saturate(1.3); opacity: 1; }
+}
+/* Super Level form */
+  
+  cube
+@keyframes rotateCube {
+  from { transform: rotateX(0) rotateY(0); }
+  to   { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+/* Super Level form */
+#superLevelForm input, #superLevelForm select {
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #444;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+#superLevelForm button {
+  margin-top: 15px; padding: 10px 20px;
+  border-radius: 8px; border: 2px solid var(--iron);
+  background: linear-gradient(var(--gold), #b8860b);
+  color: #111; font-weight: bold; text-transform: uppercase; cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#superLevelForm button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+
+/* === Tap shimmer feedback (mobile unlock overlays retained) === */
+.tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
+#tapTopLeft { left: 0; }
+#tapTopRight { right: 0; }
+.tap-shimmer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 998;
+  background:
+    radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
+    radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(138,43,226,0.22), transparent 70%);
+  opacity: 0; transition: opacity 260ms ease;
+}
+.tap-shimmer.active { opacity: 1; }
+
+/* Desktop crest click (optional) */
+.floating-crest {
+  position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+  border-radius: 50%; box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer;
+}
+
+/* Responsive touches */
+@media (max-width: 480px) {
+  .container { padding: 0 12px; }
+  h1 { font-size: 1.35em; }
+}
+
+/* Verify button should only appear on mobile */
+@media (min-width: 861px) {
+  #verifyTierBtn { display: none !important; }
+}
+
+/* Small‑screen enhancements */
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  .container { padding: 20px; }
+  h1 { font-size: 1.4em; }
+  label { margin-top: 15px; font-size: 0.95em; }
+  input, select, textarea { font-size: 0.95em; padding: 8px; }
+  button { font-size: 1em; padding: 10px; }
+  .crest-header { width: 80px; height: 80px; }
+  .floating-crest { width: 60px; height: 60px; bottom: 20px; right: 20px; }
+}
+  .cube-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.glowing-cube {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #6a0dad, #ffd700);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(106,13,173,0.8),
+              0 0 40px rgba(255,215,0,0.6);
+  animation: cubeGlow 3s infinite alternate;
+}
+
+@keyframes cubeGlow {
+  0%   { transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+  50%  { transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+}
+
+  /* Desktop: crest clickable */
+.floating-crest {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 20px;
+  right: 20px;
+  background-image: url('your-crest.png');
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(194,167,109,0.6);
+  cursor: pointer;
+}/* Mobile: crest is decorative only */
+@media (max-width: 860px) {
+  .floating-crest {
+    pointer-events: none;
+    opacity: 0.7; /* optional, to signal it’s inactive */
+  }
+}
+
+</style>
+  <style>
+  body { background:#111; color:#ffd700; font-family:Orbitron, monospace; text-align:center; }
+  h1 { margin:20px; }
+
+  .cube-container {
+    perspective: 1000px;
+    width: 320px; height: 320px;
+    margin: 40px auto;
+    touch-action: none;
+  }
+  .cube {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-15deg) rotateY(20deg);
+    transition: transform 0.2s;
+  }
+  .cube-face {
+    position: absolute;
+    width: 320px; height: 320px;
+    background: #1a1a1a;
+    border: 2px solid #444;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+    padding: 10px;
+  }
+  .front  { transform: rotateY(0deg) translateZ(160px); }
+  .back   { transform: rotateY(180deg) translateZ(160px); }
+  .right  { transform: rotateY(90deg) translateZ(160px); }
+  .left   { transform: rotateY(-90deg) translateZ(160px); }
+  .top    { transform: rotateX(90deg) translateZ(160px); }
+  .bottom { transform: rotateX(-90deg) translateZ(160px); }
+
+  button, input[type=range], input[type=text] {
+    margin: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 2px solid #333;
+    background: #111;
+    color: #ffd700;
+    font-weight: bold;
+  }
+  .letter { display:none; margin-top:10px; font-size:1.5em; color:#0f0; }
+  #unlockMessage {
+    display:none;
+    margin-top:20px;
+    font-size:1.3em;
+    color:#0f0;
+    text-shadow:0 0 8px #0f0;
+  }
+</style>
+<script>
+function copyVerification() {
+  const textArea = document.getElementById("verificationText");
+  textArea.select();
+  textArea.setSelectionRange(0, 99999); // mobile support
+  document.execCommand("copy");
+  alert("Verification text copied. Please paste it into the Google Form field.");
+}
+</script>
+  
+</head>
+<body>
+  <div class="container">
+    <div class="crest-header"></div>
+    <h1>Prestige Triumph: Create Account</h1>
+
+    <!-- Blogger submission preserved -->
+    <form id="love-form" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
+      <label for="name">Account Name</label>
+      <button type="button" onclick="generateNameFromTier()" style="margin-top:10px; background:#c2a76d; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.95em; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+  ✨ Generate Prestige Name
+</button>
+      <input type="text" id="name" name="name" required placeholder="e.g., Solenne of the Third Tier" />
+
+      <label for="phone">Contact Number</label>
+      <input type="tel" id="phone" name="phone" required placeholder="e.g., +1 616-555-1234" />
+
+      <label for="role">Select Tier</label>
+<select id="role" name="role" required>
+  <option value="">Select your role</option>
+  <option value="Initiate">Initiate</option>
+  <option value="Steward">Steward</option>
+  <option value="Neighbor">Neighbor</option>
+  <option value="Contributor">Contributor</option>
+  <option value="Observer">Observer</option>
+  <option value="Supporter">Supporter</option>
+  <option value="Archivist">Archivist</option>
+</select>
+
+      <!-- Hidden Blogger fields -->
+      <textarea id="message" name="message" style="display:none;"></textarea>
+      <input type="email" name="email" id="bloggerEmail" style="display:none;">
+
+      <button type="submit">Create Account</button>
+      <iframe name="hidden_iframe" style="display:none;"></iframe>
+    </form>
+    
+    
+<!-- Admin Access -->
+<form id="adminForm" class="panel-shell" style="display:none;">
+  <h2>Admin Access</h2>
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">Master Admin</option>
+  </select>
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" required type="password" />
+  <button type="button" id="verifyTierBtn">Verify</button>
+</form>
+
+<!-- Ritual (multi-panel grid only) -->
+<div id="colorPanel" class="panel-shell" style="display:none;">
+  <h3>Ritual Sequence</h3>
+  <div id="panelButtons"></div>
+</div>
+
+<!-- Normal branch: Access Panel -->
+<div id="superCodePanel" class="panel-shell" style="display:none;">
+  <h3>Access Panel</h3>
+  <div class="panel-sigil">♛</div>
+  <div class="panel-content">
+    <p>Rune keypad unlocked.</p>
+    <!-- Add rune keypad or next-stage elements here -->
+  </div>
+</div>
+
+<!-- Hidden branch: Mystery Box Chamber -->
+<div id="mysteryBoxChamber" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Mystery Box Chamber</h2>
+  <div class="mystery-crest">♛ ⚚ ⟁</div>
+  <p>The chamber hums with hidden power. Attempt the Puzzle Box?</p>
+  <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
+</div>
+
+<!-- Puzzle Box (interactive mechanism) -->
+    <div id="puzzleBoxPanel" class="panel-shell">
+<h1>Mystery Cube: PUZZLE</h1>
+<div class="cube-container">
+  <div class="cube" id="puzzleCube">
+    <!-- Front: Sequence (P) -->
+    <div class="cube-face front">
+      <p>Press in order</p>
+      <button class="seq-btn" data-val="1">▲</button>
+      <button class="seq-btn" data-val="2">◆</button>
+      <button class="seq-btn" data-val="3">⚙</button>
+      <div id="letterP" class="letter">P</div>
+    </div>
+    <!-- Back: Wheel (Z) -->
+    <div class="cube-face back">
+      <p>Set wheel to 7</p>
+      <input type="range" id="wheel" min="0" max="10" value="0">
+      <div id="letterZ1" class="letter">Z</div>
+    </div>
+    <!-- Right: Riddle (U) -->
+    <div class="cube-face right">
+      <p>Riddle: What has keys but no locks?</p>
+      <input type="text" id="riddleInput" placeholder="Your answer">
+      <div id="letterU" class="letter">U</div>
+    </div>
+    <!-- Left: Hidden tile (Z) -->
+    <div class="cube-face left">
+      <p>Find the hidden tile</p>
+      <div id="hiddenTile" style="width:60px;height:60px;background:#333;cursor:pointer;"></div>
+      <div id="clue" style="display:none;color:#0f0;">Clue: Sequence is ◆ → ⚙ → ▲</div>
+      <div id="letterZ2" class="letter">Z</div>
+    </div>
+    <!-- Top: Lights puzzle (L) -->
+    <div class="cube-face top">
+      <p>Toggle all lights on</p>
+      <div id="lights">
+        <button class="light">⬤</button>
+        <button class="light">⬤</button>
+        <button class="light">⬤</button>
+      </div>
+      <div id="letterL" class="letter">L</div>
+    </div>
+    <!-- Bottom: Math puzzle (E) -->
+    <div class="cube-face bottom">
+      <p>Solve: 3 + 4 = ?</p>
+      <input type="text" id="mathInput" placeholder="Answer">
+      <div id="letterE" class="letter">E</div>
+    </div>
+  </div>
+</div>
+<div id="unlockMessage">✨ The Mystery Cube Unlocks! ✨</div>
+<!-- Final stage: Superform -->
+<div id="superFormPanel" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Super Level Access</h2>
+  <div class="mystery-crest">♛ ⚚ ⟁</div>
+  <form id="superLevelForm">
+    <label for="superName">Account Holder</label>
+    <input id="superName" name="superName" required type="text" />
+    <label for="superTier">Tier</label>
+    <select id="superTier" name="superTier" required>
+      <option value="Sovereign">Sovereign</option>
+      <option value="Luminary">Luminary</option>
+      <option value="Legacy">Legacy Tier</option>
+    </select>
+    <label for="superCode">Clearance Code</label>
+    <input id="superCode" name="superCode" required type="password" />
+    <button type="submit">Submit Super-Level Form</button>
+  </form>
+</div>
+  
+
+    
+    <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
+  <h2>Super-Level Access Form</h2>
+  <label for="superName">Account Holder</label>
+  <input id="superName" name="superName" required type="text" />
+
+  <label for="superTier">Tier</label>
+  <select id="superTier" name="superTier" required>
+    <option value="Sovereign">Sovereign</option>
+    <option value="Luminary">Luminary</option>
+    <option value="Legacy">Legacy Tier</option>
+  </select>
+
+  <label for="superCode">Clearance Code</label>
+  <input id="superCode" name="superCode" required type="password" />
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="superMessage" name="message" style="display:none;"></textarea>
+  <input type="email" name="email" id="superEmail" style="display:none;">
+
+  <button type="submit">Submit Super-Level Form</button>
+      </form>
+    </div>
+
+  <div class="floating-crest"></div>
+  <!-- Copy Box Plaque -->
+<!-- Copy Box Plaque (hidden until submission) -->
+<div class="verification-plaque" id="verificationPlaque" style="display:none;">
+  <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
+  <textarea id="verificationText" readonly></textarea>
+  <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
+</div>
+  <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
+
+  <iframe name="hidden_iframe" style="display: none;"></iframe>
+  <!-- Mobile shimmer + tap zones -->
+<div class="tap-shimmer" id="tapShimmer"></div>
+<div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
+<div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
+
+<script>
+  let adminGateUnlocked = false;
+
+function copyVerification() {
+  const textArea = document.getElementById("verificationText");
+  textArea.select();
+  textArea.setSelectionRange(0, 99999); // for mobile
+  document.execCommand("copy");
+  alert("Verification text copied. Please paste it into the Google Form field.");
+}
+</script>
+  
+  
+  
+  
+  
+ <script>
+function generateCardID() {
+  return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+}
+function generateAccessCode() {
+  return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000);
+}
+
+// 🔹 General Public Form
+function submitCeremonialForm() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const role = document.getElementById('role').value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
+  localStorage.setItem('userRegistry', JSON.stringify(registry));
+
+  const message = `
+🪔 Prestige Triumph Verification
+👤 Name: ${name}
+📞 Phone: ${phone}
+🎖 Tier: ${role}
+🆔 Account ID: ${card}
+🔑 Access Code: ${accessCode}
+`.trim();
+
+  document.getElementById('message').value = message;
+  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+// 🔸 Admin Form
+function submitAdminForm() {
+  const code = document.getElementById("adminCode").value.trim();
+  if (code !== "ADMIN-ACCESS") {
+    alert("Invalid admin clearance code.");
+    return false;
+  }
+
+  const name = document.getElementById("adminName").value.trim();
+  const tier = document.getElementById("adminTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const message = `
+🔐 Admin Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}
+`.trim();
+
+  document.getElementById('adminMessage').value = message;
+  document.getElementById('adminEmail').value = "admin@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Admin form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/admin-issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+// 🔸 Super-Level Form
+function submitSuperForm() {
+  const code = document.getElementById("superCode").value.trim();
+  if (code !== "TRIUMPH-777") {
+    alert("Invalid super-level clearance code.");
+    return false;
+  }
+
+  const name = document.getElementById("superName").value.trim();
+  const tier = document.getElementById("superTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const message = `
+👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}
+`.trim();
+
+  document.getElementById('superMessage').value = message;
+  document.getElementById('superEmail').value = "super@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Super-level form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+   
+   
+   function generateTieredName(tier) {
+  const pools = {
+    Initiate: {
+      names: ["Lena", "Jamal", "Sofia", "Kai", "Maya"],
+      suffixes: ["of the Welcome Ledger", "of the First Entry", "of the Community Fold"]
+    },
+    Steward: {
+      names: ["Elias", "Priya", "Malcolm", "Zara", "Omar"],
+      suffixes: ["of the Civic Watch", "of the Shared Archive", "of the Stewardship Line"]
+    },
+    Neighbor: {
+      names: ["Ava", "Noah", "Grace", "Leo", "Isla"],
+      suffixes: ["of the Local Registry", "of the Neighborhood Tier", "of the Common Fold"]
+    },
+    Contributor: {
+      names: ["Milan", "Tessa", "Jude", "Nina", "Arlo"],
+      suffixes: ["of the Support Ledger", "of the Contributor Line", "of the Community Archive"]
+    },
+    Observer: {
+      names: ["Theo", "Luna", "Miles", "Ivy", "Rowan"],
+      suffixes: ["of the Quiet Watch", "of the Passive Tier", "of the Ledger Periphery"]
+    },
+    Supporter: {
+      names: ["Elena", "Caleb", "Raya", "Finn", "Naomi"],
+      suffixes: ["of the Advocacy Fold", "of the Support Tier", "of the Donor Registry"]
+    },
+    Archivist: {
+      names: ["Solenne", "Idris", "Helena", "Lucan", "Amara"],
+      suffixes: ["of the Memory Vault", "of the Archivist Line", "of the Tiered Archive"]
+    }
+  };
+
+  const pool = pools[tier];
+  if (!pool) return "Unnamed of the Unknown Tier";
+
+  const name = pool.names[Math.floor(Math.random() * pool.names.length)];
+  const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
+  return `${name} ${suffix}`;
+}
+
+function generateNameFromTier() {
+  const tier = document.getElementById("role").value;
+  if (!tier) {
+    alert("Please select a tier first.");
+    return;
+  }
+  const generated = generateTieredName(tier);
+  document.getElementById("name").value = generated;
+}
+   
+   
+   
+   
+// 🔐 Unlock Logic
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("keydown", function (e) {
+    // Unlock Admin Form: Ctrl + Shift + A
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+      const adminForm = document.getElementById("adminForm");
+      if (adminForm) {
+        adminForm.style.display = "block";
+        alert("Admin access form unlocked.");
+      }
+    }
+
+    // Unlock Super Form: Ctrl + Alt + M
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+      const superForm = document.getElementById("superForm");
+      if (superForm) {
+        superForm.style.display = "block";
+        alert("Super-level access form unlocked.");
+      }
+    }
+  });
+});
+
+
+</script>
+  <script>
 
 /* === State and codes === */
 const TIER_CODES = {
@@ -129,6 +965,9 @@ function handleSuperClick(color){
     }
   }
 }
+if (hiddenPath && ritualSolved) {
+  showPanel('puzzleBoxPanel'); // reveal cube
+}
 
 /* === Mystery Box → Puzzle Box === */
 document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
@@ -137,19 +976,6 @@ document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
 });
 
 /* === Puzzle Box unlock → Superform === */
-let puzzleProgress = [];
-const unlockSequence = ['A','C','E']; // your chosen combo
-
-document.querySelectorAll('.cube-face button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    puzzleProgress.push(btn.dataset.piece);
-    if (puzzleProgress.join('') === unlockSequence.join('')) {
-      alert("Box unlocked!");
-      hidePanel('puzzleBoxPanel');
-      showPanel('superFormPanel');
-    }
-  });
-});
 
 
 /* === Mobile shimmer feedback === */
@@ -197,3 +1023,191 @@ document.addEventListener('DOMContentLoaded', () => {
     checkAdminMobileUnlock();
   });
 });
+</script>
+  
+  <script>
+let keys = {P:false,U:false,Z1:false,Z2:false,L:false,E:false};
+
+// Sequence puzzle (P)
+let sequence = [];
+const correctSeq = ["2","3","1"];
+document.querySelectorAll('.seq-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    sequence.push(btn.dataset.val);
+    if(sequence.length===3){
+      if(sequence.join(',')===correctSeq.join(',')){
+        keys.P=true; document.getElementById('letterP').style.display='block';
+      }
+      sequence=[];
+      checkUnlock();
+    }
+  });
+});
+
+// Wheel puzzle (Z1)
+document.getElementById('wheel').addEventListener('change', e=>{
+  if(parseInt(e.target.value)===7){
+    keys.Z1=true; document.getElementById('letterZ1').style.display='block';
+    checkUnlock();
+  }
+});
+
+// Riddle puzzle (U)
+document.getElementById('riddleInput').addEventListener('change', e=>{
+  if(e.target.value.trim().toLowerCase()==="piano"){
+    keys.U=true; document.getElementById('letterU').style.display='block';
+    checkUnlock();
+  }
+});
+
+// Hidden tile (Z2)
+document.getElementById('hiddenTile').addEventListener('click',()=>{
+  document.getElementById('clue').style.display='block';
+  keys.Z2=true; document.getElementById('letterZ2').style.display='block';
+  checkUnlock();
+});
+
+// Lights puzzle (L)
+document.querySelectorAll('.light').forEach(light=>{
+  light.addEventListener('click',()=>{
+    light.classList.toggle('on');
+    light.style.color = light.classList.contains('on') ? '#0f0' : '#ffd700';
+    if([...document.querySelectorAll('.light')].every(l=>l.classList.contains('on'))){
+      keys.L=true; document.getElementById('letterL').style.display='block';
+      checkUnlock();
+    }
+  });
+});
+
+// Math puzzle (E)
+document.getElementById('mathInput').addEventListener('change', e=>{
+  if(e.target.value.trim()==="7"){
+    keys.E=true; document.getElementById('letterE').style.display='block';
+    checkUnlock();
+  }
+});
+
+function checkCubeUnlock(){
+  if (Object.values(keys).every(v => v)) {
+    hidePanel('puzzleBoxPanel');
+    showPanel('superFormPanel');
+  }
+}
+
+// Cube rotation
+const cube=document.getElementById('puzzleCube');
+let isDragging=false,startX,startY,rotX=-15,rotY=20;
+cube.parentElement.addEventListener('pointerdown',e=>{
+  isDragging=true; startX=e.clientX; startY=e.clientY; cube.setPointerCapture(e.pointerId);
+});
+cube.parentElement.addEventListener('pointermove',e=>{
+  if(!isDragging) return;
+  const dx=e.clientX-startX, dy=e.clientY-startY;
+  rotY+=dx*0.4; rotX-=dy*0.4;
+  cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  startX=e.clientX; startY=e.clientY;
+});
+cube.parentElement.addEventListener('pointerup',e=>{
+  isDragging=false; cube.releasePointerCapture(e.pointerId);
+});
+    
+</script>
+ Yes , the only time the puzzlebox should rotate  unless user needs too , it suppose to feel like something you can grasp , clutch, fiddle with your own hands but in a digital format like a video game or oculous 
+
+</body>
+</html>
+  
+Okay update on test ,acess panel did show on admin form but not under the only reveal vefiy button logic . the verfiy button still worked and also presented the color sequence the same color as the verify button .everything worked but Access panel was revealed early and did not show any buttons after verify button was pressed .
+  
+  went with option b ,everything works but now we have to get the verify button to take code and reveal panel .is panel a seperate panle ? or does the panel reveal itself after vreify in the same panel ? 
+  
+  
+ 1. Tier code check (Admin vs MasterAdmin) → reveals the ritual buttons.
+
+2.Alternate ritual sequence (your hidden path, e.g. Silver → Gold → Violet + hidden clearance code) →3. the “mystery box” panel ->reveals the Super Level form 
+
+  
+  
+  You’re right — right now your code is spawning multiple panels because each successful ritual call runs generatePanel() and reveals a new block. If you only want one color‑coded rune panel, you should keep a single <div id="superCodePanel"> in your HTML and always re‑populate it, rather than creating new ones. And if you’d like the “hidden logic” to reveal a different style of access panel (like the puzzle‑box style in the Mystery Box game), you can branch your logic to show a different container instead of duplicating the rune grid.
+  
+  1.Verify button (Admin/MasterAdmin codes) User enters Admin or MasterAdmin clearance code. If correct → reveal the multi‑color ritual panel (#colorPanel). Nothing else is revealed yet. 2.Hidden sequence + hidden clearance code 
+ // Verify → show ritual
+document.getElementById('verifyTierBtn').addEventListener('click', () => {
+  const code = document.getElementById('adminCode').value.trim();
+  if (!code) {
+    alert('Enter admin clearance code.');
+    return;
+  }
+  document.getElementById('colorPanel').style.display = 'block';
+  colorSequence = [];
+});
+
+// Ritual → unlock Access Panel
+let colorSequence = [];
+document.querySelectorAll('.colorBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    colorSequence.push(btn.dataset.color);
+    if (colorSequence.length === 3) checkColorUnlock();
+  });
+});
+
+
+// Spoof keypad generator (3×3 grid)
+function generatePanel(){
+  const panel = document.getElementById("panelButtons");
+  panel.innerHTML = "";
+  panel.style.display = "grid";
+  panel.style.gridTemplateColumns = "repeat(3, 1fr)";
+  panel.style.gap = "8px";
+
+  const colors = [
+    {name:"crimson", bg:"crimson"},
+    {name:"azure", bg:"royalblue"},
+    {name:"emerald", bg:"seagreen"},
+    {name:"amber", bg:"goldenrod"},
+    {name:"violet", bg:"rebeccapurple"},
+    {name:"iron", bg:"dimgray"},
+    {name:"gold", bg:"gold"},
+    {name:"moss", bg:"darkolivegreen"},
+    {name:"obsidian", bg:"black"}
+  ];
+
+  const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+  const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31∆","8.98","27$","719"];
+
+  colors.forEach(c => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "panel-btn";
+    btn.dataset.color = c.name;
+    btn.style.background = c.bg;
+    btn.style.color = "#fff";
+
+    const g1 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const g2 = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const num = numbers[Math.floor(Math.random()*numbers.length)];
+
+    btn.textContent = `${g1}${g2} ${num}`;
+    btn.addEventListener("click", () => handleSuperClick(c.name));
+    panel.appendChild(btn);
+  });
+}
+
+// Sequence check for spoof keypad
+let superSequence = [];
+const requiredSequence = ['crimson','violet','emerald','amber','azure','iron','gold','moss','obsidian'];
+
+function handleSuperClick(color){
+  superSequence.push(color);
+  if (superSequence.length === requiredSequence.length) {
+    if (superSequence.join(',') === requiredSequence.join(',')) {
+      document.getElementById('adminMessage').value = "Super access granted.";
+      alert("Correct sequence entered. Super access granted.");
+    } else {
+      alert("Incorrect sequence. Try again.");
+    }
+    superSequence = [];
+  }
+}
+https://raw.githubusercontent.com/undisclosed0-0/oversight-chamber/refs/heads/main/com.txt , This is the best one so far ,I want to add to this version because of it working ideally  1. )there should only be one colorcode sequence after the verify button gets pushed.2.)next should come the mystery box chamber sign after they click the " attempt puzzle box" there should be a actual puzzle box like the examples I showed you at the url https://store.steampowered.com/app/1735790/Mystery_Box_Hidden_Secrets/  , unlock the boxes of this escape room game, you have to interact with objects, handles, buttons, and wheels on each side. You can find puzzle pieces on the side of the boxes as well 4.)admin accesscode should not work for master admin in all scenerios of the sequence and vice versa 5.)color from the acess panels overflowingin the regular form area . everything should remain contained the main form and colors should always be the ceremonail style to the form outside of special panels
+  
