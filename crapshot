@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Oversight Chamber</title>
+</head>
+  
+  
+  
+  <style>/* === Global ceremonial tone === */
+body {
+  background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+  font-family: 'Orbitron', monospace;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  box-shadow: 0 0 25px rgba(194,167,109,0.6);
+  backdrop-filter: blur(6px);
+}
+
+/* === Titles === */
+h2 {
+  color: #c2a76d;
+  text-shadow: 0 0 10px rgba(194,167,109,0.8);
+  margin-bottom: 1rem;
+}
+
+/* === Inputs and buttons === */
+input, select, textarea {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(135deg, #6a0dad, #ffd700);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(106,13,173,0.6);
+  transition: transform 0.2s;
+}
+button:hover { transform: scale(1.05); }
+
+/* === Verification plaque === */
+#verificationPlaque {
+  margin-top:20px;
+  padding:15px;
+  border:2px solid #c2a76d;
+  background: linear-gradient(135deg,#fdfcfb,#f3e8e2);
+  border-radius:8px;
+}
+#verificationText { width:100%; height:120px; }
+
+/* === Labyrinth Cube styling === */
+.cube-container {
+  perspective: 1100px;
+  width: 340px;
+  height: 340px;
+  margin: 32px auto;
+}
+.cube {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-15deg) rotateY(20deg);
+  transition: transform 0.15s ease-out;
+  animation: cubeBreath 6s ease-in-out infinite;
+}
+@keyframes cubeBreath {
+  0%,100% { box-shadow: 0 0 20px rgba(0,245,181,0.2); }
+  50% { box-shadow: 0 0 60px rgba(0,245,181,0.6); }
+}
+.cube-face {
+  position: absolute;
+  width: 340px; height: 340px;
+  background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
+  border: 2px solid #555;
+  box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  font-size: 14px; color: #fff;
+}
+.front  { transform: rotateY(0deg) translateZ(170px); }
+.back   { transform: rotateY(180deg) translateZ(170px); }
+.right  { transform: rotateY(90deg) translateZ(170px); }
+.left   { transform: rotateY(-90deg) translateZ(170px); }
+.top    { transform: rotateX(90deg) translateZ(170px); }
+.bottom { transform: rotateX(-90deg) translateZ(170px); }
+
+.rune {
+  opacity: 0;
+  margin-top: 10px;
+  font-size: 22px;
+  color: #00f5b5;
+  text-shadow: 0 0 8px rgba(0,245,181,0.65);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: scale(0.8);
+}
+.rune.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* === Lights Out grid === */
+#lightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 6px;
+}
+.light-cell {
+  width: 60px; height: 60px;
+  background: #1c1c1c;
+  border: 1px solid #444;
+  border-radius: 8px;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.4);
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+.light-cell.on {
+  background: #00f060;
+  box-shadow: 0 0 16px rgba(0,240,96,0.5), inset 0 0 8px rgba(0,0,0,0.35);
+}
+
+/* === Labyrinth grid === */
+#labyrinthGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 48px);
+  gap: 6px;
+}
+#labyrinthGrid .cell {
+  width: 48px; height: 48px;
+  background: #161616;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+#labyrinthGrid .cell.on {
+  background: #00b8f5;
+  box-shadow: 0 0 14px rgba(0,184,245,0.55);
+}
+
+/* === Memory buttons === */
+#memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
+.mem {
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  font-size: 22px;
+  background: #212121;
+  border: 1px solid #4b4b4b;
+  transition: filter 150ms ease, box-shadow 150ms ease;
+}
+.mem.flash {
+  filter: brightness(1.6);
+  box-shadow: 0 0 14px rgba(255,255,255,0.4);
+}
+
+/* === Math grid === */
+#mathGrid { display: flex; gap: 10px; }
+.num {
+  min-width: 54px; height: 54px;
+  border-radius: 8px;
+  background: #212121;
+  border: 1px solid #4b4b4b;
+  font-weight: 600;
+  font-size: 18px;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+.num.sel {
+  transform: translateY(-2px);
+  background: #333;
+  box-shadow: 0 0 12px rgba(255,255,255,0.2);
+}
+
+/* === Unlock message shimmer === */
+#unlockMessage {
+  display: none;
+  margin-top: 18px;
+  font-size: 18px;
+  background: linear-gradient(90deg, #00f5b5, #0ff, #00f5b5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+    
+    
+    #colorButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+.panel-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.panel-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+#colorStatus {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #6a0dad;
+}
+.cube-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.glowing-cube {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #6a0dad, #ffd700);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(106,13,173,0.8),
+              0 0 40px rgba(255,215,0,0.6);
+  animation: cubeGlow 3s infinite alternate;
+}
+
+@keyframes cubeGlow {
+  0%   { transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+  50%  { transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+}
+
+#puzzleBoxCode {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+#puzzleBoxStatus {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #6a0dad;
+}
+#panelButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+.panel-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.panel-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+#colorStatus {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #c2a76d;
+}
+
+    
+    #accessCodeInput {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+#accessCodeStatus {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #c2a76d;
+}
+    
+    
+    .mystery-crest {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #ffd700;
+  text-shadow: 0 0 10px #6a0dad, 0 0 20px #ffd700;
+  opacity: 0.6;
+  transition: opacity 2s ease-in-out;
+}
+.mystery-crest.active {
+  opacity: 1;
+  text-shadow: 0 0 20px #ffd700, 0 0 40px #6a0dad;
+}
+#attemptPuzzleBtn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+    
+    .fade-out {
+  animation: fadeOut 1.5s forwards;
+}
+.fade-in {
+  animation: fadeIn 1.5s forwards;
+}
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; visibility: hidden; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+</style>
+<body>
+
+  <div class="container">
+
+    <!-- === Main Ceremonial Form === -->
+    <form id="mainForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe">
+      <h2>Main Account Form</h2>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="phone">Phone</label>
+      <input type="tel" id="phone" name="phone" required>
+
+      <label for="role">Tier</label>
+      <select id="role" name="role" required>
+        <option value="">Select</option>
+        <option value="Initiate">Initiate</option>
+        <option value="Steward">Steward</option>
+        <option value="Neighbor">Neighbor</option>
+      </select>
+
+      <textarea id="message" name="message" style="display:none;"></textarea>
+      <input type="email" id="bloggerEmail" name="email" style="display:none;">
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <!-- === Admin Form (hidden chamber) === -->
+    <form id="adminForm" style="display:none;">
+      <h2>Admin Access</h2>
+      <label for="adminTier">Tier</label>
+      <select id="adminTier" name="adminTier" required>
+        <option value="Admin">Admin</option>
+        <option value="MasterAdmin">Master Admin</option>
+      </select>
+
+      <label for="adminCode">Clearance Code</label>
+      <input id="adminCode" name="adminCode" type="password" required>
+
+      <textarea id="adminMessage" name="message" style="display:none;"></textarea>
+      <input type="email" id="adminEmail" name="email" style="display:none;">
+
+      <button type="submit">Submit Admin Form</button>
+    </form>
+
+   <!-- === Color Ritual Panel === -->
+<div id="colorPanel" style="display:none;">
+  <h2>Color Ritual Panel</h2>
+  <div id="colorButtons"></div>
+  <p id="colorStatus"></p>
+
+
+      <!-- glyph/color buttons will go here -->
+    </div>
+<!-- Normal branch: Access Panel -->
+<div id="superCodePanel" class="panel-shell" style="display:none;">
+  <h3>Access Panel</h3>
+  <div class="panel-sigil">♛</div>
+  <div class="panel-content">
+    <p>Rune keypad unlocked.Enter the clearance code:</p>
+    <input id="accessCodeInput" type="text" placeholder="Enter code" />
+     <button id="accessCodeBtn">Verify Code</button>
+    
+    <p id="accessCodeStatus"></p>
+  </div>
+</div>
+    
+    
+    <!-- Hidden branch: Mystery Box Chamber -->
+<div id="mysteryBoxChamber" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Mystery Box Chamber</h2>
+  <div class="mystery-crest">♛ ⚚ ⟁</div>
+  <p>The chamber hums with hidden power. Attempt the Puzzle Box?</p>
+  <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
+</div>
+    <!-- === Puzzle Box Panel (Labyrinth Cube) === -->
+    <div id="puzzleBoxPanel" style="display:none;">
+      <h2>Labyrinth Cube Puzzle</h2>
+      <div class="cube-container">
+        <div class="cube" id="labyrinthCube">
+
+          <!-- Front: Lights Out -->
+          <div class="cube-face front">
+            <p>Toggle all lights green</p>
+            <div id="lightsGrid">
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+              <button class="light-cell"></button>
+            </div>
+            <div id="runeL" class="rune">Λ</div>
+          </div>
+
+          <!-- Back: Dial -->
+          <div class="cube-face back">
+            <p>Align the dial to ★</p>
+            <input type="range" id="dial" min="0" max="5" value="0">
+            <div id="runeD" class="rune">✦</div>
+          </div>
+
+          <!-- Right: Word Lock -->
+          <div class="cube-face right">
+            <p>Unscramble: "RAEL"</p>
+            <input type="text" id="wordInput" placeholder="Your answer">
+            <div id="runeW" class="rune">Ψ</div>
+          </div>
+
+          <!-- Left: Labyrinth Path -->
+          <div class="cube-face left">
+            <p>Trace the hidden path</p>
+            <div id="labyrinthGrid">
+              <!-- 25 cells -->
+              <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            </div>
+            <div id="runeM" class="rune">Ω</div>
+          </div>
+
+          <!-- Top: Memory Sequence -->
+          <div class="cube-face top">
+            <p>Repeat the sequence</p>
+            <button id="startMemory">Start</button>
+            <div id="memoryButtons">
+              <button class="mem" data-val="0">▲</button>
+              <button class="mem" data-val="1">◆</button>
+              <button class="mem" data-val="2">⚙</button>
+            </div>
+            <div id="runeS" class="rune">Σ</div>
+          </div>
+
+          <!-- Bottom: Math Path -->
+          <div class="cube-face bottom">
+            <p>Select numbers to sum to 15</p>
+            <div id="mathGrid">
+              <button class="num">4</button>
+              <button class="num">7</button>
+              <button class="num">2</button>
+              <button class="num">8</button>
+              <button class="num">5</button>
+            </div>
+            <div id="runeN" class="rune">Φ</div>
+          </div>
+
+        </div>
+      </div>
+      <div id="unlockMessage">✨ The Labyrinth Cube Unlocks! ✨</div>
+    </div>
+
+    
+    <!-- Final Normal Branch (reveals password) -->
+<div id="finalBranchPanel" class="panel-shell" style="display:none;">
+  <h2>Final Branch</h2>
+  <p>🧩 Puzzle complete. Final clearance required.</p>
+  <p>Your final password is: <strong id="revealedPassword">QUBE-ACCESS-777</strong></p>
+  <button id="toFinalClearanceBtn">Proceed to Final Clearance</button>
+</div>
+
+<!-- Final Clearance Panel (Qube) -->
+<div id="finalClearancePanel" class="panel-shell" style="display:none;">
+  <h2>Final Clearance</h2>
+  <input id="finalClearanceCode" type="password" placeholder="Enter final cube code" />
+  <button id="finalClearanceBtn">Unlock Superform</button>
+  <p id="finalClearanceStatus"></p>
+</div>
+
+<!-- Superform -->
+<form id="superForm" class="panel-shell" style="display:none;">
+  <h2>Super-Level Access</h2>
+  <!-- fields here -->
+  <button type="submit">Submit Superform</button>
+</form>
+
+    <!-- === Superform (final sanctum) === -->
+    <!-- Superform Chamber -->
+<div id="mysteryBoxPanel" style="display:none;" class="panel-shell">
+  <h2 class="mystery-title">Super Level Access</h2>
+  <div class="mystery-crest">♛ ⚚ ⟁</div>
+  <div class="cube-aura"></div>
+  <form id="superLevelForm">
+    <label for="superName">Account Holder</label>
+    <input id="superName" name="superName" required type="text" />
+    <label for="superTier">Tier</label>
+    <select id="superTier" name="superTier" required>
+      <option value="Sovereign">Sovereign</option>
+      <option value="Luminary">Luminary</option>
+      <option value="Legacy">Legacy Tier</option>
+    </select>
+    <label for="superCode">Clearance Code</label>
+    <input id="superCode" name="superCode" required type="password" />
+    <button type="submit">Submit Super-Level Form</button>
+    <p id="superFormStatus"></p>
+  </form>
+</div>
+
+    <!-- === Verification Plaque === -->
+    <div id="verificationPlaque" style="display:none;">
+      <p>Copy this verification text and paste into the official Google Form:</p>
+      <textarea id="verificationText" readonly></textarea>
+      <button type="button" id="copyBtn">📋 Copy</button>
+    </div>
+
+  </div>
+
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+</body>
+  
+  <script>/* === State === */
+let adminGateUnlocked = false;
+let cubeUnlocked = false;
+let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+
+/* === Helpers === */
+function showPanel(id) {
+  document.querySelectorAll('#adminForm, #colorPanel, #puzzleBoxPanel, #superForm')
+    .forEach(p => p.style.display = 'none');
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
+}
+
+function generateCardID() {
+  return 'CARD-' + Math.floor(Math.random() * 1000000);
+}
+function generateAccessCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+function showVerification(cardID, accessCode) {
+  const text = `Card ID: ${cardID}\nAccess Code: ${accessCode}`;
+  document.getElementById('verificationText').value = text;
+  document.getElementById('verificationPlaque').style.display = 'block';
+  // Redirect to Google Form
+  setTimeout(() => {
+    window.location.href = `https://docs.google.com/forms/d/e/your-form-id/viewform?usp=pp_url&entry.card=${encodeURIComponent(cardID)}`;
+  }, 3000);
+}
+
+function copyVerification() {
+  const text = document.getElementById('verificationText');
+  text.select();
+  document.execCommand('copy');
+  alert('Verification copied to clipboard.');
+}
+
+/* === Form Submissions === */
+function submitCeremonialForm() {
+  const cardID = generateCardID();
+  const accessCode = generateAccessCode();
+  document.getElementById('message').value = `Main form\nCard: ${cardID}\nCode: ${accessCode}`;
+  showVerification(cardID, accessCode);
+  return true;
+}
+
+function submitAdminForm() {
+  const cardID = generateCardID();
+  const accessCode = generateAccessCode();
+  document.getElementById('adminMessage').value = `Admin form\nCard: ${cardID}\nCode: ${accessCode}`;
+  showVerification(cardID, accessCode);
+  // After admin verify, show color panel
+  showPanel('colorPanel');
+  return false; // prevent default for now
+}
+
+function submitSuperForm() {
+  const cardID = generateCardID();
+  const accessCode = generateAccessCode();
+  document.getElementById('superMessage').value = `Superform\nCard: ${cardID}\nCode: ${accessCode}`;
+  showVerification(cardID, accessCode);
+  return true;
+}
+
+/* === Tap Unlock Logic for Admin === */
+let adminTapSequence = [];
+let adminTapResetTimer;
+
+function resetAdminTap() {
+  adminTapSequence = [];
+  clearTimeout(adminTapResetTimer);
+}
+
+function checkAdminMobileUnlock() {
+  const correct = ['tapTopLeft','tapTopRight'];
+  if (adminTapSequence.join(',') === correct.join(',')) {
+    adminGateUnlocked = true;
+    showPanel('adminForm');
+    resetAdminTap();
+  } else {
+    adminTapResetTimer = setTimeout(resetAdminTap, 8000);
+  }
+}
+
+/* === Cube Puzzle Unlock === */
+function checkCubeUnlock(){
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+    document.getElementById('unlockMessage').style.display = 'block';
+    setTimeout(() => {
+      showPanel('superForm');
+    }, 2000);
+  }
+}
+
+/* === Example Puzzle Wiring (Lights Out) === */
+document.addEventListener('DOMContentLoaded', () => {
+  // Start with main form visible
+  showPanel('mainForm');
+
+  // Lights Out puzzle
+  const lights = document.querySelectorAll('#lightsGrid .light-cell');
+  lights.forEach((cell, idx) => {
+    cell.addEventListener('click', () => {
+      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => {
+        if (lights[i]) lights[i].classList.toggle('on');
+      });
+      if ([...lights].every(c => c.classList.contains('on'))) {
+        keys.L = true;
+        document.getElementById('runeL').classList.add('revealed');
+        checkCubeUnlock();
+      }
+    });
+  });
+
+  // Add similar wiring for Dial, Word, Labyrinth, Memory, Math puzzles
+  
+  /* === Cube Puzzle Wiring === */
+document.addEventListener('DOMContentLoaded', () => {
+  // Lights Out (already wired above)
+  const lights = document.querySelectorAll('#lightsGrid .light-cell');
+  lights.forEach((cell, idx) => {
+    cell.addEventListener('click', () => {
+      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => {
+        if (lights[i]) lights[i].classList.toggle('on');
+      });
+      if ([...lights].every(c => c.classList.contains('on'))) {
+        keys.L = true;
+        document.getElementById('runeL').classList.add('revealed');
+        checkCubeUnlock();
+      }
+    });
+  });
+
+  // Dial (Back)
+  document.getElementById('dial').addEventListener('input', e => {
+    if (parseInt(e.target.value, 10) === 3) {
+      keys.D = true;
+      document.getElementById('runeD').classList.add('revealed');
+      checkCubeUnlock();
+    }
+  });
+
+  // Word Lock (Right)
+  document.getElementById('wordInput').addEventListener('change', e => {
+    if (e.target.value.trim().toLowerCase() === "real") {
+      keys.W = true;
+      document.getElementById('runeW').classList.add('revealed');
+      checkCubeUnlock();
+    }
+  });
+
+  // Labyrinth Path (Left)
+  const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+  const path = [0, 1, 6, 11, 16, 17, 18, 23, 24]; // hidden path indices
+  let progress = 0;
+  labCells.forEach((cell, idx) => {
+    cell.addEventListener('click', () => {
+      if (idx === path[progress]) {
+        cell.classList.add('on');
+        progress++;
+        if (progress === path.length) {
+          keys.M = true;
+          document.getElementById('runeM').classList.add('revealed');
+          checkCubeUnlock();
+        }
+      } else {
+        // wrong tile → reset
+        labCells.forEach(c => c.classList.remove('on'));
+        progress = 0;
+      }
+    });
+  });
+
+  // Memory Sequence (Top)
+  const memBtns = document.querySelectorAll('#memoryButtons .mem');
+  const startBtn = document.getElementById('startMemory');
+  let memSeq = [], playerSeq = [], playing = false;
+
+  function flash(btn) {
+    btn.classList.add('flash');
+    setTimeout(() => btn.classList.remove('flash'), 220);
+  }
+  function playSequence() {
+    playing = true;
+    let i = 0;
+    const interval = setInterval(() => {
+      const val = memSeq[i];
+      const btn = document.querySelector(`.mem[data-val="${val}"]`);
+      flash(btn);
+      i++;
+      if (i >= memSeq.length) {
+        clearInterval(interval);
+        playing = false;
+        playerSeq = [];
+      }
+    }, 420);
+  }
+  function nextRound() {
+    memSeq.push(Math.floor(Math.random() * 3));
+    playSequence();
+  }
+  startBtn.addEventListener('click', () => {
+    memSeq = []; playerSeq = []; nextRound();
+  });
+  memBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (playing || memSeq.length === 0) return;
+      const val = parseInt(btn.dataset.val, 10);
+      playerSeq.push(val);
+      flash(btn);
+      for (let i = 0; i < playerSeq.length; i++) {
+        if (playerSeq[i] !== memSeq[i]) {
+          playerSeq = []; playSequence(); return;
+        }
+      }
+      if (playerSeq.length === memSeq.length) {
+        if (memSeq.length >= 4) {
+          keys.S = true;
+          document.getElementById('runeS').classList.add('revealed');
+          checkCubeUnlock();
+        } else {
+          nextRound();
+        }
+      }
+    });
+  });
+
+  // Math Path (Bottom)
+  const nums = document.querySelectorAll('#mathGrid .num');
+  let sel = [];
+  nums.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('sel');
+      const val = parseInt(btn.textContent.trim(), 10);
+      if (btn.classList.contains('sel')) {
+        sel.push(val);
+      } else {
+        sel = sel.filter(v => v !== val || (v === val && sel.indexOf(v) !== sel.lastIndexOf(v)));
+      }
+      const sum = sel.reduce((a,b) => a+b, 0);
+      if (sum === 15) {
+        keys.N = true;
+        document.getElementById('runeN').classList.add('revealed');
+        checkCubeUnlock();
+      } else if (sum > 15) {
+        nums.forEach(n => n.classList.remove('sel'));
+        sel = [];
+      }
+    });
+  });
+});
+
+});
+</script>
+  
+  <script>/* === Color Ritual Setup === */
+const colors = [
+  {name:"crimson", bg:"crimson"},
+  {name:"violet", bg:"rebeccapurple"},
+  {name:"emerald", bg:"seagreen"},
+  {name:"amber", bg:"goldenrod"},
+  {name:"azure", bg:"royalblue"},
+  {name:"iron", bg:"dimgray"},
+  {name:"gold", bg:"gold"},
+  {name:"moss", bg:"darkolivegreen"},
+  {name:"obsidian", bg:"black"}
+];
+const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31∆","8.98","27$","719"];
+
+// Build buttons dynamically
+const colorButtonsDiv = document.getElementById('colorButtons');
+colors.forEach((c, idx) => {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "panel-btn";
+  btn.dataset.color = c.name;
+  btn.style.background = c.bg;
+  btn.style.color = "#fff";
+  btn.textContent = glyphs[idx % glyphs.length]; // assign glyph
+  colorButtonsDiv.appendChild(btn);
+});
+
+/* Ritual sequence logic */
+const correctSequence = ["crimson","violet","emerald","amber","azure","iron","gold","moss","obsidian"];
+let enteredSequence = [];
+
+document.querySelectorAll('.panel-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const chosen = btn.dataset.color;
+    enteredSequence.push(chosen);
+
+    // Check progress
+    for (let i = 0; i < enteredSequence.length; i++) {
+      if (enteredSequence[i] !== correctSequence[i]) {
+        enteredSequence = [];
+        document.getElementById('colorStatus').textContent = "❌ Wrong sequence. Reset.";
+        return;
+      }
+    }
+
+    // Full sequence correct
+    if (enteredSequence.length === correctSequence.length) {
+      document.getElementById('colorStatus').textContent = "✅ Ritual complete. Access Code: X-719-BOX";
+      enteredSequence = [];
+      // Branch to Puzzle Box
+      setTimeout(() => {
+        showPanel('puzzleBoxPanel');
+      }, 1500);
+    } else {
+      document.getElementById('colorStatus').textContent = "…continue the sequence…";
+    }
+  });
+});
+</script>
+  
+  
+  <script>/* === Final Cube Clearance === */
+document.getElementById('puzzleBoxUnlockBtn').addEventListener('click', () => {
+  const code = document.getElementById('puzzleBoxCode').value.trim();
+  const status = document.getElementById('puzzleBoxStatus');
+
+  // Example: final cube access code
+  const finalCode = "QUBE-ACCESS-777";
+
+  if (code === finalCode) {
+    status.textContent = "✅ Final clearance accepted. Superform unlocked.";
+    setTimeout(() => {
+      showPanel('superForm');
+    }, 1500);
+  } else {
+    status.textContent = "❌ Incorrect code. Try again.";
+  }
+});
+    
+    
+  // Puzzle Box solved → Final Branch
+function checkCubeUnlock() {
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+    document.getElementById('puzzleBoxPanel').style.display = 'none';
+    showPanel('finalBranchPanel');
+  }
+}
+
+// Final Branch → Final Clearance
+document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
+  showPanel('finalClearancePanel');
+});
+
+// Final Clearance → Superform
+document.getElementById('finalClearanceBtn').addEventListener('click', () => {
+  const code = document.getElementById('finalClearanceCode').value.trim();
+  const revealed = document.getElementById('revealedPassword').textContent.trim();
+  const status = document.getElementById('finalClearanceStatus');
+
+  if (code === revealed) {
+    status.textContent = "✅ Clearance accepted. Superform unlocked.";
+    setTimeout(() => showPanel('superForm'), 1500);
+  } else {
+    status.textContent = "❌ Incorrect code.";
+  }
+});
+
+    
+    /* === Access Panel Verification === */
+document.getElementById('accessCodeBtn').addEventListener('click', () => {
+  const input = document.getElementById('accessCodeInput').value.trim();
+  const status = document.getElementById('accessCodeStatus');
+  const correctCode = "X-719-BOX";
+
+  if (input === correctCode) {
+    status.textContent = "✅ Code accepted. Proceeding to Mystery Box Chamber...";
+    setTimeout(() => {
+      showPanel('mysteryBoxChamber');
+    }, 1500);
+  } else {
+    status.textContent = "❌ Incorrect code. Try again.";
+  }
+});
+
+    
+    // When Mystery Box Chamber is shown, start charging effect
+function showMysteryBoxChamber() {
+  showPanel('mysteryBoxChamber');
+  const crest = document.querySelector('#mysteryBoxChamber .mystery-crest');
+  const message = document.getElementById('mysteryMessage');
+  const btn = document.getElementById('attemptPuzzleBtn');
+
+  crest.classList.remove('active');
+  btn.disabled = true;
+  message.textContent = "The chamber hums with hidden power...";
+
+  // After 3 seconds, crest glows and button activates
+  setTimeout(() => {
+    crest.classList.add('active');
+    message.textContent = "The chamber is charged. You may attempt the Puzzle Box.";
+    btn.disabled = false;
+  }, 3000);
+}
+
+// Mystery Box Chamber → Puzzle Box
+document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
+  showPanel('puzzleBoxPanel');
+});
+function checkCubeUnlock() {
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+    const puzzlePanel = document.getElementById('puzzleBoxPanel');
+    const finalBranch = document.getElementById('finalBranchPanel');
+
+    // Fade out Puzzle Box
+    puzzlePanel.classList.add('fade-out');
+
+    // After fade-out completes, hide Puzzle Box and fade-in Final Branch
+    setTimeout(() => {
+      puzzlePanel.style.display = 'none';
+      puzzlePanel.classList.remove('fade-out');
+      finalBranch.style.display = 'block';
+      finalBranch.classList.add('fade-in');
+
+      // Remove fade-in class after animation so it can be reused
+      setTimeout(() => {
+        finalBranch.classList.remove('fade-in');
+      }, 1500);
+    }, 1500);
+  }
+}
+// Final Branch → Final Clearance
+document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
+  showPanel('finalClearancePanel');
+});
+
+// Final Clearance → Superform
+document.getElementById('finalClearanceBtn').addEventListener('click', () => {
+  const code = document.getElementById('finalClearanceCode').value.trim();
+  const revealed = document.getElementById('revealedPassword').textContent.trim();
+  const status = document.getElementById('finalClearanceStatus');
+
+  if (code === revealed) {
+    status.textContent = "✅ Clearance accepted. Superform unlocked.";
+    setTimeout(() => {
+      showPanel('mysteryBoxPanel'); // Superform chamber
+    }, 1500);
+  } else {
+    status.textContent = "❌ Incorrect code. Try again.";
+  }
+});
+
+// Superform submit (optional extra validation)
+document.getElementById('superLevelForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('superFormStatus').textContent =
+    "✨ Super-Level Form submitted successfully.";
+});
+
+</script>
+</html>
