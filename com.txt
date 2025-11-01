@@ -122,6 +122,247 @@
 </style>
 <style>
 
+/* Color ritual panel (hidden until Verify on mobile) */
+/* === Global Panel Look === */
+/* === Base and container === */
+:root {
+  --gold: #ffd700;
+  --violet: #6a0dad;
+  --iron: #222;
+  --obsidian: #000;
+}
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% 0%, #0b0b0b 0%, #000 60%);
+  color: var(--gold);
+  font-family: 'Orbitron', 'Courier New', monospace;
+}
+.container {
+  max-width: 920px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* === Panel shells === */
+.panel-shell {
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+  border: 3px solid #444;
+  border-radius: 12px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* === Headers === */
+h1 { text-align: center; letter-spacing: 1px; }
+h2, h3 {
+  color: var(--gold);
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255,215,0,0.6);
+  margin: 0 0 12px 0;
+}
+
+/* === Admin form === */
+ #adminForm input,
+#adminForm select {
+  /* styles */
+}
+
+  width: 100%;
+  margin: 8px 0 16px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+#verifyTierBtn {
+  background: linear-gradient(var(--gold), #b8860b);
+  border: 2px solid var(--iron);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #111;
+  text-shadow: 0 0 4px rgba(255,255,255,0.6);
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#verifyTierBtn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+
+/* === Ritual panel (multi-panel grid) === */
+#colorPanel { display: none; margin-top: 16px; position: relative; }
+#panelButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+.panel-btn { 
+  padding: 16px;
+  border-radius: 10px;
+  border: 2px solid var(--iron);
+  font-family: 'Courier New', monospace;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #fdfdfd;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(255,255,255,0.6), 0 0 12px rgba(255,215,0,0.8);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 0 10px rgba(255,215,0,0.28);
+  transition: transform 0.15s ease, box-shadow 0.3s ease, filter 0.2s ease;
+  animation: runePulse 3s infinite;
+}
+.panel-btn:active { transform: scale(0.96); box-shadow: inset 0 0 14px rgba(0,0,0,0.9), 0 0 6px rgba(255,215,0,0.5); }
+@keyframes runePulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255,255,255,0.6); filter: brightness(1); }
+  50%      { text-shadow: 0 0 14px rgba(255,215,0,1); filter: brightness(1.15); }
+}
+
+/* Distinct color backgrounds */
+.panel-btn[data-color="crimson"]  { background: linear-gradient(#7a2b2b, #3a0d0d); }
+.panel-btn[data-color="azure"]    { background: linear-gradient(#2b3f7a, #0d1a3a); }
+.panel-btn[data-color="emerald"]  { background: linear-gradient(#2b7a3f, #0d3a1a); }
+.panel-btn[data-color="amber"]    { background: linear-gradient(#7a6f2b, #3a2f0d); }
+.panel-btn[data-color="violet"]   { background: linear-gradient(#5a2b7a, #2a0d3a); }
+.panel-btn[data-color="iron"]     { background: linear-gradient(#555, #222); }
+.panel-btn[data-color="gold"]     { background: linear-gradient(#ffd700, #b8860b); color:#222; }
+.panel-btn[data-color="moss"]     { background: linear-gradient(#556b2f, #2a3a1a); }
+.panel-btn[data-color="obsidian"] { background: linear-gradient(#1c1c1c, #000); }
+
+/* === Access Panel (normal branch) === */
+#superCodePanel { display: none; position: relative; }
+.panel-sigil {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 6em; color: rgba(255,215,0,0.08);
+  text-shadow: 0 0 15px rgba(255,215,0,0.2); pointer-events: none;
+  z-index: 0;
+}
+#superCodePanel .panel-content { position: relative; z-index: 1; }
+
+/* === Mystery Box chamber (hidden branch) === */
+#mysteryBoxPanel {
+  display: none;
+  border: 3px solid var(--violet);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6);
+  color: #e0dfff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mystery-title { margin-bottom: 12px; }
+.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+
+/* Glowing cube aura behind Mystery Box */
+.cube-auraPulseCube {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%),
+    radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: auraPulse 5s ease-in-out infinite;
+}
+@keyframes auraPulse {
+  0%, 100% { filter: saturate(1); opacity: 0.75; }
+  50%      { filter: saturate(1.3); opacity: 1; }
+}
+/* Super Level form */
+  
+  cube
+@keyframes rotateCube {
+  from { transform: rotateX(0) rotateY(0); }
+  to   { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+/* Super Level form */
+#superLevelForm input, #superLevelForm select {
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #444;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+#superLevelForm button {
+  margin-top: 15px; padding: 10px 20px;
+  border-radius: 8px; border: 2px solid var(--iron);
+  background: linear-gradient(var(--gold), #b8860b);
+  color: #111; font-weight: bold; text-transform: uppercase; cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+#superLevelForm button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+.glowing-cube.active-glow {
+  animation: cubeGlow 3s infinite alternate;
+}
+/* === Tap shimmer feedback (mobile unlock overlays retained) === */
+.tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
+#tapTopLeft { left: 0; }
+#tapTopRight { right: 0; }
+.tap-shimmer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 998;
+  background:
+    radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
+    radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(138,43,226,0.22), transparent 70%);
+  opacity: 0; transition: opacity 260ms ease;
+}
+.tap-shimmer.active { opacity: 1; }
+
+/* Desktop crest click (optional) */
+.floating-crest {
+  position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+  border-radius: 50%; box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer;
+}
+
+/* Responsive touches */
+@media (max-width: 480px) {
+  .container { padding: 0 12px; }
+  h1 { font-size: 1.35em; }
+}
+
+/* Verify button should only appear on mobile */
+@media (min-width: 861px) {
+  #verifyTierBtn { display: none !important; }
+}
+
+/* Small‑screen enhancements */
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  .container { padding: 20px; }
+  h1 { font-size: 1.4em; }
+  label { margin-top: 15px; font-size: 0.95em; }
+  input, select, textarea { font-size: 0.95em; padding: 8px; }
+  button { font-size: 1em; padding: 10px; }
+  .crest-header { width: 80px; height: 80px; }
+  .floating-crest { width: 60px; height: 60px; bottom: 20px; right: 20px; }
+}
+  .cube-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.glowing-cube {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #6a0dad, #ffd700);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(106,13,173,0.8),
+              0 0 40px rgba(255,215,0,0.6);
+  animation: cubeGlow 3s infinite alternate;
+}
+
+@keyframes cubeGlow {
+  0%   { transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+  50%  { transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+}
+
+  /* Desktop: crest clickable */
 .floating-crest {
   position: fixed;
   width: 60px;
@@ -133,29 +374,84 @@
   border-radius: 50%;
   box-shadow: 0 0 20px rgba(194,167,109,0.6);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-.floating-crest:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(255,215,0,0.8);
-}
+}/* Mobile: crest is decorative only */
 @media (max-width: 860px) {
   .floating-crest {
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.7; /* optional, to signal it’s inactive */
   }
 }
-  
-  .tap-zone {
-  position: fixed;
-  width: 64px;
-  height: 64px;
-  top: 0;
-  z-index: 10000; /* way above shimmer */
-  background: rgba(255,0,0,0.2); /* TEMP: red tint so you can see it */
+
+</style>
+  <style>
+  body { background:#111; color:#ffd700; font-family:Orbitron, monospace; text-align:center; }
+  h1 { margin:20px; }
+
+  .cube-container {
+    perspective: 1000px;
+    width: 320px; height: 320px;
+    margin: 40px auto;
+    touch-action: none;
+  }
+  .cube {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-15deg) rotateY(20deg);
+    transition: transform 0.2s;
+  }
+  .cube-face {
+    position: absolute;
+    width: 320px; height: 320px;
+    background: #1a1a1a;
+    border: 2px solid #444;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+    padding: 10px;
+  }
+  .front  { transform: rotateY(0deg) translateZ(160px); }
+  .back   { transform: rotateY(180deg) translateZ(160px); }
+  .right  { transform: rotateY(90deg) translateZ(160px); }
+  .left   { transform: rotateY(-90deg) translateZ(160px); }
+  .top    { transform: rotateX(90deg) translateZ(160px); }
+  .bottom { transform: rotateX(-90deg) translateZ(160px); }
+
+  button, input[type=range], input[type=text] {
+    margin: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 2px solid #333;
+    background: #111;
+    color: #ffd700;
+    font-weight: bold;
+  }
+  .letter { display:none; margin-top:10px; font-size:1.5em; color:#0f0; }
+  #unlockMessage {
+    display:none;
+    margin-top:20px;
+    font-size:1.3em;
+    color:#0f0;
+    text-shadow:0 0 8px #0f0;
+  }
+    .light.on {
+  background: #0f0;
+  color: #000;
+  box-shadow: 0 0 10px #0f0;
 }
-#tapTopLeft { left: 0; }
-#tapTopRight { right: 0; }
+.letter {
+  display: none;
+  margin-top: 10px;
+  font-size: 1.5em;
+  color: #0f0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 </style>
 <script>
 function copyVerification() {
@@ -204,15 +500,34 @@ function copyVerification() {
       <iframe name="hidden_iframe" style="display:none;"></iframe>
     </form>
     
-    <!-- Admin Access -->
-<form id="adminForm" class="panel-shell">
-  ...
+    
+<!-- Admin Access -->
+<form id="adminForm" class="panel-shell" style="display:none;">
+  <h2>Admin Access</h2>
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">Master Admin</option>
+  </select>
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" required type="password" />
+  <button type="button" id="verifyTierBtn">Verify</button>
 </form>
 
-<!-- Ritual Sequence -->
-<div id="colorPanel" class="panel-shell">
+<!-- Ritual (multi-panel grid only) -->
+<div id="colorPanel" class="panel-shell" style="display:none;">
   <h3>Ritual Sequence</h3>
   <div id="panelButtons"></div>
+</div>
+
+<!-- Normal branch: Access Panel -->
+<div id="superCodePanel" class="panel-shell" style="display:none;">
+  <h3>Access Panel</h3>
+  <div class="panel-sigil">♛</div>
+  <div class="panel-content">
+    <p>Rune keypad unlocked.</p>
+    <!-- Add rune keypad or next-stage elements here -->
+  </div>
 </div>
 
 <!-- Hidden branch: Mystery Box Chamber -->
@@ -223,61 +538,127 @@ function copyVerification() {
   <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
 </div>
 
-<!-- Puzzle Box (iframe) -->
-<iframe id="puzzleFrame" src="puzzlebox2.html"
-        style="display:none; width:100%; height:700px; border:none;"></iframe>
-
-<!-- (Optional) Manual Puzzle Box Fallback -->
-<div id="puzzleBoxPanel" style="display:none;" class="panel-shell">
-  <h2 class="mystery-title">Puzzle Box Mechanism</h2>
-  <div class="cube-container"><div class="glowing-cube"></div></div>
-  <p>Enter the final clearance code to unlock the Superform.</p>
-  <input id="puzzleBoxCode" type="password" placeholder="Enter final code" />
-  <button id="puzzleBoxUnlockBtn">Unlock</button>
+<!-- Puzzle Box (interactive mechanism) -->
+    <div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
+<h1>Mystery Cube: PUZZLE</h1>
+<div class="cube-container">
+  <div class="cube" id="puzzleCube">
+    <!-- Front: Sequence (P) -->
+    <div class="cube-face front">
+      <p>Press in order</p>
+      <button class="seq-btn" data-val="1">▲</button>
+      <button class="seq-btn" data-val="2">◆</button>
+      <button class="seq-btn" data-val="3">⚙</button>
+      <div id="letterP" class="letter">P</div>
+    </div>
+    <!-- Back: Wheel (Z) -->
+    <div class="cube-face back">
+      <p>Set wheel to 7</p>
+      <input type="range" id="wheel" min="0" max="10" value="0">
+      <div id="letterZ1" class="letter">Z</div>
+    </div>
+    <!-- Right: Riddle (U) -->
+    <div class="cube-face right">
+      <p>Riddle: What has keys but no locks?</p>
+      <input type="text" id="riddleInput" placeholder="Your answer">
+      <div id="letterU" class="letter">U</div>
+    </div>
+    <!-- Left: Hidden tile (Z) -->
+    <div class="cube-face left">
+      <p>Find the hidden tile</p>
+      <div id="hiddenTile" style="width:60px;height:60px;background:#333;cursor:pointer;"></div>
+      <div id="clue" style="display:none;color:#0f0;">Clue: Sequence is ◆ → ⚙ → ▲</div>
+      <div id="letterZ2" class="letter">Z</div>
+    </div>
+    <!-- Top: Lights puzzle (L) -->
+    <div class="cube-face top">
+      <p>Toggle all lights on</p>
+      <div id="lights">
+        <button class="light">⬤</button>
+        <button class="light">⬤</button>
+        <button class="light">⬤</button>
+      </div>
+      <div id="letterL" class="letter">L</div>
+    </div>
+    <!-- Bottom: Math puzzle (E) -->
+    <div class="cube-face bottom">
+      <p>Solve: 3 + 4 = ?</p>
+      <input type="text" id="mathInput" placeholder="Answer">
+      <div id="letterE" class="letter">E</div>
+    </div>
+  </div>
 </div>
+<div id="unlockMessage">✨ The Mystery Cube Unlocks! ✨</div>
+      
+      <!-- Final Clearance Panel -->
+<div id="finalClearancePanel" class="panel-shell" style="display:none;">
+   
 
-<!-- Final Mystery Box / Superform -->
-<div id="mysteryBoxPanel" style="display:none;" class="panel-shell">
+      <h2 class="mystery-title">Final Clearance Code</h2>
+  <p>Enter the final code to unlock the Superform.</p>
+  <input id="finalClearanceCode" type="password" placeholder="Enter final code" />
+  <button id="finalClearanceUnlockBtn">Unlock</button>
+</div>
+<!-- Final stage: Superform -->
+<div id="superFormPanel" class="panel-shell" style="display:none;">
   <h2 class="mystery-title">Super Level Access</h2>
   <div class="mystery-crest">♛ ⚚ ⟁</div>
-  <form id="superForm" method="POST"
-        action="https://www.blogger.com/contact-form.do"
-        target="hidden_iframe"
-        onsubmit="return submitSuperForm();">
+  <form id="superLevelForm">
     <label for="superName">Account Holder</label>
     <input id="superName" name="superName" required type="text" />
-
     <label for="superTier">Tier</label>
     <select id="superTier" name="superTier" required>
       <option value="Sovereign">Sovereign</option>
       <option value="Luminary">Luminary</option>
       <option value="Legacy">Legacy Tier</option>
     </select>
-
     <label for="superCode">Clearance Code</label>
     <input id="superCode" name="superCode" required type="password" />
-
-    <!-- Hidden Blogger fields -->
-    <textarea id="superMessage" name="message" style="display:none;"></textarea>
-    <input type="email" name="email" id="superEmail" style="display:none;">
-
     <button type="submit">Submit Super-Level Form</button>
   </form>
 </div>
+  
 
-<!-- Copy Box Plaque -->
+    
+    <form id="superForm" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitSuperForm();" style="display:none;">
+  <h2>Super-Level Access Form</h2>
+  <label for="superName">Account Holder</label>
+  <input id="superName" name="superName" required type="text" />
+
+  <label for="superTier">Tier</label>
+  <select id="superTier" name="superTier" required>
+    <option value="Sovereign">Sovereign</option>
+    <option value="Luminary">Luminary</option>
+    <option value="Legacy">Legacy Tier</option>
+  </select>
+
+  <label for="superCode">Clearance Code</label>
+  <input id="superCode" name="superCode" required type="password" />
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="superMessage" name="message" style="display:none;"></textarea>
+  <input type="email" name="email" id="superEmail" style="display:none;">
+
+  <button type="submit">Submit Super-Level Form</button>
+      </form>
+    </div>
+
+  <div class="floating-crest"></div>
+  <!-- Copy Box Plaque -->
+<!-- Copy Box Plaque (hidden until submission) -->
 <div class="verification-plaque" id="verificationPlaque" style="display:none;">
   <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
   <textarea id="verificationText" readonly></textarea>
   <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
 </div>
+  <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
 
-<iframe name="hidden_iframe" style="display:none;"></iframe>
-
-<!-- Mobile shimmer + tap zones -->
+  <iframe name="hidden_iframe" style="display: none;"></iframe>
+  <!-- Mobile shimmer + tap zones -->
 <div class="tap-shimmer" id="tapShimmer"></div>
 <div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
 <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
+
 <script>
   let adminGateUnlocked = false;
 
@@ -485,6 +866,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
   <script>
+
 /* === State and codes === */
 const TIER_CODES = {
   Admin: "A-231-GATE",
@@ -494,41 +876,21 @@ const HIDDEN_CODE = "X-719-BOX";
 
 let hiddenPath = false;
 let superSequence = [];
-let adminGateUnlocked = false;
+
+
+/* === On load: hide panels === */
+window.addEventListener('DOMContentLoaded', () => {
+  hidePanel('adminForm'); 
+  hidePanel('colorPanel');
+  hidePanel('superCodePanel');
+  hidePanel('mysteryBoxChamber');
+  hidePanel('puzzleBoxPanel');
+  hidePanel('superFormPanel');
+});
 
 /* === Helpers === */
 function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
 function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
-
-/* === On load: hide panels and attach tap listeners === */
-window.addEventListener('DOMContentLoaded', () => {
-  hidePanel('adminForm'); 
-  hidePanel('colorPanel');
-  hidePanel('mysteryBoxChamber');
-  hidePanel('puzzleBoxPanel');
-  hidePanel('mysteryBoxPanel');
-
-  // Attach tap listeners here so elements exist
-  const left = document.getElementById('tapTopLeft');
-  const right = document.getElementById('tapTopRight');
-
-  if (left) {
-    left.addEventListener('click', () => {
-      console.log("Top left tapped");
-      adminTapSequence.push('tapTopLeft');
-      shimmerPulse();
-      checkAdminMobileUnlock();
-    });
-  }
-  if (right) {
-    right.addEventListener('click', () => {
-      console.log("Top right tapped");
-      adminTapSequence.push('tapTopRight');
-      shimmerPulse();
-      checkAdminMobileUnlock();
-    });
-  }
-});
 
 /* === Verify → show ritual === */
 document.getElementById('verifyTierBtn').addEventListener('click', () => {
@@ -537,16 +899,24 @@ document.getElementById('verifyTierBtn').addEventListener('click', () => {
     return;
   }
 
+  const tier = document.getElementById('adminTier').value;
   const code = document.getElementById('adminCode').value.trim();
   if (!code) { alert('Enter clearance code.'); return; }
 
-  // Reset panels on Verify
+  // Reset panels
   hidePanel('colorPanel');
+  hidePanel('superCodePanel');
   hidePanel('mysteryBoxChamber');
   hidePanel('puzzleBoxPanel');
-  hidePanel('mysteryBoxPanel');
+  hidePanel('superFormPanel');
 
-  if (code === TIER_CODES.Admin || code === TIER_CODES.MasterAdmin) {
+  // Exclusive code checks
+  if (tier === "Admin" && code === TIER_CODES.Admin) {
+    hiddenPath = false;
+    superSequence = [];
+    showPanel('colorPanel');
+    generatePanel();
+  } else if (tier === "MasterAdmin" && code === TIER_CODES.MasterAdmin) {
     hiddenPath = false;
     superSequence = [];
     showPanel('colorPanel');
@@ -557,7 +927,7 @@ document.getElementById('verifyTierBtn').addEventListener('click', () => {
     showPanel('colorPanel');
     generatePanel();
   } else {
-    alert('Invalid clearance code.');
+    alert('Invalid clearance code for selected tier.');
   }
 });
 
@@ -598,14 +968,14 @@ function generatePanel(){
   });
 }
 
-/* === Required sequence === */
+/* === Required ritual sequence === */
 const requiredSequence = [
   'crimson','violet','emerald',
   'amber','azure','iron',
   'gold','moss','obsidian'
 ];
 
-function handleSuperClick(color) {
+function handleSuperClick(color){
   superSequence.push(color);
   shimmerPulse();
 
@@ -620,42 +990,25 @@ function handleSuperClick(color) {
     }
 
     hidePanel('colorPanel');
+    ritualSolved = true; // ✅ mark ritual as solved
 
     if (hiddenPath) {
       showPanel('mysteryBoxChamber');
     } else {
-      showPanel('mysteryBoxPanel');
+      showPanel('superCodePanel');
     }
   }
 }
-
-/* === Attempt Puzzle Box === */
+/* === Mystery Box → Puzzle Box === */
 document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
   hidePanel('mysteryBoxChamber');
-  document.getElementById('puzzleFrame').style.display = 'block';
+  showPanel('puzzleBoxPanel');
 });
 
-/* === Listen for Puzzle Box completion === */
-window.addEventListener("message", (event) => {
-  if (event.data === "cubeSolved") {
-    document.getElementById('puzzleFrame').style.display = 'none';
-    hidePanel('puzzleBoxPanel');
-    showPanel('mysteryBoxPanel');
-  }
-});
+/* === Puzzle Box unlock → Superform === */
 
-/* === Optional manual Puzzle Box unlock === */
-document.getElementById('puzzleBoxUnlockBtn').addEventListener('click', () => {
-  const code = document.getElementById('puzzleBoxCode').value.trim();
-  if (code === "FINAL-CLEARANCE-999") {
-    hidePanel('puzzleBoxPanel');
-    showPanel('mysteryBoxPanel');
-  } else {
-    alert("Incorrect final code. Try again.");
-  }
-});
 
-/* === Shimmer feedback === */
+/* === Mobile shimmer feedback === */
 let shimmerTimer;
 function shimmerPulse(){
   const s = document.getElementById('tapShimmer');
@@ -665,8 +1018,7 @@ function shimmerPulse(){
   shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
 }
 
-/* === Tap unlock state === */
-/* === Tap unlock === */
+/* === Tap unlock logic === */
 let adminTapSequence = [];
 let adminTapResetTimer;
 
@@ -677,42 +1029,140 @@ function resetAdminTap(){
 
 function checkAdminMobileUnlock(){
   const correct = ['tapTopLeft','tapTopRight'];
-  console.log("Tap sequence so far:", adminTapSequence);
   if (adminTapSequence.join(',') === correct.join(',')) {
     adminGateUnlocked = true;
     showPanel('adminForm');
     shimmerPulse();
     resetAdminTap();
-    console.log("✅ Admin gate unlocked!");
   } else {
     adminTapResetTimer = setTimeout(resetAdminTap, 8000);
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const left = document.getElementById('tapTopLeft');
   const right = document.getElementById('tapTopRight');
-
-  if (left) {
-    left.addEventListener('click', () => {
-      console.log("Top left tapped");
-      adminTapSequence.push('tapTopLeft');
-      shimmerPulse();
-      checkAdminMobileUnlock();
-    });
-  }
-  if (right) {
-    right.addEventListener('click', () => {
-      console.log("Top right tapped");
-      adminTapSequence.push('tapTopRight');
-      shimmerPulse();
-      checkAdminMobileUnlock();
-    });
-  }
+  if (left) left.addEventListener('click', () => {
+    adminTapSequence.push('tapTopLeft');
+    shimmerPulse();
+    checkAdminMobileUnlock();
+  });
+  if (right) right.addEventListener('click', () => {
+    adminTapSequence.push('tapTopRight');
+    shimmerPulse();
+    checkAdminMobileUnlock();
+  });
 });
 </script>
-
-
   
+  <script>
+let keys = {P:false,U:false,Z1:false,Z2:false,L:false,E:false};
+
+// Sequence puzzle (P)
+let sequence = [];
+const correctSeq = ["2","3","1"];
+document.querySelectorAll('.seq-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    sequence.push(btn.dataset.val);
+    if(sequence.length===3){
+      if(sequence.join(',')===correctSeq.join(',')){
+        keys.P=true; document.getElementById('letterP').style.display='block';
+      }
+      sequence=[];
+      checkUnlock();
+    }
+  });
+});
+
+// Wheel puzzle (Z1)
+document.getElementById('wheel').addEventListener('change', e=>{
+  if(parseInt(e.target.value)===7){
+    keys.Z1=true; document.getElementById('letterZ1').style.display='block';
+    checkUnlock();
+  }
+});
+
+// Riddle puzzle (U)
+document.getElementById('riddleInput').addEventListener('change', e=>{
+  if(e.target.value.trim().toLowerCase()==="piano"){
+    keys.U=true; document.getElementById('letterU').style.display='block';
+    checkUnlock();
+  }
+});
+
+// Hidden tile (Z2)
+document.getElementById('hiddenTile').addEventListener('click',()=>{
+  document.getElementById('clue').style.display='block';
+  keys.Z2=true; document.getElementById('letterZ2').style.display='block';
+  checkUnlock();
+});
+
+// Lights puzzle (L)
+document.querySelectorAll('.light').forEach(light=>{
+  light.addEventListener('click',()=>{
+    light.classList.toggle('on');
+    light.style.color = light.classList.contains('on') ? '#0f0' : '#ffd700';
+    if([...document.querySelectorAll('.light')].every(l=>l.classList.contains('on'))){
+      keys.L=true; document.getElementById('letterL').style.display='block';
+      checkUnlock();
+    }
+  });
+});
+
+// Math puzzle (E)
+document.getElementById('mathInput').addEventListener('change', e=>{
+  if(e.target.value.trim()==="7"){
+    keys.E=true; document.getElementById('letterE').style.display='block';
+    checkUnlock();
+  }
+});
+function checkUnlock(){
+  if (Object.values(keys).every(v => v)) {
+    document.getElementById('unlockMessage').style.display = 'block';
+    document.getElementById('puzzleCube').style.boxShadow = "0 0 40px #0f0";
+    checkCubeUnlock(); // ✅ triggers final clearance panel
+  }
+}
+function checkCubeUnlock(){
+  if (Object.values(keys).every(v => v)) {
+    hidePanel('puzzleBoxPanel');
+    showPanel('finalClearancePanel'); // ✅ show final code panel
+  // ✅ Activate final cube glow
+    const finalCube = document.querySelector('.glowing-cube');
+    if (finalCube) finalCube.classList.add('active-glow');
+  }
+}
+
+
+document.getElementById('finalClearanceUnlockBtn').addEventListener('click', () => {
+  const code = document.getElementById('finalClearanceCode').value.trim();
+  if (code === 'TRIUMPH-777') {
+    hidePanel('finalClearancePanel');
+    showPanel('superFormPanel'); // ✅ final unlock
+  } else {
+    alert('Invalid final clearance code.');
+  }
+});
+// Cube rotation
+const cube=document.getElementById('puzzleCube');
+let isDragging=false,startX,startY,rotX=-15,rotY=20;
+cube.parentElement.addEventListener('pointerdown',e=>{
+  isDragging=true; startX=e.clientX; startY=e.clientY; cube.setPointerCapture(e.pointerId);
+});
+cube.parentElement.addEventListener('pointermove',e=>{
+  if(!isDragging) return;
+  const dx=e.clientX-startX, dy=e.clientY-startY;
+  rotY+=dx*0.4; rotX-=dy*0.4;
+  cube.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  startX=e.clientX; startY=e.clientY;
+});
+cube.parentElement.addEventListener('pointerup',e=>{
+  isDragging=false; cube.releasePointerCapture(e.pointerId);
+});
+    document.getElementById('unlockMessage').textContent = "🧩 Puzzle complete. Final clearance required.";
+</script>
+
 </body>
 </html>
+  
+  
