@@ -132,3 +132,4 @@ export function createTapShimmerModule({
     setEnableShimmer
   };
 }
+localStorage.setItem('adminUnlocked', 'true');
