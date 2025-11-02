@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Labyrinth Cube</title>
+  <style>
+    body {
+      background: #0b0b0b;
+      color: #eee;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .cube-container {
+      perspective: 1100px;
+      width: 340px;
+      height: 340px;
+      margin: 32px auto;
+    }
+
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(-15deg) rotateY(20deg);
+      transition: transform 0.15s ease-out;
+      will-change: transform;
+    }
+
+    .cube-face {
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
+      border: 2px solid #555;
+      box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
+      backdrop-filter: blur(1px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .cube-face .rune {
+      display: none;
+      margin-top: 10px;
+      font-size: 22px;
+      color: #00f5b5;
+      text-shadow: 0 0 8px rgba(0,245,181,0.65);
+    }
+
+    .front  { transform: rotateY(0deg) translateZ(170px); }
+    .back   { transform: rotateY(180deg) translateZ(170px); }
+    .right  { transform: rotateY(90deg) translateZ(170px); }
+    .left   { transform: rotateY(-90deg) translateZ(170px); }
+    .top    { transform: rotateX(90deg) translateZ(170px); }
+    .bottom { transform: rotateX(-90deg) translateZ(170px); }
+
+    #unlockMessage {
+      display: none;
+      margin-top: 18px;
+      font-size: 18px;
+      color: #00f5b5;
+      letter-spacing: 0.3px;
+    }
+
+    button {
+      margin: 4px;
+      padding: 8px 12px;
+      background: #232323;
+      color: #fff;
+      border: 1px solid #4b4b4b;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover { background: #2f2f2f; }
+
+    /* Lights Out grid */
+    #lightsGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 6px;
+    }
+    .light-cell {
+      width: 60px; height: 60px;
+      background: #1c1c1c;
+      border: 1px solid #444;
+      border-radius: 8px;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.4);
+      transition: background 140ms ease, box-shadow 140ms ease;
+    }
+    .light-cell.on {
+      background: #00f060;
+      box-shadow: 0 0 16px rgba(0,240,96,0.5), inset 0 0 8px rgba(0,0,0,0.35);
+    }
+
+    /* Labyrinth grid */
+    #labyrinthGrid {
+      display: grid;
+      grid-template-columns: repeat(5, 48px);
+      gap: 6px;
+    }
+    #labyrinthGrid .cell {
+      width: 48px; height: 48px;
+      background: #161616;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 140ms ease, box-shadow 140ms ease;
+    }
+    #labyrinthGrid .cell.on {
+      background: #00b8f5;
+      box-shadow: 0 0 14px rgba(0,184,245,0.55);
+    }
+
+    /* Memory buttons */
+    #memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
+    .mem {
+      width: 64px; height: 64px;
+      border-radius: 10px;
+      font-size: 22px;
+      background: #212121;
+      border: 1px solid #4b4b4b;
+      transition: filter 150ms ease, box-shadow 150ms ease;
+    }
+    .mem.flash {
+      filter: brightness(1.6);
+      box-shadow: 0 0 14px rgba(255,255,255,0.4);
+    }
+
+    /* Math grid */
+    #mathGrid { display: flex; gap: 10px; }
+    .num {
+      min-width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      background: #212121;
+      border: 1px solid #4b4b4b;
+      font-weight: 600;
+      font-size: 18px;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+    .num.sel {
+      transform: translateY(-2px);
+      background: #333;
+      box-shadow: 0 0 12px rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Labyrinth Cube</h1>
+  <div class="cube-container">
+    <div class="cube" id="labyrinthCube">
+      <!-- Front: Lights Out -->
+      <div class="cube-face front">
+        <p>Toggle all lights green</p>
+        <div id="lightsGrid">
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+          <button class="light-cell"></button>
+        </div>
+        <div id="runeL" class="rune">Λ</div>
+      </div>
+
+      <!-- Back: Symbol Dial -->
+      <div class="cube-face back">
+        <p>Align the dial to ★</p>
+        <input type="range" id="dial" min="0" max="5" value="0">
+        <div id="runeD" class="rune">✦</div>
+      </div>
+
+      <!-- Right: Word Lock -->
+      <div class="cube-face right">
+        <p>Unscramble: "RAEL"</p>
+        <input type="text" id="wordInput" placeholder="Your answer">
+        <div id="runeW" class="rune">Ψ</div>
+      </div>
+
+      <!-- Left: Labyrinth Path -->
+      <div class="cube-face left">
+        <p>Trace the hidden path</p>
+        <div id="labyrinthGrid">
+          <!-- 25 cells -->
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        </div>
+        <div id="runeM" class="rune">Ω</div>
+      </div>
+
+      <!-- Top: Memory Sequence -->
+      <div class="cube-face top">
+        <p>Repeat the sequence</p>
+        <button id="startMemory">Start</button>
+        <div id="memoryButtons">
+          <button class="mem" data-val="0">▲</button>
+          <button class="mem" data-val="1">◆</button>
+          <button class="mem" data-val="2">⚙</button>
+        </div>
+        <div id="runeS" class="rune">Σ</div>
+      </div>
+
+      <!-- Bottom: Math Path -->
+      <div class="cube-face bottom">
+        <p>Select numbers to sum to 15</p>
+        <div id="mathGrid">
+          <button class="num">4</button>
+          <button class="num">7</button>
+          <button class="num">2</button>
+          <button class="num">8</button>
+          <button class="num">5</button>
+        </div>
+        <div id="runeN" class="rune">Φ</div>
+      </div>
+    </div>
+  </div>
+  <div id="unlockMessage">✨ The Labyrinth Cube Unlocks! ✨</div>
+
+  <script>
+    // Progress keys for all six faces
+    let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+    let cubeUnlocked = false;
+
+    function pulseCube() {
+      const cube = document.getElementById('labyrinthCube');
+      cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
+      setTimeout(() => cube.style.boxShadow = "none", 900);
+    }
+
+    function checkUnlock(){
+      if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+        cubeUnlocked = true;
+        document.getElementById('unlockMessage').style.display = 'block';
+        pulseCube();
+        setTimeout(() => {
+          window.parent.postMessage("cubeSolved", "*");
+        }, 1000);
+      }
+    }
+
+    // --- 1) Lights Out (Front) ---
+    const lights = document.querySelectorAll('#lightsGrid .light-cell');
+    lights.forEach((cell, idx) => {
+      cell.addEventListener('click', () => {
+        [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => {
+          if (lights[i]) lights[i].classList.toggle('on');
+        });
+        if ([...lights].every(c => c.classList.contains('on'))) {
+          keys.L = true;
+          document.getElementById('runeL').style.display = 'block';
+          pulseCube();
+          checkUnlock();
+        }
+      });
+    });
+
+    // --- 2) Dial (Back) ---
+    document.getElementById('dial').addEventListener('input', e => {
+      if (parseInt(e.target.value, 10) === 3) {
+        keys.D = true;
+        document.getElementById('runeD').style.display = 'block';
+        pulseCube();
+        checkUnlock();
+      }
+    });
+
+    // --- 3) Word Lock (Right) ---
+    document.getElementById('wordInput').addEventListener('change', e => {
+      if (e.target.value.trim().toLowerCase() === "real") {
+        keys.W = true;
+        document.getElementById('runeW').style.display = 'block';
+        pulseCube();
+        checkUnlock();
+      }
+    });
+
+    // --- 4) Labyrinth Path (Left) ---
+    const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+    // Hidden path indices through the 5x5 grid (0..24)
+    const path = [0, 1, 6, 11, 16, 17, 18, 23, 24];
+    let progress = 0;
+
+    labCells.forEach((cell, idx) => {
+      cell.addEventListener('click', () => {
+        if (idx === path[progress]) {
+          cell.classList.add('on');
+          progress++;
+          if (progress === path.length) {
+            keys.M = true;
+            document.getElementById('runeM').style.display = 'block';
+            pulseCube();
+            checkUnlock();
+          }
+        } else {
+          // wrong tile → reset path
+          labCells.forEach(c => c.classList.remove('on'));
+          progress = 0;
+        }
+      });
+    });
+
+    // --- 5) Memory Sequence (Top) ---
+    const memBtns = document.querySelectorAll('#memoryButtons .mem');
+    const startBtn = document.getElementById('startMemory');
+    let memSeq = [];
+    let playerSeq = [];
+    let playing = false;
+
+    function flash(btn) {
+      btn.classList.add('flash');
+      setTimeout(() => btn.classList.remove('flash'), 220);
+    }
+
+    function playSequence() {
+      playing = true;
+      let i = 0;
+      const interval = setInterval(() => {
+        const val = memSeq[i];
+        const btn = document.querySelector(`.mem[data-val="${val}"]`);
+        flash(btn);
+        i++;
+        if (i >= memSeq.length) {
+          clearInterval(interval);
+          playing = false;
+          playerSeq = [];
+        }
+      }, 420);
+    }
+
+    function nextRound() {
+      memSeq.push(Math.floor(Math.random() * 3));
+      playSequence();
+    }
+
+    startBtn.addEventListener('click', () => {
+      memSeq = [];
+      playerSeq = [];
+      nextRound();
+    });
+
+    memBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (playing || memSeq.length === 0) return;
+        const val = parseInt(btn.dataset.val, 10);
+        playerSeq.push(val);
+        flash(btn);
+        // check as you go
+        for (let i = 0; i < playerSeq.length; i++) {
+          if (playerSeq[i] !== memSeq[i]) {
+            // wrong → reset current round
+            playerSeq = [];
+            playSequence();
+            return;
+          }
+        }
+        if (playerSeq.length === memSeq.length) {
+          // round complete
+          if (memSeq.length >= 4) {
+            keys.S = true;
+            document.getElementById('runeS').style.display = 'block';
+            pulseCube();
+            checkUnlock();
+          } else {
+            nextRound();
+          }
+        }
+      });
+    });
+
+    // --- 6) Math Path (Bottom) ---
+    const nums = document.querySelectorAll('#mathGrid .num');
+    let sel = [];
+
+    nums.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('sel');
+        const val = parseInt(btn.textContent.trim(), 10);
+        if (btn.classList.contains('sel')) {
+          sel.push(val);
+        } else {
+          sel = sel.filter(v => v !== val || (v === val && sel.indexOf(v) !== sel.lastIndexOf(v)));
+        }
+        const sum = sel.reduce((a,b) => a+b, 0);
+        if (sum === 15) {
+          keys.N = true;
+          document.getElementById('runeN').style.display = 'block';
+          pulseCube();
+          checkUnlock();
+        } else if (sum > 15) {
+          // too high → soft reset selection
+          nums.forEach(n => n.classList.remove('sel'));
+          sel = [];
+        }
+      });
+    });
+
+    // --- Interactive Rotation (mouse + touch) ---
+    const cube = document.getElementById('labyrinthCube');
+    let drag = false, sX = 0, sY = 0, rotX = -15, rotY = 20;
+
+    function updateRot() {
+      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    }
+
+    cube.addEventListener('mousedown', e => {
+      drag = true; sX = e.clientX; sY = e.clientY;
+    });
+    window.addEventListener('mousemove', e => {
+      if (!drag) return;
+      const dx = e.clientX - sX, dy = e.clientY - sY;
+      sX = e.clientX; sY = e.clientY;
+      rotY += dx * 0.4;
+      rotX -= dy * 0.4;
+      updateRot();
+    });
+    window.addEventListener('mouseup', () => drag = false);
+
+    cube.addEventListener('touchstart', e => {
+      drag = true; sX = e.touches[0].clientX; sY = e.touches[0].clientY;
+    }, { passive: true });
+    cube.addEventListener('touchmove', e => {
+      if (!drag) return;
+      const dx = e.touches[0].clientX - sX, dy = e.touches[0].clientY - sY;
+      sX = e.touches[0].clientX; sY = e.touches[0].clientY;
+      rotY += dx * 0.4;
+      rotX -= dy * 0.4;
+      updateRot();
+    }, { passive: true });
+    cube.addEventListener('touchend', () => drag = false);
+
+    updateRot();
+  </script>
+</body>
+</html>
+```
