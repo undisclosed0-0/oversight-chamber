@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prestige Triumph — Oversight Chambers (Hybrid, Restored)</title>
 
-  <!-- Outer prestige shell (light aura) -->
   <style>
     /* Prestige container */
     body {
@@ -39,7 +36,7 @@
       margin: 0 0 14px 0;
     }
 
-    /* Verification plaque (outer prestige) */
+    /* Verification plaque */
     .verification-plaque {
       margin-top: 25px; padding: 20px;
       border: 2px solid #c2a76d; border-radius: 12px;
@@ -73,7 +70,7 @@
     }
     @media (max-width: 860px) { .floating-crest { pointer-events: none; opacity: 0.7; } }
 
-    /* Tap shimmer + zones (kept) */
+    /* Tap shimmer + zones */
     .tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
     #tapTopLeft { left: 0; }
     #tapTopRight { right: 0; }
@@ -86,7 +83,7 @@
     }
     .tap-shimmer.active { opacity: 1; }
 
-    /* Ceremonial chambers (inner dark ritual styling) */
+    /* Ceremonial chambers */
     :root {
       --gold:#ffd700; --violet:#6a0dad; --iron:#222;
       --panel-bg: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
@@ -115,75 +112,92 @@
     }
     .panel-shell button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
-    /* Ritual grid buttons */
+    /* Ritual grid buttons (inner content grid) */
     #panelButtons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
-    .panel-btn {
-      padding: 16px; border-radius: 12px; border: 2px solid #333;
-      background: radial-gradient(circle at 30% 30%, #1a1a1a, #0d0d0d);
-      color: var(--gold); font-weight: 700;
-      text-shadow: 0 0 6px rgba(255,215,0,0.6);
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 10px rgba(255,215,0,0.25);
-      transform: translateY(0);
-      transition: transform 0.15s ease, box-shadow 0.3s ease;
-      animation: runePulse 3s infinite;
+    .rune-btn {
+      display: grid; place-items: center; min-height: 100px;
+      border: 6px solid #3a3a3a; background: #2a2b2f; font-family: "Cinzel", serif; font-weight: 700; cursor: pointer;
+      box-shadow: inset 0 2px 6px rgba(255,255,255,0.05), inset 0 -4px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6);
+      transition: all 200ms ease; color: var(--gold);
     }
-    .panel-btn:hover { transform: translateY(-3px); box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 18px rgba(255,215,0,0.6); }
-    @keyframes runePulse { 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.12);} }
+    .rune-btn .sigil { font-size: 1.6rem; color: rgba(212,184,106,0.9); text-shadow: 0 0 6px rgba(212,184,106,0.6), 0 0 14px rgba(242,240,233,0.35); }
+    .rune-btn small { margin-top: 6px; font-size: 1rem; color: #aaa; text-shadow: 0 0 3px rgba(0,0,0,0.6); }
 
-    /* Access keypad sigil */
-    .panel-sigil {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      font-size: 6em; color: rgba(255,215,0,0.08);
-      text-shadow: 0 0 15px rgba(255,215,0,0.2); pointer-events: none; z-index: 0;
+    /* Active states */
+    .rune-btn.red.active    { background: radial-gradient(circle at 50% 30%, rgba(160,40,40,0.75), #2a2b2f 70%); }
+    .rune-btn.blue.active   { background: radial-gradient(circle at 50% 30%, rgba(40,100,180,0.75), #2a2b2f 70%); }
+    .rune-btn.green.active  { background: radial-gradient(circle at 50% 30%, rgba(60,150,90,0.75), #2a2b2f 70%); }
+    .rune-btn.mustard.active{ background: radial-gradient(circle at 50% 30%, rgba(190,160,60,0.72), #2a2b2f 70%); }
+    .rune-btn.violet.active { background: radial-gradient(circle at 50% 30%, rgba(130,80,180,0.75), #2a2b2f 70%); }
+    .rune-btn.cyan.active   { background: radial-gradient(circle at 50% 30%, rgba(60,170,190,0.75), #2a2b2f 70%); }
+    .rune-btn.deepred.active{ background: radial-gradient(circle at 50% 30%, rgba(160,50,50,0.75), #2a2b2f 70%); }
+    .rune-btn.emerald.active{ background: radial-gradient(circle at 50% 30%, rgba(50,170,110,0.75), #2a2b2f 70%); }
+    .rune-btn.deepviolet.active{ background: radial-gradient(circle at 50% 30%, rgba(110,60,160,0.75), #2a2b2f 70%); }
+
+    .rune-btn.active .sigil,
+    .rune-btn.active small {
+      color: #f2f0e9;
+      text-shadow: 0 0 6px rgba(255,220,120,0.6), 0 0 14px rgba(255,255,180,0.4);
     }
-    #superCodePanel .panel-content { position: relative; z-index: 1; }
 
-    /* Cube (Labyrinth) */
-    .cube-container { perspective: 1100px; width: 340px; height: 340px; margin: 16px auto; }
-    .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(20deg); transition: transform 0.15s ease-out; will-change: transform; }
-    .cube-face {
-      position: absolute; width: 340px; height: 340px;
-      background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
-      border: 2px solid #555; box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
-      display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 14px; color: #fff;
+    /* Indicator lines */
+    .indicator-lines {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
     }
-    .cube-face .rune { display: none; margin-top: 10px; font-size: 22px; color: #00f5b5; text-shadow: 0 0 8px rgba(0,245,181,0.65); }
-    .front  { transform: rotateY(0deg)   translateZ(170px); }
-    .back   { transform: rotateY(180deg) translateZ(170px); }
-    .right  { transform: rotateY(90deg)  translateZ(170px); }
-    .left   { transform: rotateY(-90deg) translateZ(170px); }
-    .top    { transform: rotateX(90deg)  translateZ(170px); }
-    .bottom { transform: rotateX(-90deg) translateZ(170px); }
-    #unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
+    .indicator-lines span {
+      width: 28px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(90, 60, 30, 0.4);
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
+      transition: all 200ms ease;
+    }
+    .indicator-lines span.active {
+      background: rgba(255,140,60,0.9);
+      box-shadow: 0 0 6px rgba(255,140,60,0.65), 0 0 12px rgba(255,200,120,0.45), 0 0 20px rgba(255,160,80,0.35);
+    }
 
-   /* Lights Out */
-/* Lights Out */
-/* Lights Out — final override */
-/* Lights Out */
-#lightsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 60px);
-  gap: 6px;
-}
+    /* Sequence readout */
+    #sequenceReadout {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 1.2rem;
+      color: #9fe8ff;
+      background: rgba(20, 30, 40, 0.85);
+      border: 2px inset rgba(120,180,200,0.4);
+      padding: 6px 12px;
+      margin-top: 12px;
+      text-align: center;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 6px rgba(0,255,255,0.4), 0 0 12px rgba(0,180,255,0.25);
+      overflow: hidden;
+      white-space: nowrap;
+    }
 
-#lightsGrid .light-cell {
-  width: 60px;
-  height: 60px;
-  background: #000;              /* solid black OFF state */
-  border: 1px solid #333;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
-  transition: background 140ms ease, box-shadow 140ms ease;
-  -webkit-appearance: none;
-  appearance: none;
-}
+    /* Mystery Chamber */
+    #mysteryBoxChamber {
+      max-width: 720px;
+      margin: 48px auto;
+      padding: 32px;
+      background: radial-gradient(1200px 600px at 50% -20%, rgba(255, 230, 120, 0.08), transparent 60%), linear-gradient(180deg, #0b0b12 0%, #0e0e18 100%);
+      border-radius: 16px;
+      box-shadow: 0 0 24px rgba(255, 200, 80, 0.15), inset 0 0 18px rgba(255, 220, 120, 0.06), 0 12px 30px rgba(0, 0, 0, 0.6);
+      color: #e9e3ff;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
 
-#lightsGrid .light-cell.on {
-  background: #ffd700;           /* glowing gold ON state */
-  box-shadow: 0 0 14px rgba(255,215,0,0.7),
-              inset 0 0 6px rgba(0,0,0,0.4);
-}
+    /* Lights Out */
+    #lightsGrid { display: grid; grid-template-columns: repeat(3, 60px); gap: 6px; }
+    #lightsGrid .light-cell {
+      width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.7); transition: background 140ms ease, box-shadow 140ms ease; appearance: none;
+    }
+    #lightsGrid .light-cell.on { background: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.7), inset 0 0 6px rgba(0,0,0,0.4); }
 
     /* Labyrinth Path */
     #labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
@@ -200,7 +214,7 @@
     .num { min-width: 54px; height: 54px; border-radius: 8px; background: #212121; border: 1px solid #4b4b4b; font-weight: 600; font-size: 18px; transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
     .num.sel { transform: translateY(-2px); background: #333; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
 
-    /* Final clearance mini-cube (visual) */
+    /* Glowing cube visual */
     .glowing-cube {
       width: 120px; height: 120px; margin: 16px auto;
       background: linear-gradient(145deg, #6a0dad, #ffd700);
@@ -214,530 +228,12 @@
       100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
     }
 
-    /* Small screen polish */
-    @media (max-width: 480px) {
-      body { padding: 10px; }
-      .container { padding: 20px; }
-      h1 { font-size: 1.4em; }
-      .crest-header { width: 80px; height: 80px; }
+    /* Admin form styling */
+    #adminForm {
+      max-width: 640px; margin: 40px auto; padding: 32px; background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+      border-radius: 16px; border: 1px solid rgba(212,184,106,0.25); box-shadow: 0 0 20px rgba(212,184,106,0.12), inset 0 0 14px rgba(60,65,75,0.6), 0 10px 24px rgba(0,0,0,0.55);
+      color: #f2f0e9; position: relative; overflow: hidden; display: none;
     }
-    
-    
-    /* Prestige main form */
-.prestige-form input, .prestige-form select, .prestige-form button {
-  background: #fff;
-  border: 1px solid #ccc;
-  color: #333;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-}
-
-/* Chamber forms (Admin + Super) */
-.chamber-form {
-  background: radial-gradient(circle at center, #1a1a1a, #0d0d0d);
-  border: 3px solid #444;
-  color: var(--gold);
-  font-family: 'Orbitron','Courier New', monospace;
-}
-.chamber-form input, .chamber-form select {
-  background: #111;
-  border: 2px solid #333;
-  color: var(--gold);
-}
-/* Main ceremonial form buttons */
-.prestige-form #genNameBtn {
-  margin-top: 10px;
-  background: #c2a76d; /* rich gold */
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 0.95em;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.25s ease;
-}
-.prestige-form #genNameBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-/* Prestige ceremonial form container */
-.prestige-form {
-  max-width: 480px;                /* slightly wider for balance */
-  margin: 40px auto;
-  padding: 28px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  font-family: "Segoe UI", sans-serif;
-  color: #333;
-}
-
-/* Headings */
-.prestige-form h1 {
-  font-size: 1.4em;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #4b3f72;                  /* ceremonial purple */
-}
-
-/* Labels */
-.prestige-form label {
-  display: block;
-  margin-top: 14px;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #4b3f72;                  /* purple accent */
-}
-
-/* Inputs & selects */
-.prestige-form input[type="text"],
-.prestige-form input[type="tel"],
-.prestige-form select {
-  width: 100%;                     /* full width for clean alignment */
-  padding: 12px 14px;
-  border: 1px solid #b8aee0;       /* soft purple border */
-  border-radius: 6px;
-  font-size: 1em;
-  background: #fafafa;
-  color: #4b3f72;                  /* purple text */
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-.prestige-form input:focus,
-.prestige-form select:focus {
-  border-color: #6a5acd;
-  box-shadow: 0 0 6px rgba(106,90,205,0.3);
-  outline: none;
-}
-
-/* Gold generator button */
-.prestige-form #genNameBtn {
-  margin-top: 10px;
-  background: #c2a76d;
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 0.95em;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.25s ease;
-}
-.prestige-form #genNameBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-/* Purple submit button */
-.prestige-form button[type="submit"] {
-  margin-top: 24px;
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(to right, #4b3f72, #6a5acd);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1em;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
-  transition: transform 0.15s ease, background 0.25s ease;
-}
-.prestige-form button[type="submit"]:hover {
-  background: linear-gradient(to right, #6a5acd, #4b3f72);
-  transform: translateY(-2px);
-}
-
-.prestige-form {
-  width: 100%;
-  max-width: 600px;       /* wider, matches chamber panels */
-  margin: 40px auto;
-  padding: 32px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.prestige-form input[type="text"],
-.prestige-form input[type="tel"],
-.prestige-form select {
-  .prestige-form label {
-  color: #4b3f72;          /* purple headings */
-}
-.prestige-form input,
-.prestige-form select {
-  border: 1px solid #b8aee0;
-  color: #4b3f72;
-}
-width: 100%;             /* full width */
-  box-sizing: border-box;  /* padding doesn’t break alignment */
-}
-/* Mystery Chamber — using the correct ID */
-#mysteryBoxChamber {
-  max-width: 720px;
-  margin: 48px auto;
-  padding: 32px;
-  background: radial-gradient(1200px 600px at 50% -20%, rgba(255, 230, 120, 0.08), transparent 60%),
-              linear-gradient(180deg, #0b0b12 0%, #0e0e18 100%);
-  border-radius: 16px;
-  box-shadow:
-    0 0 24px rgba(255, 200, 80, 0.15),
-    inset 0 0 18px rgba(255, 220, 120, 0.06),
-    0 12px 30px rgba(0, 0, 0, 0.6);
-  color: #e9e3ff;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Header and title */
-#mysteryBoxChamber .chamber-title {
-  font-size: 1.6rem;
-  text-align: center;
-  letter-spacing: 0.06em;
-  color: #f6e27a;
-  text-shadow: 0 0 12px rgba(255, 200, 80, 0.35);
-  margin-bottom: 20px;
-}
-
-/* Labels and inputs */
-#mysteryBoxChamber label {
-  display: block;
-  margin: 16px 0 8px;
-  font-weight: 600;
-  color: #cbbcff;
-}
-#mysteryBoxChamber input,
-#mysteryBoxChamber select {
-  width: 100%;
-  padding: 12px 14px;
-  background: #11111a;
-  color: #e9e3ff;
-  border: 1px solid #6a5acd;
-  border-radius: 8px;
-  box-shadow: inset 0 0 8px rgba(106, 90, 205, 0.25);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-#mysteryBoxChamber input:focus,
-#mysteryBoxChamber select:focus {
-  border-color: #b5a9ff;
-  box-shadow: 0 0 10px rgba(181, 169, 255, 0.35);
-  outline: none;
-}
-
-/* Submit button */
-#mysteryBoxChamber .mystery-submit {
-  margin-top: 26px;
-  width: 100%;
-  padding: 14px 16px;
-  background: linear-gradient(90deg, #f2d16b, #f8e58f);
-  color: #11111a;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  box-shadow: 0 0 18px rgba(255, 220, 120, 0.45);
-  cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.25s ease;
-}
-#mysteryBoxChamber .mystery-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 24px rgba(255, 230, 140, 0.6);
-}
-
- /* Admin Chamber — Grey Prestige Hybrid */
-#adminForm {
-  max-width: 640px;
-  margin: 40px auto;
-  padding: 32px;
-  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
-  border-radius: 16px;
-  border: 1px solid rgba(212, 184, 106, 0.25); /* prestige gold trace */
-  box-shadow:
-    0 0 20px rgba(212, 184, 106, 0.12),
-    inset 0 0 14px rgba(60, 65, 75, 0.6),
-    0 10px 24px rgba(0, 0, 0, 0.55);
-  color: #f2f0e9;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Title with sigil marker above (interlocked geometry) */
-#adminForm h2 {
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 28px;
-  color: #f2f0e9;                /* ivory */
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 8px rgba(212, 184, 106, 0.25); /* prestige glow */
-  position: relative;
-  padding-top: 70px;             /* headroom for sigil */
-}
-
-/* Sigil marker — golden/ivory/teal ring */
-#adminForm h2::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 56px;
-  height: 56px;
-  transform: translateX(-50%);
-  background: radial-gradient(circle at center,
-    rgba(212,184,106,0.9) 0%,     /* gold */
-    rgba(242,240,233,0.85) 42%,   /* ivory */
-    rgba(95,192,181,0.7) 100%     /* teal undertone */
-  );
-  border-radius: 50%;
-  box-shadow:
-    0 0 12px rgba(212, 184, 106, 0.5),
-    0 0 20px rgba(95, 192, 181, 0.35);
-}
-
-/* Interlocked square inside the ring */
-#adminForm h2::after {
-  content: "";
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  width: 28px;
-  height: 28px;
-  transform: translateX(-50%) rotate(45deg);
-  background: linear-gradient(135deg,
-    rgba(242,240,233,0.95),       /* ivory */
-    rgba(212,184,106,0.85)        /* gold */
-  );
-  box-shadow:
-    0 0 8px rgba(212, 184, 106, 0.4),
-    inset 0 0 6px rgba(95, 192, 181, 0.25);
-}
-
-/* Labels */
-#adminForm label {
-  display: block;
-  margin: 14px 0 6px;
-  font-weight: 600;
-  color: #d4b86a;
-}
-
-/* Inputs & selects */
-#adminForm input,
-#adminForm select {
-  width: 100%;
-  padding: 12px 14px;
-  background: #2f3036;
-  color: #f2f0e9;
-  border: 1px solid rgba(90, 106, 122, 0.45); /* slate undertone */
-  border-radius: 10px;
-  box-shadow:
-    inset 0 0 8px rgba(50, 55, 65, 0.6),
-    0 1px 6px rgba(0, 0, 0, 0.35);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
-}
-#adminForm input:focus,
-#adminForm select:focus {
-  outline: none;
-  border-color: #d4b86a;
-  box-shadow:
-    inset 0 0 10px rgba(212, 184, 106, 0.25),
-    0 0 10px rgba(212, 184, 106, 0.25);
-  transform: translateY(-1px);
-}
-
-/* Verify button */
-#adminForm #verifyTierBtn {
-  margin-top: 22px;
-  width: 100%;
-  padding: 13px 16px;
-  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
-  color: #f2f0e9;
-  border: 1px solid rgba(212, 184, 106, 0.35);
-  border-radius: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.5),
-    inset 0 0 6px rgba(212, 184, 106, 0.12);
-  cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
-}
-#adminForm #verifyTierBtn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.6),
-    0 0 14px rgba(212, 184, 106, 0.25);
-  filter: brightness(1.05);
-}
-
-/* Status message */
-#adminForm #verifyStatus {
-  margin-top: 14px;
-  font-size: 0.95rem;
-  text-align: center;
-  color: #b0b2bb;
-}
-/* Panel container: hyper-realistic stone aura */
-.ritual-sequence {
-  max-width: 880px;
-  margin: 48px auto;
-  padding: 28px 28px 32px;
-  border-radius: 18px;
-  background:
-    radial-gradient(1200px 800px at 50% -20%, rgba(220, 190, 120, 0.08), transparent 60%),
-    radial-gradient(800px 600px at 20% 120%, rgba(80, 110, 90, 0.08), transparent 62%),
-    linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
-  box-shadow:
-    0 0 40px rgba(212, 184, 106, 0.12),
-    inset 0 0 24px rgba(30, 30, 35, 0.85);
-  border: 1px solid rgba(212, 184, 106, 0.25);
-  color: #f2f0e9;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Surface texture */
-.ritual-sequence::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px),
-    radial-gradient(800px 600px at 80% 20%, rgba(255,255,255,0.03), transparent 70%),
-    radial-gradient(900px 700px at 0% 100%, rgba(0,0,0,0.15), transparent 60%);
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  opacity: 0.65;
-}
-
-/* Header: non-verbal glyph + sigil marker */
-.ritual-header {
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.runic {
-  font-size: 1.4rem;
-  letter-spacing: 0.18em;
-  color: rgba(160, 210, 230, 0.9);
-  text-shadow: 0 0 12px rgba(110, 190, 220, 0.45);
-}
-
-/* Sigil marker (constructed, interlocked) */
-.sigil {
-  position: relative;
-  width: 72px; height: 72px;
-  filter: drop-shadow(0 0 14px rgba(212,184,106,0.45));
-}
-.sigil-ring {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(212,184,106,0.8) 0%, rgba(242,240,233,0.85) 55%, rgba(95,192,181,0.7) 100%);
-}
-.sigil-core {
-  position: absolute; inset: 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(40,40,45,0.8) 0%, rgba(90,106,122,0.6) 100%);
-  box-shadow: inset 0 0 12px rgba(212,184,106,0.25);
-}
-.sigil-square {
-  position: absolute;
-  top: 18px; left: 50%;
-  width: 36px; height: 36px;
-  transform: translateX(-50%) rotate(45deg);
-  background: linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));
-  box-shadow:
-    0 0 8px rgba(212,184,106,0.35),
-    inset 0 0 6px rgba(95,192,181,0.25);
-}
-
-/* Burned-in sequence readout */
-.sequence {
-  text-align: center;
-  font-size: 2rem;
-  letter-spacing: 0.25em;
-  color: #6a5a3c;
-  text-shadow:
-    0 0 6px rgba(255, 140, 60, 0.25),
-    0 0 12px rgba(255, 200, 120, 0.18);
-  margin: 8px 0 20px;
-}
-
-/* Grid layout like the right image */
-.rune-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* Button base: left-image style */
-.rune-btn {
-  display: grid;
-  place-items: center;
-  min-height: 88px;
-  border-radius: 12px;
-  border: 1px solid rgba(28,28,32,0.8);
-  color: #faf7ef;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  box-shadow:
-    inset 0 0 20px rgba(15, 15, 18, 0.85),
-    0 0 18px rgba(20, 20, 25, 0.45);
-  background: #202228;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 220ms ease, filter 160ms ease;
-}
-.rune-btn small {
-  display: block;
-  margin-top: 6px;
-  font-weight: 600;
-  opacity: 0.85;
-}
-
-/* Button aura colors */
-.rune-btn.red      { background: radial-gradient(140px circle at 50% 30%, rgba(160,40,40,0.75), #202228 70%); box-shadow: 0 0 18px rgba(160,40,40,0.35), inset 0 0 16px rgba(20,10,10,0.8); }
-.rune-btn.blue     { background: radial-gradient(140px circle at 50% 30%, rgba(40,100,180,0.75), #202228 70%); box-shadow: 0 0 18px rgba(40,100,180,0.35), inset 0 0 16px rgba(10,15,25,0.8); }
-.rune-btn.green    { background: radial-gradient(140px circle at 50% 30%, rgba(60,150,90,0.75), #202228 70%); box-shadow: 0 0 18px rgba(60,150,90,0.35), inset 0 0 16px rgba(10,25,15,0.8); }
-.rune-btn.mustard  { background: radial-gradient(140px circle at 50% 30%, rgba(190,160,60,0.72), #202228 70%); box-shadow: 0 0 18px rgba(190,160,60,0.35), inset 0 0 16px rgba(25,20,10,0.8); }
-.rune-btn.violet   { background: radial-gradient(140px circle at 50% 30%, rgba(130,80,180,0.75), #202228 70%); box-shadow: 0 0 18px rgba(130,80,180,0.35), inset 0 0 16px rgba(20,10,25,0.8); }
-.rune-btn.cyan     { background: radial-gradient(140px circle at 50% 30%, rgba(60,170,190,0.75), #202228 70%); box-shadow: 0 0 18px rgba(60,170,190,0.35), inset 0 0 16px rgba(10,20,25,0.8); }
-.rune-btn.deepred  { background: radial-gradient(140px circle at 50% 30%, rgba(160,50,50,0.75), #202228 70%); box-shadow: 0 0 18px rgba(160,50,50,0.35), inset 0 0 16px rgba(20,10,10,0.8); }
-.rune-btn.emerald  { background: radial-gradient(140px circle at 50% 30%, rgba(50,170,110,0.75), #202228 70%); box-shadow: 0 0 18px rgba(50,170,110,0.35), inset 0 0 16px rgba(10,25,18,0.8); }
-.rune-btn.deepviolet { background: radial-gradient(140px circle at 50% 30%, rgba(110,60,160,0.75), #202228 70%); box-shadow: 0 0 18px rgba(110,60,160,0.35), inset 0 0 16px rgba(15,10,25,0.8); }
-
-/* Interaction */
-.rune-btn:hover { transform: translateY(-2px); filter: saturate(1.08); }
-.rune-btn:active { transform: translateY(0); filter: brightness(0.98); }
-
-/* Controls */
-.ritual-controls {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 22px;
-}
-.verify-btn, .clear-btn {
-  padding: 12px 18px;
-  border-radius: 10px;
-  border: 1px solid rgba(212,184,106,0.35);
-  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
-  color: #f2f0e9;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.5),
-    inset 0 0 6px rgba(212, 184, 106, 0.12);
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 220ms ease, filter 160ms ease;
-}
-.verify-btn:hover, .clear-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 10px 24px rgba(0,0,0,0.6),
-    0 0 14px rgba(212,184,106,0.25);
-}
-
   </style>
 </head>
 <body>
@@ -745,11 +241,12 @@ width: 100%;             /* full width */
     <div class="crest-header"></div>
     <h1>Prestige Triumph: Oversight Entry</h1>
 
-    <!-- Centerpiece main form (Blogger-compatible, prestige outer; inner ritual style preserved) -->
+    <!-- Public form -->
     <form id="love-form" method="POST" class="prestige-form"
       action="https://www.blogger.com/contact-form.do"
       target="hidden_iframe"
-      onsubmit="return submitCeremonialForm();">
+      onsubmit="return submitCeremonialForm();"
+      style="max-width:600px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
       <label for="role">Select Tier</label>
       <select id="role" name="role" required>
         <option value="">Select your role</option>
@@ -761,32 +258,31 @@ width: 100%;             /* full width */
         <option value="Supporter">Supporter</option>
         <option value="Archivist">Archivist</option>
       </select>
-      <!-- Generate button (centered, wide but not full width) -->
-  <div style="text-align:center; margin:12px 0 18px 0;">
-    <button type="button" id="genNameBtn"
-            onclick="generateNameFromTier()"
-            style="width:70%; max-width:320px; background:#c2a76d; color:#fff;
-                   border:none; padding:10px 18px; border-radius:6px;
-                   font-size:1em; box-shadow:0 2px 6px rgba(0,0,0,0.2);
-                   cursor:pointer;">
-      ✨ Generate Prestige Name
-    </button>
-  </div>
-      <input type="text" id="name" name="name" placeholder="e.g., Solenne of the Third Tier" required>
 
+      <div style="text-align:center; margin:12px 0 18px 0;">
+        <button type="button" id="genNameBtn"
+                onclick="generateNameFromTier()"
+                style="width:70%; max-width:320px; background:#c2a76d; color:#fff;
+                       border:none; padding:10px 18px; border-radius:6px;
+                       font-size:1em; box-shadow:0 2px 6px rgba(0,0,0,0.2);
+                       cursor:pointer;">
+          ✨ Generate Prestige Name
+        </button>
+      </div>
+
+      <input type="text" id="name" name="name" placeholder="e.g., Solenne of the Third Tier" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
       <label for="phone">Contact Number</label>
-      <input type="tel" id="phone" name="phone" placeholder="e.g., +1 616-555-1234" required>
+      <input type="tel" id="phone" name="phone" placeholder="e.g., +1 616-555-1234" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
 
-      <!-- Hidden Blogger fields -->
       <textarea id="message" name="message" style="display:none;"></textarea>
       <input type="email" name="email" id="bloggerEmail" style="display:none;">
-      <button type="submit">Create Account</button>
+      <button type="submit" style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">Create Account</button>
 
       <p id="tapHint" style="margin-top:10px;">Tap top-left then top-right to unlock Admin gate.</p>
     </form>
 
-    <!-- Admin chamber (hidden until tap unlock) -->
-    <form id="adminForm" class="admin-form" onsubmit="return false;" style="display:none;">
+    <!-- Admin chamber -->
+    <form id="adminForm" onsubmit="return false;">
       <h2>Admin Access</h2>
       <label for="adminTier">Tier</label>
       <select id="adminTier" name="adminTier" required>
@@ -799,48 +295,34 @@ width: 100%;             /* full width */
       <p id="verifyStatus"></p>
     </form>
 
-    <!-- Ritual Sequence Panel -->
-<section id="ritualPanel" class="ritual-sequence">
-  <!-- Non-verbal header + sigil marker -->
-  <div class="ritual-header">
-    <div class="runic">ᚠᛇᚻᛜᚱ</div>
-    <div class="sigil" aria-hidden="true">
-      <span class="sigil-ring"></span>
-      <span class="sigil-core"></span>
-      <span class="sigil-square"></span>
+    <!-- Ritual Sequence Panel (colorPanel) -->
+    <div id="colorPanel" class="panel-shell" style="display:none;">
+      <div class="ritual-header" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;">
+        <div class="runic">ᚠᛇᚻᛜᚱ</div>
+        <div class="sigil" aria-hidden="true" style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 14px rgba(212,184,106,0.45));">
+          <span class="sigil-ring" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle, rgba(212,184,106,0.8), rgba(95,192,181,0.7));"></span>
+          <span class="sigil-core" style="position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle, rgba(40,40,45,0.8), rgba(90,106,122,0.6));"></span>
+          <span class="sigil-square" style="position:absolute;width:36px;height:36px;transform:rotate(45deg);background:linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));"></span>
+        </div>
+      </div>
+
+      <p class="designation">Designation: <strong id="nameInRitual"></strong></p>
+
+      <div class="indicator-lines" id="indicatorLines">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+
+      <div id="sequenceReadout" class="sequence">— — —</div>
+      <div class="rune-grid" id="panelButtons"></div>
+
+      <div class="ritual-controls">
+        <button id="verifySequence" class="verify-btn">VERIFY</button>
+        <button id="clearSequence" class="clear-btn">CLEAR</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Burned-in ritual sequence -->
-  <div id="sequenceReadout" class="sequence">— — —</div>
-
-  <!-- Grid (layout like right image, styling like left) -->
-  <div class="rune-grid">
-    <!-- Row 1 -->
-    <button class="rune-btn red" data-rune="719" data-glyph="₹Z">₹Z<br><small>719</small></button>
-    <button class="rune-btn blue" data-rune="$27$" data-glyph="$">$<br><small>27$</small></button>
-    <button class="rune-btn green" data-rune="Z31" data-glyph="△△">△△<br><small>Z31</small></button>
-
-    <!-- Row 2 -->
-    <button class="rune-btn mustard" data-rune="#31" data-glyph="#">#<br><small>31</small></button>
-    <button class="rune-btn violet" data-rune="85/4" data-glyph="85/">85/<br><small>4</small></button>
-    <button class="rune-btn cyan" data-rune="Δ9-3" data-glyph="Δ">Δ<br><small>9‑3</small></button>
-
-    <!-- Row 3 -->
-    <button class="rune-btn deepred" data-rune="27$" data-glyph="♛">♛<br><small>27$</small></button>
-    <button class="rune-btn emerald" data-rune="VZ" data-glyph="VZ">VZ<br><small>&nbsp;</small></button>
-    <button class="rune-btn deepviolet" data-rune="85" data-glyph="Ω">Ω<br><small>85</small></button>
-  </div>
-
-  <!-- Controls -->
-  <div class="ritual-controls">
-    <button id="verifySequence" class="verify-btn">VERIFY</button>
-    <button id="clearSequence" class="clear-btn">CLEAR</button>
-  </div>
-</section>
-
-
-    <!-- Access keypad (normal branch) -->
+    <!-- Access keypad -->
     <div id="superCodePanel" class="panel-shell" style="display:none; position:relative;">
       <h3>Access Panel</h3>
       <div class="panel-sigil">♛</div>
@@ -865,45 +347,44 @@ width: 100%;             /* full width */
       <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
       <p>Designation: <strong id="nameInPuzzle"></strong></p>
 
-      <div class="cube-container">
-        <div class="cube" id="labyrinthCube">
+      <div class="cube-container" style="perspective:1100px;width:340px;height:340px;margin:16px auto;">
+        <div class="cube" id="labyrinthCube" style="width:100%;height:100%;position:relative;transform-style:preserve-3d;transform:rotateX(-15deg) rotateY(20deg);transition:transform 0.15s ease-out;will-change:transform;">
           <!-- Front: Lights Out -->
-          <div class="cube-face front">
+          <div class="cube-face front" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateY(0deg) translateZ(170px);">
             <p>Toggle all lights green</p>
             <div id="lightsGrid">
               <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
               <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
               <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
             </div>
-            <div id="runeL" class="rune">Λ</div>
+            <div id="runeL" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">Λ</div>
           </div>
           <!-- Back: Dial -->
-          <div class="cube-face back">
+          <div class="cube-face back" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateY(180deg) translateZ(170px);">
             <p>Align the dial to ★</p>
             <input type="range" id="dial" min="0" max="5" value="0">
-            <div id="runeD" class="rune">✦</div>
+            <div id="runeD" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">✦</div>
           </div>
           <!-- Right: Word Lock -->
-          <div class="cube-face right">
+          <div class="cube-face right" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateY(90deg) translateZ(170px);">
             <p>Unscramble: "RAEL"</p>
             <input type="text" id="wordInput" placeholder="Your answer">
-            <div id="runeW" class="rune">Ψ</div>
+            <div id="runeW" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">Ψ</div>
           </div>
           <!-- Left: Labyrinth Path -->
-          <div class="cube-face left">
+          <div class="cube-face left" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateY(-90deg) translateZ(170px);">
             <p>Trace the hidden path</p>
             <div id="labyrinthGrid">
-              <!-- 25 cells -->
               <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
               <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
               <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
               <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
               <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
             </div>
-            <div id="runeM" class="rune">Ω</div>
+            <div id="runeM" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">Ω</div>
           </div>
           <!-- Top: Memory -->
-          <div class="cube-face top">
+          <div class="cube-face top" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateX(90deg) translateZ(170px);">
             <p>Repeat the sequence</p>
             <button id="startMemory">Start</button>
             <div id="memoryButtons">
@@ -911,21 +392,21 @@ width: 100%;             /* full width */
               <button class="mem" data-val="1">◆</button>
               <button class="mem" data-val="2">⚙</button>
             </div>
-            <div id="runeS" class="rune">Σ</div>
+            <div id="runeS" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">Σ</div>
           </div>
           <!-- Bottom: Math -->
-          <div class="cube-face bottom">
+          <div class="cube-face bottom" style="position:absolute;width:340px;height:340px;background:radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));border:2px solid #555;box-shadow:inset 0 0 40px rgba(0,255,180,0.08);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;transform:rotateX(-90deg) translateZ(170px);">
             <p>Select numbers to sum to 15</p>
             <div id="mathGrid">
               <button class="num">4</button><button class="num">7</button>
               <button class="num">2</button><button class="num">8</button><button class="num">5</button>
             </div>
-            <div id="runeN" class="rune">Φ</div>
+            <div id="runeN" class="rune" style="display:none;margin-top:10px;font-size:22px;color:#00f5b5;text-shadow:0 0 8px rgba(0,245,181,0.65);">Φ</div>
           </div>
         </div>
       </div>
 
-      <p id="unlockMessage">✨ The Labyrinth Cube Unlocks! ✨</p>
+      <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
     </div>
 
     <!-- Final Branch -->
@@ -965,7 +446,7 @@ width: 100%;             /* full width */
       </form>
     </div>
 
-    <!-- Verification plaque (outer prestige) -->
+    <!-- Verification plaque -->
     <div class="verification-plaque" id="verificationPlaque">
       <p>Copy this verification text and paste it into the official Prestige Verification Form:</p>
       <textarea id="verificationText" readonly></textarea>
@@ -984,7 +465,6 @@ width: 100%;             /* full width */
   <div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
   <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
 
-  <!-- Logic -->
   <script>
     /* Helpers: panel show/hide */
     function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
@@ -999,7 +479,7 @@ width: 100%;             /* full width */
       alert("Verification text copied. Please paste it into the Google Form field.");
     }
 
-    /* Name generation */
+    /* generateNameFromTier (honor button’s onclick) */
     function generateTieredName(tier) {
       const pools = {
         Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya"], suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold"] },
@@ -1012,21 +492,20 @@ width: 100%;             /* full width */
       };
       const pool = pools[tier] || pools.Initiate;
       const name = pool.names[Math.floor(Math.random()*pool.names.length)];
-      const suffix = pool.suffixes[Math.floor(Math.random()*pool.names.length)];
+      const suffix = pool.suffixes[Math.floor(Math.random()*pool.suffixes.length)];
       return `${name} ${suffix}`;
     }
-    document.getElementById('genNameBtn').addEventListener('click', ()=>{
+    function generateNameFromTier() {
       const tier = document.getElementById('role').value;
       if (!tier) { alert('Please select a tier first.'); return; }
-      const generated = generateTieredName(tier);
-      document.getElementById('name').value = generated;
-    });
+      document.getElementById('name').value = generateTieredName(tier);
+    }
 
     /* Blogger-friendly helpers */
     function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
     function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-    /* Public form submit (Prestige plaque + redirect) */
+    /* Public form submit */
     function submitCeremonialForm() {
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
@@ -1060,9 +539,9 @@ width: 100%;             /* full width */
       return false;
     }
 
-    /* Crest unlock shortcut (desktop) */
+    /* Crest unlock shortcut */
     function unlockSuperForm() {
-      showPanel('mysteryBoxPanel'); // direct access to super chamber
+      showPanel('mysteryBoxPanel');
       const name = document.getElementById('name').value.trim();
       if (name) document.getElementById('superName').value = name;
       alert("Super-level access form unlocked.");
@@ -1093,7 +572,7 @@ width: 100%;             /* full width */
     document.getElementById('tapTopLeft').addEventListener('click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
     document.getElementById('tapTopRight').addEventListener('click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
 
-    /* Admin verify → ritual panel (color grid stays) */
+    /* Admin verify → ritual panel */
     const TIER_CODES = { Admin: "A-231-GATE", MasterAdmin: "M-Q8/-CROWN" };
     const HIDDEN_CODE = "X-719-BOX";
 
@@ -1107,16 +586,20 @@ width: 100%;             /* full width */
       if (!code) { status.textContent = "Enter clearance code."; return; }
 
       // reset downstream
-      hidePanel('colorPanel'); hidePanel('superCodePanel'); hidePanel('puzzleBoxPanel');
-      hidePanel('finalClearancePanel'); hidePanel('mysteryBoxPanel'); hidePanel('mysteryBoxChamber'); hidePanel('finalBranchPanel');
+      ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','mysteryBoxChamber','finalBranchPanel'].forEach(hidePanel);
 
-      if ((tierSel === 'Admin' && code === TIER_CODES.Admin) || (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) || (code === HIDDEN_CODE)) {
+      const ok = (tierSel === 'Admin' && code === TIER_CODES.Admin) ||
+                 (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
+                 (code === HIDDEN_CODE);
+
+      if (ok) {
         const role = document.getElementById('role').value || 'Initiate';
         ceremonyName = generateTieredName(role);
         status.textContent = "✅ Verified. Proceed to the ritual.";
-        document.getElementById('nameInRitual').textContent = ceremonyName;
+        const nameEl = document.getElementById('nameInRitual'); if (nameEl) nameEl.textContent = ceremonyName;
         superSequence = [];
-        showPanel('colorPanel'); buildRitualGrid();
+        showPanel('colorPanel'); 
+        buildRitualGrid();
       } else {
         status.textContent = "❌ Invalid clearance for selected tier.";
       }
@@ -1125,53 +608,91 @@ width: 100%;             /* full width */
     /* Ritual grid (color sequence) */
     function buildRitualGrid(){
       const panel = document.getElementById('panelButtons');
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      const verifyBtn = document.getElementById('verifySequence');
+      const clearBtn = document.getElementById('clearSequence');
+
       panel.innerHTML = "";
-      const colors = [
-        {name:"crimson", bg:"crimson"}, {name:"violet", bg:"rebeccapurple"}, {name:"emerald", bg:"seagreen"},
-        {name:"amber", bg:"goldenrod"}, {name:"azure", bg:"royalblue"}, {name:"iron", bg:"dimgray"},
-        {name:"gold", bg:"gold"}, {name:"moss", bg:"darkolivegreen"}, {name:"obsidian", bg:"black"}
-      ];
+      const colors = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
       const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
       const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
+
       colors.forEach(c=>{
         const btn = document.createElement('button');
         btn.type = "button";
-        btn.className = "panel-btn";
-        btn.dataset.color = c.name;
-        btn.style.background = c.bg; btn.style.color = "#fff";
-        const g1=glyphs[Math.floor(Math.random()*glyphs.length)];
-        const g2=glyphs[Math.floor(Math.random()*glyphs.length)];
-        const num=numbers[Math.floor(Math.random()*numbers.length)];
-        btn.innerHTML = `&#9882; ${g1}${g2} ${num} &#10186;`;
-        btn.addEventListener('click', ()=>handleRitualTap(c.name));
+        btn.className = "rune-btn " + c;
+
+        const sigil = glyphs[Math.floor(Math.random()*glyphs.length)];
+        const num = numbers[Math.floor(Math.random()*numbers.length)];
+
+        btn.innerHTML = `<span class="sigil">${sigil}</span><small>${num}</small>`;
+        btn.addEventListener('click', ()=>handleRitualTap(c, btn));
         panel.appendChild(btn);
       });
-      document.getElementById('colorStatus').textContent = "";
+
       superSequence = [];
+      renderSequence();
+      updateIndicators();
     }
-    const requiredSequence = ['crimson','violet','emerald','amber','azure','iron','gold','moss','obsidian'];
-    function handleRitualTap(color){
-      superSequence.push(color); shimmerPulse();
-      if (superSequence.length === requiredSequence.length) {
-        const correct = superSequence.join(',') === requiredSequence.join(',');
-        superSequence = [];
-        if (!correct) {
-          document.getElementById('colorStatus').textContent = "❌ Incorrect sequence. Re-enter clearance.";
-          hidePanel('colorPanel');
-          return;
-        }
+
+    const requiredSequence = ['red','blue','green','mustard','violet','cyan','deepred','emerald','deepviolet'];
+
+    function handleRitualTap(color, btn){
+      superSequence.push(color);
+      renderSequence();
+      btn.classList.toggle('active');
+      updateIndicators();
+    }
+
+    function renderSequence(){
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      const text = superSequence.length ? superSequence.join('~') : '---';
+      sequenceReadout.textContent = '';
+      let i = 0;
+      const interval = setInterval(() => {
+        sequenceReadout.textContent += text[i] || '';
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 40);
+    }
+
+    function updateIndicators() {
+      const indicators = document.querySelectorAll('#indicatorLines span');
+      indicators.forEach((bar, i) => {
+        if (i < superSequence.length) bar.classList.add('active');
+        else bar.classList.remove('active');
+      });
+    }
+
+    document.getElementById('verifySequence').addEventListener('click', () => {
+      const correct = superSequence.join(',') === requiredSequence.join(',');
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      if (correct) {
+        sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
+        sequenceReadout.style.color = "#6aff6a";
         hidePanel('colorPanel');
-        document.getElementById('accessCodeStatus').textContent = "";
-        // carry name forward
-        const nameSpots = ['nameInPuzzle','superName'];
-        nameSpots.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = ceremonyName; if(id==='superName' && el) el.value = ceremonyName; });
         showPanel('superCodePanel');
+        const nameInPuzzle = document.getElementById('nameInPuzzle');
+        const nameInRitual = document.getElementById('nameInRitual');
+        if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
+      } else {
+        sequenceReadout.textContent = "ACCESS DENIED";
+        sequenceReadout.style.color = "#ff4a4a";
       }
-    }
+      superSequence = [];
+      updateIndicators();
+    });
+
+    document.getElementById('clearSequence').addEventListener('click', () => {
+      superSequence = [];
+      renderSequence();
+      document.querySelectorAll('.rune-btn').forEach(btn => btn.classList.remove('active'));
+      updateIndicators();
+    });
 
     /* Access Panel → Mystery Box Chamber */
     document.getElementById('accessCodeBtn').addEventListener('click', () => {
-      const v = document.getElementById('accessCodeInput').value.trim();
+      const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
       const s = document.getElementById('accessCodeStatus');
       if (v === 'X-719-BOX') {
         s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
@@ -1183,17 +704,21 @@ width: 100%;             /* full width */
         s.textContent = '❌ Incorrect code.';
       }
     });
+
     document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
       hidePanel('mysteryBoxChamber');
       showPanel('puzzleBoxPanel');
+      initPuzzleBox();
     });
 
-    /* Puzzle Cube logic */
+    /* Puzzle Cube logic (initialize on demand) */
+    let puzzleInitDone = false;
     let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
     let cubeUnlocked = false;
 
     function pulseCube() {
       const cube = document.getElementById('labyrinthCube');
+      if (!cube) return;
       cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
       setTimeout(() => cube.style.boxShadow = "none", 900);
     }
@@ -1201,62 +726,113 @@ width: 100%;             /* full width */
       if (Object.values(keys).every(v => v) && !cubeUnlocked) {
         cubeUnlocked = true;
         const msg = document.getElementById('unlockMessage');
-        msg.style.display = 'block';
+        if (msg) msg.style.display = 'block';
         pulseCube();
         setTimeout(() => { hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel'); }, 1000);
       }
     }
-
-    // Word Lock
-    document.getElementById('wordInput').addEventListener('change', e => {
-      if (e.target.value.trim().toLowerCase() === "real") {
-        keys.W = true; document.getElementById('runeW').style.display = 'block'; pulseCube(); checkCubeUnlock();
-      }
-    });
-
-    // Labyrinth Path
-    const labCells = document.querySelectorAll('#labyrinthGrid .cell');
-    const path = [0,1,6,11,16,17,18,23,24];
-    let progress = 0;
-    labCells.forEach((cell, idx) => {
-      cell.addEventListener('click', () => {
-        if (idx === path[progress]) {
-          cell.classList.add('on'); progress++;
-          if (progress === path.length) {
-            keys.M = true; document.getElementById('runeM').style.display = 'block'; pulseCube(); checkCubeUnlock();
-          }
-        } else {
-          labCells.forEach(c => c.classList.remove('on')); progress = 0;
-        }
-      });
-    });
-
-    // Memory
-    const memBtns = document.querySelectorAll('#memoryButtons .mem');
-    const startBtn = document.getElementById('startMemory');
-    let memSeq = [], playerSeq = [], playing = false;
-    function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
-    function playSequence() {
-      playing = true; let i = 0;
-      const interval = setInterval(() => {
-        const val = memSeq[i];
-        const btn = document.querySelector(`.mem[data-val="${val}"]`);
-        flash(btn); i++;
-        if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
-      }, 420);
+    function resetPuzzleState() {
+      keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+      cubeUnlocked = false;
+      const lights = document.querySelectorAll('#lightsGrid .light-cell');
+      lights.forEach(cell => { cell.classList.remove('on'); cell.style.background = ''; cell.style.boxShadow = ''; });
+      const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+      labCells.forEach(c => c.classList.remove('on'));
+      ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id=>{ const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+      const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'none';
+      const dial = document.getElementById('dial'); if (dial) dial.value = 0;
+      const memBtns = document.querySelectorAll('#memoryButtons .mem'); memBtns.forEach(btn => btn.classList.remove('flash'));
     }
-    function nextRound(){ memSeq.push(Math.floor(Math.random() * 3)); playSequence(); }
-    startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
-    memBtns.forEach(btn => btn.addEventListener('click', () => {
-      if (playing || memSeq.length === 0) return;
-      const val = parseInt(btn.dataset.val, 10);
-      playerSeq.push(val); flash(btn);
-      for (let i=0;i<playerSeq.length;i++){ if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; } }
-      if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; document.getElementById('runeS').style.display = 'block'; pulseCube(); checkCubeUnlock(); }
-        else nextRound();
+    function initPuzzleBox() {
+      if (puzzleInitDone) { resetPuzzleState(); return; }
+
+      // Lights Out
+      const lights = document.querySelectorAll('#lightsGrid .light-cell');
+      lights.forEach((cell, idx) => {
+        cell.addEventListener('click', () => {
+          [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (lights[i]) lights[i].classList.toggle('on'); });
+          if ([...lights].every(c => c.classList.contains('on'))) {
+            keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display = 'block';
+            pulseCube(); checkCubeUnlock();
+          }
+        });
+      });
+
+      // Dial
+      const dial = document.getElementById('dial');
+      if (dial) {
+        dial.addEventListener('input', e => {
+          if (parseInt(e.target.value, 10) === 3) {
+            keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display = 'block';
+            pulseCube(); checkCubeUnlock();
+          }
+        });
       }
-    }));
+
+      // Word Lock
+      const wordInput = document.getElementById('wordInput');
+      if (wordInput) {
+        wordInput.addEventListener('change', e => {
+          if (e.target.value.trim().toLowerCase() === "real") {
+            keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display = 'block';
+            pulseCube(); checkCubeUnlock();
+          }
+        });
+      }
+
+      // Labyrinth Path
+      const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+      const path = [0,1,6,11,16,17,18,23,24];
+      let progress = 0;
+      labCells.forEach((cell, idx) => {
+        cell.addEventListener('click', () => {
+          if (idx === path[progress]) {
+            cell.classList.add('on'); progress++;
+            if (progress === path.length) {
+              keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display = 'block';
+              pulseCube(); checkCubeUnlock();
+            }
+          } else {
+            labCells.forEach(c => c.classList.remove('on')); progress = 0;
+          }
+        });
+      });
+
+      // Memory
+      const memBtns = document.querySelectorAll('#memoryButtons .mem');
+      const startBtn = document.getElementById('startMemory');
+      let memSeq = [], playerSeq = [], playing = false;
+
+      function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
+      function playSequence() {
+        playing = true; let i = 0;
+        const interval = setInterval(() => {
+          const val = memSeq[i];
+          const btn = document.querySelector(`.mem[data-val="${val}"]`);
+          if (btn) flash(btn);
+          i++;
+          if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
+        }, 420);
+      }
+      function nextRound(){ memSeq.push(Math.floor(Math.random() * 3)); playSequence(); }
+
+      if (startBtn) {
+        startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
+      }
+      memBtns.forEach(btn => btn.addEventListener('click', () => {
+        if (playing || memSeq.length === 0) return;
+        const val = parseInt(btn.dataset.val, 10);
+        playerSeq.push(val); flash(btn);
+        for (let i=0;i<playerSeq.length;i++){ if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; } }
+        if (playerSeq.length === memSeq.length) {
+          if (memSeq.length >= 4) { keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
+          else nextRound();
+        }
+      }));
+
+      puzzleInitDone = true;
+      resetPuzzleState();
+    }
 
     // Math
     const nums = document.querySelectorAll('#mathGrid .num');
@@ -1266,50 +842,16 @@ width: 100%;             /* full width */
       const val = parseInt(btn.textContent.trim(), 10);
       if (btn.classList.contains('sel')) sel.push(val); else sel = sel.filter(v => v !== val);
       const sum = sel.reduce((a,b)=>a+b,0);
-      if (sum === 15) { keys.N = true; document.getElementById('runeN').style.display = 'block'; pulseCube(); checkCubeUnlock(); }
+      if (sum === 15) { keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
       else if (sum > 15) { nums.forEach(n => n.classList.remove('sel')); sel = []; }
     }));
 
-    // Dial
-    const dial = document.getElementById('dial');
-    if (dial) {
-      dial.addEventListener('input', e => {
-        if (parseInt(e.target.value, 10) === 3) { keys.D = true; document.getElementById('runeD').style.display = 'block'; pulseCube(); checkCubeUnlock(); }
-      });
-    }
-// Lights Out
-const lights = document.querySelectorAll('#lightsGrid .light-cell');
-
-// Reset lights to OFF before attaching handlers
-lights.forEach(cell => {
-  cell.classList.remove('on');
-  cell.style.background = '';  // wipe inline styles if any
-  cell.style.boxShadow = '';   // wipe inline shadows if any
-});
-
-lights.forEach((cell, idx) => {
-  cell.addEventListener('click', () => {
-    // Toggle this cell and its neighbors
-    [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => {
-      if (lights[i]) lights[i].classList.toggle('on');
-    });
-
-    // Check solved
-    if ([...lights].every(c => c.classList.contains('on'))) {
-      keys.L = true;
-      document.getElementById('runeL').style.display = 'block';
-      pulseCube();
-      checkCubeUnlock();
-    }
-  });
-});
-
-  
     // Final clearance → Superform
     document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
       hidePanel('finalBranchPanel');
       showPanel('finalClearancePanel');
     });
+
     document.getElementById('finalClearanceBtn').addEventListener('click', ()=>{
       const code = document.getElementById('finalClearanceCode').value.trim();
       const revealed = document.getElementById('revealedPassword').textContent.trim();
@@ -1371,31 +913,29 @@ lights.forEach((cell, idx) => {
     cubeEl.addEventListener('touchend', () => dragging = false);
     updateRotation();
   </script>
-  
-  <script>// 🔐 Unlock Logic
-document.addEventListener("DOMContentLoaded", function () {
-  document.addEventListener("keydown", function (e) {
-    // Unlock Admin Form: Ctrl + Shift + A
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-      const adminForm = document.getElementById("adminForm");
-      if (adminForm) {
-        adminForm.style.display = "block";
-        alert("Admin access form unlocked.");
-      }
-    }
 
-    // Unlock Super Form: Ctrl + Alt + M
-    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
-      const superForm = document.getElementById("superForm");
-      if (superForm) {
-        superForm.style.display = "block";
-        alert("Super-level access form unlocked.");
-      }
-    }
-  });
-});
-</script>
+  <script>
+    // Keyboard unlock shortcuts
+    document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("keydown", function (e) {
+        // Unlock Admin Form: Ctrl + Shift + A
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+          const adminForm = document.getElementById("adminForm");
+          if (adminForm) {
+            adminForm.style.display = "block";
+            alert("Admin access form unlocked.");
+          }
+        }
+        // Unlock Super Form: Ctrl + Alt + Q
+        if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+          const superPanel = document.getElementById("mysteryBoxPanel");
+          if (superPanel) {
+            superPanel.style.display = "block";
+            alert("Super-level access form unlocked.");
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-```
-```
