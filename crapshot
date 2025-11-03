@@ -66,7 +66,7 @@
 
     /* Floating crest (desktop shortcut) */
     .floating-crest {
-      position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+      position: fixed; width: 60px; height: 60px; bottom: 20px; right: -115px;
       background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
       background-size: cover; background-position: center; border-radius: 50%;
       box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer; z-index: 101; opacity: 0.95;
@@ -156,10 +156,34 @@
     .bottom { transform: rotateX(-90deg) translateZ(170px); }
     #unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
 
-    /* Lights Out */
-    #lightsGrid { display: grid; grid-template-columns: repeat(3,60px); gap: 6px; }
-    .light-cell { width: 60px; height: 60px; background: #1c1c1c; border: 1px solid #444; border-radius: 8px; box-shadow: inset 0 0 12px rgba(0,0,0,0.4); transition: background 140ms ease, box-shadow 140ms ease; }
-    .light-cell.on { background: #00f060; box-shadow: 0 0 16px rgba(0,240,96,0.5), inset 0 0 8px rgba(0,0,0,0.35); }
+   /* Lights Out */
+/* Lights Out */
+/* Lights Out — final override */
+/* Lights Out */
+#lightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 6px;
+}
+
+#lightsGrid .light-cell {
+  width: 60px;
+  height: 60px;
+  background: #000;              /* solid black OFF state */
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+  transition: background 140ms ease, box-shadow 140ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#lightsGrid .light-cell.on {
+  background: #ffd700;           /* glowing gold ON state */
+  box-shadow: 0 0 14px rgba(255,215,0,0.7),
+              inset 0 0 6px rgba(0,0,0,0.4);
+}
 
     /* Labyrinth Path */
     #labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
@@ -197,6 +221,156 @@
       h1 { font-size: 1.4em; }
       .crest-header { width: 80px; height: 80px; }
     }
+    
+    
+    /* Prestige main form */
+.prestige-form input, .prestige-form select, .prestige-form button {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+/* Chamber forms (Admin + Super) */
+.chamber-form {
+  background: radial-gradient(circle at center, #1a1a1a, #0d0d0d);
+  border: 3px solid #444;
+  color: var(--gold);
+  font-family: 'Orbitron','Courier New', monospace;
+}
+.chamber-form input, .chamber-form select {
+  background: #111;
+  border: 2px solid #333;
+  color: var(--gold);
+}
+/* Main ceremonial form buttons */
+.prestige-form #genNameBtn {
+  margin-top: 10px;
+  background: #c2a76d; /* rich gold */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.95em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+.prestige-form #genNameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Prestige ceremonial form container */
+.prestige-form {
+  max-width: 480px;                /* slightly wider for balance */
+  margin: 40px auto;
+  padding: 28px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* Headings */
+.prestige-form h1 {
+  font-size: 1.4em;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #4b3f72;                  /* ceremonial purple */
+}
+
+/* Labels */
+.prestige-form label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #4b3f72;                  /* purple accent */
+}
+
+/* Inputs & selects */
+.prestige-form input[type="text"],
+.prestige-form input[type="tel"],
+.prestige-form select {
+  width: 100%;                     /* full width for clean alignment */
+  padding: 12px 14px;
+  border: 1px solid #b8aee0;       /* soft purple border */
+  border-radius: 6px;
+  font-size: 1em;
+  background: #fafafa;
+  color: #4b3f72;                  /* purple text */
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.prestige-form input:focus,
+.prestige-form select:focus {
+  border-color: #6a5acd;
+  box-shadow: 0 0 6px rgba(106,90,205,0.3);
+  outline: none;
+}
+
+/* Gold generator button */
+.prestige-form #genNameBtn {
+  margin-top: 10px;
+  background: #c2a76d;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.95em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+.prestige-form #genNameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Purple submit button */
+.prestige-form button[type="submit"] {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
+  transition: transform 0.15s ease, background 0.25s ease;
+}
+.prestige-form button[type="submit"]:hover {
+  background: linear-gradient(to right, #6a5acd, #4b3f72);
+  transform: translateY(-2px);
+}
+
+.prestige-form {
+  width: 100%;
+  max-width: 600px;       /* wider, matches chamber panels */
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.prestige-form input[type="text"],
+.prestige-form input[type="tel"],
+.prestige-form select {
+  .prestige-form label {
+  color: #4b3f72;          /* purple headings */
+}
+.prestige-form input,
+.prestige-form select {
+  border: 1px solid #b8aee0;
+  color: #4b3f72;
+}
+width: 100%;             /* full width */
+  box-sizing: border-box;  /* padding doesn’t break alignment */
+}
+
   </style>
 </head>
 <body>
@@ -205,7 +379,10 @@
     <h1>Prestige Triumph: Oversight Entry</h1>
 
     <!-- Centerpiece main form (Blogger-compatible, prestige outer; inner ritual style preserved) -->
-    <form id="publicForm" class="panel-shell" method="POST" action="https://www.blogger.com/contact-form.do" target="hidden_iframe" onsubmit="return submitCeremonialForm();">
+    <form id="love-form" method="POST" class="prestige-form"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return submitCeremonialForm();">
       <label for="role">Select Tier</label>
       <select id="role" name="role" required>
         <option value="">Select your role</option>
@@ -217,7 +394,17 @@
         <option value="Supporter">Supporter</option>
         <option value="Archivist">Archivist</option>
       </select>
-      <button type="button" id="genNameBtn">Generate Prestige Name</button>
+      <!-- Generate button (centered, wide but not full width) -->
+  <div style="text-align:center; margin:12px 0 18px 0;">
+    <button type="button" id="genNameBtn"
+            onclick="generateNameFromTier()"
+            style="width:70%; max-width:320px; background:#c2a76d; color:#fff;
+                   border:none; padding:10px 18px; border-radius:6px;
+                   font-size:1em; box-shadow:0 2px 6px rgba(0,0,0,0.2);
+                   cursor:pointer;">
+      ✨ Generate Prestige Name
+    </button>
+  </div>
       <input type="text" id="name" name="name" placeholder="e.g., Solenne of the Third Tier" required>
 
       <label for="phone">Contact Number</label>
@@ -690,7 +877,34 @@
         if (parseInt(e.target.value, 10) === 3) { keys.D = true; document.getElementById('runeD').style.display = 'block'; pulseCube(); checkCubeUnlock(); }
       });
     }
+// Lights Out
+const lights = document.querySelectorAll('#lightsGrid .light-cell');
 
+// Reset lights to OFF before attaching handlers
+lights.forEach(cell => {
+  cell.classList.remove('on');
+  cell.style.background = '';  // wipe inline styles if any
+  cell.style.boxShadow = '';   // wipe inline shadows if any
+});
+
+lights.forEach((cell, idx) => {
+  cell.addEventListener('click', () => {
+    // Toggle this cell and its neighbors
+    [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => {
+      if (lights[i]) lights[i].classList.toggle('on');
+    });
+
+    // Check solved
+    if ([...lights].every(c => c.classList.contains('on'))) {
+      keys.L = true;
+      document.getElementById('runeL').style.display = 'block';
+      pulseCube();
+      checkCubeUnlock();
+    }
+  });
+});
+
+  
     // Final clearance → Superform
     document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
       hidePanel('finalBranchPanel');
@@ -757,6 +971,30 @@
     cubeEl.addEventListener('touchend', () => dragging = false);
     updateRotation();
   </script>
+  
+  <script>// 🔐 Unlock Logic
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("keydown", function (e) {
+    // Unlock Admin Form: Ctrl + Shift + A
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+      const adminForm = document.getElementById("adminForm");
+      if (adminForm) {
+        adminForm.style.display = "block";
+        alert("Admin access form unlocked.");
+      }
+    }
+
+    // Unlock Super Form: Ctrl + Alt + M
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+      const superForm = document.getElementById("superForm");
+      if (superForm) {
+        superForm.style.display = "block";
+        alert("Super-level access form unlocked.");
+      }
+    }
+  });
+});
+</script>
 </body>
 </html>
 ```
