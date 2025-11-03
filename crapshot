@@ -1,23 +1,4 @@
 
-<!--&#9882; ⚒ (hammer/crossed tool)
-
-&#9874; ⚪ (circle)
-
-&#10016; ✠ (maltese cross)
-
-&#10070; ❦ (floral mark)
-
-&#10087; ❧ (floral heart)
-
-&#10102; ⑶ (circled number)
-
-&#10177; ⧁ (lozenge with dot)
-
-&#10186; ⧊ (lozenge with circle)
-
-&#10207; ⧟ (bowtie)
-
-&#10209; ⧡ (heart‑like)-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -594,6 +575,168 @@ width: 100%;             /* full width */
   text-align: center;
   color: #b0b2bb;
 }
+/* Panel container: hyper-realistic stone aura */
+.ritual-sequence {
+  max-width: 880px;
+  margin: 48px auto;
+  padding: 28px 28px 32px;
+  border-radius: 18px;
+  background:
+    radial-gradient(1200px 800px at 50% -20%, rgba(220, 190, 120, 0.08), transparent 60%),
+    radial-gradient(800px 600px at 20% 120%, rgba(80, 110, 90, 0.08), transparent 62%),
+    linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  box-shadow:
+    0 0 40px rgba(212, 184, 106, 0.12),
+    inset 0 0 24px rgba(30, 30, 35, 0.85);
+  border: 1px solid rgba(212, 184, 106, 0.25);
+  color: #f2f0e9;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Surface texture */
+.ritual-sequence::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px),
+    radial-gradient(800px 600px at 80% 20%, rgba(255,255,255,0.03), transparent 70%),
+    radial-gradient(900px 700px at 0% 100%, rgba(0,0,0,0.15), transparent 60%);
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: 0.65;
+}
+
+/* Header: non-verbal glyph + sigil marker */
+.ritual-header {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.runic {
+  font-size: 1.4rem;
+  letter-spacing: 0.18em;
+  color: rgba(160, 210, 230, 0.9);
+  text-shadow: 0 0 12px rgba(110, 190, 220, 0.45);
+}
+
+/* Sigil marker (constructed, interlocked) */
+.sigil {
+  position: relative;
+  width: 72px; height: 72px;
+  filter: drop-shadow(0 0 14px rgba(212,184,106,0.45));
+}
+.sigil-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,184,106,0.8) 0%, rgba(242,240,233,0.85) 55%, rgba(95,192,181,0.7) 100%);
+}
+.sigil-core {
+  position: absolute; inset: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(40,40,45,0.8) 0%, rgba(90,106,122,0.6) 100%);
+  box-shadow: inset 0 0 12px rgba(212,184,106,0.25);
+}
+.sigil-square {
+  position: absolute;
+  top: 18px; left: 50%;
+  width: 36px; height: 36px;
+  transform: translateX(-50%) rotate(45deg);
+  background: linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));
+  box-shadow:
+    0 0 8px rgba(212,184,106,0.35),
+    inset 0 0 6px rgba(95,192,181,0.25);
+}
+
+/* Burned-in sequence readout */
+.sequence {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 0.25em;
+  color: #6a5a3c;
+  text-shadow:
+    0 0 6px rgba(255, 140, 60, 0.25),
+    0 0 12px rgba(255, 200, 120, 0.18);
+  margin: 8px 0 20px;
+}
+
+/* Grid layout like the right image */
+.rune-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Button base: left-image style */
+.rune-btn {
+  display: grid;
+  place-items: center;
+  min-height: 88px;
+  border-radius: 12px;
+  border: 1px solid rgba(28,28,32,0.8);
+  color: #faf7ef;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow:
+    inset 0 0 20px rgba(15, 15, 18, 0.85),
+    0 0 18px rgba(20, 20, 25, 0.45);
+  background: #202228;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 220ms ease, filter 160ms ease;
+}
+.rune-btn small {
+  display: block;
+  margin-top: 6px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* Button aura colors */
+.rune-btn.red      { background: radial-gradient(140px circle at 50% 30%, rgba(160,40,40,0.75), #202228 70%); box-shadow: 0 0 18px rgba(160,40,40,0.35), inset 0 0 16px rgba(20,10,10,0.8); }
+.rune-btn.blue     { background: radial-gradient(140px circle at 50% 30%, rgba(40,100,180,0.75), #202228 70%); box-shadow: 0 0 18px rgba(40,100,180,0.35), inset 0 0 16px rgba(10,15,25,0.8); }
+.rune-btn.green    { background: radial-gradient(140px circle at 50% 30%, rgba(60,150,90,0.75), #202228 70%); box-shadow: 0 0 18px rgba(60,150,90,0.35), inset 0 0 16px rgba(10,25,15,0.8); }
+.rune-btn.mustard  { background: radial-gradient(140px circle at 50% 30%, rgba(190,160,60,0.72), #202228 70%); box-shadow: 0 0 18px rgba(190,160,60,0.35), inset 0 0 16px rgba(25,20,10,0.8); }
+.rune-btn.violet   { background: radial-gradient(140px circle at 50% 30%, rgba(130,80,180,0.75), #202228 70%); box-shadow: 0 0 18px rgba(130,80,180,0.35), inset 0 0 16px rgba(20,10,25,0.8); }
+.rune-btn.cyan     { background: radial-gradient(140px circle at 50% 30%, rgba(60,170,190,0.75), #202228 70%); box-shadow: 0 0 18px rgba(60,170,190,0.35), inset 0 0 16px rgba(10,20,25,0.8); }
+.rune-btn.deepred  { background: radial-gradient(140px circle at 50% 30%, rgba(160,50,50,0.75), #202228 70%); box-shadow: 0 0 18px rgba(160,50,50,0.35), inset 0 0 16px rgba(20,10,10,0.8); }
+.rune-btn.emerald  { background: radial-gradient(140px circle at 50% 30%, rgba(50,170,110,0.75), #202228 70%); box-shadow: 0 0 18px rgba(50,170,110,0.35), inset 0 0 16px rgba(10,25,18,0.8); }
+.rune-btn.deepviolet { background: radial-gradient(140px circle at 50% 30%, rgba(110,60,160,0.75), #202228 70%); box-shadow: 0 0 18px rgba(110,60,160,0.35), inset 0 0 16px rgba(15,10,25,0.8); }
+
+/* Interaction */
+.rune-btn:hover { transform: translateY(-2px); filter: saturate(1.08); }
+.rune-btn:active { transform: translateY(0); filter: brightness(0.98); }
+
+/* Controls */
+.ritual-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 22px;
+}
+.verify-btn, .clear-btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(212,184,106,0.35);
+  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
+  color: #f2f0e9;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.5),
+    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 220ms ease, filter 160ms ease;
+}
+.verify-btn:hover, .clear-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.6),
+    0 0 14px rgba(212,184,106,0.25);
+}
 
   </style>
 </head>
@@ -656,13 +799,46 @@ width: 100%;             /* full width */
       <p id="verifyStatus"></p>
     </form>
 
-    <!-- Ritual panel (hidden color-grid chamber, stays) -->
-    <div id="colorPanel" class="panel-shell" style="display:none;">
-      <h3>Ritual Sequence</h3>
-      <p>Designation: <strong id="nameInRitual"></strong></p>
-      <div id="panelButtons"></div>
-      <p id="colorStatus"></p>
+    <!-- Ritual Sequence Panel -->
+<section id="ritualPanel" class="ritual-sequence">
+  <!-- Non-verbal header + sigil marker -->
+  <div class="ritual-header">
+    <div class="runic">ᚠᛇᚻᛜᚱ</div>
+    <div class="sigil" aria-hidden="true">
+      <span class="sigil-ring"></span>
+      <span class="sigil-core"></span>
+      <span class="sigil-square"></span>
     </div>
+  </div>
+
+  <!-- Burned-in ritual sequence -->
+  <div id="sequenceReadout" class="sequence">— — —</div>
+
+  <!-- Grid (layout like right image, styling like left) -->
+  <div class="rune-grid">
+    <!-- Row 1 -->
+    <button class="rune-btn red" data-rune="719" data-glyph="₹Z">₹Z<br><small>719</small></button>
+    <button class="rune-btn blue" data-rune="$27$" data-glyph="$">$<br><small>27$</small></button>
+    <button class="rune-btn green" data-rune="Z31" data-glyph="△△">△△<br><small>Z31</small></button>
+
+    <!-- Row 2 -->
+    <button class="rune-btn mustard" data-rune="#31" data-glyph="#">#<br><small>31</small></button>
+    <button class="rune-btn violet" data-rune="85/4" data-glyph="85/">85/<br><small>4</small></button>
+    <button class="rune-btn cyan" data-rune="Δ9-3" data-glyph="Δ">Δ<br><small>9‑3</small></button>
+
+    <!-- Row 3 -->
+    <button class="rune-btn deepred" data-rune="27$" data-glyph="♛">♛<br><small>27$</small></button>
+    <button class="rune-btn emerald" data-rune="VZ" data-glyph="VZ">VZ<br><small>&nbsp;</small></button>
+    <button class="rune-btn deepviolet" data-rune="85" data-glyph="Ω">Ω<br><small>85</small></button>
+  </div>
+
+  <!-- Controls -->
+  <div class="ritual-controls">
+    <button id="verifySequence" class="verify-btn">VERIFY</button>
+    <button id="clearSequence" class="clear-btn">CLEAR</button>
+  </div>
+</section>
+
 
     <!-- Access keypad (normal branch) -->
     <div id="superCodePanel" class="panel-shell" style="display:none; position:relative;">
