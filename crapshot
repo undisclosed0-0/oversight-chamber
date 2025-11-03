@@ -1,4 +1,23 @@
 
+<!--&#9882; ⚒ (hammer/crossed tool)
+
+&#9874; ⚪ (circle)
+
+&#10016; ✠ (maltese cross)
+
+&#10070; ❦ (floral mark)
+
+&#10087; ❧ (floral heart)
+
+&#10102; ⑶ (circled number)
+
+&#10177; ⧁ (lozenge with dot)
+
+&#10186; ⧊ (lozenge with circle)
+
+&#10207; ⧟ (bowtie)
+
+&#10209; ⧡ (heart‑like)-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -370,6 +389,211 @@
 width: 100%;             /* full width */
   box-sizing: border-box;  /* padding doesn’t break alignment */
 }
+/* Mystery Chamber — using the correct ID */
+#mysteryBoxChamber {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 32px;
+  background: radial-gradient(1200px 600px at 50% -20%, rgba(255, 230, 120, 0.08), transparent 60%),
+              linear-gradient(180deg, #0b0b12 0%, #0e0e18 100%);
+  border-radius: 16px;
+  box-shadow:
+    0 0 24px rgba(255, 200, 80, 0.15),
+    inset 0 0 18px rgba(255, 220, 120, 0.06),
+    0 12px 30px rgba(0, 0, 0, 0.6);
+  color: #e9e3ff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header and title */
+#mysteryBoxChamber .chamber-title {
+  font-size: 1.6rem;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: #f6e27a;
+  text-shadow: 0 0 12px rgba(255, 200, 80, 0.35);
+  margin-bottom: 20px;
+}
+
+/* Labels and inputs */
+#mysteryBoxChamber label {
+  display: block;
+  margin: 16px 0 8px;
+  font-weight: 600;
+  color: #cbbcff;
+}
+#mysteryBoxChamber input,
+#mysteryBoxChamber select {
+  width: 100%;
+  padding: 12px 14px;
+  background: #11111a;
+  color: #e9e3ff;
+  border: 1px solid #6a5acd;
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(106, 90, 205, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#mysteryBoxChamber input:focus,
+#mysteryBoxChamber select:focus {
+  border-color: #b5a9ff;
+  box-shadow: 0 0 10px rgba(181, 169, 255, 0.35);
+  outline: none;
+}
+
+/* Submit button */
+#mysteryBoxChamber .mystery-submit {
+  margin-top: 26px;
+  width: 100%;
+  padding: 14px 16px;
+  background: linear-gradient(90deg, #f2d16b, #f8e58f);
+  color: #11111a;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 0 18px rgba(255, 220, 120, 0.45);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease;
+}
+#mysteryBoxChamber .mystery-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 230, 140, 0.6);
+}
+
+ /* Admin Chamber — Grey Prestige Hybrid */
+#adminForm {
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 32px;
+  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(212, 184, 106, 0.25); /* prestige gold trace */
+  box-shadow:
+    0 0 20px rgba(212, 184, 106, 0.12),
+    inset 0 0 14px rgba(60, 65, 75, 0.6),
+    0 10px 24px rgba(0, 0, 0, 0.55);
+  color: #f2f0e9;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Title with sigil marker above (interlocked geometry) */
+#adminForm h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 28px;
+  color: #f2f0e9;                /* ivory */
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px rgba(212, 184, 106, 0.25); /* prestige glow */
+  position: relative;
+  padding-top: 70px;             /* headroom for sigil */
+}
+
+/* Sigil marker — golden/ivory/teal ring */
+#adminForm h2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at center,
+    rgba(212,184,106,0.9) 0%,     /* gold */
+    rgba(242,240,233,0.85) 42%,   /* ivory */
+    rgba(95,192,181,0.7) 100%     /* teal undertone */
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 0 12px rgba(212, 184, 106, 0.5),
+    0 0 20px rgba(95, 192, 181, 0.35);
+}
+
+/* Interlocked square inside the ring */
+#adminForm h2::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%) rotate(45deg);
+  background: linear-gradient(135deg,
+    rgba(242,240,233,0.95),       /* ivory */
+    rgba(212,184,106,0.85)        /* gold */
+  );
+  box-shadow:
+    0 0 8px rgba(212, 184, 106, 0.4),
+    inset 0 0 6px rgba(95, 192, 181, 0.25);
+}
+
+/* Labels */
+#adminForm label {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 600;
+  color: #d4b86a;
+}
+
+/* Inputs & selects */
+#adminForm input,
+#adminForm select {
+  width: 100%;
+  padding: 12px 14px;
+  background: #2f3036;
+  color: #f2f0e9;
+  border: 1px solid rgba(90, 106, 122, 0.45); /* slate undertone */
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 8px rgba(50, 55, 65, 0.6),
+    0 1px 6px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+#adminForm input:focus,
+#adminForm select:focus {
+  outline: none;
+  border-color: #d4b86a;
+  box-shadow:
+    inset 0 0 10px rgba(212, 184, 106, 0.25),
+    0 0 10px rgba(212, 184, 106, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Verify button */
+#adminForm #verifyTierBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 13px 16px;
+  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
+  color: #f2f0e9;
+  border: 1px solid rgba(212, 184, 106, 0.35);
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.5),
+    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+#adminForm #verifyTierBtn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.6),
+    0 0 14px rgba(212, 184, 106, 0.25);
+  filter: brightness(1.05);
+}
+
+/* Status message */
+#adminForm #verifyStatus {
+  margin-top: 14px;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #b0b2bb;
+}
 
   </style>
 </head>
@@ -419,7 +643,7 @@ width: 100%;             /* full width */
     </form>
 
     <!-- Admin chamber (hidden until tap unlock) -->
-    <form id="adminForm" class="panel-shell" onsubmit="return false;" style="display:none;">
+    <form id="adminForm" class="admin-form" onsubmit="return false;" style="display:none;">
       <h2>Admin Access</h2>
       <label for="adminTier">Tier</label>
       <select id="adminTier" name="adminTier" required>
