@@ -605,179 +605,62 @@ width: 100%;             /* full width */
   color: #b0b2bb;
 }
 /* Panel container */ #colorPanel { max-width: 880px; margin: 48px auto; padding: 28px; border-radius: 18px; background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%); box-shadow: 0 0 40px rgba(212,184,106,0.12), inset 0 0 24px rgba(30,30,35,0.85); border: 1px solid rgba(212,184,106,0.25); color: #f2f0e9; } /* Grid wall */ #colorPanel .rune-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #1c1c1c; border: 8px solid #2a2a2a; } /* Keystone base */ #colorPanel .rune-btn { display: grid; place-items: center; min-height: 100px; border: 6px solid #3a3a3a; background: #2a2b2f; font-family: "Cinzel", serif; font-weight: 700; cursor: pointer; box-shadow: inset 0 2px 6px rgba(255,255,255,0.05), inset 0 -4px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6); transition: all 200ms ease; } /* Sigils glowing faintly */ #colorPanel .rune-btn .sigil { font-size: 1.6rem; color: rgba(212,184,106,0.9); text-shadow: 0 0 6px rgba(212,184,106,0.6), 0 0 14px rgba(242,240,233,0.35); } #colorPanel .rune-btn small { margin-top: 6px; font-size: 1rem; color: #aaa; text-shadow: 0 0 3px rgba(0,0,0,0.6); } /* Active states */ #colorPanel .rune-btn.red.active { background: radial-gradient(circle at 50% 30%, rgba(160,40,40,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.blue.active { background: radial-gradient(circle at 50% 30%, rgba(40,100,180,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.green.active { background: radial-gradient(circle at 50% 30%, rgba(60,150,90,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.mustard.active{ background: radial-gradient(circle at 50% 30%, rgba(190,160,60,0.72), #2a2b2f 70%); } #colorPanel .rune-btn.violet.active { background: radial-gradient(circle at 50% 30%, rgba(130,80,180,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.cyan.active { background: radial-gradient(circle at 50% 30%, rgba(60,170,190,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.deepred.active{ background: radial-gradient(circle at 50% 30%, rgba(160,50,50,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.emerald.active{ background: radial-gradient(circle at 50% 30%, rgba(50,170,110,0.75), #2a2b2f 70%); } #colorPanel .rune-btn.deepviolet.active{ background: radial-gradient(circle at 50% 30%, rgba(110,60,160,0.75), #2a2b2f 70%); } /* Active inscriptions glow brighter */ #colorPanel .rune-btn.active .sigil, #colorPanel .rune-btn.active small { color: #f2f0e9; text-shadow: 0 0 6px rgba(255,220,120,0.6), 0 0 14px rgba(255,255,180,0.4); } /* Indicator lines */ #colorPanel .indicator-lines { display: flex; justify-content: center; gap: 12px; margin-top: 8px; } #colorPanel .indicator-lines span { width: 28px; height: 4px; border-radius: 2px; background: rgba(90, 60, 30, 0.4); box-shadow: inset 0 0 4px rgba(0,0,0,0.6); transition: all 200ms ease; } #colorPanel .indicator-lines span.active { background: rgba(255,140,60,0.9); box-shadow: 0 0 6px rgba(255,140,60,0.65), 0 0 12px rgba(255,200,120,0.45), 0 0 20px rgba(255,160,80,0.35); } /* Controls and readout */ #colorPanel .ritual-controls { display: flex; gap: 16px; justify-content: center; margin-top: 24px; } #colorPanel #sequenceReadout { font-family: "Share Tech Mono", monospace; font-size: 1.2rem; color: #9fe8ff; background: rgba(20, 30, 40, 0.85); border: 2px inset rgba(120,180,200,0.4); padding: 6px 12px; margin-top: 12px; text-align: center; letter-spacing: 0.1em; text-shadow: 0 0 6px rgba(0,255,255,0.4), 0 0 12px rgba(0,180,255,0.25); overflow: hidden; white-space: nowrap; } .rune-message { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); font-family: "Share Tech Mono", monospace; font-size: 1.1rem; color: rgba(212,184,106,0.9); opacity: 0; animation: vaporFade 4s forwards; } @keyframes vaporFade { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.9); } 10% { opacity: 1; transform: translate(-50%, -10px) scale(1); } 90% { opacity: 1; transform: translate(-50%, -20px) scale(1.05); } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); } }
-    #colorPanel .sigil {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.rune-message {
-  z-index: 2;
-  pointer-events: none;
-}
-.rune-message {
-  white-space: nowrap;
-  filter: blur(0.5px);
-}
-/* Ritual Grid */
-#colorPanel .rune-grid {
+ 
+.rune-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* always 3 columns */
-  gap: 20px;
-  justify-items: center; /* center each orb in its cell */
-  transform-origin: top center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  justify-items: center;
+  margin: 20px auto;
 }
-
-@media (max-width: 480px) {
-  #colorPanel .rune-grid {
-    transform: scale(0.8); /* shrink whole grid on small screens */
-  }
+.rune-btn.keystone {
+  display: grid;
+  place-items: center;
+  width: 90px; height: 90px;
+  border: 6px solid #3a3a3a;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #2a2b2f, #1c1c1f);
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  color: #d4b86a;
+  box-shadow:
+    inset 0 2px 6px rgba(255,255,255,0.05),
+    inset 0 -4px 8px rgba(0,0,0,0.9),
+    0 0 12px rgba(0,0,0,0.6);
 }
-
-/* Orb container */
-#colorPanel .rune-btn .orb {
+.rune-btn.orb-center {
+  background: none; border: none; box-shadow: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.orb {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
+  width: 80px; aspect-ratio: 1/1; border-radius: 50%;
   background: radial-gradient(circle at 30% 30%,
               rgba(255,255,220,0.95) 0%,
               rgba(212,184,106,0.8) 40%,
               rgba(80,60,20,0.2) 100%);
   box-shadow: 0 0 15px rgba(212,184,106,0.6),
               0 0 30px rgba(255,220,120,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   animation: orbPulse 4s infinite ease-in-out;
-  margin: 0 auto;
 }
-
-/* Number inside orb */
-#colorPanel .orb .number {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #fff;
+.orb .number {
+  font-size: 1.2rem; font-weight: bold; color: #fff;
   text-shadow: 0 0 6px rgba(0,0,0,0.8),
                0 0 12px rgba(212,184,106,0.6);
-  z-index: 1;
 }
-
-/* Corner sigil markers */
-#colorPanel .orb .sigil {
-  position: absolute;
-  font-size: 0.8rem;
-  color: rgba(212,184,106,0.8);
+.orb .sigil {
+  position: absolute; font-size: 0.8rem; color: rgba(212,184,106,0.8);
   text-shadow: 0 0 4px rgba(212,184,106,0.6);
 }
-.sigil-top-left     { top: 4px; left: 6px; }
-.sigil-top-right    { top: 4px; right: 6px; }
-.sigil-bottom-left  { bottom: 4px; left: 6px; }
+.sigil-top-left { top: 4px; left: 6px; }
+.sigil-top-right { top: 4px; right: 6px; }
+.sigil-bottom-left { bottom: 4px; left: 6px; }
 .sigil-bottom-right { bottom: 4px; right: 6px; }
-
-/* Vapor rune message (floating text) */
-.rune-message {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 1.1rem;
-  color: rgba(212,184,106,0.7);
-  text-shadow: 0 0 6px rgba(212,184,106,0.4);
-  opacity: 0;
-  white-space: nowrap;
-  filter: blur(0.5px);
-  z-index: 2;
-  pointer-events: none;
-  animation: vaporFade 4s forwards;
-}
-
-/* Animations */
 @keyframes orbPulse {
   0%,100% { transform: scale(1); box-shadow: 0 0 15px rgba(212,184,106,0.6); }
   50%     { transform: scale(1.05); box-shadow: 0 0 30px rgba(212,184,106,0.8); }
 }
-
-@keyframes vaporFade {
-  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.9); }
-  10%  { opacity: 1; transform: translate(-50%, -10px) scale(1); }
-  90%  { opacity: 1; transform: translate(-50%, -20px) scale(1.05); }
-  100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
-}
-/* Active orb glow states */
-#colorPanel .rune-btn.red.active   .orb {
-  background: radial-gradient(circle at 30% 30%,
-              rgba(255,100,100,0.95) 0%,
-              rgba(160,40,40,0.8) 40%,
-              rgba(60,20,20,0.3) 100%);
-  box-shadow: 0 0 20px rgba(255,100,100,0.7),
-              0 0 40px rgba(255,120,120,0.5);
-}
-
-#colorPanel .rune-btn.blue.active  .orb {
-  background: radial-gradient(circle at 30% 30%,
-              rgba(120,180,255,0.95) 0%,
-              rgba(40,100,180,0.8) 40%,
-              rgba(20,30,60,0.3) 100%);
-  box-shadow: 0 0 20px rgba(120,180,255,0.7),
-              0 0 40px rgba(100,160,255,0.5);
-}
-
-#colorPanel .rune-btn.green.active .orb {
-  background: radial-gradient(circle at 30% 30%,
-              rgba(140,255,180,0.95) 0%,
-              rgba(60,150,90,0.8) 40%,
-              rgba(20,60,30,0.3) 100%);
-  box-shadow: 0 0 20px rgba(140,255,180,0.7),
-              0 0 40px rgba(100,220,150,0.5);
-}
-
-#colorPanel .rune-btn.mustard.active .orb {
-  background: radial-gradient(circle at 30% 30%,
-              rgba(255,230,140,0.95) 0%,
-              rgba(190,160,60,0.8) 40%,
-              rgba(60,50,20,0.3) 100%);
-  box-shadow: 0 0 20px rgba(255,230,140,0.7),
-              0 0 40px rgba(255,200,100,0.5);
-}
-
-#colorPanel .rune-btn.violet.active .orb {
-  background: radial-gradient(circle at 30% 30%,
-              rgba(220,160,255,0.95) 0%,
-              rgba(130,80,180,0.8) 40%,
-
-    /* Ritual grid: always 3 columns */
-#colorPanel .rune-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  justify-items: center;
-  transform-origin: top center;
-}
-
-/* Orbs: fixed aspect ratio, shrink with screen */
-#colorPanel .orb {
-  aspect-ratio: 1 / 1;
-  width: 80px;
-  max-width: 22vw;   /* shrink proportionally on small screens */
-  min-width: 60px;
-}
-
-/* Scale the whole tablet down on very small screens */
-@media (max-width: 600px) {
-  #colorPanel .rune-grid {
-    transform: scale(0.85);
-  }
-}
-@media (max-width: 420px) {
-  #colorPanel .rune-grid {
-    transform: scale(0.7);
-  }
-}
-
-    
   </style>
 </head>
 <body>
@@ -840,40 +723,27 @@ width: 100%;             /* full width */
     </form>
 
     <!-- Ritual Sequence Panel (colorPanel) -->
-    <div id="colorPanel" class="panel-shell" style="display:none;">
-      <div class="ritual-header" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;">
-        <div class="runic">ᚠᛇᚻᛜᚱ</div>
-        <div class="sigil" aria-hidden="true" style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 14px rgba(212,184,106,0.45));">
-          <span class="sigil-ring" style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle, rgba(212,184,106,0.8), rgba(95,192,181,0.7));"></span>
-          <span class="sigil-core" style="position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle, rgba(40,40,45,0.8), rgba(90,106,122,0.6));"></span>
-          <span class="sigil-square" style="position:absolute;width:36px;height:36px;transform:rotate(45deg);background:linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));"></span>
-        </div>
-      </div>
+    <div class="rune-grid">
+  <button class="rune-btn keystone">ᚠ<br><small>231</small></button>
+  <button class="rune-btn keystone">⚚<br><small>99</small></button>
+  <button class="rune-btn keystone">λ<br><small>31λ</small></button>
 
-      <p class="designation">Designation: <strong id="nameInRitual"></strong></p>
-
-      <div class="indicator-lines" id="indicatorLines">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span>
-      </div>
-
-      <div id="sequenceReadout" class="sequence">— — —</div>
-      <div class="rune-grid" id="panelButtons"></div>
-
-      <div class="ritual-controls">
-        <button id="verifySequence" class="verify-btn">VERIFY</button>
-        <button id="clearSequence" class="clear-btn">CLEAR</button>
-      </div>
+  <button class="rune-btn keystone">ϰ<br><small>719</small></button>
+  <button class="rune-btn orb-center">
+    <div class="orb">
+      <span class="number">231</span>
+      <span class="sigil sigil-top-left">ᚠ</span>
+      <span class="sigil sigil-top-right">⚚</span>
+      <span class="sigil sigil-bottom-left">Ϟ</span>
+      <span class="sigil sigil-bottom-right">⟁</span>
     </div>
-<button class="rune-btn red">
-  <div class="orb">
-    <span class="number">231</span>
-    <span class="sigil sigil-top-left">ᚠ</span>
-    <span class="sigil sigil-top-right">⚚</span>
-    <span class="sigil sigil-bottom-left">Ϟ</span>
-    <span class="sigil sigil-bottom-right">⟁</span>
-  </div>
-</button>
+  </button>
+  <button class="rune-btn keystone">ϰ<br><small>8.99</small></button>
+
+  <button class="rune-btn keystone">ϰ<br><small>f2</small></button>
+  <button class="rune-btn keystone">ℵ<br><small>27$</small></button>
+  <button class="rune-btn keystone">λ<br><small>99</small></button>
+</div>
 
     <!-- Access keypad -->
     <div id="superCodePanel" class="panel-shell" style="display:none; position:relative;">
