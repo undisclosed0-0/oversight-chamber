@@ -619,122 +619,28 @@ width: 100%;             /* full width */
   white-space: nowrap;
   filter: blur(0.5px);
 }
-/* Sigil container must be relative for vapor messages */
-#colorPanel .sigil {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+/* Ritual Grid */
+#colorPanel .rune-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* always 3 columns */
+  gap: 20px;
+  justify-items: center; /* center each orb in its cell */
+  transform-origin: top center;
 }
 
-/* Vapor rune message */
-.rune-message {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: "Share Tech Mono", monospace;
-  font-size: 1.1rem;
-  color: rgba(212,184,106,0.9);
-  opacity: 0;
-  white-space: nowrap;
-  filter: blur(0.5px);
-  z-index: 2;
-  pointer-events: none;
-  animation: vaporFade 4s forwards;
+@media (max-width: 480px) {
+  #colorPanel .rune-grid {
+    transform: scale(0.8); /* shrink whole grid on small screens */
+  }
 }
 
-@keyframes vaporFade {
-  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.9); }
-  10%  { opacity: 1; transform: translate(-50%, -10px) scale(1); }
-  90%  { opacity: 1; transform: translate(-50%, -20px) scale(1.05); }
-  100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
-}
-#colorPanel .sigil {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,
-              rgba(255, 255, 200, 0.95) 0%,
-              rgba(212, 184, 106, 0.8) 40%,
-              rgba(80, 60, 20, 0.2) 100%);
-  box-shadow:
-    0 0 25px rgba(212,184,106,0.6),
-    0 0 50px rgba(255,220,120,0.4);
-}
-#colorPanel .sigil::after {
-  content: "";
-  position: absolute;
-  inset: 15%;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-              rgba(255,255,255,0.9) 0%,
-              rgba(200,240,230,0.6) 70%,
-              transparent 100%);
-  filter: blur(2px);
-}
-@keyframes orbPulse {
-  0%,100% { transform: scale(1); box-shadow: 0 0 25px rgba(212,184,106,0.6); }
-  50%     { transform: scale(1.05); box-shadow: 0 0 40px rgba(212,184,106,0.8); }
-}
-#colorPanel .sigil {
-  animation: orbPulse 4s infinite ease-in-out;
-}
-.rune-message {
-  color: rgba(212,184,106,0.7);
-  text-shadow: 0 0 6px rgba(212,184,106,0.4);
-}
-/* Orb container inside each rune button */
-#colorPanel .rune-btn .orb {
-  position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,
-              rgba(255,255,220,0.95) 0%,
-              rgba(212,184,106,0.8) 40%,
-              rgba(80,60,20,0.2) 100%);
-  box-shadow:
-    0 0 15px rgba(212,184,106,0.6),
-    0 0 30px rgba(255,220,120,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 6px auto;
-  animation: orbPulse 4s infinite ease-in-out;
-}
-
-/* Sigil sits inside the orb */
-#colorPanel .rune-btn .orb .sigil {
-  font-size: 1.6rem;
-  color: rgba(212,184,106,0.95);
-  text-shadow: 0 0 6px rgba(212,184,106,0.7),
-               0 0 14px rgba(242,240,233,0.5);
-  z-index: 1;
-}
-
-/* Numeric marker stays below orb */
-#colorPanel .rune-btn small {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.9rem;
-  color: #aaa;
-  text-shadow: 0 0 3px rgba(0,0,0,0.6);
-}
-
-/* Orb pulse animation */
-@keyframes orbPulse {
-  0%,100% { transform: scale(1); box-shadow: 0 0 15px rgba(212,184,106,0.6); }
-  50%     { transform: scale(1.05); box-shadow: 0 0 30px rgba(212,184,106,0.8); }
-}
-
-    /* Orb container */
+/* Orb container */
 #colorPanel .rune-btn .orb {
   position: relative;
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  aspect-ratio: 1/1;
   background: radial-gradient(circle at 30% 30%,
               rgba(255,255,220,0.95) 0%,
               rgba(212,184,106,0.8) 40%,
@@ -744,12 +650,12 @@ width: 100%;             /* full width */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
   animation: orbPulse 4s infinite ease-in-out;
+  margin: 0 auto;
 }
 
 /* Number inside orb */
-#colorPanel .rune-btn .orb .number {
+#colorPanel .orb .number {
   font-size: 1.2rem;
   font-weight: bold;
   color: #fff;
@@ -758,54 +664,47 @@ width: 100%;             /* full width */
   z-index: 1;
 }
 
-/* Sigil markers at corners */
-#colorPanel .rune-btn .orb .sigil {
+/* Corner sigil markers */
+#colorPanel .orb .sigil {
   position: absolute;
   font-size: 0.8rem;
   color: rgba(212,184,106,0.8);
   text-shadow: 0 0 4px rgba(212,184,106,0.6);
 }
-.sigil-top-left     { top: 20px; left: 6px; }
+.sigil-top-left     { top: 4px; left: 6px; }
 .sigil-top-right    { top: 4px; right: 6px; }
 .sigil-bottom-left  { bottom: 4px; left: 6px; }
 .sigil-bottom-right { bottom: 4px; right: 6px; }
 
-/* Orb pulse animation */
+/* Vapor rune message (floating text) */
+.rune-message {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 1.1rem;
+  color: rgba(212,184,106,0.7);
+  text-shadow: 0 0 6px rgba(212,184,106,0.4);
+  opacity: 0;
+  white-space: nowrap;
+  filter: blur(0.5px);
+  z-index: 2;
+  pointer-events: none;
+  animation: vaporFade 4s forwards;
+}
+
+/* Animations */
 @keyframes orbPulse {
   0%,100% { transform: scale(1); box-shadow: 0 0 15px rgba(212,184,106,0.6); }
   50%     { transform: scale(1.05); box-shadow: 0 0 30px rgba(212,184,106,0.8); }
 }
 
-    #colorPanel .rune-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 12px;
-  justify-items: center;
-}
-#colorPanel .orb {
-  width: 20vw;   /* 20% of viewport width */
-  max-width: 90px;
-  min-width: 64px;
-  height: auto;  /* keep it square with aspect-ratio */
-  aspect-ratio: 1 / 1;
-}
-@media (max-width: 480px) {
-  #colorPanel .rune-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-#colorPanel .rune-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 20px;               /* breathing room between orbs */
-  justify-items: center;   /* center each orb in its cell */
-}
-
-#colorPanel .orb {
-  aspect-ratio: 1 / 1;     /* always a perfect circle */
-  width: 100%;             /* fill the grid cell */
-  max-width: 100px;        /* don’t get too big */
-  min-width: 70px;         /* don’t shrink too far */
+@keyframes vaporFade {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(0.9); }
+  10%  { opacity: 1; transform: translate(-50%, -10px) scale(1); }
+  90%  { opacity: 1; transform: translate(-50%, -20px) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
 }
 
     
