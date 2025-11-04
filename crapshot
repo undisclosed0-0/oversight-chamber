@@ -706,8 +706,77 @@ width: 100%;             /* full width */
   90%  { opacity: 1; transform: translate(-50%, -20px) scale(1.05); }
   100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
 }
+/* Active orb glow states */
+#colorPanel .rune-btn.red.active   .orb {
+  background: radial-gradient(circle at 30% 30%,
+              rgba(255,100,100,0.95) 0%,
+              rgba(160,40,40,0.8) 40%,
+              rgba(60,20,20,0.3) 100%);
+  box-shadow: 0 0 20px rgba(255,100,100,0.7),
+              0 0 40px rgba(255,120,120,0.5);
+}
 
-    
+#colorPanel .rune-btn.blue.active  .orb {
+  background: radial-gradient(circle at 30% 30%,
+              rgba(120,180,255,0.95) 0%,
+              rgba(40,100,180,0.8) 40%,
+              rgba(20,30,60,0.3) 100%);
+  box-shadow: 0 0 20px rgba(120,180,255,0.7),
+              0 0 40px rgba(100,160,255,0.5);
+}
+
+#colorPanel .rune-btn.green.active .orb {
+  background: radial-gradient(circle at 30% 30%,
+              rgba(140,255,180,0.95) 0%,
+              rgba(60,150,90,0.8) 40%,
+              rgba(20,60,30,0.3) 100%);
+  box-shadow: 0 0 20px rgba(140,255,180,0.7),
+              0 0 40px rgba(100,220,150,0.5);
+}
+
+#colorPanel .rune-btn.mustard.active .orb {
+  background: radial-gradient(circle at 30% 30%,
+              rgba(255,230,140,0.95) 0%,
+              rgba(190,160,60,0.8) 40%,
+              rgba(60,50,20,0.3) 100%);
+  box-shadow: 0 0 20px rgba(255,230,140,0.7),
+              0 0 40px rgba(255,200,100,0.5);
+}
+
+#colorPanel .rune-btn.violet.active .orb {
+  background: radial-gradient(circle at 30% 30%,
+              rgba(220,160,255,0.95) 0%,
+              rgba(130,80,180,0.8) 40%,
+
+    /* Ritual grid: always 3 columns */
+#colorPanel .rune-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  transform-origin: top center;
+}
+
+/* Orbs: fixed aspect ratio, shrink with screen */
+#colorPanel .orb {
+  aspect-ratio: 1 / 1;
+  width: 80px;
+  max-width: 22vw;   /* shrink proportionally on small screens */
+  min-width: 60px;
+}
+
+/* Scale the whole tablet down on very small screens */
+@media (max-width: 600px) {
+  #colorPanel .rune-grid {
+    transform: scale(0.85);
+  }
+}
+@media (max-width: 420px) {
+  #colorPanel .rune-grid {
+    transform: scale(0.7);
+  }
+}
+
     
   </style>
 </head>
