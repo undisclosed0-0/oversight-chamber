@@ -2,39 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Prestige Store — Street View</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Prestige crest font -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet" />
+  <title>Prestige Store — Street View</title>
   <style>
     :root{
-      /* Farce-style atmosphere */
       --bg:#0a0d10;
       --ink:#e6f1ff;
       --muted:#9db1c7;
-      --neon:#88ccff;
+      --neon:#59f0ff;
+      --accent:#ff2d6b;
       --glass:rgba(255,255,255,0.06);
       --frame:#1b2027;
-
-      /* Prestige token auras */
-      --blue:#88ccff;
-      --panel: rgba(30,30,40,0.88);
-      --silver: rgba(192,192,192,0.85);
-      --gold: rgba(255,215,0,0.85);
-
+      --gold:#ffd700;
+      --silver:#c0c0c0;
       --radius:14px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      background:radial-gradient(1200px 600px at 70% 10%, #0f1319, var(--bg));
-      color:var(--ink);
-      font-family:Georgia, serif;
-      display:flex; flex-direction:column;
+      margin:0; background:radial-gradient(1200px 600px at 70% 10%, #0f1319, var(--bg));
+      color:var(--ink); font-family:Georgia, serif; display:flex; flex-direction:column;
     }
 
-    /* Header / façade crest with Cinzel Decorative */
+    /* Header / façade crest */
     header.site-banner{
       padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
       background:linear-gradient(180deg, rgba(20,24,30,0.9), rgba(10,13,16,0.6));
@@ -43,30 +33,11 @@
     .brand{ display:flex; align-items:center; gap:12px }
     .brand-mark{
       width:36px; height:36px; border-radius:50%;
-      background:conic-gradient(from 180deg, var(--neon), #aee0ff, #6ec2ff, var(--neon));
+      background:conic-gradient(from 180deg, var(--neon), #6ef, #3cf, var(--neon));
       box-shadow:0 0 18px var(--neon);
     }
-    .brand-title{
-      font-family:'Cinzel Decorative', serif;
-      letter-spacing:0.04em; font-weight:700; font-size:24px;
-      text-shadow:0 0 10px var(--neon);
-    }
+    .brand-title{ letter-spacing:0.02em; font-weight:700; font-size:22px }
     .tagline{ color:var(--muted); font-size:13px }
-
-    /* Verse + counters ribbon (identity, encouragement, auras) */
-    .ribbon{
-      border:1px solid #273242; border-radius:10px; padding:10px 12px; margin:10px 16px;
-      background:rgba(255,255,255,0.06); text-align:center;
-      font-family:'Cinzel Decorative', serif;
-    }
-    .counters{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:6px }
-    .counter{
-      border:1px solid #273242; border-radius:10px; padding:8px 12px; background:rgba(255,255,255,0.06);
-      box-shadow:0 0 10px rgba(255,215,0,0.16);
-      font-weight:700;
-    }
-    .counter.gold{ color:var(--gold) }
-    .counter.silver{ color:var(--silver) }
 
     /* Main frame */
     main{ width:100%; max-width:1200px; margin:24px auto; padding:0 16px; flex:1 }
@@ -77,15 +48,12 @@
     }
     .neon-sign{
       position:absolute; top:18px; left:18px; z-index:2; display:flex; flex-direction:column; gap:2px;
-      text-shadow:0 0 10px var(--neon), 0 0 24px rgba(136,204,255,0.6);
+      text-shadow:0 0 10px var(--neon), 0 0 24px rgba(89,240,255,0.6);
     }
-    .neon-sign .name{
-      font-family:'Cinzel Decorative', serif;
-      font-size:26px; letter-spacing:0.06em; font-weight:700;
-    }
+    .neon-sign .name{ font-size:26px; letter-spacing:0.06em; font-weight:700 }
     .neon-sign .motto{ font-size:12px; color:var(--muted) }
 
-    /* Windows row — compact information panels that open stores via :target */
+    /* Windows row — compact panels */
     .windows{
       display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;
       padding:88px 16px 16px 16px;
@@ -94,61 +62,25 @@
       background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
       border:1px solid #273242; border-radius:12px; min-height:140px; position:relative; overflow:hidden; padding:12px;
     }
-    .window h3{
-      margin:0 0 6px; font-size:16px; color:#d7ecff;
-      font-family:'Cinzel Decorative', serif; text-shadow:0 0 6px var(--neon)
-    }
+    .window h3{ margin:0 0 6px; font-size:16px; text-shadow:0 0 6px var(--neon) }
     .window p{ margin:0; font-size:13px; color:var(--muted) }
     .window a{
       display:inline-block; margin-top:10px; font-weight:700; text-decoration:none; color:#051015;
-      background:linear-gradient(180deg, var(--neon), #aee0ff); padding:6px 10px; border-radius:999px;
-      font-family:'Cinzel Decorative', serif;
+      background:linear-gradient(180deg, var(--neon), #6ef); padding:6px 10px; border-radius:999px;
     }
     .window::after{
       content:""; position:absolute; inset:auto 0 0 0; height:3px;
-      background:linear-gradient(90deg, var(--neon), #aee0ff, #6ec2ff); opacity:0.7;
+      background:linear-gradient(90deg, var(--neon), #6ef, #3cf); opacity:0.7;
     }
 
-    /* Hidden stores (revealed via :target) — original store functionality look-and-feel */
-    .store{ display:none; margin-top:16px }
-    .store:target{ display:block }
-    .store-panel{
-      background:var(--panel);
-      border:2px solid var(--blue);
-      border-radius:14px; padding:18px; margin:12px 0;
-      box-shadow:0 0 24px var(--blue);
-    }
-    .store-panel h2{
-      margin:0 0 10px; font-size:20px; color:#d7ecff;
-      font-family:'Cinzel Decorative', serif; text-shadow:0 0 8px var(--neon);
-    }
-    .token-note{ font-size:13px; color:var(--muted); margin:6px 0 12px }
-
-    /* Product grid and card (from original store) */
-    .product-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:12px; margin-top:10px }
-    .product-card{
-      border:1px solid var(--blue); border-radius:10px; padding:12px; background:#333a;
-      box-shadow:0 0 12px var(--blue);
-    }
-    .product-title{ font-weight:700; margin-bottom:6px; font-family:'Cinzel Decorative', serif; }
-    .price{ opacity:.9; margin-bottom:8px }
-    .status{ margin-top:10px; min-height:22px; font-style:italic }
-    .status.pending{ color:var(--silver); text-shadow:0 0 6px var(--silver) }
-    .status.finalized{ color:var(--gold); text-shadow:0 0 6px var(--gold) }
-
-    /* Faith (spiritual-only, no tokens) */
-    .faith-panel .token-note{ color:#9dc2ff; font-weight:700 }
-
-    /* Lower section: live updates across all chambers */
+    /* Lower section: live feed */
     .lower{
       display:grid; grid-template-columns: 2fr 1fr; gap:16px; padding:0 16px 16px 16px;
     }
     .live{
       background:var(--glass); border:1px solid #273242; border-radius:12px; padding:12px;
     }
-    .live h2{
-      margin:6px 8px 10px 8px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em
-    }
+    .live h2{ margin:6px 8px 10px 8px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em }
     .feed{ display:grid; gap:10px }
     .feed-item{
       background:linear-gradient(180deg, rgba(20,26,34,0.9), rgba(12,17,23,0.9));
@@ -156,23 +88,45 @@
     }
     .feed-item small{ color:var(--muted) }
 
-    /* Footer curb */
-    footer.curb{ width:100%; max-width:1200px; margin:0 auto 24px; padding:0 16px }
-    .curbline{
-      height:8px; border-radius:8px; background:linear-gradient(90deg, #293444, #1f2a39);
-      border:1px solid #283448;
-      box-shadow:0 -4px 18px rgba(0,0,0,0.45) inset, 0 6px 18px rgba(0,0,0,0.25);
+    /* Stores (hidden until targeted) */
+    .store{ display:none; margin-top:16px }
+    .store:target{ display:block }
+    .store-panel{
+      background:linear-gradient(180deg, #111822, #0c1219);
+      border:1px solid #2a3a4f; border-radius:12px; padding:16px; margin:12px 0;
+      box-shadow:0 0 0 2px rgba(89,240,255,0.06) inset;
     }
+    .store-panel h2{ margin:0 0 10px; font-size:18px }
+    .token-note{ font-size:13px; color:var(--muted); margin:6px 0 12px }
+
+    .product-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px }
+    .product-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border:1px solid #273242; border-radius:10px; padding:12px;
+    }
+    .product-title{ font-weight:700; margin-bottom:6px }
+    .price{ font-size:13px; color:var(--muted) }
+    .status{ margin-top:8px; font-size:12px; color:var(--silver) }
+
+    /* Faith (no tokens) */
+    .faith-panel .token-note{ color:#9dc2ff }
+
+    /* Counters ribbon */
+    .ribbon{
+      border:1px solid #273242; border-radius:10px; padding:10px 12px; margin:10px 16px;
+      background:rgba(255,255,255,0.06); text-align:center;
+    }
+    .counters{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap }
+    .counter{
+      border:1px solid #273242; border-radius:10px; padding:8px 12px; background:rgba(255,255,255,0.06);
+      box-shadow:0 0 10px rgba(255,215,0,0.18);
+    }
+    .counter.gold{ color:var(--gold) }
+    .counter.silver{ color:var(--silver) }
 
     /* Responsive */
-    @media (max-width: 900px){
-      .windows{ grid-template-columns: repeat(2, 1fr) }
-      .lower{ grid-template-columns: 1fr }
-    }
-    @media (max-width: 560px){
-      .windows{ grid-template-columns: 1fr }
-      .brand-title{ font-size:22px }
-    }
+    @media (max-width: 900px){ .windows{ grid-template-columns: repeat(2, 1fr) } .lower{ grid-template-columns:1fr } }
+    @media (max-width: 560px){ .windows{ grid-template-columns: 1fr } .brand-title{ font-size:20px } }
   </style>
 </head>
 <body>
@@ -186,7 +140,7 @@
     </div>
     <div class="ribbon">
       “Let all that you do be done in love.” — 1 Corinthians 16:14
-      <div class="counters">
+      <div class="counters" style="margin-top:8px">
         <div class="counter gold">Purchased: 12</div>
         <div class="counter silver">Symbolic: 7</div>
       </div>
@@ -197,7 +151,7 @@
     <section class="façade">
       <div class="neon-sign" aria-label="Building marquee">
         <div class="name">PRESTIGE STORE</div>
-        <div class="motto">Ceremonial storefront, community unity</div>
+        <div class="motto">Ceremonial storefront with community unity</div>
       </div>
 
       <!-- Windows row: compact info cues linking to hidden stores -->
@@ -205,26 +159,26 @@
         <!-- Commerce -->
         <article class="window">
           <h3>🏛 Commerce</h3>
-          <p>Accessories and items. Accepts purchased & symbolic tokens.</p>
+          <p>Accessories and items. Purchased & symbolic tokens.</p>
           <a href="#store-commerce" aria-label="Open Commerce store">Open store</a>
         </article>
         <!-- Gamified -->
         <article class="window">
           <h3>⚔️ Gamified</h3>
-          <p>Quest rewards & mini-game medals. Accepts purchased & symbolic tokens.</p>
+          <p>Quest rewards & mini-game medals. Purchased & symbolic tokens.</p>
           <a href="#store-gamified" aria-label="Open Gamified store">Open store</a>
         </article>
         <!-- Community -->
         <article class="window">
           <h3>🤝 Community</h3>
-          <p>Pooled contributions & generosity artifacts. Accepts purchased & symbolic tokens.</p>
+          <p>Pooled contributions & generosity artifacts. Purchased & symbolic tokens.</p>
           <a href="#store-community" aria-label="Open Community store">Open store</a>
         </article>
-        <!-- Faith (spiritual-only, no tokens) -->
+        <!-- Faith -->
         <article class="window">
           <h3>✝️ Faith</h3>
           <p>Spiritual reflection only. No tokens.</p>
-          <a href="#store-faith" aria-label="Enter Faith chamber">Enter</a>
+          <a href="#store-faith" aria-label="Open Faith chamber">Enter</a>
         </article>
       </div>
 
@@ -232,27 +186,17 @@
       <section id="store-commerce" class="store">
         <div class="store-panel">
           <h2>🏛 Commerce Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Pending credits shimmer silver until finalized by a Prestige member.</div>
+          <div class="token-note">Accepts purchased & symbolic tokens. Pending items shimmer until verified.</div>
           <div class="product-grid">
             <div class="product-card">
               <div class="product-title">Crystal Ring</div>
-              <div class="price">Cost: 20 purchased tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">20 purchased</div>
+              <div class="status">Pending verification</div>
             </div>
             <div class="product-card">
               <div class="product-title">Silver Necklace</div>
-              <div class="price">Cost: 30 purchased tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Braided Bracelet</div>
-              <div class="price">Cost: 15 purchased tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Crest Charm</div>
-              <div class="price">Cost: 10 purchased tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">30 purchased</div>
+              <div class="status">Pending verification</div>
             </div>
           </div>
         </div>
@@ -261,22 +205,17 @@
       <section id="store-gamified" class="store">
         <div class="store-panel">
           <h2>⚔️ Gamified Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Symbolic tokens are earned through quests and challenges (never equivalent to purchased tokens).</div>
+          <div class="token-note">Accepts purchased & symbolic tokens. Rewards reflect quest progress.</div>
           <div class="product-grid">
             <div class="product-card">
               <div class="product-title">Quest Badge</div>
-              <div class="price">Cost: 5 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">5 symbolic</div>
+              <div class="status">Pending verification</div>
             </div>
             <div class="product-card">
               <div class="product-title">Mini-game Medal</div>
-              <div class="price">Cost: 8 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Challenge Scroll</div>
-              <div class="price">Cost: 10 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">8 symbolic</div>
+              <div class="status">Pending verification</div>
             </div>
           </div>
         </div>
@@ -285,22 +224,17 @@
       <section id="store-community" class="store">
         <div class="store-panel">
           <h2>🤝 Community Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Honors pooled contributions and acts of generosity.</div>
+          <div class="token-note">Accepts purchased & symbolic tokens. Honors pooled contributions.</div>
           <div class="product-grid">
             <div class="product-card">
               <div class="product-title">Community Crest</div>
-              <div class="price">Cost: 6 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">6 symbolic</div>
+              <div class="status">Pending verification</div>
             </div>
             <div class="product-card">
               <div class="product-title">Generosity Ribbon</div>
-              <div class="price">Cost: 7 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Pooled Token</div>
-              <div class="price">Cost: 4 symbolic tokens</div>
-              <div class="status pending">Pending verification by Prestige member</div>
+              <div class="price">7 symbolic</div>
+              <div class="status">Pending verification</div>
             </div>
           </div>
         </div>
@@ -321,7 +255,7 @@
         <section class="live" aria-label="Live updates">
           <h2>Live Updates</h2>
           <div class="feed" aria-live="polite">
-            <div class="feed-item"><span>🛍 Crystal Ring purchased (Commerce)</span><small>Just now</small></div>
+            <div class="feed-item"><span>🛍 Crystal Ring purchased</span><small>Just now</small></div>
             <div class="feed-item"><span>⚔️ Quest completed: Submit grades (+5 symbolic)</span><small>2 min</small></div>
             <div class="feed-item"><span>🤝 Pooled contribution added (+2 symbolic)</span><small>7 min</small></div>
             <div class="feed-item"><span>✝️ Prayer submitted: “Guide me in patience”</span><small>10 min</small></div>
@@ -336,8 +270,8 @@
     </section>
   </main>
 
-  <footer class="curb" role="contentinfo" aria-label="Curb">
-    <div class="curbline" aria-hidden="true"></div>
+  <footer style="width:100%; max-width:1200px; margin:0 auto 24px; padding:0 16px">
+    <div style="height:8px; border-radius:8px; background:linear-gradient(90deg, #293444, #1f2a39); border:1px solid #283448; box-shadow:0 -4px 18px rgba(0,0,0,0.45) inset, 0 6px 18px rgba(0,0,0,0.25)"></div>
   </footer>
 </body>
 </html>
