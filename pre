@@ -1,277 +1,210 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
+  <title>Prestige Hybrid Storefront</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prestige Store — Street View</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap" rel="stylesheet" />
   <style>
     :root{
-      --bg:#0a0d10;
-      --ink:#e6f1ff;
-      --muted:#9db1c7;
-      --neon:#59f0ff;
-      --accent:#ff2d6b;
-      --glass:rgba(255,255,255,0.06);
-      --frame:#1b2027;
-      --gold:#ffd700;
-      --silver:#c0c0c0;
-      --radius:14px;
+      --blue:#88ccff;
+      --panel: rgba(30,30,40,0.88);
+      --silver: rgba(192,192,192,0.85);
+      --gold: rgba(255,215,0,0.85);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:radial-gradient(1200px 600px at 70% 10%, #0f1319, var(--bg));
-      color:var(--ink); font-family:Georgia, serif; display:flex; flex-direction:column;
+    html, body {
+      margin:0; padding:0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color:#e9f6ff; font-family:'Cinzel Decorative', serif;
+    }
+    #wrap { max-width:1080px; margin:0 auto; padding:18px; }
+
+    /* Panels: dashboard first, chambers hidden unless targeted */
+    .panel { display:none; }
+    #dashboard { display:block; } /* visible by default */
+    .panel:target { display:block; }
+
+    .crest-banner { font-size:2.2rem; text-shadow:0 0 12px var(--blue); text-align:center; margin:12px 0; }
+    .ribbon { border:1px solid var(--blue); border-radius:10px; padding:12px; margin:10px 0; background:rgba(255,255,255,0.08); }
+    .counters { display:flex; gap:14px; flex-wrap:wrap; margin:12px 0; }
+    .counter { border:1px solid var(--blue); border-radius:10px; padding:8px 12px; box-shadow:0 0 10px var(--blue); background:rgba(255,255,255,0.08); }
+    .counter.gold { box-shadow:0 0 16px var(--gold); border-color:var(--gold); }
+    .counter.silver { box-shadow:0 0 16px var(--silver); border-color:var(--silver); }
+
+    .nav, .back { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .btn { border-radius:10px; border:1px solid var(--blue); background:var(--blue); color:#07233a; padding:10px 12px; font-weight:700; text-decoration:none; display:inline-block; }
+
+    .chamber {
+      background: var(--panel);
+      border: 2px solid var(--blue);
+      border-radius: 14px;
+      box-shadow: 0 0 24px var(--blue);
+      padding: 18px;
+      margin: 18px 0;
+    }
+    .crest { font-size:1.6rem; text-shadow:0 0 10px var(--blue); margin-bottom:10px; }
+
+    /* Storefront */
+    .product-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:12px; margin-top:10px; }
+    .product-card { border:1px solid var(--blue); border-radius:10px; padding:12px; background:#333a; box-shadow:0 0 12px var(--blue); }
+    .product-title { font-weight:700; margin-bottom:6px; }
+    .price { opacity:.9; margin-bottom:8px; }
+    .status { margin-top:10px; min-height:22px; }
+    .status.pending { color:var(--silver); text-shadow:0 0 6px var(--silver); }
+    .status.finalized { color:var(--gold); text-shadow:0 0 6px var(--gold); }
+
+    .checkout { margin-top:12px; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:10px; }
+    .rail { border:1px dashed rgba(136,204,255,0.35); border-radius:10px; padding:12px; background:rgba(46,52,70,0.6); }
+    .rail-title { font-size:.98rem; margin-bottom:8px; opacity:.95; }
+
+    .list { margin-top:8px; }
+    .list li { margin:6px 0; }
+
+    /* Simple input styling (no JS needed) */
+    input[type="text"] {
+      width:100%; padding:10px; border-radius:10px; border:1px solid var(--blue);
+      background:rgba(255,255,255,0.08); color:#fff;
     }
 
-    /* Header / façade crest */
-    header.site-banner{
-      padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-      background:linear-gradient(180deg, rgba(20,24,30,0.9), rgba(10,13,16,0.6));
-      border-bottom:1px solid #1e2630; backdrop-filter:blur(8px); position:sticky; top:0; z-index:20;
-    }
-    .brand{ display:flex; align-items:center; gap:12px }
-    .brand-mark{
-      width:36px; height:36px; border-radius:50%;
-      background:conic-gradient(from 180deg, var(--neon), #6ef, #3cf, var(--neon));
-      box-shadow:0 0 18px var(--neon);
-    }
-    .brand-title{ letter-spacing:0.02em; font-weight:700; font-size:22px }
-    .tagline{ color:var(--muted); font-size:13px }
-
-    /* Main frame */
-    main{ width:100%; max-width:1200px; margin:24px auto; padding:0 16px; flex:1 }
-    .façade{
-      background:linear-gradient(180deg, #0c1117, #0a0d10);
-      border:1px solid #273242; border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,0.35); overflow:hidden;
-      position:relative; isolation:isolate;
-    }
-    .neon-sign{
-      position:absolute; top:18px; left:18px; z-index:2; display:flex; flex-direction:column; gap:2px;
-      text-shadow:0 0 10px var(--neon), 0 0 24px rgba(89,240,255,0.6);
-    }
-    .neon-sign .name{ font-size:26px; letter-spacing:0.06em; font-weight:700 }
-    .neon-sign .motto{ font-size:12px; color:var(--muted) }
-
-    /* Windows row — compact panels */
-    .windows{
-      display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;
-      padding:88px 16px 16px 16px;
-    }
-    .window{
-      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border:1px solid #273242; border-radius:12px; min-height:140px; position:relative; overflow:hidden; padding:12px;
-    }
-    .window h3{ margin:0 0 6px; font-size:16px; text-shadow:0 0 6px var(--neon) }
-    .window p{ margin:0; font-size:13px; color:var(--muted) }
-    .window a{
-      display:inline-block; margin-top:10px; font-weight:700; text-decoration:none; color:#051015;
-      background:linear-gradient(180deg, var(--neon), #6ef); padding:6px 10px; border-radius:999px;
-    }
-    .window::after{
-      content:""; position:absolute; inset:auto 0 0 0; height:3px;
-      background:linear-gradient(90deg, var(--neon), #6ef, #3cf); opacity:0.7;
-    }
-
-    /* Lower section: live feed */
-    .lower{
-      display:grid; grid-template-columns: 2fr 1fr; gap:16px; padding:0 16px 16px 16px;
-    }
-    .live{
-      background:var(--glass); border:1px solid #273242; border-radius:12px; padding:12px;
-    }
-    .live h2{ margin:6px 8px 10px 8px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em }
-    .feed{ display:grid; gap:10px }
-    .feed-item{
-      background:linear-gradient(180deg, rgba(20,26,34,0.9), rgba(12,17,23,0.9));
-      border:1px solid #273242; border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;
-    }
-    .feed-item small{ color:var(--muted) }
-
-    /* Stores (hidden until targeted) */
-    .store{ display:none; margin-top:16px }
-    .store:target{ display:block }
-    .store-panel{
-      background:linear-gradient(180deg, #111822, #0c1219);
-      border:1px solid #2a3a4f; border-radius:12px; padding:16px; margin:12px 0;
-      box-shadow:0 0 0 2px rgba(89,240,255,0.06) inset;
-    }
-    .store-panel h2{ margin:0 0 10px; font-size:18px }
-    .token-note{ font-size:13px; color:var(--muted); margin:6px 0 12px }
-
-    .product-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px }
-    .product-card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border:1px solid #273242; border-radius:10px; padding:12px;
-    }
-    .product-title{ font-weight:700; margin-bottom:6px }
-    .price{ font-size:13px; color:var(--muted) }
-    .status{ margin-top:8px; font-size:12px; color:var(--silver) }
-
-    /* Faith (no tokens) */
-    .faith-panel .token-note{ color:#9dc2ff }
-
-    /* Counters ribbon */
-    .ribbon{
-      border:1px solid #273242; border-radius:10px; padding:10px 12px; margin:10px 16px;
-      background:rgba(255,255,255,0.06); text-align:center;
-    }
-    .counters{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap }
-    .counter{
-      border:1px solid #273242; border-radius:10px; padding:8px 12px; background:rgba(255,255,255,0.06);
-      box-shadow:0 0 10px rgba(255,215,0,0.18);
-    }
-    .counter.gold{ color:var(--gold) }
-    .counter.silver{ color:var(--silver) }
-
-    /* Responsive */
-    @media (max-width: 900px){ .windows{ grid-template-columns: repeat(2, 1fr) } .lower{ grid-template-columns:1fr } }
-    @media (max-width: 560px){ .windows{ grid-template-columns: 1fr } .brand-title{ font-size:20px } }
+    @media (max-width:640px){ .crest-banner{font-size:1.6rem} .product-grid{grid-template-columns:repeat(auto-fill, minmax(140px,1fr))} }
   </style>
 </head>
 <body>
-  <header class="site-banner" aria-label="Street UI">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true"></div>
-      <div>
-        <div class="brand-title">Prestige Store</div>
-        <div class="tagline">Where honor becomes belonging</div>
-      </div>
-    </div>
-    <div class="ribbon">
-      “Let all that you do be done in love.” — 1 Corinthians 16:14
-      <div class="counters" style="margin-top:8px">
-        <div class="counter gold">Purchased: 12</div>
-        <div class="counter silver">Symbolic: 7</div>
-      </div>
-    </div>
-  </header>
+  <div id="wrap">
 
-  <main role="main" aria-label="Street View">
-    <section class="façade">
-      <div class="neon-sign" aria-label="Building marquee">
-        <div class="name">PRESTIGE STORE</div>
-        <div class="motto">Ceremonial storefront with community unity</div>
+    <!-- Dashboard (visible by default) -->
+    <section id="dashboard" class="panel">
+      <div class="crest-banner">👑 Prestige Hybrid Store</div>
+
+      <div class="ribbon">“Let all that you do be done in love.” — 1 Corinthians 16:14</div>
+
+      <div class="counters">
+        <div class="counter gold"><strong>Purchased tokens:</strong> <span>0</span></div>
+        <div class="counter silver"><strong>Gamified tokens:</strong> <span>0</span></div>
       </div>
 
-      <!-- Windows row: compact info cues linking to hidden stores -->
-      <div class="windows" aria-label="Chamber windows">
-        <!-- Commerce -->
-        <article class="window">
-          <h3>🏛 Commerce</h3>
-          <p>Accessories and items. Purchased & symbolic tokens.</p>
-          <a href="#store-commerce" aria-label="Open Commerce store">Open store</a>
-        </article>
-        <!-- Gamified -->
-        <article class="window">
-          <h3>⚔️ Gamified</h3>
-          <p>Quest rewards & mini-game medals. Purchased & symbolic tokens.</p>
-          <a href="#store-gamified" aria-label="Open Gamified store">Open store</a>
-        </article>
-        <!-- Community -->
-        <article class="window">
-          <h3>🤝 Community</h3>
-          <p>Pooled contributions & generosity artifacts. Purchased & symbolic tokens.</p>
-          <a href="#store-community" aria-label="Open Community store">Open store</a>
-        </article>
-        <!-- Faith -->
-        <article class="window">
-          <h3>✝️ Faith</h3>
-          <p>Spiritual reflection only. No tokens.</p>
-          <a href="#store-faith" aria-label="Open Faith chamber">Enter</a>
-        </article>
-      </div>
+      <div class="ribbon">Reflection: How are you feeling today?</div>
 
-      <!-- Hidden stores (revealed via :target) -->
-      <section id="store-commerce" class="store">
-        <div class="store-panel">
-          <h2>🏛 Commerce Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Pending items shimmer until verified.</div>
-          <div class="product-grid">
-            <div class="product-card">
-              <div class="product-title">Crystal Ring</div>
-              <div class="price">20 purchased</div>
-              <div class="status">Pending verification</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Silver Necklace</div>
-              <div class="price">30 purchased</div>
-              <div class="status">Pending verification</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="store-gamified" class="store">
-        <div class="store-panel">
-          <h2>⚔️ Gamified Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Rewards reflect quest progress.</div>
-          <div class="product-grid">
-            <div class="product-card">
-              <div class="product-title">Quest Badge</div>
-              <div class="price">5 symbolic</div>
-              <div class="status">Pending verification</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Mini-game Medal</div>
-              <div class="price">8 symbolic</div>
-              <div class="status">Pending verification</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="store-community" class="store">
-        <div class="store-panel">
-          <h2>🤝 Community Store</h2>
-          <div class="token-note">Accepts purchased & symbolic tokens. Honors pooled contributions.</div>
-          <div class="product-grid">
-            <div class="product-card">
-              <div class="product-title">Community Crest</div>
-              <div class="price">6 symbolic</div>
-              <div class="status">Pending verification</div>
-            </div>
-            <div class="product-card">
-              <div class="product-title">Generosity Ribbon</div>
-              <div class="price">7 symbolic</div>
-              <div class="status">Pending verification</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="store-faith" class="store faith-panel">
-        <div class="store-panel">
-          <h2>✝️ Faith Chamber</h2>
-          <div class="token-note">Spiritual-only. No tokens accepted here.</div>
-          <p>Submit your prayer request:</p>
-          <input type="text" placeholder="Type your prayer here…" style="width:100%;padding:10px;border-radius:8px;border:1px solid #273242;background:rgba(255,255,255,0.06);color:#fff;">
-          <p style="margin-top:10px; color:#9db1c7"><em>“Be kind to one another, tenderhearted.” — Ephesians 4:32</em></p>
-        </div>
-      </section>
-
-      <!-- Bottom live feed reflecting all chambers -->
-      <div class="lower">
-        <section class="live" aria-label="Live updates">
-          <h2>Live Updates</h2>
-          <div class="feed" aria-live="polite">
-            <div class="feed-item"><span>🛍 Crystal Ring purchased</span><small>Just now</small></div>
-            <div class="feed-item"><span>⚔️ Quest completed: Submit grades (+5 symbolic)</span><small>2 min</small></div>
-            <div class="feed-item"><span>🤝 Pooled contribution added (+2 symbolic)</span><small>7 min</small></div>
-            <div class="feed-item"><span>✝️ Prayer submitted: “Guide me in patience”</span><small>10 min</small></div>
-          </div>
-        </section>
-        <section aria-label="Info">
-          <div class="ribbon">
-            This street‑view is your front desk. Each window opens a distinct chamber. Purchased and symbolic tokens are verified by Prestige members.
-          </div>
-        </section>
+      <div class="nav">
+        <a class="btn" href="#commerce">Enter Commerce</a>
+        <a class="btn" href="#gamified">Enter Gamified</a>
+        <a class="btn" href="#community">Enter Community</a>
+        <a class="btn" href="#faith">Enter Faith</a>
       </div>
     </section>
-  </main>
 
-  <footer style="width:100%; max-width:1200px; margin:0 auto 24px; padding:0 16px">
-    <div style="height:8px; border-radius:8px; background:linear-gradient(90deg, #293444, #1f2a39); border:1px solid #283448; box-shadow:0 -4px 18px rgba(0,0,0,0.45) inset, 0 6px 18px rgba(0,0,0,0.25)"></div>
-  </footer>
+    <!-- Commerce chamber -->
+    <section id="commerce" class="panel chamber">
+      <div class="crest">🛍 Accessories</div>
+      <div class="ribbon">Pending credits shimmer silver until finalized by a Prestige member.</div>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-title">Crystal Ring</div>
+          <div class="price">Cost: 20 purchased tokens</div>
+          <div class="status pending">Pending verification by Prestige member</div>
+        </div>
+        <div class="product-card">
+          <div class="product-title">Silver Necklace</div>
+          <div class="price">Cost: 30 purchased tokens</div>
+          <div class="status pending">Pending verification by Prestige member</div>
+        </div>
+        <div class="product-card">
+          <div class="product-title">Braided Bracelet</div>
+          <div class="price">Cost: 15 purchased tokens</div>
+          <div class="status pending">Pending verification by Prestige member</div>
+        </div>
+        <div class="product-card">
+          <div class="product-title">Crest Charm</div>
+          <div class="price">Cost: 10 purchased tokens</div>
+          <div class="status pending">Pending verification by Prestige member</div>
+        </div>
+      </div>
+
+      <div class="checkout">
+        <div class="rail">
+          <div class="rail-title"><strong>Prestige Pay:</strong> friendly flow, ceremonial confirmation</div>
+          <div class="ribbon">Request Prestige Pay at the desk—finalization appears gold in your ledger.</div>
+        </div>
+        <div class="rail">
+          <div class="rail-title"><strong>COD & Money Order:</strong> paced confirmation, no rush</div>
+          <div class="ribbon">Submit COD/MO at the desk—status updates after member verification.</div>
+        </div>
+        <div class="rail">
+          <div class="rail-title"><strong>Future-ready:</strong> tokenized crypto & P2P rails</div>
+          <div class="ribbon">Rails are staged; activation will be announced.</div>
+        </div>
+        <div class="rail">
+          <div class="rail-title"><strong>Instant cashout:</strong> available any time</div>
+          <div class="ribbon">Request at the desk; funds release with ceremonial confirmation.</div>
+        </div>
+      </div>
+
+      <div class="back">
+        <a class="btn" href="#dashboard">← Back to Dashboard</a>
+      </div>
+    </section>
+
+    <!-- Gamified chamber -->
+    <section id="gamified" class="panel chamber">
+      <div class="crest">⚔️ Gamified Chamber</div>
+      <div class="ribbon">Earn symbolic tokens through quests (never equivalent to purchased tokens).</div>
+      <ul class="list">
+        <li>Submit grades (+5 gamified)</li>
+        <li>Birthday bonus (+5 gamified)</li>
+        <li>Complete digital puzzle (+6 gamified)</li>
+      </ul>
+      <div class="back">
+        <a class="btn" href="#dashboard">← Back to Dashboard</a>
+      </div>
+    </section>
+
+    <!-- Community chamber -->
+    <section id="community" class="panel chamber">
+      <div class="crest">🤝 Community Chamber</div>
+      <div class="ribbon">Log generosity tasks and pooled contributions. Gamified tokens reward effort and impact.</div>
+      <ul class="list">
+        <li>Volunteer hours (+6 gamified)</li>
+        <li>Smoke-free challenge (+6 gamified)</li>
+        <li>Help a neighbor (+6 gamified)</li>
+      </ul>
+
+      <div class="ribbon"><strong>Prestige Ajo / Esusu / Adaji:</strong> private pooled collections</div>
+      <div class="list">
+        <li>Join pooled collection</li>
+        <li>Contribute to pool (+2 tokens)</li>
+      </div>
+
+      <div class="ribbon"><strong>Top contributors</strong></div>
+      <ol class="list">
+        <li>AuraKnight ✧</li>
+        <li>FaithBearer ✧</li>
+        <li>TokenGiver ✧</li>
+      </ol>
+
+      <div class="back">
+        <a class="btn" href="#dashboard">← Back to Dashboard</a>
+      </div>
+    </section>
+
+    <!-- Faith chamber -->
+    <section id="faith" class="panel chamber">
+      <div class="crest">✝️ Faith Chamber</div>
+      <div class="ribbon">“Be kind to one another, tenderhearted.” — Ephesians 4:32</div>
+
+      <div class="ribbon"><strong>Prayer requests</strong></div>
+      <input type="text" placeholder="Type your prayer here..." />
+      <div class="ribbon">Submit at the desk; prayers are honored and archived.</div>
+
+      <div class="ribbon"><strong>“How we feel” reflection:</strong> encouraging biblical values</div>
+      <div class="ribbon">Today, choose patience over haste. Where can you slow down and show care?</div>
+
+      <div class="back">
+        <a class="btn" href="#dashboard">← Back to Dashboard</a>
+      </div>
+    </section>
+
+  </div>
 </body>
 </html>
