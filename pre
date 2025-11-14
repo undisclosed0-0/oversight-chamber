@@ -912,7 +912,7 @@
     billboard.prepend(article);
     if (billboard.children.length > 4) billboard.lastElementChild.remove();
     i++;
-  }, 8000); // every 8 seconds
+  }, 15000); // every 8 seconds
 })();
 </script>
 <script>
@@ -1007,6 +1007,92 @@ function finalizeCart(){
   updateCartDisplay();
 }
 
+</script>
+<script>
+// --- Utility: parse Google Sheets GViz JSON ---
+async function loadSheet(sheetName){
+  const url = `https://docs.google.com/spreadsheets/d/1Gppnlp80FqgOzeUERsSmLp5pZ4E9tvhfbt22NKtUbk8/gviz/tq?sheet=${sheetName}&tqx=out:json`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substr(47).slice(0, -2));
+  return json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
+}
+
+// --- COMMUNITY drip feed ---
+let communityRows = [], communityIndex = 0;
+async function initCommunityFeed(){
+  communityRows = await loadSheet("Community");
+  communityIndex = 0;
+  revealNextCommunity();
+  setInterval(revealNextCommunity, 60000); // one every 60s
+}
+function revealNextCommunity(){
+  if (communityIndex >= communityRows.length) return;
+  const r = communityRows[communityIndex];
+  const box = document.getElementById("liveFeed");
+  if (!box) return;
+  const el = document.createElement("div");
+  el.className = "feed-item fadeSlide"; // fade-in refinement
+  el.textContent = `🤝 ${r[0]} — ${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}`;
+  box.prepend(el);
+  // keep last 6 visible
+  while (box.children.length > 6) box.removeChild(box.lastChild);
+  communityIndex++;
+}
+
+// --- ADS drip feed ---
+let adsRows = [], adsIndex = 0;
+async function initAdsFeed(){
+  adsRows = await loadSheet("Ads");
+  adsIndex = 0;
+  revealNextAd();
+  setInterval(revealNextAd, 45000); // one every 45s
+}
+function revealNextAd(){
+  if (adsRows.length === 0) return;
+  const r = adsRows[adsIndex % adsRows.length]; // loop refinement
+  const board = document.getElementById("billboard");
+  if (!board) return;
+  const article = document.createElement("article");
+  article.className = "billboard-article fadeSlide";
+  article.innerHTML = `
+    <div class="billboard-image"></div>
+    <div class="billboard-title">${r[0]}</div>
+    <div class="billboard-sub">${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}</div>
+    <span class="badge">AD</span>
+  `;
+  board.prepend(article);
+  while (board.children.length > 4) board.removeChild(board.lastChild);
+  adsIndex++;
+}
+
+// --- FAITH drip feed ---
+let faithRows = [], faithIndex = 0;
+async function initFaithFeed(){
+  faithRows = await loadSheet("Faith");
+  faithIndex = 0;
+  revealNextFaith();
+  setInterval(revealNextFaith, 45000); // one every 45s
+}
+function revealNextFaith(){
+  if (faithRows.length === 0) return;
+  const r = faithRows[faithIndex % faithRows.length];
+  const log = document.getElementById("prayerLog");
+  if (!log) return;
+  const el = document.createElement("div");
+  el.className = "feed-item fadeSlide";
+  el.textContent = `🕊 ${r[0]} — ${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}`;
+  log.prepend(el);
+  while (log.children.length > 6) log.removeChild(log.lastChild);
+  faithIndex++;
+}
+
+// --- Initialize all feeds ---
+document.addEventListener("DOMContentLoaded", () => {
+  initCommunityFeed();
+  initAdsFeed();
+  initFaithFeed();
+});
 </script>
 
 </body>
