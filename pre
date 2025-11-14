@@ -174,6 +174,243 @@
     /* Responsive */
     @media (max-width:960px){ .windows{grid-template-columns:repeat(2,1fr)} .chamber-grid{grid-template-columns:1fr} .lower{grid-template-columns:1fr} }
     @media (max-width:560px){ .windows{grid-template-columns:1fr} .brand-title{font-size:2.2rem} }
+ 
+  .feed-item {
+  background: linear-gradient(180deg, rgba(20,26,34,0.9), rgba(12,17,23,0.9));
+  border: 1px solid #273242;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: fadeSlide 0.6s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+  .billboard-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.billboard-article {
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid #28435a;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(136,204,255,0.15);
+  padding: 14px;
+  animation: fadeSlide 0.6s ease;
+}
+
+.billboard-image {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  background: #444;
+  margin-bottom: 10px;
+}
+
+.billboard-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.billboard-sub {
+  font-size: 0.9rem;
+  color: #a8bfd6;
+  margin-bottom: 6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background: linear-gradient(180deg, #88ccff, #bfe8ff);
+  color: #04131f;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.emblem-sigil {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(136,204,255,0.15));
+  box-shadow: 0 0 12px rgba(136,204,255,0.25);
+}
+
+/* Unique shading per method */
+.prestige-pay {
+  background: linear-gradient(135deg, #ffd87a, #fff2c2);
+}
+.cod {
+  background: linear-gradient(135deg, #88ccff, #d0ecff);
+}
+.money-order {
+  background: linear-gradient(135deg, #c0cbd6, #e2e8f0);
+}
+.checkout-cart {
+  background: linear-gradient(135deg, #aee3ff, #eaf6ff);
+}
+
+ .cart-list { display: grid; gap: 12px; margin-top: 12px }
+.cart-item {
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #2a2a2a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  background-size: 200% 100%;
+  animation: shimmerSoft 3s infinite linear;
+  color: #e0e0e0;
+}
+
+@keyframes shimmerSoft {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.cart-item {
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.cart-item.finalized {
+  background: linear-gradient(135deg, #4a3a1a, #6a4a2a);
+  color: #ffd87a;
+  border: 1px solid #d6b36a;
+  box-shadow: 0 0 12px rgba(255,216,122,0.35);
+}
+
+.receipt-confirm {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(135deg, #4a3a1a, #6a4a2a);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 0 18px rgba(255,216,122,0.3);
+}inear-gradient(135deg, #ffd87a, #fff2c2);
+  border-radius: 12px;
+  box-shadow: 0 0 24px rgba(255,216,122,0.35);
+}
+.info-img.glow {
+  background: radial-gradient(circle at center, rgba(255,216,122,0.15), transparent);
+  box-shadow: 0 0 30px rgba(255,216,122,0.45);
+  border: 2px solid #d6b36a;
+  border-radius: 12px;
+  padding: 16px;
+  color: #ffd87a;
+}
+.cart-btn {
+  position: relative;
+  font-size: 1rem;
+  padding: 8px 14px;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: 160px;
+  background: crimson;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 6px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+.product-card {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product-card:active {
+  transform: scale(0.96); /* slight shrink to simulate press */
+  box-shadow: 0 0 6px rgba(0,0,0,0.4) inset; /* inner shadow for depth */
+}
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px rgba(136,204,255,0.5);
+}
+
+.product-card:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 6px rgba(0,0,0,0.4) inset;
+}
+
+.product-icon {
+  height: 80px;
+  width: 80px;
+  margin: 0 auto 12px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255,255,255,0.1);
+}
+.ring-crest { background-image: url('/assets/ring.png'); } /* example icon class */
+
+.product-meta {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.product-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.product-cost {
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.product-status {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #aaa;
+}
+
+.product-action {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #88ccff;
+  margin-top: 8px;
+}
+.product-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* remove default spacing */
+}
+
+.product-card {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08); /* subtle divider */
+}
+
+.product-card:last-child {
+  border-bottom: none; /* no divider after last card */
+}
+
   </style>
 </head>
 <body>
@@ -182,17 +419,19 @@
     <!-- Façade header -->
     <header class="site">
       <div class="crest-mark" aria-hidden="true"></div>
-      <h1 class="brand-title">👑 PRESTIGE HYBRID STORE</h1>
+      <h1 class="brand-title"> PRESTIGE HYBRID STORE</h1>
     </header>
 
     <!-- Verse + token + cart -->
     <section class="token-box frost">
       <div class="verse" id="dailyVerse">“Let all that you do be done in love.” — 1 Corinthians 16:14</div>
       <div class="counters">
-        <div class="counter gold"><strong>Purchased:</strong> <span id="purchasedCount">0</span></div>
-        <div class="counter silver"><strong>Symbolic:</strong> <span id="symbolicCount">0</span></div>
+        <div class="counter gold"><strong>Purchased:🪙</strong> <span id="purchasedCount">1,000.00</span></div>
+        <div class="counter silver"><strong>Symbolic:♦️</strong> <span id="symbolicCount">1,000.00</span></div>
       </div>
-      <button class="cart-btn" id="cartBtn">🛒 Cart & Checkout</button>
+      <button class="cart-btn" id="cartBtn" onclick="showChamber('checkoutPanel')">
+    🛒 Cart & Checkout 
+    <span id="cartCount" class="cart-count">0</span></button>
     </section>
 
     <!-- First windows row (Farce-style live/manual submission look) -->
@@ -238,6 +477,9 @@
         </div>
       </article>
     </section>
+<section id="billboard" class="billboard-row">
+  <!-- Articles will be injected here -->
+</section>
 
     <!-- Second windows row: chamber directory -->
     <section class="windows windows-dir" aria-label="Chamber directory">
@@ -265,70 +507,62 @@
 
     <!-- Chambers -->
     <section id="commerce" class="chamber frost">
-      <div class="controls">
-        <button class="btn" onclick="showChamber('commerce')">Reveal via button</button>
-        <a class="btn" href="#commerce">Reveal via anchor</a>
-      </div>
+      
       <div class="chamber-grid">
         <div class="info-panel">
           <div class="info-img void" aria-hidden="true"></div>
           <h4>🏛 Commerce Chamber</h4>
           <p>Pending credits shimmer silver until a Prestige member finalizes them to gold.</p>
           <p>Cart lists all available purchases, including token-related offerings.</p>
+                  
         </div>
+        <div class="chamber-grid">
         <div class="store-panel">
-          <h4>Store</h4>
+          <h4>Store</h4><div class="status pending">Pending verification</div><br>
           <div class="product-grid">
-            <div class="product-card">
-              <div class="product-title">Crystal Ring</div>
-              <div class="price">Cost: 20 purchased tokens</div>
-              <div class="status pending">Pending verification</div>
-            </div>
-            <div class="product-card">
+           <div class="product-card" onclick="addToCart('Crystal Ring', 20, 50, 'hybrid')">
+  <div class="product-icon ring-crest"></div>
+  <div class="product-meta">
+    <div class="product-title">Crystal Ring</div>
+    <div class="product-cost">💰 20 purchased tokens</div>
+    <div class="product-cost">♦️ 50 symbolic crystals</div>
+    <div class="product-status pending">Pending Verification</div>
+  </div>
+  <div class="product-action">Click to add to cart</div>
+</div>
+
+
+
+
+              
+            </div><br>
+          
+        <div class="chamber-grid">
+            <div class="product-card" onclick="addToCart('Silver Necklace', 20)">
               <div class="product-title">Silver Necklace</div>
-              <div class="price">Cost: 30 purchased tokens</div>
-              <div class="status pending">Pending verification</div>
+              <div class="price">💰 30 purchased tokens</div><div class="status pending">Click to add to cart</div>
+              
             </div>
-            <div class="product-card">
+            <div class="chamber-grid">
+            <div class="product-card" onclick="addToCart('Braided Bracelet', 20)">
               <div class="product-title">Braided Bracelet</div>
-              <div class="price">Cost: 15 purchased tokens</div>
-              <div class="status pending">Pending verification</div>
+              <div class="price">💰 15 purchased tokens</div><div class="status pending">Click to add to cart</div>
+              
             </div>
-            <div class="product-card">
+             <div class="chamber-grid"> 
+           <div class="product-card" onclick="addToCart('Crest Charm', 20)">
               <div class="product-title">Crest Charm</div>
-              <div class="price">Cost: 10 purchased tokens</div>
-              <div class="status pending">Pending verification</div>
+         <div class="price">💰 10 purchased tokens</div>
+              <div class="status pending">Click to add to cart</div>
+              
             </div>
           </div>
 
-          <!-- Payment rails and ritual flow -->
-          <div class="checkout">
-            <div class="rail">
-              <strong>Prestige Pay</strong>
-              Friendly flow; ceremonial confirmation with gold ledger glow.
-            </div>
-            <div class="rail">
-              <strong>Cash on Delivery / Money Order</strong>
-              Paced confirmation; status updates post‑verification.
-            </div>
-            <div class="rail">
-              <strong>Crypto / P2P Rails</strong>
-              Future‑ready; staged for activation.
-            </div>
-            <div class="rail">
-              <strong>Instant Cashout</strong>
-              Available anytime via ceremonial desk request.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+ 
+</section>
 
     <section id="gamified" class="chamber frost">
-      <div class="controls">
-        <button class="btn" onclick="showChamber('gamified')">Reveal via button</button>
-        <a class="btn" href="#gamified">Reveal via anchor</a>
-      </div>
+  
       <div class="chamber-grid">
         <div class="info-panel">
           <div class="info-img" aria-hidden="true"></div>
@@ -359,10 +593,7 @@
     </section>
 
     <section id="community" class="chamber frost">
-      <div class="controls">
-        <button class="btn" onclick="showChamber('community')">Reveal via button</button>
-        <a class="btn" href="#community">Reveal via anchor</a>
-      </div>
+     
       <div class="chamber-grid">
         <div class="info-panel">
           <div class="info-img" aria-hidden="true"></div>
@@ -394,10 +625,7 @@
     </section>
 
     <section id="faith" class="chamber frost">
-      <div class="controls">
-        <button class="btn" onclick="showChamber('faith')">Reveal via button</button>
-        <a class="btn" href="#faith">Reveal via anchor</a>
-      </div>
+      
       <div class="chamber-grid">
         <div class="info-panel">
           <div class="info-img" aria-hidden="true"></div>
@@ -416,6 +644,58 @@
       </div>
     </section>
 
+      
+      
+          
+<!-- Cart Chamber -->
+<section id="checkoutPanel" class="chamber frost" >
+  
+  <div class="chamber-grid">
+    
+    <!-- LEFT: Receipt viewer -->
+    <div class="info-panel">
+      <div class="info-img void" id="receiptViewer" aria-hidden="true"></div>
+      <h4>🧾 Receipt Viewer</h4>
+      <p>Finalized purchases glow gold. Pending shimmer silver until ledger confirmation.</p>
+      <div id="receiptTotal">Total: 0 🪙 + 0 ♦️</div>
+    </div>
+
+    <!-- RIGHT: Cart list -->
+    <div class="store-panel">
+      <h4>Cart & Checkout</h4>
+      <div id="cartList" class="cart-list"></div>
+      <button class="btn finalize-btn" onclick="finalizeCart()">Finalize Purchases</button>
+    </div>
+ <!-- Payment rails and ritual flow -->
+         <div class="checkout">
+  <div class="rail">
+    <div class="emblem-sigil prestige-pay"></div>
+    <strong>Prestige Pay</strong>
+    <p>Friendly flow. Finalization confirmed by ledger glow. Requires ceremonial desk approval.</p>
+  </div>
+  <div class="rail">
+    <div class="emblem-sigil cod"></div>
+    <strong>Cash on Delivery</strong>
+    <p>Verified post-receipt. Status shimmer appears after member confirmation.</p>
+  </div>
+  <div class="rail">
+    <div class="emblem-sigil money-order"></div>
+    <strong>Money Order</strong>
+    <p>Accepted with pacing. Ledger updates once received and verified.</p>
+  </div>
+  <div class="rail">
+    <div class="emblem-sigil checkout-cart"></div>
+    <strong>Checkout Cart</strong>
+    <p>View all pending purchases. Shimmer silver until finalized by Prestige member.</p>
+  </div>
+</div>
+  </div>
+</section>
+      
+      
+      
+      
+      
     <!-- Live feed + reflection + community ad -->
     <section class="lower">
       <div class="panel-lite">
@@ -434,18 +714,38 @@
       </div>
     </section>
 
+      
+      
+  
+      
+      
+      
+      
     <!-- Directory back controls -->
     <section class="controls" style="margin-top:16px">
       <a class="btn" href="#">Back to top</a>
       <button class="btn" onclick="showChamber('')">Reset chambers</button>
     </section>
 
+      
+    <!-- Cart button already in token-box -->
+
+
+
+      
+      
   </div>
 
+ 
+      
+
+
+   
+      
   <script>
     // Static reveal via class toggling (.active). Anchors also work.
     function showChamber(id){
-      const ids = ['commerce','gamified','community','faith'];
+      const ids = ['commerce','gamified','community','faith','checkoutPanel'];
       ids.forEach(x => {
         const el = document.getElementById(x);
         if(!el) return;
@@ -522,19 +822,192 @@
     // loadLedger();
 
     // Cart button → opens Commerce chamber
-    document.getElementById('cartBtn')?.addEventListener('click', () => showChamber('commerce'));
+    document.getElementById('cartBtn')?.addEventListener('click', () => showChamber('checkoutPanel'));
 
     // On anchor navigation, ensure class toggling matches :target
     window.addEventListener('hashchange', () => {
       const id = (location.hash || '').replace('#','');
-      if (['commerce','gamified','community','faith'].includes(id)) showChamber(id);
+      if (['commerce','gamified','community','faith','checkoutPanel'].includes(id)) showChamber(id);
     });
 
     // Initial hash activation if present
     (function initFromHash(){
       const id = (location.hash || '').replace('#','');
-      if (['commerce','gamified','community','faith'].includes(id)) showChamber(id);
+      if (['commerce','gamified','community','faith','checkoutPanel'].includes(id)) showChamber(id);
     })();
-  </script>
+    
+    
+   </script><script>
+
+(function(){
+  const feed = document.getElementById('liveFeed');
+  const samples = [
+    '🏛 Purchase finalized: Silver Necklace',
+    '⚔️ Quest completed: Birthday bonus (+5 symbolic)',
+    '🤝 Contribution added: Help a neighbor (+2 symbolic)',
+    '✝️ Prayer submitted: “Strength for tomorrow.”'
+  ];
+  let s = 0;
+
+  setInterval(()=>{
+    const item = document.createElement('div');
+    item.className = 'feed-item';
+
+    // Generate timestamp
+    const now = new Date();
+    const ts = now.toLocaleString(); // e.g. "11/13/2025, 6:45:12 PM"
+
+    item.innerHTML = `<span>${samples[s % samples.length]}</span><small>${ts}</small>`;
+    feed.prepend(item); // keep feed tidy
+    if(feed.children.length > 6) feed.lastElementChild.remove();
+
+    // cycle sample index
+    s++;
+  }, 60000); // every 1 minute
+})();
+</script>
+
+   
+<script>
+(function(){
+  const billboard = document.getElementById('billboard');
+  const entries = [
+    {
+      title: "Midnight Static",
+      sub: "Nova & The Wires",
+      badge: "NEW",
+      image: "#1a1a1a"
+    },
+    {
+      title: "Glass Rituals",
+      sub: "Véra K.",
+      badge: "LIVE",
+      image: "#ff2d6b"
+    },
+    {
+      title: "Concrete Lullaby",
+      sub: "Brutalist Choir",
+      badge: "TRENDING",
+      image: "#0077ff"
+    },
+    {
+      title: "Green Room Echoes",
+      sub: "Staff Ensemble",
+      badge: "EXCLUSIVE",
+      image: "#2ed573"
+    }
+  ];
+  let i = 0;
+
+  setInterval(() => {
+    const e = entries[i % entries.length];
+    const article = document.createElement('article');
+    article.className = 'billboard-article';
+    article.innerHTML = `
+      <div class="billboard-image" style="background:${e.image}"></div>
+      <div class="billboard-title">${e.title}</div>
+      <div class="billboard-sub">${e.sub}</div>
+      <span class="badge">${e.badge}</span>
+    `;
+    billboard.prepend(article);
+    if (billboard.children.length > 4) billboard.lastElementChild.remove();
+    i++;
+  }, 8000); // every 8 seconds
+})();
+</script>
+<script>
+function unlockItem(id, className, cost){
+  const card = document.getElementById(id);
+  if (!card) return;
+
+  card.classList.remove('locked');
+  card.classList.add('unlocked');
+
+  const veil = card.querySelector('.frost-veil');
+  if (veil) veil.style.display = 'none';
+
+  const status = card.querySelector('.object-status');
+  if (status){
+    status.textContent = 'Unlocked • Awaiting member finalization';
+    status.classList.remove('pending');
+    status.classList.add('finalized');
+  }
+
+  card.setAttribute('onclick', `displayInViewer('${className}', '${card.querySelector('.object-title').textContent}')`);
+}
+function displayInViewer(className, title){
+  const viewer = document.querySelector('#commerce .info-img');
+  viewer.className = 'info-img ' + className;
+  viewer.setAttribute('aria-label', title);
+}
+  
+  
+</script>
+
+
+
+<script>
+let cartTokenTotal = 0, cartCrystalTotal = 0, cartItems = 0;
+
+function addToCart(name, tokenCost, crystalCost, type){
+  const cart = document.getElementById('cartList');
+  const item = document.createElement('div');
+  item.className = 'cart-item';
+  item.innerHTML = `
+    <div class="cart-title">${name}</div>
+    ${type !== 'crystal' ? `<div>💰 ${tokenCost} purchased tokens</div>` : ''}
+    ${type !== 'token' ? `<div>♦️ ${crystalCost} symbolic crystals</div>` : ''}
+    <div class="cart-status">Pending • Awaiting finalization</div>
+  `;
+  cart.appendChild(item);
+
+  if (type !== 'crystal') cartTokenTotal += tokenCost;
+  if (type !== 'token') cartCrystalTotal += crystalCost;
+
+  cartItems += 1;
+  updateCartDisplay();
+}
+
+function updateCartDisplay(){
+  const badge = document.getElementById('cartCount');
+  const total = document.getElementById('receiptTotal');
+  if (badge) badge.textContent = cartItems;
+  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️`;
+}
+
+function finalizeCart(){
+  const purchasedEl = document.getElementById('purchasedCount');
+  const symbolicEl = document.getElementById('symbolicCount');
+
+  let purchasedBalance = parseFloat(purchasedEl.textContent.replace(/,/g,''));
+  let symbolicBalance = parseFloat(symbolicEl.textContent.replace(/,/g,''));
+
+  purchasedBalance -= cartTokenTotal;
+  symbolicBalance -= cartCrystalTotal;
+
+  purchasedEl.textContent = purchasedBalance.toLocaleString(undefined,{minimumFractionDigits:2});
+  symbolicEl.textContent = symbolicBalance.toLocaleString(undefined,{minimumFractionDigits:2});
+
+  const viewer = document.getElementById('receiptViewer');
+  if (viewer) {
+    viewer.className = 'info-img glow';
+    viewer.innerHTML = `<div class="receipt-confirm">🧾 Finalized • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️</div>`;
+  }
+
+  document.querySelectorAll('.cart-item').forEach(item => {
+    item.classList.remove('shimmer');
+    item.classList.add('finalized');
+    const s = item.querySelector('.cart-status');
+    if (s) s.textContent = 'Finalized • Ledger confirmed';
+  });
+
+  cartTokenTotal = 0;
+  cartCrystalTotal = 0;
+  cartItems = 0;
+  updateCartDisplay();
+}
+
+</script>
+
 </body>
 </html>
