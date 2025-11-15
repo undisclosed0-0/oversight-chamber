@@ -410,6 +410,46 @@
 .product-card:last-child {
   border-bottom: none; /* no divider after last card */
 }
+.feed-item .badge {
+  display:inline-block;
+  background:#3b82f6; /* blue aura */
+  color:#fff;
+  font-size:0.75em;
+  padding:2px 6px;
+  border-radius:6px;
+  margin-top:4px;
+}
+.floating-cart {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(20,26,34,0.85);
+  border: 1px solid #28435a;
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: var(--ink);
+  font-weight: bold;
+  box-shadow: 0 0 18px rgba(136,204,255,0.25);
+  z-index: 999;
+  animation: frostFade 0.6s ease;
+}
+.ghost-btn {
+  all: unset;
+  margin-left: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--blue), #bfe8ff);
+  color: #04131f;
+  font-weight: bold;
+  cursor: pointer;
+}
+@keyframes frostFade {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.frost {
+  animation: frostFade 0.8s ease forwards;
+}
 
   </style>
 </head>
@@ -426,13 +466,27 @@
     <section class="token-box frost">
       <div class="verse" id="dailyVerse">“Let all that you do be done in love.” — 1 Corinthians 16:14</div>
       <div class="counters">
-        <div class="counter gold"><strong>Purchased:🪙</strong> <span id="purchasedCount">1,000.00</span></div>
-        <div class="counter silver"><strong>Symbolic:♦️</strong> <span id="symbolicCount">1,000.00</span></div>
+        <div class="counter gold"><strong>Purchased:🪙</strong> <span id="purchasedCount">0</span></div>
+        <div class="counter silver"><strong>Symbolic:♦️</strong> <span id="symbolicCount">0</span></div>
       </div>
       <button class="cart-btn" id="cartBtn" onclick="showChamber('checkoutPanel')">
     🛒 Cart & Checkout 
     <span id="cartCount" class="cart-count">0</span></button>
     </section>
+
+<section id="userDirectory" class="chamber frost">
+  <h4>👥 User Directory</h4>
+  <div class="user-grid"></div>
+</section>
+<section id="loginPanel" class="chamber frost">
+  <h4>🔑 User Login</h4>
+  <div class="controls">
+    <input type="text" id="loginUser" placeholder="Enter Username" />
+    <input type="text" id="loginCode" placeholder="Enter Access Code" />
+    <button class="btn" id="loginBtn">Log In</button>
+  </div>
+  <div id="loginStatus" class="status pending" style="margin-top:8px"></div>
+</section>
 
     <!-- First windows row (Farce-style live/manual submission look) -->
     <section class="windows" aria-label="Live submissions">
@@ -657,13 +711,15 @@
       <div class="info-img void" id="receiptViewer" aria-hidden="true"></div>
       <h4>🧾 Receipt Viewer</h4>
       <p>Finalized purchases glow gold. Pending shimmer silver until ledger confirmation.</p>
-      <div id="receiptTotal">Total: 0 🪙 + 0 ♦️</div>
+      <div id="receiptTotal">Total: 0 🪙 + 0 ♦ </div>
     </div>
 
     <!-- RIGHT: Cart list -->
     <div class="store-panel">
       <h4>Cart & Checkout</h4>
       <div id="cartList" class="cart-list"></div>
+      <button class="btn ghost-btn" onclick="emptyCart()">Empty Cart</button>
+
       <button class="btn finalize-btn" onclick="finalizeCart()">Finalize Purchases</button>
     </div>
  <!-- Payment rails and ritual flow -->
@@ -740,6 +796,7 @@
       
 
 
+
    
       
   <script>
@@ -758,9 +815,9 @@
     // Verse rotation every 30s (placeholder-ready for live JSON)
     const verses = [
       "“Let all that you do be done in love.” — 1 Corinthians 16:14",
-      "“Be kind to one another, tenderhearted.” — Ephesians 4:32",
-      "“Walk by faith, not by sight.” — 2 Corinthians 5:7",
-      "“The Lord is my shepherd; I shall not want.” — Psalm 23:1"
+      "“Be kind to one another, tenderhearted” — Ephesians 4:32",
+      "“Walk by faith not by sight” — 2 Corinthians 5:7",
+      "“The Lord is my shepherd I shall not want” — Psalm 23:1"
     ];
     let v = 0;
     setInterval(() => {
@@ -952,12 +1009,12 @@ let cartTokenTotal = 0, cartCrystalTotal = 0, cartItems = 0;
 function addToCart(name, tokenCost, crystalCost, type){
   const cart = document.getElementById('cartList');
   const item = document.createElement('div');
-  item.className = 'cart-item';
+  item.className = 'cart-item shimmer';
   item.innerHTML = `
     <div class="cart-title">${name}</div>
     ${type !== 'crystal' ? `<div>💰 ${tokenCost} purchased tokens</div>` : ''}
     ${type !== 'token' ? `<div>♦️ ${crystalCost} symbolic crystals</div>` : ''}
-    <div class="cart-status">Pending • Awaiting finalization</div>
+    <div class="cart-status">Pending • Awaiting Prestige verification</div>
   `;
   cart.appendChild(item);
 
@@ -970,41 +1027,51 @@ function addToCart(name, tokenCost, crystalCost, type){
 
 function updateCartDisplay(){
   const badge = document.getElementById('cartCount');
+  const floatBadge = document.getElementById('floatingCartCount');
   const total = document.getElementById('receiptTotal');
+
   if (badge) badge.textContent = cartItems;
-  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️`;
+  if (floatBadge) floatBadge.textContent = cartItems;
+  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴>`;
 }
 
 function finalizeCart(){
-  const purchasedEl = document.getElementById('purchasedCount');
-  const symbolicEl = document.getElementById('symbolicCount');
-
-  let purchasedBalance = parseFloat(purchasedEl.textContent.replace(/,/g,''));
-  let symbolicBalance = parseFloat(symbolicEl.textContent.replace(/,/g,''));
-
-  purchasedBalance -= cartTokenTotal;
-  symbolicBalance -= cartCrystalTotal;
-
-  purchasedEl.textContent = purchasedBalance.toLocaleString(undefined,{minimumFractionDigits:2});
-  symbolicEl.textContent = symbolicBalance.toLocaleString(undefined,{minimumFractionDigits:2});
-
   const viewer = document.getElementById('receiptViewer');
   if (viewer) {
-    viewer.className = 'info-img glow';
-    viewer.innerHTML = `<div class="receipt-confirm">🧾 Finalized • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️</div>`;
+    viewer.className = 'info-img shimmer';
+    viewer.innerHTML = `<div class="receipt-confirm">🧾 Submitted • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴><br>Awaiting Prestige verification</div>`;
   }
 
   document.querySelectorAll('.cart-item').forEach(item => {
-    item.classList.remove('shimmer');
-    item.classList.add('finalized');
+    item.classList.add('shimmer');
+    item.classList.remove('finalized');
     const s = item.querySelector('.cart-status');
-    if (s) s.textContent = 'Finalized • Ledger confirmed';
+    if (s) s.textContent = 'Pending • Awaiting Prestige verification';
   });
 
+  // Do NOT deduct balances yet—wait for sheet confirmation
   cartTokenTotal = 0;
   cartCrystalTotal = 0;
   cartItems = 0;
   updateCartDisplay();
+}
+
+function emptyCart(){
+  const cart = document.getElementById('cartList');
+  if (cart) cart.innerHTML = '';
+  cartTokenTotal = 0;
+  cartCrystalTotal = 0;
+  cartItems = 0;
+  updateCartDisplay();
+
+  const viewer = document.getElementById('receiptViewer');
+  if (viewer){
+    viewer.className = 'info-img void';
+    viewer.innerHTML = '';
+  }
+
+  const total = document.getElementById('receiptTotal');
+  if (total) total.textContent = `Total: 0 🪙 + 0 <🔴>`;
 }
 
 </script>
@@ -1068,22 +1135,37 @@ function revealNextAd(){
 
 // --- FAITH drip feed ---
 let faithRows = [], faithIndex = 0;
+
 async function initFaithFeed(){
   faithRows = await loadSheet("Faith");
   faithIndex = 0;
   revealNextFaith();
   setInterval(revealNextFaith, 45000); // one every 45s
 }
+
 function revealNextFaith(){
   if (faithRows.length === 0) return;
   const r = faithRows[faithIndex % faithRows.length];
   const log = document.getElementById("prayerLog");
   if (!log) return;
+
   const el = document.createElement("div");
   el.className = "feed-item fadeSlide";
-  el.textContent = `🕊 ${r[0]} — ${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}`;
+
+  // richer markup with badge
+  el.innerHTML = `
+    <div class="faith-title">🕊 ${r[0]}</div>
+    <div class="faith-message">${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}</div>
+    <span class="badge">FAITH</span>
+  `;
+
   log.prepend(el);
-  while (log.children.length > 6) log.removeChild(log.lastChild);
+
+  // keep only last 6 prayers visible
+  while (log.children.length > 6) {
+    log.removeChild(log.lastChild);
+  }
+
   faithIndex++;
 }
 
@@ -1094,6 +1176,173 @@ document.addEventListener("DOMContentLoaded", () => {
   initFaithFeed();
 });
 </script>
+<script>
+// Attach hover preview + cart logic to all product cards
+document.addEventListener("DOMContentLoaded", () => {
+  const info = document.getElementById("infoImg"); // the void preview panel
+  const cartCountEl = document.getElementById("cartCount");
+  const cartLog = document.getElementById("cartLog");
+
+  let cartCount = 0;
+
+  document.querySelectorAll(".product-card").forEach(card => {
+    const titleEl = card.querySelector(".product-title");
+    const title = titleEl ? titleEl.textContent : "Item";
+
+    // Hover preview
+    card.addEventListener("mouseenter", () => {
+      if (info){
+        info.style.backgroundImage = "url('/assets/" + title.toLowerCase().replace(/\s+/g,'-') + ".png')";
+        info.style.backgroundSize = "cover";
+        info.style.backgroundPosition = "center";
+        info.classList.add("glow");
+      }
+    });
+    card.addEventListener("mouseleave", () => {
+      if (info){
+        info.style.backgroundImage = "";
+        info.classList.remove("glow");
+      }
+    });
+
+    // Click → add to cart
+    card.addEventListener("click", () => {
+      cartCount++;
+      if (cartCountEl) cartCountEl.textContent = cartCount;
+
+      if (cartLog){
+        const item = document.createElement("div");
+        item.className = "feed-item fadeSlide";
+        item.textContent = `🛒 Added: ${title}`;
+        cartLog.prepend(item);
+        while (cartLog.children.length > 5) cartLog.lastChild.remove();
+      }
+    });
+  });
+});
+  
+  
+</script>
+<div id="floatingCart" class="floating-cart frost">
+  🛒 <span id="floatingCartCount">0</span> items
+  <button class="ghost-btn" onclick="showChamber('checkoutPanel')">Checkout</button>
+</div>
+</script><script>
+// Static registry: username + access code
+const registry = {
+  "abc123": { username: "JohnDoe" },
+  "xyz789": { username: "JaneSmith" }
+};
+
+// Parse URL parameters
+function getParams(){
+  const params = new URLSearchParams(window.location.search);
+  return {
+    user: params.get("user"),
+    purchased: params.get("purchased"),
+    symbolic: params.get("symbolic"),
+    transaction: params.get("transaction"),
+    status: params.get("status")
+  };
+}
+
+// Update localStorage from URL parameters
+function syncLedgerFromParams(){
+  const p = getParams();
+  if (p.user){
+    const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
+    accounts[p.user] = {
+      purchased: p.purchased || accounts[p.user]?.purchased || "0",
+      symbolic: p.symbolic || accounts[p.user]?.symbolic || "0",
+      transaction: p.transaction || accounts[p.user]?.transaction || "",
+      status: p.status || accounts[p.user]?.status || "Pending",
+      card: accounts[p.user]?.card || "N/A"
+    };
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+  }
+}
+
+// Render user card from localStorage
+function renderUserCard(username){
+  const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
+  const u = accounts[username];
+  if (!u) return;
+
+  const grid = document.querySelector("#userDirectory .user-grid");
+  grid.innerHTML = `
+    <div class="user-card frost">
+      <div class="crest-avatar"></div>
+      <div class="user-meta">
+        <div class="account-name">${username}</div>
+        <div class="card-id">PrestigePayCard: ${u.card}</div>
+        <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
+        <div class="last-transaction ${u.status === "Finalized" ? "glow-gold" : "glow-silver"}">
+          ${u.transaction}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("purchasedCount").textContent = u.purchased;
+  document.getElementById("symbolicCount").textContent = u.symbolic;
+}
+
+// Login logic
+async function loginUser(e){
+  e?.preventDefault?.();
+  const username = document.getElementById("loginUser").value.trim();
+  const code = document.getElementById("loginCode").value.trim();
+  const statusEl = document.getElementById("loginStatus");
+
+  statusEl.textContent = "… Checking access code";
+  statusEl.className = "status pending";
+
+  const user = registry[code];
+  if (user && user.username === username){
+    sessionStorage.setItem("username", user.username);
+    sessionStorage.setItem("accessCode", code);
+    statusEl.textContent = "✅ Login successful";
+    statusEl.className = "status finalized";
+    renderUserCard(user.username);
+    document.getElementById("userDirectory").classList.add("active");
+    document.getElementById("loginPanel").classList.remove("active");
+  } else {
+    statusEl.textContent = "✗ INVALID USERNAME OR ACCESS CODE";
+    statusEl.className = "status pending";
+  }
+}
+
+// Polling loop: refresh from localStorage every 15s
+setInterval(() => {
+  const username = sessionStorage.getItem("username");
+  if (username){
+    renderUserCard(username);
+  }
+}, 15000);
+
+// On load: sync ledger from URL params
+window.onload = () => {
+  syncLedgerFromParams();
+
+  const loginPanel = document.getElementById("loginPanel");
+  if (loginPanel) loginPanel.classList.add("active", "frost");
+
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) loginBtn.addEventListener("click", loginUser);
+
+  const loginCode = document.getElementById("loginCode");
+  if (loginCode) {
+    loginCode.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loginUser(e);
+    });
+  }
+};
+</script>
+
+
+
+
+
 
 </body>
 </html>
