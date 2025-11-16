@@ -450,6 +450,370 @@
 .frost {
   animation: frostFade 0.8s ease forwards;
 }
+.dir-controls {
+  display: flex;
+  justify-content: flex-end; /* push buttons to right edge */
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.cer-btn {
+  padding: 10px 20px;
+  background: linear-gradient(180deg, #4b3f72, #6a5acd);
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(75, 63, 114, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cer-btn:hover {
+  transform: scale(1.05);
+}
+
+.logout-btn {
+  background: linear-gradient(180deg, #a83232, #d94f4f); /* red aura */
+  box-shadow: 0 4px 12px rgba(168, 50, 50, 0.4);
+}
+/* Match rectangular panel dimensions */
+#loginPanel {
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 30px;
+  width: 480px;       /* match other rectangular panels */
+  min-height: 240px;  /* consistent vertical rhythm */
+  margin: 40px auto;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  text-align: center;
+  animation: fadeSlide 0.6s ease-out;
+}
+
+/* Inputs stretch to panel width */
+#loginPanel input {
+  width: 90%;
+  max-width: 420px;   /* keep inside panel frame */
+  padding: 12px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: background 0.3s;
+}
+
+#loginPanel input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px #ffd700;
+}
+
+/* Buttons aligned and consistent */
+#loginPanel button {
+  margin: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#loginPanel button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px #ffd700;
+}
+/* Container with depth */
+.frost-container {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  height: 300px;
+  margin: 0 auto;
+  background: radial-gradient(circle at 50% 30%, #0d1117 0%, #0a0d12 40%, #06080b 100%);
+  border: 1px solid rgba(140,160,200,0.18);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.45), inset 0 1px 18px rgba(120,150,200,0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  perspective: 900px;
+}
+
+/* Frost overlay */
+.frost-overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(14px) saturate(1.05);
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(180,210,255,0.07) 100%);
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 3;
+  animation: frostPulse 4.5s ease-in-out infinite;
+}
+
+@keyframes frostPulse {
+  0%,100% { opacity: 0.9; }
+  50%     { opacity: 0.75; }
+}
+
+/* 3D object wrapper */
+.object-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  z-index: 1;
+}
+
+/* Container perspective */
+.frost-container {
+  perspective: 1200px;
+}
+
+/* Ring stack: float, rotate, stretch */
+.ring-stack {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 240px;
+  height: 240px;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 16px 22px rgba(0,0,0,0.45));
+  animation:
+    floatY 4.2s ease-in-out infinite,
+    rotateAndStretch 14s linear infinite;
+}
+
+@keyframes floatY {
+  0%,100% { transform: translate(-50%, -50%) translateY(0); }
+  50%     { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+@keyframes rotateAndStretch {
+  0%   { transform: translate(-50%, -50%) rotateY(0deg) scaleX(1.0); }
+  25%  { transform: translate(-50%, -50%) rotateY(90deg) scaleX(1.18); }
+  50%  { transform: translate(-50%, -50%) rotateY(180deg) scaleX(1.0); }
+  75%  { transform: translate(-50%, -50%) rotateY(270deg) scaleX(1.18); }
+  100% { transform: translate(-50%, -50%) rotateY(360deg) scaleX(1.0); }
+}
+
+/* SVG layers with depth */
+.ring-layer {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+}
+
+.layer-front { transform: translateZ(36px) rotateX(2deg); }
+.layer-mid   { transform: translateZ(18px) rotateX(1deg); }
+.layer-back  { transform: translateZ(-18px) rotateX(-1deg); }
+
+.ring-layer circle {
+  stroke-width: 28;
+  fill: none;
+  filter: drop-shadow(0 0 6px rgba(0,0,0,0.3));
+}
+
+/* Inner rim */
+.inner-rim {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.4);
+  background: radial-gradient(circle, rgba(255,255,255,0.05), rgba(0,0,0,0.2));
+  z-index: 0;
+}
+
+/* Facets */
+.facets {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.facet {
+  position: absolute;
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(180,225,255,0.15));
+  border: 1px solid rgba(190,220,255,0.35);
+  backdrop-filter: blur(1px);
+  box-shadow: 0 3px 9px rgba(0,0,0,0.25);
+  transform: translateZ(20px) rotateX(18deg) scaleX(1.4);
+  opacity: 0.65;
+  border-radius: 8px;
+  animation: facetShimmer 3.6s ease-in-out infinite;
+}
+
+@keyframes facetShimmer {
+  0%,100% { opacity: 0.55; }
+  50%     { opacity: 0.85; }
+}
+
+/* Side facets */
+.side-facets {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  z-index: 0;
+}
+
+.side {
+  position: absolute;
+  width: 14px;
+  height: 140px;
+  background: linear-gradient(90deg, rgba(180,220,255,0.2), rgba(255,255,255,0.05));
+  border-radius: 6px;
+  transform-origin: center;
+  opacity: 0.5;
+  backdrop-filter: blur(1px);
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  transform: translate(-50%, 0) rotateY(90deg) scaleX(1.4);
+}
+
+.s1 { left: 50%; top: 0%; }
+.s2 { left: 50%; top: 25%; }
+.s3 { left: 50%; top: 50%; }
+.s4 { left: 50%; top: 75%; }
+
+/* Status */
+.object-status {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 10px;
+  z-index: 4;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(120,140,180,0.25);
+}
+
+.object-status.pending {
+  color: #cdd4e0;
+  font-style: italic;
+  text-shadow: 0 0 4px rgba(190,190,220,0.5);
+}
+
+.object-status.finalized {
+  color: goldenrod;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(255,215,0,0.6);
+}
+
+.frost-container.finalized .ring-stack {
+  filter: drop-shadow(0 20px 26px rgba(0,0,0,0.5)) saturate(1.1);
+}
+.necklace-preview {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: floatY 4s ease-in-out infinite, spinNecklace 12s linear infinite;
+}
+
+.chain-loop {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.link {
+  width: 40px; height: 20px;
+  border: 2px solid silver;
+  border-radius: 50%;
+  background: rgba(220,220,220,0.2);
+  position: absolute;
+  animation: shimmer 3s ease-in-out infinite;
+}
+.l1 { transform: rotate(0deg) translateX(60px); }
+.l2 { transform: rotate(72deg) translateX(60px); }
+.l3 { transform: rotate(144deg) translateX(60px); }
+.l4 { transform: rotate(216deg) translateX(60px); }
+.l5 { transform: rotate(288deg) translateX(60px); }
+
+.pendant {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, silver, gray);
+  position: absolute;
+  left: 50%; top: 100%;
+  transform: translate(-50%, -50%);
+}
+@keyframes spinNecklace {
+  0% { transform: translate(-50%, -50%) rotateY(0deg); }
+  100% { transform: translate(-50%, -50%) rotateY(360deg); }
+}
+.bracelet-preview {
+  position: absolute;
+  inset: 0;
+  animation: floatY 3.6s ease-in-out infinite, spinBracelet 14s linear infinite;
+}
+
+.braid {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.strand {
+  position: absolute;
+  width: 160px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #d9b, #fff, #d9b);
+  opacity: 0.7;
+  animation: shimmer 4s ease-in-out infinite;
+}
+.s1 { transform: rotate(0deg); }
+.s2 { transform: rotate(60deg); }
+.s3 { transform: rotate(120deg); }
+
+@keyframes spinBracelet {
+  0% { transform: translate(-50%, -50%) rotateY(0deg); }
+  100% { transform: translate(-50%, -50%) rotateY(360deg); }
+}
+.charm-preview {
+  position: absolute;
+  inset: 0;
+  animation: floatY 4.5s ease-in-out infinite, spinCharm 16s linear infinite;
+}
+
+.crest {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.crest-shield {
+  width: 80px; height: 100px;
+  background: linear-gradient(180deg, #88c, #446);
+  border-radius: 40% 40% 20% 20%;
+  border: 2px solid #ccd;
+  box-shadow: 0 0 12px rgba(150,180,255,0.6);
+}
+
+.crest-star {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 40px; height: 40px;
+  background: radial-gradient(circle, gold, transparent);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  transform: translate(-50%, -50%);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes spinCharm {
+  0% { transform: translate(-50%, -50%) rotateY(0deg); }
+  100% { transform: translate(-50%, -50%) rotateY(360deg); }
+}
 
   </style>
 </head>
@@ -477,15 +841,28 @@
 <section id="userDirectory" class="chamber frost">
   <h4>👥 User Directory</h4>
   <div class="user-grid"></div>
+  <div class="dir-controls">
+    <button id="retrieveBtn" class="cer-btn">Retrieve Account Information</button>
+    <button id="logoutBtn" class="cer-btn logout-btn">Log Out</button>
+  </div>
 </section>
+
+
+
 <section id="loginPanel" class="chamber frost">
+
   <h4>🔑 User Login</h4>
   <div class="controls">
     <input type="text" id="loginUser" placeholder="Enter Username" />
-    <input type="text" id="loginCode" placeholder="Enter Access Code" />
-    <button class="btn" id="loginBtn">Log In</button>
+   <div id="accessCodeWrapper" style="display: none;">
+    <input type="password" id="loginCode" placeholder="Enter Access Code" />
+    <button id="toggleCodeBtn">👁 Reveal</button>
   </div>
+
+  <button id="revealCodeBtn">Reveal Access Code Field</button>
+  <button id="loginBtn">Log In</button>
   <div id="loginStatus" class="status pending" style="margin-top:8px"></div>
+  
 </section>
 
     <!-- First windows row (Farce-style live/manual submission look) -->
@@ -564,7 +941,82 @@
       
       <div class="chamber-grid">
         <div class="info-panel">
-          <div class="info-img void" aria-hidden="true"></div>
+          <div id="imgVoid" class="info-img frost-container">
+  <!-- Frost overlay: visible until unlocked -->
+  <div class="frost-overlay"></div>
+
+  <!-- 3D Crystal Ring -->
+  <div class="object-3d" aria-label="Crystal Ring">
+    <div class="inner-rim"></div>
+
+    <div class="ring-stack">
+      <!-- Layer 1 (front) -->
+      <svg viewBox="0 0 200 200" class="ring-layer layer-front" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradFront" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#bdf2ff"/>
+            <stop offset="35%"  stop-color="#9fe3ff"/>
+            <stop offset="65%"  stop-color="#c8f7ff"/>
+            <stop offset="100%" stop-color="#8bd7ff"/>
+          </linearGradient>
+          <radialGradient id="shineFront" cx="30%" cy="30%" r="70%">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0.9)"/>
+            <stop offset="60%"  stop-color="rgba(255,255,255,0.15)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+        </defs>
+        <!-- ring via stroke width -->
+        <circle cx="100" cy="100" r="60" stroke="url(#gradFront)" stroke-width="28" fill="none" stroke-linecap="round"/>
+        <!-- soft shine overlay -->
+        <circle cx="100" cy="100" r="62" fill="url(#shineFront)"/>
+      </svg>
+
+      <!-- Layer 2 (mid) -->
+      <svg viewBox="0 0 200 200" class="ring-layer layer-mid" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradMid" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#a4e9ff"/>
+            <stop offset="35%"  stop-color="#c6f7ff"/>
+            <stop offset="65%"  stop-color="#90ddff"/>
+            <stop offset="100%" stop-color="#d6fbff"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="60" stroke="url(#gradMid)" stroke-width="26" fill="none" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+
+      <!-- Layer 3 (back) -->
+      <svg viewBox="0 0 200 200" class="ring-layer layer-back" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradBack" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#7ccfff"/>
+            <stop offset="50%"  stop-color="#aee8ff"/>
+            <stop offset="100%" stop-color="#6dc6ff"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="60" stroke="url(#gradBack)" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+
+      <!-- Facets: subtle crystalline segments -->
+      <div class="facets">
+        <span class="facet f1"></span>
+        <span class="facet f2"></span>
+        <span class="facet f3"></span>
+        <span class="facet f4"></span>
+        <span class="facet f5"></span>
+      </div>
+    </div>
+  </div>
+<div class="side-facets">
+  <span class="side s1"></span>
+  <span class="side s2"></span>
+  <span class="side s3"></span>
+  <span class="side s4"></span>
+</div>
+
+  <!-- Status -->
+  <div class="object-status pending">Pending • Awaiting Prestige verification</div>
+</div>
+
           <h4>🏛 Commerce Chamber</h4>
           <p>Pending credits shimmer silver until a Prestige member finalizes them to gold.</p>
           <p>Cart lists all available purchases, including token-related offerings.</p>
@@ -595,20 +1047,43 @@
             <div class="product-card" onclick="addToCart('Silver Necklace', 20)">
               <div class="product-title">Silver Necklace</div>
               <div class="price">💰 30 purchased tokens</div><div class="status pending">Click to add to cart</div>
-              
+              <div class="necklace-preview">
+  <div class="chain-loop">
+    <div class="link l1"></div>
+    <div class="link l2"></div>
+    <div class="link l3"></div>
+    <div class="link l4"></div>
+    <div class="link l5"></div>
+    <div class="pendant"></div>
+  </div>
+</div>
+
             </div>
             <div class="chamber-grid">
             <div class="product-card" onclick="addToCart('Braided Bracelet', 20)">
               <div class="product-title">Braided Bracelet</div>
               <div class="price">💰 15 purchased tokens</div><div class="status pending">Click to add to cart</div>
-              
+              <div class="bracelet-preview">
+  <div class="braid">
+    <span class="strand s1"></span>
+    <span class="strand s2"></span>
+    <span class="strand s3"></span>
+  </div>
+</div>
+
             </div>
              <div class="chamber-grid"> 
            <div class="product-card" onclick="addToCart('Crest Charm', 20)">
               <div class="product-title">Crest Charm</div>
          <div class="price">💰 10 purchased tokens</div>
               <div class="status pending">Click to add to cart</div>
-              
+              <div class="charm-preview">
+  <div class="crest">
+    <div class="crest-shield"></div>
+    <div class="crest-star"></div>
+  </div>
+</div>
+
             </div>
           </div>
 
@@ -721,7 +1196,7 @@
       <button class="btn ghost-btn" onclick="emptyCart()">Empty Cart</button>
 
       <button class="btn finalize-btn" onclick="finalizeCart()">Finalize Purchases</button>
-    </div>
+    </div><button id="handoffBtn" class="btn">Send to Ledger</button><br>
  <!-- Payment rails and ritual flow -->
          <div class="checkout">
   <div class="rail">
@@ -1228,66 +1703,32 @@ document.addEventListener("DOMContentLoaded", () => {
   <button class="ghost-btn" onclick="showChamber('checkoutPanel')">Checkout</button>
 </div>
 </script><script>
-// Static registry: username + access code
-const registry = {
-  "abc123": { username: "JohnDoe" },
-  "xyz789": { username: "JaneSmith" }
-};
+// --- Config: set your Sheet ID and GID (tab ID) ---
+const SHEET_ID = "2PACX-1vQ4o3D2FZ3wrqNxhsgv9shjeulUmqb5Uo0hhJK7axuEpUNPxEk7bgmrVqO-PGvUjZfXtHPt1lhWL2XR";
+const GID = "0"; // replace with your tab's gid
 
-// Parse URL parameters
-function getParams(){
-  const params = new URLSearchParams(window.location.search);
-  return {
-    user: params.get("user"),
-    purchased: params.get("purchased"),
-    symbolic: params.get("symbolic"),
-    transaction: params.get("transaction"),
-    status: params.get("status")
-  };
+// --- Fetch live registry from gviz JSON ---
+// --- Fetch live registry from Google Sheets (gviz JSON) ---
+async function fetchRegistry(){
+  const res = await fetch("https://docs.google.com/spreadsheets/d/1eskbyxg5KOvTyOb68_Zdt5W1YeyfOuvBABqnMBN79xM/gviz/tq?tqx=out:json&gid=0");
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47).slice(0, -2));
+  const rows = json.table.rows;
+
+  return rows
+    .filter(r => r.c && r.c[0]?.v && r.c[1]?.v) // require User and AccessCode
+    .map(r => ({
+      user:        r.c[0]?.v ?? "",
+      accessCode:  r.c[1]?.v ?? "",
+      card:        r.c[2]?.v ?? "",
+      purchased:   r.c[3]?.v ?? "0",
+      symbolic:    r.c[4]?.v ?? "0",
+      transaction: r.c[5]?.v ?? "",
+      status:      r.c[6]?.v ?? "Pending"
+    }));
 }
 
-// Update localStorage from URL parameters
-function syncLedgerFromParams(){
-  const p = getParams();
-  if (p.user){
-    const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-    accounts[p.user] = {
-      purchased: p.purchased || accounts[p.user]?.purchased || "0",
-      symbolic: p.symbolic || accounts[p.user]?.symbolic || "0",
-      transaction: p.transaction || accounts[p.user]?.transaction || "",
-      status: p.status || accounts[p.user]?.status || "Pending",
-      card: accounts[p.user]?.card || "N/A"
-    };
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-  }
-}
-
-// Render user card from localStorage
-function renderUserCard(username){
-  const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-  const u = accounts[username];
-  if (!u) return;
-
-  const grid = document.querySelector("#userDirectory .user-grid");
-  grid.innerHTML = `
-    <div class="user-card frost">
-      <div class="crest-avatar"></div>
-      <div class="user-meta">
-        <div class="account-name">${username}</div>
-        <div class="card-id">PrestigePayCard: ${u.card}</div>
-        <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
-        <div class="last-transaction ${u.status === "Finalized" ? "glow-gold" : "glow-silver"}">
-          ${u.transaction}
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById("purchasedCount").textContent = u.purchased;
-  document.getElementById("symbolicCount").textContent = u.symbolic;
-}
-
-// Login logic
+// --- Validate login against live sheet ---
 async function loginUser(e){
   e?.preventDefault?.();
   const username = document.getElementById("loginUser").value.trim();
@@ -1297,52 +1738,315 @@ async function loginUser(e){
   statusEl.textContent = "… Checking access code";
   statusEl.className = "status pending";
 
-  const user = registry[code];
-  if (user && user.username === username){
-    sessionStorage.setItem("username", user.username);
-    sessionStorage.setItem("accessCode", code);
+  const registry = await fetchRegistry();
+  const match = registry.find(r => r.accessCode === code && r.user === username);
+
+  if (match){
+    sessionStorage.setItem("username", match.user);
+    sessionStorage.setItem("accessCode", match.accessCode);
+
     statusEl.textContent = "✅ Login successful";
     statusEl.className = "status finalized";
-    renderUserCard(user.username);
-    document.getElementById("userDirectory").classList.add("active");
-    document.getElementById("loginPanel").classList.remove("active");
+
+    document.getElementById("userDirectory")?.classList.add("active");
+    document.getElementById("loginPanel")?.classList.remove("active");
+
+    renderUserCard(); // pulls live from sheet
   } else {
     statusEl.textContent = "✗ INVALID USERNAME OR ACCESS CODE";
     statusEl.className = "status pending";
   }
 }
 
-// Polling loop: refresh from localStorage every 15s
-setInterval(() => {
+
+// --- Lookup user by access code (from live feed) ---
+async function getUserByAccessCode(code){
+  const accounts = await fetchRegistry();
+  return accounts.find(acc => String(acc.accessCode).trim() === String(code).trim()) || null;
+}
+
+// --- Render user card (after login or retrieve) ---
+async function renderUserCard(){
   const username = sessionStorage.getItem("username");
-  if (username){
-    renderUserCard(username);
-  }
-}, 15000);
+  const code = sessionStorage.getItem("accessCode");
+  if (!username || !code) return;
 
-// On load: sync ledger from URL params
+  const u = await getUserByAccessCode(code);
+  if (!u) return;
+
+  const grid = document.querySelector("#userDirectory .user-grid");
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <div class="user-card frost">
+      <div class="crest-avatar"></div>
+      <div class="user-meta">
+        <div class="account-name">${u.user}</div>
+        <div class="card-id">PrestigePayCard: ${u.card}</div>
+        <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
+        <div class="last-transaction ${u.status==="Finalized"?"glow-gold":"glow-silver"}">
+          ${u.transaction || "—"}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const purchasedEl = document.getElementById("purchasedCount");
+  const symbolicEl  = document.getElementById("symbolicCount");
+  if (purchasedEl) purchasedEl.textContent = u.purchased;
+  if (symbolicEl)  symbolicEl.textContent  = u.symbolic;
+}
+
+// --- Render full ledger table ---
+async function renderLedger(){
+  const accounts = await fetchRegistry();
+  const grid = document.getElementById("ledgerGrid");
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <table class="prestige-sheet">
+      <tr><th>User</th><th>Card</th><th>Purchased</th><th>Symbolic</th><th>Transaction</th><th>Status</th></tr>
+      ${accounts.map(u => `
+        <tr>
+          <td>${u.user}</td>
+          <td>${u.card}</td>
+          <td>${u.purchased}</td>
+          <td>${u.symbolic}</td>
+          <td>${u.transaction}</td>
+          <td class="${u.status==="Finalized"?"glow-gold":"glow-silver"}">${u.status}</td>
+        </tr>`).join("")}
+    </table>
+  `;
+}
+
+
+// --- Wiring ---
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("loginBtn")?.addEventListener("click", loginUser);
+  document.getElementById("loginCode")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loginUser(e);
+  });
+
+  document.getElementById("retrieveBtn")?.addEventListener("click", renderUserCard);
+
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    sessionStorage.clear();
+    document.getElementById("userDirectory")?.classList.remove("active");
+    document.getElementById("loginPanel")?.classList.add("active");
+    renderLedger();
+  });
+});
+
+// --- On load: show ledger only ---
 window.onload = () => {
-  syncLedgerFromParams();
-
+  renderLedger();
   const loginPanel = document.getElementById("loginPanel");
   if (loginPanel) loginPanel.classList.add("active", "frost");
-
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) loginBtn.addEventListener("click", loginUser);
-
-  const loginCode = document.getElementById("loginCode");
-  if (loginCode) {
-    loginCode.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") loginUser(e);
-    });
-  }
 };
+
+// --- Polling: refresh every 15s ---
+setInterval(() => {
+  renderLedger();
+  renderUserCard();
+}, 15000);
+  status.classList.remove('pending');
+status.classList.add('finalized');
+status.textContent = '✅ Finalized in Prestige Ledger';
+        
 </script>
 
 
+  <script>
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  sessionStorage.clear();
 
+  // Reset token counters
+  const purchasedEl = document.getElementById("purchasedCount");
+  const symbolicEl  = document.getElementById("symbolicCount");
+  if (purchasedEl) purchasedEl.textContent = "0";
+  if (symbolicEl)  symbolicEl.textContent  = "0";
 
+  // Update status message
+  const statusEl = document.getElementById("loginStatus");
+  if (statusEl){
+    statusEl.textContent = "✅ Logout successful";
+    statusEl.className = "status finalized";
+  }
 
+  document.getElementById("userDirectory")?.classList.remove("active");
+  document.getElementById("loginPanel")?.classList.add("active");
 
+  renderLedger();
+});
+document.addEventListener("DOMContentLoaded", () => {
+  // Reveal access code input field
+  document.getElementById("revealCodeBtn")?.addEventListener("click", () => {
+    document.getElementById("accessCodeWrapper").style.display = "block";
+    document.getElementById("revealCodeBtn").style.display = "none";
+  });
+
+  // Toggle visibility of access code characters
+  document.getElementById("toggleCodeBtn")?.addEventListener("click", () => {
+    const codeInput = document.getElementById("loginCode");
+    const isMasked = codeInput.type === "password";
+    codeInput.type = isMasked ? "text" : "password";
+    document.getElementById("toggleCodeBtn").textContent = isMasked ? "🙈 Hide" : "👁 Reveal";
+  });
+
+  // Login logic
+  document.getElementById("loginBtn")?.addEventListener("click", loginUser);
+  document.getElementById("loginCode")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loginUser(e);
+  });
+});
+// Unlock: remove frost (visual reveal), maintain pending state
+function unlockFrostedObject(){
+  const veil = document.querySelector('#imgVoid .frost-overlay');
+  if (veil) veil.style.display = 'none';
+
+  const status = document.querySelector('#imgVoid .object-status');
+  if (status){
+    status.textContent = 'Unlocked • Awaiting member finalization';
+    status.classList.remove('finalized');
+    status.classList.add('pending');
+  }
+}
+
+// Apply finalized state only when sheet confirms
+function applyFinalizedState(){
+  const container = document.getElementById('imgVoid');
+  const status = container?.querySelector('.object-status');
+  if (container) container.classList.add('finalized');
+  if (status){
+    status.textContent = '✅ Finalized in Prestige Ledger';
+    status.classList.remove('pending');
+    status.classList.add('finalized');
+  }
+}
+
+// Optional: parallax hover for live presence
+(function attachParallax(){
+  const container = document.getElementById('imgVoid');
+  const stack = container?.querySelector('.ring-stack');
+  if (!container || !stack) return;
+
+  let hovering = false;
+  const base = 'translate(-50%, -50%)';
+
+  container.addEventListener('mousemove', (e) => {
+    hovering = true;
+    const r = container.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width - 0.5) * 12;   // yaw
+    const y = ((e.clientY - r.top) / r.height - 0.5) * -10;  // pitch
+    stack.style.animation = 'none'; // pause float/spin on hover
+    stack.style.transform = `${base} rotateX(${y}deg) rotateY(${x}deg)`;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    hovering = false;
+    stack.style.transform = '';
+    stack.style.animation = 'floatY 4.2s ease-in-out infinite, slowSpin 14s linear infinite';
+  });
+})();
+// Map items to their preview visuals
+const itemPreviews = {
+  "crystal-ring": `
+    <div class="ring-stack">
+      <!-- ring layers, facets, side facets, inner rim -->
+      <div class="inner-rim"></div>
+      <div class="facets">
+        <span class="facet f1"></span>
+        <span class="facet f2"></span>
+        <span class="facet f3"></span>
+        <span class="facet f4"></span>
+        <span class="facet f5"></span>
+      </div>
+      <div class="side-facets">
+        <span class="side s1"></span>
+        <span class="side s2"></span>
+        <span class="side s3"></span>
+        <span class="side s4"></span>
+      </div>
+    </div>
+    <div class="sigil"></div>
+  `,
+  "silver-necklace": `<div class="necklace-preview">[Necklace 3D layers here]</div>`,
+  "braided-bracelet": `<div class="bracelet-preview">[Bracelet 3D layers here]</div>`,
+  "crest-charm": `<div class="charm-preview">[Charm 3D layers here]</div>`
+};
+
+// Hover event binding
+document.querySelectorAll('.store-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    const item = card.getAttribute('data-item');
+    const preview = itemPreviews[item] || '';
+    const voidPanel = document.querySelector('#imgVoid .object-3d');
+    if (voidPanel) voidPanel.innerHTML = preview;
+
+    // Reset frost overlay (concealed until unlock)
+    const veil = document.querySelector('#imgVoid .frost-overlay');
+    if (veil) veil.style.display = 'block';
+
+    // Reset status to pending
+    const status = document.querySelector('#imgVoid .object-status');
+    if (status){
+      status.textContent = 'Pending • Awaiting Prestige verification';
+      status.classList.remove('finalized');
+      status.classList.add('pending');
+    }
+  });
+});
+const itemPreviews = {
+  "crystal-ring": `
+    <div class="ring-stack">
+      <div class="inner-rim"></div>
+      <div class="facets">
+        <span class="facet f1"></span>
+        <span class="facet f2"></span>
+        <span class="facet f3"></span>
+        <span class="facet f4"></span>
+        <span class="facet f5"></span>
+      </div>
+      <div class="side-facets">
+        <span class="side s1"></span>
+        <span class="side s2"></span>
+        <span class="side s3"></span>
+        <span class="side s4"></span>
+      </div>
+    </div>
+    <div class="sigil"></div>
+  `,
+  "silver-necklace": `
+    <div class="necklace-preview">
+      <div class="chain-loop">
+        <div class="link l1"></div>
+        <div class="link l2"></div>
+        <div class="link l3"></div>
+        <div class="link l4"></div>
+        <div class="link l5"></div>
+        <div class="pendant"></div>
+      </div>
+    </div>
+  `,
+  "braided-bracelet": `
+    <div class="bracelet-preview">
+      <div class="braid">
+        <span class="strand s1"></span>
+        <span class="strand s2"></span>
+        <span class="strand s3"></span>
+      </div>
+    </div>
+  `,
+  "crest-charm": `
+    <div class="charm-preview">
+      <div class="crest">
+        <div class="crest-shield"></div>
+        <div class="crest-star"></div>
+      </div>
+    </div>
+  `
+};
+
+</script>
 </body>
 </html>
