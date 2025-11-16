@@ -711,109 +711,6 @@
 .frost-container.finalized .ring-stack {
   filter: drop-shadow(0 20px 26px rgba(0,0,0,0.5)) saturate(1.1);
 }
-.necklace-preview {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  animation: floatY 4s ease-in-out infinite, spinNecklace 12s linear infinite;
-}
-
-.chain-loop {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.link {
-  width: 40px; height: 20px;
-  border: 2px solid silver;
-  border-radius: 50%;
-  background: rgba(220,220,220,0.2);
-  position: absolute;
-  animation: shimmer 3s ease-in-out infinite;
-}
-.l1 { transform: rotate(0deg) translateX(60px); }
-.l2 { transform: rotate(72deg) translateX(60px); }
-.l3 { transform: rotate(144deg) translateX(60px); }
-.l4 { transform: rotate(216deg) translateX(60px); }
-.l5 { transform: rotate(288deg) translateX(60px); }
-
-.pendant {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: radial-gradient(circle, silver, gray);
-  position: absolute;
-  left: 50%; top: 100%;
-  transform: translate(-50%, -50%);
-}
-@keyframes spinNecklace {
-  0% { transform: translate(-50%, -50%) rotateY(0deg); }
-  100% { transform: translate(-50%, -50%) rotateY(360deg); }
-}
-.bracelet-preview {
-  position: absolute;
-  inset: 0;
-  animation: floatY 3.6s ease-in-out infinite, spinBracelet 14s linear infinite;
-}
-
-.braid {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.strand {
-  position: absolute;
-  width: 160px; height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #d9b, #fff, #d9b);
-  opacity: 0.7;
-  animation: shimmer 4s ease-in-out infinite;
-}
-.s1 { transform: rotate(0deg); }
-.s2 { transform: rotate(60deg); }
-.s3 { transform: rotate(120deg); }
-
-@keyframes spinBracelet {
-  0% { transform: translate(-50%, -50%) rotateY(0deg); }
-  100% { transform: translate(-50%, -50%) rotateY(360deg); }
-}
-.charm-preview {
-  position: absolute;
-  inset: 0;
-  animation: floatY 4.5s ease-in-out infinite, spinCharm 16s linear infinite;
-}
-
-.crest {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.crest-shield {
-  width: 80px; height: 100px;
-  background: linear-gradient(180deg, #88c, #446);
-  border-radius: 40% 40% 20% 20%;
-  border: 2px solid #ccd;
-  box-shadow: 0 0 12px rgba(150,180,255,0.6);
-}
-
-.crest-star {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 40px; height: 40px;
-  background: radial-gradient(circle, gold, transparent);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-  transform: translate(-50%, -50%);
-  animation: shimmer 3s ease-in-out infinite;
-}
-
-@keyframes spinCharm {
-  0% { transform: translate(-50%, -50%) rotateY(0deg); }
-  100% { transform: translate(-50%, -50%) rotateY(360deg); }
-}
 
   </style>
 </head>
@@ -1047,43 +944,20 @@
             <div class="product-card" onclick="addToCart('Silver Necklace', 20)">
               <div class="product-title">Silver Necklace</div>
               <div class="price">💰 30 purchased tokens</div><div class="status pending">Click to add to cart</div>
-              <div class="necklace-preview">
-  <div class="chain-loop">
-    <div class="link l1"></div>
-    <div class="link l2"></div>
-    <div class="link l3"></div>
-    <div class="link l4"></div>
-    <div class="link l5"></div>
-    <div class="pendant"></div>
-  </div>
-</div>
-
+              
             </div>
             <div class="chamber-grid">
             <div class="product-card" onclick="addToCart('Braided Bracelet', 20)">
               <div class="product-title">Braided Bracelet</div>
               <div class="price">💰 15 purchased tokens</div><div class="status pending">Click to add to cart</div>
-              <div class="bracelet-preview">
-  <div class="braid">
-    <span class="strand s1"></span>
-    <span class="strand s2"></span>
-    <span class="strand s3"></span>
-  </div>
-</div>
-
+              
             </div>
              <div class="chamber-grid"> 
            <div class="product-card" onclick="addToCart('Crest Charm', 20)">
               <div class="product-title">Crest Charm</div>
          <div class="price">💰 10 purchased tokens</div>
               <div class="status pending">Click to add to cart</div>
-              <div class="charm-preview">
-  <div class="crest">
-    <div class="crest-shield"></div>
-    <div class="crest-star"></div>
-  </div>
-</div>
-
+              
             </div>
           </div>
 
@@ -1948,104 +1822,6 @@ function applyFinalizedState(){
     stack.style.animation = 'floatY 4.2s ease-in-out infinite, slowSpin 14s linear infinite';
   });
 })();
-// Map items to their preview visuals
-const itemPreviews = {
-  "crystal-ring": `
-    <div class="ring-stack">
-      <!-- ring layers, facets, side facets, inner rim -->
-      <div class="inner-rim"></div>
-      <div class="facets">
-        <span class="facet f1"></span>
-        <span class="facet f2"></span>
-        <span class="facet f3"></span>
-        <span class="facet f4"></span>
-        <span class="facet f5"></span>
-      </div>
-      <div class="side-facets">
-        <span class="side s1"></span>
-        <span class="side s2"></span>
-        <span class="side s3"></span>
-        <span class="side s4"></span>
-      </div>
-    </div>
-    <div class="sigil"></div>
-  `,
-  "silver-necklace": `<div class="necklace-preview">[Necklace 3D layers here]</div>`,
-  "braided-bracelet": `<div class="bracelet-preview">[Bracelet 3D layers here]</div>`,
-  "crest-charm": `<div class="charm-preview">[Charm 3D layers here]</div>`
-};
-
-// Hover event binding
-document.querySelectorAll('.store-card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    const item = card.getAttribute('data-item');
-    const preview = itemPreviews[item] || '';
-    const voidPanel = document.querySelector('#imgVoid .object-3d');
-    if (voidPanel) voidPanel.innerHTML = preview;
-
-    // Reset frost overlay (concealed until unlock)
-    const veil = document.querySelector('#imgVoid .frost-overlay');
-    if (veil) veil.style.display = 'block';
-
-    // Reset status to pending
-    const status = document.querySelector('#imgVoid .object-status');
-    if (status){
-      status.textContent = 'Pending • Awaiting Prestige verification';
-      status.classList.remove('finalized');
-      status.classList.add('pending');
-    }
-  });
-});
-const itemPreviews = {
-  "crystal-ring": `
-    <div class="ring-stack">
-      <div class="inner-rim"></div>
-      <div class="facets">
-        <span class="facet f1"></span>
-        <span class="facet f2"></span>
-        <span class="facet f3"></span>
-        <span class="facet f4"></span>
-        <span class="facet f5"></span>
-      </div>
-      <div class="side-facets">
-        <span class="side s1"></span>
-        <span class="side s2"></span>
-        <span class="side s3"></span>
-        <span class="side s4"></span>
-      </div>
-    </div>
-    <div class="sigil"></div>
-  `,
-  "silver-necklace": `
-    <div class="necklace-preview">
-      <div class="chain-loop">
-        <div class="link l1"></div>
-        <div class="link l2"></div>
-        <div class="link l3"></div>
-        <div class="link l4"></div>
-        <div class="link l5"></div>
-        <div class="pendant"></div>
-      </div>
-    </div>
-  `,
-  "braided-bracelet": `
-    <div class="bracelet-preview">
-      <div class="braid">
-        <span class="strand s1"></span>
-        <span class="strand s2"></span>
-        <span class="strand s3"></span>
-      </div>
-    </div>
-  `,
-  "crest-charm": `
-    <div class="charm-preview">
-      <div class="crest">
-        <div class="crest-shield"></div>
-        <div class="crest-star"></div>
-      </div>
-    </div>
-  `
-};
 
 </script>
 </body>
