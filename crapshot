@@ -1036,35 +1036,6 @@ function closePuzzleBox() {
   margin: 10px auto;   /* center */
   display: block;
 }
-/* Baseline rune button to ensure the overlay is visible */
-.rune-btn {
-  position: relative;
-  transition: box-shadow 0.2s ease, background-color 0.2s ease, outline-color 0.2s ease;
-}
-
-/* Tap shimmer */
-.rune-btn.glow {
-  box-shadow: 0 0 18px rgba(255,215,0,0.9);
-}
-
-/* Correct faint gesture */
-.rune-btn.after-correct {
-  /* keep original color class visible; add subtle overlay */
-  outline: 2px solid rgba(106,255,106,0.5);
-  box-shadow: 0 0 12px rgba(106,255,106,0.6);
-}
-
-/* Wrong faint gesture (brief) */
-.rune-btn.after-wrong {
-  outline: 2px solid rgba(255,74,74,0.5);
-  box-shadow: 0 0 12px rgba(255,74,74,0.6);
-}
-
-/* Optional: prevent other styles from erasing our hints */
-.rune-btn.after-correct, .rune-btn.after-wrong {
-  z-index: 1;
-}
-
 
   </style>
 </head>
@@ -1141,8 +1112,9 @@ function closePuzzleBox() {
       <p class="designation">Designation: <strong id="nameInRitual"></strong></p>
 
       <div class="indicator-lines" id="indicatorLines">
+        <span></span><span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
-</div>
+      </div>
 
       <div id="sequenceReadout" class="sequence">— — —</div>
       <div class="rune-grid" id="panelButtons"></div>
@@ -1305,325 +1277,257 @@ function closePuzzleBox() {
 </div>
 
   <script>
-  /* Helpers: panel show/hide */
-  function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
-  function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+    /* Helpers: panel show/hide */
+    function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
+    function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
-  /* Copy verification */
-  function copyVerification() {
-    const textArea = document.getElementById("verificationText");
-    textArea.select();
-    textArea.setSelectionRange(0, 99999);
-    document.execCommand("copy");
-    alert("Verification text copied. Please paste it into the Google Form field.");
-  }
+    /* Copy verification */
+    function copyVerification() {
+      const textArea = document.getElementById("verificationText");
+      textArea.select();
+      textArea.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Verification text copied. Please paste it into the Google Form field.");
+    }
 
-  /* Name generator */
-  function generateTieredName(tier) {
-    const pools = {
-      Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya"], suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold"] },
-      Steward:  { names:["Elias","Priya","Malcolm","Zara","Omar"], suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line"] },
-      Neighbor: { names:["Ava","Noah","Grace","Leo","Isla"], suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold"] },
-      Contributor:{ names:["Milan","Tessa","Jude","Nina","Arlo"], suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive"] },
-      Observer: { names:["Theo","Luna","Miles","Ivy","Rowan"], suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery"] },
-      Supporter:{ names:["Elena","Caleb","Raya","Finn","Naomi"], suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry"] },
-      Archivist:{ names:["Solenne","Idris","Helena","Lucan","Amara"], suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive"] }
-    };
-    const pool = pools[tier] || pools.Initiate;
-    const name = pool.names[Math.floor(Math.random()*pool.names.length)];
-    const suffix = pool.suffixes[Math.floor(Math.random()*pool.suffixes.length)];
-    return `${name} ${suffix}`;
-  }
-  function generateNameFromTier() {
-    const tier = document.getElementById('role').value;
-    if (!tier) { alert('Please select a tier first.'); return; }
-    document.getElementById('name').value = generateTieredName(tier);
-  }
+    /* generateNameFromTier (honor button’s onclick) */
+    function generateTieredName(tier) {
+      const pools = {
+        Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya"], suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold"] },
+        Steward:  { names:["Elias","Priya","Malcolm","Zara","Omar"], suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line"] },
+        Neighbor: { names:["Ava","Noah","Grace","Leo","Isla"], suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold"] },
+        Contributor:{ names:["Milan","Tessa","Jude","Nina","Arlo"], suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive"] },
+        Observer: { names:["Theo","Luna","Miles","Ivy","Rowan"], suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery"] },
+        Supporter:{ names:["Elena","Caleb","Raya","Finn","Naomi"], suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry"] },
+        Archivist:{ names:["Solenne","Idris","Helena","Lucan","Amara"], suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive"] }
+      };
+      const pool = pools[tier] || pools.Initiate;
+      const name = pool.names[Math.floor(Math.random()*pool.names.length)];
+      const suffix = pool.suffixes[Math.floor(Math.random()*pool.suffixes.length)];
+      return `${name} ${suffix}`;
+    }
+    function generateNameFromTier() {
+      const tier = document.getElementById('role').value;
+      if (!tier) { alert('Please select a tier first.'); return; }
+      document.getElementById('name').value = generateTieredName(tier);
+    }
 
-  /* Blogger-friendly helpers */
-  function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
-  function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
+    /* Blogger-friendly helpers */
+    function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
+    function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-  /* Public form submit */
-  function submitCeremonialForm() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const role = document.getElementById('role').value;
-    const card = generateCardID();
-    const accessCode = generateAccessCode();
+    /* Public form submit */
+    function submitCeremonialForm() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const role = document.getElementById('role').value;
+      const card = generateCardID();
+      const accessCode = generateAccessCode();
 
-    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-    registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
-    localStorage.setItem('userRegistry', JSON.stringify(registry));
+      const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+      registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
+      localStorage.setItem('userRegistry', JSON.stringify(registry));
 
-    const message = `
+      const message = `
 🪔 Prestige Triumph Verification
 👤 Name: ${name}
 📞 Phone: ${phone}
 🎖 Tier: ${role}
 🆔 Account ID: ${card}
 🔑 Access Code: ${accessCode}
-    `.trim();
+      `.trim();
 
-    document.getElementById('message').value = message;
-    document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-    document.getElementById('verificationText').value = message;
-    document.getElementById('verificationPlaque').style.display = "block";
+      document.getElementById('message').value = message;
+      document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+      document.getElementById('verificationText').value = message;
+      document.getElementById('verificationPlaque').style.display = "block";
 
-    alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
-    setTimeout(() => {
-      window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-    }, 10000);
-
-    return false;
-  }
-
-  /* Crest unlock shortcut */
-  function unlockSuperForm() {
-    showPanel('mysteryBoxPanel');
-    const name = document.getElementById('name').value.trim();
-    if (name) document.getElementById('superName').value = name;
-    alert("Super-level access form unlocked.");
-  }
-
-  /* Tap shimmer */
-  let shimmerTimer;
-  function shimmerPulse(){
-    const s = document.getElementById('tapShimmer');
-    s.classList.add('active');
-    clearTimeout(shimmerTimer);
-    shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
-  }
-
-  /* Tap unlock (admin): top-left then top-right */
-  let adminTapSequence = [];
-  let adminTapResetTimer;
-  function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
-  function checkAdminMobileUnlock(){
-    const correct = ['tapTopLeft','tapTopRight'];
-    if (adminTapSequence.join(',') === correct.join(',')) {
-      showPanel('adminForm'); shimmerPulse(); resetAdminTap();
-      const hint = document.getElementById('tapHint');
-      if (hint) hint.textContent = "Admin gate unlocked. Verify your tier.";
-    } else {
-      adminTapResetTimer = setTimeout(resetAdminTap, 8000);
-    }
-  }
-  document.getElementById('tapTopLeft').addEventListener('click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
-  document.getElementById('tapTopRight').addEventListener('click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
-
-  /* Codes */
-  const TIER_CODES = { Admin: "A-231-GATE", MasterAdmin: "M-Q8/-CROWN" };
-  const HIDDEN_CODE = "X-719-BOX";
-
-  let ceremonyName = "";
-  let superSequence = [];
-
-  /* Random helpers (safe to add) */
-  function shuffleArray(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-  function generateRandomSequence(pool, length) {
-    const seq = [];
-    for (let i = 0; i < length; i++) {
-      seq.push(pool[Math.floor(Math.random() * pool.length)]);
-    }
-    return seq;
-  }
-
-  /* Verify → ritual panel */
-  document.getElementById('verifyTierBtn').addEventListener('click', ()=>{
-    const status = document.getElementById('verifyStatus');
-    const tierSel = document.getElementById('adminTier').value;
-    const code = (document.getElementById('adminCode').value || '').trim();
-    if (!code) { status.textContent = "Enter clearance code."; return; }
-
-    // reset downstream
-    ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','mysteryBoxChamber','finalBranchPanel'].forEach(hidePanel);
-
-    const ok = (tierSel === 'Admin' && code === TIER_CODES.Admin) ||
-               (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
-               (code === HIDDEN_CODE);
-
-    if (ok) {
-      const role = document.getElementById('role').value || 'Initiate';
-      ceremonyName = generateTieredName(role);
-      status.textContent = "✅ Verified. Proceed to the ritual.";
-      const nameEl = document.getElementById('nameInRitual'); if (nameEl) nameEl.textContent = ceremonyName;
-      superSequence = [];
-      showPanel('colorPanel'); 
-      buildRitualGrid();
-    } else {
-      status.textContent = "❌ Invalid clearance for selected tier.";
-    }
-  });
-
-  /* Ritual grid (color sequence) */
-  let requiredSequence = []; // SINGLE definition (randomized per build)
-
-  function buildRitualGrid(){
-    const panel = document.getElementById('panelButtons');
-    panel.innerHTML = "";
-
-    const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
-    const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
-    const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
-
-   
-    // Fresh randomized required sequence for this round (only 4 needed)
-requiredSequence = shuffleArray(colors).slice(0,4);
-
-
-    colors.forEach(c=>{
-      const btn = document.createElement('button');
-      btn.type = "button";
-      btn.className = "rune-btn " + c;
-
-      const sigil = glyphs[Math.floor(Math.random()*glyphs.length)];
-      const num   = numbers[Math.floor(Math.random()*numbers.length)];
-
-      btn.innerHTML = `<span class="sigil">${sigil}</span><small>${num}</small>`;
-      btn.addEventListener('click', ()=>handleRitualTap(c, btn));
-      panel.appendChild(btn);
-    });
-
-    superSequence = [];
-    renderSequence();
-    updateIndicators();
-  }
-
-  // Store exact taps with button refs for accurate feedback
-let tapLog = []; // [{ color, btn }, …]
-
-function handleRitualTap(color, btn){
-  superSequence.push(color);
-  tapLog.push({ color, btn }); // keep the actual button tapped
-
-  renderSequence();
-  btn.classList.toggle('active');
-  updateIndicators();
-
-  // Immediate shimmer
-  btn.classList.add('glow');
-  setTimeout(() => btn.classList.remove('glow'), 1200);
-}
-
-
-  function renderSequence(){
-    const sequenceReadout = document.getElementById('sequenceReadout');
-    const text = superSequence.length ? superSequence.join('~') : '----';
-    sequenceReadout.textContent = '';
-    let i = 0;
-    const interval = setInterval(() => {
-      sequenceReadout.textContent += text[i] || '';
-      i++;
-      if (i >= text.length) clearInterval(interval);
-    }, 40);
-  }
-
-  function updateIndicators() {
-    const indicators = document.querySelectorAll('#indicatorLines span');
-    indicators.forEach((bar, i) => {
-      if (i < superSequence.length) bar.classList.add('active');
-      else bar.classList.remove('active');
-    });
-  }
-
- function arraysMatch(a, b) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
-document.getElementById('verifySequence').addEventListener('click', () => {
-  const attemptColors = superSequence.slice(0,4);
-  const attemptTaps   = tapLog.slice(0,4);
-  const correct = arraysMatch(attemptColors, requiredSequence);
-
-  const sequenceReadout = document.getElementById('sequenceReadout');
-  if (correct) {
-    sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
-    sequenceReadout.style.color = "#6aff6a";
-    hidePanel('colorPanel');
-    showPanel('superCodePanel');
-    const nameInPuzzle = document.getElementById('nameInPuzzle');
-    const nameInRitual = document.getElementById('nameInRitual');
-    if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
-  } else {
-    sequenceReadout.textContent = "ACCESS DENIED";
-    sequenceReadout.style.color = "#ff4a4a";
-  }
-
-  // Faint gestures
-  attemptTaps.forEach(({ color, btn }, i) => {
-    btn.classList.remove('after-correct','after-wrong');
-    if (color === requiredSequence[i]) {
-      btn.classList.add('after-correct');
-      setTimeout(() => btn.classList.remove('after-correct'), 4000);
-    } else {
-      btn.classList.add('after-wrong');
-      setTimeout(() => btn.classList.remove('after-wrong'), 1200);
-    }
-  });
-
-  superSequence = [];
-  tapLog = [];
-  updateIndicators();
-});
-
-
-
- document.getElementById('clearSequence').addEventListener('click', () => {
-  superSequence = [];
-  tapLog = [];
-  renderSequence();
-  document.querySelectorAll('.rune-btn').forEach(btn => {
-    btn.classList.remove('active','after-correct','after-wrong','glow');
-  });
-  updateIndicators();
-  // If you want a fresh randomized sequence on Clear:
-  // buildRitualGrid();
-});
-
-  /* Access Panel → Mystery Box Chamber */
-  document.getElementById('accessCodeBtn').addEventListener('click', () => {
-    const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-    const s = document.getElementById('accessCodeStatus');
-    if (v === 'X-719-BOX') {
-      s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
+      alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
       setTimeout(() => {
-        hidePanel('superCodePanel');
-        showPanel('mysteryBoxChamber');
-      }, 600);
-    } else {
-      s.textContent = '❌ Incorrect code.';
+        window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+      }, 10000);
+
+      return false;
     }
-  });
 
-  document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
-    hidePanel('mysteryBoxChamber');
-    showPanel('puzzleBoxPanel');
-    initPuzzleBox();
-  });
+    /* Crest unlock shortcut */
+    function unlockSuperForm() {
+      showPanel('mysteryBoxPanel');
+      const name = document.getElementById('name').value.trim();
+      if (name) document.getElementById('superName').value = name;
+      alert("Super-level access form unlocked.");
+    }
 
-  /* Puzzle Cube logic (initialize on demand) */
- // State
-let puzzleInitDone = false;
-let cubeUnlocked = false;
+    /* Tap shimmer */
+    let shimmerTimer;
+    function shimmerPulse(){
+      const s = document.getElementById('tapShimmer');
+      s.classList.add('active');
+      clearTimeout(shimmerTimer);
+      shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
+    }
+
+    /* Tap unlock (admin): top-left then top-right */
+    let adminTapSequence = [];
+    let adminTapResetTimer;
+    function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
+    function checkAdminMobileUnlock(){
+      const correct = ['tapTopLeft','tapTopRight'];
+      if (adminTapSequence.join(',') === correct.join(',')) {
+        showPanel('adminForm'); shimmerPulse(); resetAdminTap();
+        document.getElementById('tapHint').textContent = "Admin gate unlocked. Verify your tier.";
+      } else {
+        adminTapResetTimer = setTimeout(resetAdminTap, 8000);
+      }
+    }
+    document.getElementById('tapTopLeft').addEventListener('click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
+    document.getElementById('tapTopRight').addEventListener('click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
+
+    /* Admin verify → ritual panel */
+    const TIER_CODES = { Admin: "A-231-GATE", MasterAdmin: "M-Q8/-CROWN" };
+    const HIDDEN_CODE = "X-719-BOX";
+
+    let ceremonyName = "";
+    let superSequence = [];
+
+    document.getElementById('verifyTierBtn').addEventListener('click', ()=>{
+      const status = document.getElementById('verifyStatus');
+      const tierSel = document.getElementById('adminTier').value;
+      const code = (document.getElementById('adminCode').value || '').trim();
+      if (!code) { status.textContent = "Enter clearance code."; return; }
+
+      // reset downstream
+      ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','mysteryBoxChamber','finalBranchPanel'].forEach(hidePanel);
+
+      const ok = (tierSel === 'Admin' && code === TIER_CODES.Admin) ||
+                 (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
+                 (code === HIDDEN_CODE);
+
+      if (ok) {
+        const role = document.getElementById('role').value || 'Initiate';
+        ceremonyName = generateTieredName(role);
+        status.textContent = "✅ Verified. Proceed to the ritual.";
+        const nameEl = document.getElementById('nameInRitual'); if (nameEl) nameEl.textContent = ceremonyName;
+        superSequence = [];
+        showPanel('colorPanel'); 
+        buildRitualGrid();
+      } else {
+        status.textContent = "❌ Invalid clearance for selected tier.";
+      }
+    });
+
+    /* Ritual grid (color sequence) */
+    function buildRitualGrid(){
+      const panel = document.getElementById('panelButtons');
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      const verifyBtn = document.getElementById('verifySequence');
+      const clearBtn = document.getElementById('clearSequence');
+
+      panel.innerHTML = "";
+      const colors = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
+      const glyphs = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+      const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
+
+      colors.forEach(c=>{
+        const btn = document.createElement('button');
+        btn.type = "button";
+        btn.className = "rune-btn " + c;
+
+        const sigil = glyphs[Math.floor(Math.random()*glyphs.length)];
+        const num = numbers[Math.floor(Math.random()*numbers.length)];
+
+        btn.innerHTML = `<span class="sigil">${sigil}</span><small>${num}</small>`;
+        btn.addEventListener('click', ()=>handleRitualTap(c, btn));
+        panel.appendChild(btn);
+      });
+
+      superSequence = [];
+      renderSequence();
+      updateIndicators();
+    }
+
+    const requiredSequence = ['red','blue','green','mustard','violet','cyan','deepred','emerald','deepviolet'];
+
+    function handleRitualTap(color, btn){
+      superSequence.push(color);
+      renderSequence();
+      btn.classList.toggle('active');
+      updateIndicators();
+    }
+
+    function renderSequence(){
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      const text = superSequence.length ? superSequence.join('~') : '---';
+      sequenceReadout.textContent = '';
+      let i = 0;
+      const interval = setInterval(() => {
+        sequenceReadout.textContent += text[i] || '';
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 40);
+    }
+
+    function updateIndicators() {
+      const indicators = document.querySelectorAll('#indicatorLines span');
+      indicators.forEach((bar, i) => {
+        if (i < superSequence.length) bar.classList.add('active');
+        else bar.classList.remove('active');
+      });
+    }
+
+    document.getElementById('verifySequence').addEventListener('click', () => {
+      const correct = superSequence.join(',') === requiredSequence.join(',');
+      const sequenceReadout = document.getElementById('sequenceReadout');
+      if (correct) {
+        sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
+        sequenceReadout.style.color = "#6aff6a";
+        hidePanel('colorPanel');
+        showPanel('superCodePanel');
+        const nameInPuzzle = document.getElementById('nameInPuzzle');
+        const nameInRitual = document.getElementById('nameInRitual');
+        if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
+      } else {
+        sequenceReadout.textContent = "ACCESS DENIED";
+        sequenceReadout.style.color = "#ff4a4a";
+      }
+      superSequence = [];
+      updateIndicators();
+    });
+
+    document.getElementById('clearSequence').addEventListener('click', () => {
+      superSequence = [];
+      renderSequence();
+      document.querySelectorAll('.rune-btn').forEach(btn => btn.classList.remove('active'));
+      updateIndicators();
+    });
+
+    /* Access Panel → Mystery Box Chamber */
+    document.getElementById('accessCodeBtn').addEventListener('click', () => {
+      const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
+      const s = document.getElementById('accessCodeStatus');
+      if (v === 'X-719-BOX') {
+        s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
+        setTimeout(() => {
+          hidePanel('superCodePanel');
+          showPanel('mysteryBoxChamber');
+        }, 600);
+      } else {
+        s.textContent = '❌ Incorrect code.';
+      }
+    });
+
+    document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
+      hidePanel('mysteryBoxChamber');
+      showPanel('puzzleBoxPanel');
+      initPuzzleBox();
+    });
+
+    /* Puzzle Cube logic (initialize on demand) */
+    let puzzleInitDone = false;
 let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+let cubeUnlocked = false;
 
-// Random helpers
-function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
-function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
-
-// UI helpers
+/* — Mobile shrink + notice — */
 function shrinkPuzzleBox() {
   const panel = document.getElementById('puzzleBoxPanel');
   if (panel && window.innerWidth <= 768) {
@@ -1643,227 +1547,101 @@ function showPuzzleNotice() {
     setTimeout(() => notice.classList.remove('show'), 6000);
   }
 }
+
+/* — Depth pulse — */
 function pulseCube() {
   const cube = document.getElementById('labyrinthCube');
   if (!cube) return;
   cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
   setTimeout(() => cube.style.boxShadow = "none", 900);
 }
+
+/* — Unlock check — */
 function checkCubeUnlock() {
   if (Object.values(keys).every(v => v) && !cubeUnlocked) {
     cubeUnlocked = true;
-
     const msg = document.getElementById('unlockMessage');
     if (msg) msg.style.display = 'block';
     pulseCube();
-
-    const sigil = document.getElementById('hiddenSigil');
-    if (sigil) sigil.style.display = 'block';
-
-    const voidEl = document.getElementById('imgVoidPuzzle');
-    if (voidEl) voidEl.classList.add('unlocked');
-
-    // Fade sigil + cube after 30s
-    setTimeout(() => {
-      if (sigil) sigil.classList.add('fadeOut');
-      const cube = document.getElementById('labyrinthCube');
-      if (cube) cube.classList.add('fadeOut');
-    }, 30000);
-
-    // Transition after 60s
-    setTimeout(() => {
-      hidePanel('puzzleBoxPanel');
-      showPanel('finalBranchPanel');
-
-      // cleanup
-      if (sigil) {
-        sigil.style.display = 'none';
-        sigil.classList.remove('fadeOut');
-      }
-      const cube = document.getElementById('labyrinthCube');
-      if (cube) cube.classList.remove('fadeOut');
-      if (voidEl) voidEl.classList.remove('unlocked');
-    }, 60000);
+    restorePuzzleBox(); // restore panel size before proceeding
+    setTimeout(() => { hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel'); }, 1000);
   }
 }
 
-// Full reset for fresh run
+/* — Reset state — */
 function resetPuzzleState() {
   keys = { L:false, D:false, W:false, M:false, S:false, N:false };
   cubeUnlocked = false;
-
-  document.querySelectorAll('#lightsGrid .light-cell').forEach(c => { c.classList.remove('on'); c.style.background=''; c.style.boxShadow=''; });
-  document.querySelectorAll('#labyrinthGrid .cell').forEach(c => c.classList.remove('on'));
-  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
-
-  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display='none'; });
-  const dial = document.getElementById('dial'); if (dial) dial.value = dial.min || 0;
-  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
+  const lights = document.querySelectorAll('#lightsGrid .light-cell');
+  lights.forEach(cell => { cell.classList.remove('on'); cell.style.background = ''; cell.style.boxShadow = ''; });
+  const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+  labCells.forEach(c => c.classList.remove('on'));
+  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id=>{ const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'none';
+  const dial = document.getElementById('dial'); if (dial) dial.value = 0;
+  const memBtns = document.querySelectorAll('#memoryButtons .mem'); memBtns.forEach(btn => btn.classList.remove('flash'));
 }
 
-/* -------- Lights Out (random target pattern) -------- */
-let lightsTarget = [];
-function configureLightsOut() {
-  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  if (!cells.length) return;
-  // Random “target on” indices
-  lightsTarget = shuffle(cells.map((_,i)=>i)).slice(0, Math.max(3, Math.floor(cells.length/4)));
-}
-function isLightsSolved() {
-  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  return cells.every((c,i)=> c.classList.contains('on') === lightsTarget.includes(i));
-}
-function wireLightsOutOnce() {
-  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  cells.forEach((cell, idx) => {
-    // Avoid duplicate listeners
-    if (cell.dataset.wired) return;
-    cell.dataset.wired = '1';
+/* — Init Puzzle Box (now shrinks + shows notice on mobile) — */
+function initPuzzleBox() {
+  if (puzzleInitDone) { resetPuzzleState(); shrinkPuzzleBox(); return; }
+
+  // Lights Out
+  const lights = document.querySelectorAll('#lightsGrid .light-cell');
+  lights.forEach((cell, idx) => {
     cell.addEventListener('click', () => {
-      const all = [...document.querySelectorAll('#lightsGrid .light-cell')];
-      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (all[i]) all[i].classList.toggle('on'); });
-      if (isLightsSolved()) {
-        keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display='block';
+      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (lights[i]) lights[i].classList.toggle('on'); });
+      if ([...lights].every(c => c.classList.contains('on'))) {
+        keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display = 'block';
         pulseCube(); checkCubeUnlock();
       }
     });
   });
-}
 
-/* -------- Dial (range slider with randomized target) -------- */
-// Dial combo state
-let dialCombo = [];
-let dialStage = 0;
-let dialTol = 4;
-
-function configureDial() {
-  // Generate a random 3‑number combo
-  dialCombo = [
-    Math.floor(Math.random()*101),
-    Math.floor(Math.random()*101),
-    Math.floor(Math.random()*101)
-  ];
-  dialStage = 0;
-  dialTol   = Math.floor(3 + Math.random()*4); // tolerance 3–6
-
-  const hint = document.getElementById('dialHint');
-  if (hint) hint.textContent = `Stage 1: align within ±${dialTol}`;
-
+  // Dial
   const dial = document.getElementById('dial');
   if (dial) {
-    // Start away from first target
-    dial.value = Math.max(0, Math.min(100, dialCombo[0] + (Math.random()<0.5 ? -dialTol*3 : dialTol*3)));
-  }
-}
-
-function wireDialOnce() {
-  const dial = document.getElementById('dial');
-  if (!dial || dial.dataset.wired) return;
-  dial.dataset.wired = '1';
-
-  let debounce;
-  dial.addEventListener('input', (e) => {
-    clearTimeout(debounce);
-    debounce = setTimeout(() => {
-      const val = parseInt(e.target.value,10);
-      if (Math.abs(val - dialCombo[dialStage]) <= dialTol) {
-        dialStage++;
-        const hint = document.getElementById('dialHint');
-        if (dialStage < dialCombo.length) {
-          if (hint) hint.textContent = `Stage ${dialStage+1}: align within ±${dialTol}`;
-        } else {
-          // Completed all stages
-          keys.D = true;
-          const el = document.getElementById('runeD');
-          if (el) el.style.display='block';
-          pulseCube(); checkCubeUnlock();
-          if (hint) hint.textContent = `Combo complete! (${dialCombo.join(' → ')})`;
-        }
+    dial.addEventListener('input', e => {
+      if (parseInt(e.target.value, 10) === 3) {
+        keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display = 'block';
+        pulseCube(); checkCubeUnlock();
       }
-    }, 60);
-  });
-}
-
-/* -------- Word lock (random word scramble) -------- */
-let wordAnswer = '';
-function configureWordLock() {
-  const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
-  wordAnswer = pick(dictionary);
-  const scrambled = shuffle(wordAnswer.split('')).join('');
-  const wordHint  = document.getElementById('wordHint');
-  if (wordHint) wordHint.textContent = `Unscramble: ${scrambled}`;
-  const wordInput = document.getElementById('wordInput');
-  if (wordInput) wordInput.value = '';
-}
-function wireWordLockOnce() {
-  const wordInput = document.getElementById('wordInput');
-  if (!wordInput || wordInput.dataset.wired) return;
-  wordInput.dataset.wired = '1';
-  wordInput.addEventListener('input', e => {
-    if (e.target.value.trim().toLowerCase() === wordAnswer) {
-      keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display='block';
-      pulseCube(); checkCubeUnlock();
-    }
-  });
-}
-
-/* -------- Labyrinth (neighbor path) -------- */
-let labPath = [], labProgress = 0;
-function configureLabyrinth() {
-  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
-  if (!cells.length) return;
-  cells.forEach(c => c.classList.remove('on'));
-  const width = Math.sqrt(cells.length) | 0; // assumes square grid
-  function neighbors(i){
-    const n=[]; const r = Math.floor(i/width), c = i%width;
-    if (r>0) n.push(i-width); if (r<width-1) n.push(i+width);
-    if (c>0) n.push(i-1); if (c<width-1) n.push(i+1);
-    return n;
+    });
   }
-  labPath = [];
-  let current = Math.floor(Math.random()*cells.length);
-  labPath.push(current);
-  const length = Math.min(9, cells.length);
-  const visited = new Set([current]);
-  while (labPath.length < length) {
-    const options = neighbors(current).filter(i => !visited.has(i));
-    current = pick(options.length ? options : neighbors(current));
-    labPath.push(current);
-    visited.add(current);
+
+  // Word Lock
+  const wordInput = document.getElementById('wordInput');
+  if (wordInput) {
+    wordInput.addEventListener('change', e => {
+      if (e.target.value.trim().toLowerCase() === "real") {
+        keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display = 'block';
+        pulseCube(); checkCubeUnlock();
+      }
+    });
   }
-  labProgress = 0;
-}
-function wireLabyrinthOnce() {
-  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
-  cells.forEach((cell, idx) => {
-    if (cell.dataset.wired) return;
-    cell.dataset.wired = '1';
+
+  // Labyrinth Path
+  const labCells = document.querySelectorAll('#labyrinthGrid .cell');
+  const path = [0,1,6,11,16,17,18,23,24];
+  let progress = 0;
+  labCells.forEach((cell, idx) => {
     cell.addEventListener('click', () => {
-      if (idx === labPath[labProgress]) {
-        cell.classList.add('on');
-        labProgress++;
-        if (labProgress === labPath.length) {
-          keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display='block';
+      if (idx === path[progress]) {
+        cell.classList.add('on'); progress++;
+        if (progress === path.length) {
+          keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display = 'block';
           pulseCube(); checkCubeUnlock();
         }
       } else {
-        cells.forEach(c => c.classList.remove('on'));
-        labProgress = 0;
+        labCells.forEach(c => c.classList.remove('on')); progress = 0;
       }
     });
   });
-}
 
-/* -------- Memory (growing sequence) -------- */
-let memSeq = [], playerSeq = [], playing = false;
-function configureMemory() {
-  memSeq = []; playerSeq = []; playing = false;
-  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
-}
-function wireMemoryOnce() {
-  const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
+  // Memory
+  const memBtns = document.querySelectorAll('#memoryButtons .mem');
   const startBtn = document.getElementById('startMemory');
-  if (!memBtns.length || !startBtn) return;
+  let memSeq = [], playerSeq = [], playing = false;
 
   function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
   function playSequence() {
@@ -1874,157 +1652,90 @@ function wireMemoryOnce() {
       if (btn) flash(btn);
       i++;
       if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
-    }, 450);
+    }, 420);
   }
-  function nextRound(){ memSeq.push(Math.floor(Math.random() * memBtns.length)); playSequence(); }
+  function nextRound(){ memSeq.push(Math.floor(Math.random() * 3)); playSequence(); }
 
-  if (!startBtn.dataset.wired) {
-    startBtn.dataset.wired = '1';
+  if (startBtn) {
     startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
   }
-  memBtns.forEach(btn => {
-    if (btn.dataset.wired) return;
-    btn.dataset.wired = '1';
-    btn.addEventListener('click', () => {
-      if (playing || memSeq.length === 0) return;
-      const val = parseInt(btn.dataset.val, 10);
-      playerSeq.push(val); flash(btn);
-      for (let i=0;i<playerSeq.length;i++){
-        if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; }
-      }
-      if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display='block'; pulseCube(); checkCubeUnlock(); }
-        else nextRound();
-      }
-    });
-  });
-}
+  memBtns.forEach(btn => btn.addEventListener('click', () => {
+    if (playing || memSeq.length === 0) return;
+    const val = parseInt(btn.dataset.val, 10);
+    playerSeq.push(val); flash(btn);
+    for (let i=0;i<playerSeq.length;i++){ if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; } }
+    if (playerSeq.length === memSeq.length) {
+      if (memSeq.length >= 4) { keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
+      else nextRound();
+    }
+  }));
 
-/* -------- Math (random target and values) -------- */
-let mathTarget = 15;
-function configureMath() {
-  const nums = [...document.querySelectorAll('#mathGrid .num')];
-  if (!nums.length) return;
-  mathTarget = Math.floor(12 + Math.random()*9);
-  const mathHint = document.getElementById('mathHint');
-  if (mathHint) mathHint.textContent = `Find a selection that sums to ${mathTarget}`;
-  nums.forEach(btn => {
-    btn.classList.remove('sel');
-    btn.textContent = String(1 + Math.floor(Math.random()*9));
-  });
-}
-function wireMathOnce() {
-  const nums = [...document.querySelectorAll('#mathGrid .num')];
-  if (!nums.length) return;
-  nums.forEach(btn => {
-    if (btn.dataset.wired) return;
-    btn.dataset.wired = '1';
-    btn.addEventListener('click', () => {
-      let sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
-      // Toggle this button
-      btn.classList.toggle('sel');
-      sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
-      const sum = sel.reduce((a,b)=>a+b,0);
-      if (sum === mathTarget) {
-        keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display='block';
-        pulseCube(); checkCubeUnlock();
-      } else if (sum > mathTarget) {
-        nums.forEach(n => n.classList.remove('sel'));
-      }
-    });
-  });
-}
-
-/* -------- Initialization and regeneration -------- */
-function initPuzzleBox(){
-  // One-time wiring
-  if (!puzzleInitDone) {
-    wireLightsOutOnce();
-    wireDialOnce();
-    wireWordLockOnce();
-    wireLabyrinthOnce();
-    wireMemoryOnce();
-    wireMathOnce();
-    puzzleInitDone = true;
-  }
-  // Fresh randomized content each run
+  puzzleInitDone = true;
   resetPuzzleState();
-  configureLightsOut();
-  configureDial();
-  configureWordLock();
-  configureLabyrinth();
-  configureMemory();
-  configureMath();
-  shrinkPuzzleBox();
+  shrinkPuzzleBox(); // enforce mobile nesting when opened
 }
 
-// Regenerate button (fresh challenges)
-document.addEventListener('DOMContentLoaded', () => {
-  const regen = document.getElementById('regeneratePuzzles');
-  if (regen && !regen.dataset.wired) {
-    regen.dataset.wired = '1';
-    regen.addEventListener('click', () => {
-      resetPuzzleState();
-      configureLightsOut();
-      configureDial();
-      configureWordLock();
-      configureLabyrinth();
-      configureMemory();
-      configureMath();
+/* — Math — */
+const nums = document.querySelectorAll('#mathGrid .num');
+let sel = [];
+nums.forEach(btn => btn.addEventListener('click', () => {
+  btn.classList.toggle('sel');
+  const val = parseInt(btn.textContent.trim(), 10);
+  if (btn.classList.contains('sel')) sel.push(val); else sel = sel.filter(v => v !== val);
+  const sum = sel.reduce((a,b)=>a+b,0);
+  if (sum === 15) { keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
+  else if (sum > 15) { nums.forEach(n => n.classList.remove('sel')); sel = []; }
+}));
+
+    // Final clearance → Superform
+    document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
+      hidePanel('finalBranchPanel');
+      showPanel('finalClearancePanel');
     });
-  }
-});
 
-  // Final clearance → Superform
-  document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
-    hidePanel('finalBranchPanel');
-    showPanel('finalClearancePanel');
-  });
+    document.getElementById('finalClearanceBtn').addEventListener('click', ()=>{
+      const code = document.getElementById('finalClearanceCode').value.trim();
+      const revealed = document.getElementById('revealedPassword').textContent.trim();
+      const status = document.getElementById('finalClearanceStatus');
+      if (code === revealed) {
+        status.textContent = "✅ Clearance accepted. Superform unlocked.";
+        setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
+      } else {
+        status.textContent = "❌ Incorrect code.";
+      }
+    });
 
-  document.getElementById('finalClearanceBtn').addEventListener('click', ()=>{
-    const code = document.getElementById('finalClearanceCode').value.trim();
-    const revealed = document.getElementById('revealedPassword').textContent.trim();
-    const status = document.getElementById('finalClearanceStatus');
-    if (code === revealed) {
-      status.textContent = "✅ Clearance accepted. Superform unlocked.";
-      setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
-    } else {
-      status.textContent = "❌ Incorrect code.";
-    }
-  });
-
-  // Superform submit (Prestige route)
-  function submitSuperForm() {
-    const code = document.getElementById("superCode").value.trim();
-    if (code !== "TRIUMPH-777") {
-      alert("Invalid super-level clearance code.");
-      return false;
-    }
-    const name = document.getElementById("superName").value.trim();
-    const tier = document.getElementById("superTier").value;
-    const card = generateCardID();
-    const accessCode = generateAccessCode();
-    const message = `
+    // Superform submit (Prestige route)
+    function submitSuperForm() {
+      const code = document.getElementById("superCode").value.trim();
+      if (code !== "TRIUMPH-777") {
+        alert("Invalid super-level clearance code.");
+        return false;
+      }
+      const name = document.getElementById("superName").value.trim();
+      const tier = document.getElementById("superTier").value;
+      const card = generateCardID();
+      const accessCode = generateAccessCode();
+      const message = `
 👑 Super-Level Access Submission
 👤 Name: ${name}
 🎖 Tier: ${tier}
 🆔 Account ID: ${card}
 🔑 Clearance Code: ${accessCode}
-    `.trim();
-    document.getElementById('verificationText').value = message;
-    document.getElementById('verificationPlaque').style.display = "block";
-    alert("Super-level form submitted. Redirecting...");
-    setTimeout(() => {
-      window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
-    }, 10000);
-    return false;
-  }
+      `.trim();
+      document.getElementById('verificationText').value = message;
+      document.getElementById('verificationPlaque').style.display = "block";
+      alert("Super-level form submitted. Redirecting...");
+      setTimeout(() => {
+        window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
+      }, 10000);
+      return false;
+    }
 
-  // Interactive rotation for the Labyrinth Cube
-  const cubeEl = document.getElementById('labyrinthCube');
-  let dragging = false, startX = 0, startY = 0, rotX = -15, rotY = 20;
-  function updateRotation() { if (cubeEl) cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
-  if (cubeEl) {
+    // Interactive rotation for the Labyrinth Cube
+    const cubeEl = document.getElementById('labyrinthCube');
+    let dragging = false, startX = 0, startY = 0, rotX = -15, rotY = 20;
+    function updateRotation() { cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
     cubeEl.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
     window.addEventListener('mousemove', e => {
       if (!dragging) return;
@@ -2042,31 +1753,98 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
     cubeEl.addEventListener('touchend', () => dragging = false);
     updateRotation();
-  }
+  </script>
 
-  // Keyboard unlock shortcuts
-  document.addEventListener("DOMContentLoaded", function () {
-    document.addEventListener("keydown", function (e) {
-      // Unlock Admin Form: Ctrl + Shift + A
-      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-        const adminForm = document.getElementById("adminForm");
-        if (adminForm) {
-          adminForm.style.display = "block";
-          alert("Admin access form unlocked.");
+  <script>
+    // Keyboard unlock shortcuts
+    document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("keydown", function (e) {
+        // Unlock Admin Form: Ctrl + Shift + A
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+          const adminForm = document.getElementById("adminForm");
+          if (adminForm) {
+            adminForm.style.display = "block";
+            alert("Admin access form unlocked.");
+          }
         }
-      }
-      // Unlock Super Form: Ctrl + Alt + Q
-      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
-        const superPanel = document.getElementById("mysteryBoxPanel");
-        if (superPanel) {
-          superPanel.style.display = "block";
-          alert("Super-level access form unlocked.");
+        // Unlock Super Form: Ctrl + Alt + Q
+        if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+          const superPanel = document.getElementById("mysteryBoxPanel");
+          if (superPanel) {
+            superPanel.style.display = "block";
+            alert("Super-level access form unlocked.");
+          }
         }
-      }
+      });
     });
-  });
+  </script>
+  
+  <script>function shrinkVoidPuzzle() {
+  const voidEl = document.getElementById('imgVoidPuzzle');
+  if (voidEl && window.innerWidth <= 768) {
+    voidEl.classList.add('shrunk');
+  }
+}
+
+function restoreVoidPuzzle() {
+  const voidEl = document.getElementById('imgVoidPuzzle');
+  if (voidEl) {
+    voidEl.classList.remove('shrunk');
+  }
+}
+    function checkCubeUnlock() {
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+
+    const msg = document.getElementById('unlockMessage');
+    if (msg) msg.style.display = 'block';
+    pulseCube();
+
+    // Reveal hidden sigil
+    const sigil = document.getElementById('hiddenSigil');
+    if (sigil) sigil.style.display = 'block';
+
+    // Add whimsical aura
+    const voidEl = document.getElementById('imgVoidPuzzle');
+    if (voidEl) voidEl.classList.add('unlocked');
+
+    // Keep Puzzle Box visible for 60s
+    // Fade sigil + cube after 30s
+    setTimeout(() => {
+      if (sigil) sigil.classList.add('fadeOut');
+      const cube = document.getElementById('labyrinthCube');
+      if (cube) cube.classList.add('fadeOut');
+    }, 30000);
+
+    // Transition only after full 60s
+    setTimeout(() => {
+      hidePanel('puzzleBoxPanel');
+      showPanel('finalBranchPanel');
+
+      // cleanup
+      if (sigil) {
+        sigil.style.display = 'none';
+        sigil.classList.remove('fadeOut');
+      }
+      const cube = document.getElementById('labyrinthCube');
+      if (cube) cube.classList.remove('fadeOut');
+      if (voidEl) voidEl.classList.remove('unlocked');
+    }, 60000);
+  }
+}
 
 
+
+    // Reveal hidden sigil
+    const sigil = document.getElementById('hiddenSigil');lock';
+
+    // Add whimsical aura
+    const voidEl = document.getElementById('imgVoidPuzzle');
+    if (voidEl) voidEl.classList.add('unlocked');
+
+    setTimeout(() => { hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel'); }, 1000);
+  }
+}
 
 </script>
 </body>
