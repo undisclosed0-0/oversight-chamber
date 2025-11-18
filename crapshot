@@ -1474,10 +1474,8 @@ function closePuzzleBox() {
     const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
     const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
 
-   
-    // Fresh randomized required sequence for this round (only 4 needed)
-requiredSequence = shuffleArray(colors).slice(0,4);
-
+    // Fresh randomized required sequence for this round
+    requiredSequence = shuffleArray(colors);
 
     colors.forEach(c=>{
       const btn = document.createElement('button');
@@ -1534,18 +1532,10 @@ function handleRitualTap(color, btn){
     });
   }
 
- function arraysMatch(a, b) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
-
-document.getElementById('verifySequence').addEventListener('click', () => {
-  const attemptColors = superSequence.slice(0,4);
-  const attemptTaps   = tapLog.slice(0,4);
-  const correct = arraysMatch(attemptColors, requiredSequence);
+ document.getElementById('verifySequence').addEventListener('click', () => {
+  const attemptColors = superSequence.slice(0,4);          // colors only
+  const attemptTaps   = tapLog.slice(0,4);                 // taps with btns
+  const correct = attemptColors.join(',') === requiredSequence.join(',');
 
   const sequenceReadout = document.getElementById('sequenceReadout');
   if (correct) {
@@ -1561,23 +1551,27 @@ document.getElementById('verifySequence').addEventListener('click', () => {
     sequenceReadout.style.color = "#ff4a4a";
   }
 
-  // Faint gestures
+  // Faint gestures: mark exactly the buttons tapped in positions 0–3
   attemptTaps.forEach(({ color, btn }, i) => {
+    // Clean previous gesture classes on this btn (if any)
     btn.classList.remove('after-correct','after-wrong');
+
     if (color === requiredSequence[i]) {
       btn.classList.add('after-correct');
+      // linger softly; remove if you want persistent until Clear
       setTimeout(() => btn.classList.remove('after-correct'), 4000);
     } else {
       btn.classList.add('after-wrong');
+      // fade quickly so red doesn’t overstay
       setTimeout(() => btn.classList.remove('after-wrong'), 1200);
     }
   });
 
+  // Reset attempt (not the grid)
   superSequence = [];
   tapLog = [];
   updateIndicators();
 });
-
 
 
  document.getElementById('clearSequence').addEventListener('click', () => {
@@ -1613,195 +1607,377 @@ document.getElementById('verifySequence').addEventListener('click', () => {
     initPuzzleBox();
   });
 
-  /* Puzzle Cube logic (initialize on demand) */
-  let puzzleInitDone = false;
-  let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
-  let cubeUnlocked = false;
+/* ===== Puzzle Cube logic (FULL, consolidated, guarded) ===== */
 
-  function shrinkPuzzleBox() {
-    const panel = document.getElementById('puzzleBoxPanel');
-    if (panel && window.innerWidth <= 768) {
-      panel.classList.add('shrunk');
-      showPuzzleNotice();
-    }
+/* --- Global state --- */
+let puzzleInitDone = false;
+let cubeUnlocked = false;
+let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+
+/* --- Helpers --- */
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+function pulseCube() {
+  const cube = document.getElementById('labyrinthCube');
+  if (!cube) return;
+  cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
+  setTimeout(() => cube.style.boxShadow = "none", 900);
+}
+function checkCubeUnlock() {
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+
+    const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'block';
+    pulseCube();
+
+    const sigil = document.getElementById('hiddenSigil'); if (sigil) sigil.style.display = 'block';
+    const voidEl = document.getElementById('imgVoidPuzzle'); if (voidEl) voidEl.classList.add('unlocked');
+
+    // Optional pacing/cleanup
+    setTimeout(() => {
+      if (sigil) sigil.classList.add('fadeOut');
+      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut');
+    }, 30000);
+    setTimeout(() => {
+      const sigil2 = document.getElementById('hiddenSigil'); if (sigil2) { sigil2.style.display='none'; sigil2.classList.remove('fadeOut'); }
+      const cube2 = document.getElementById('labyrinthCube'); if (cube2) cube2.classList.remove('fadeOut');
+      const voidEl2 = document.getElementById('imgVoidPuzzle'); if (voidEl2) voidEl2.classList.remove('unlocked');
+    }, 60000);
   }
-  function restorePuzzleBox() {
-    const panel = document.getElementById('puzzleBoxPanel');
-    if (panel) panel.classList.remove('shrunk');
+}
+function resetPuzzleState() {
+  keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+  cubeUnlocked = false;
+
+  document.querySelectorAll('#lightsGrid .light-cell').forEach(c => { c.classList.remove('on'); c.style.background=''; c.style.boxShadow=''; });
+  document.querySelectorAll('#labyrinthGrid .cell').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
+  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id => { const el=document.getElementById(id); if (el) el.style.display='none'; });
+
+  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
+  const hint = document.getElementById('dialHint'); if (hint) hint.textContent='';
+}
+
+/* --- Mobile panel helpers --- */
+function shrinkPuzzleBox() {
+  const panel = document.getElementById('puzzleBoxPanel');
+  if (panel && window.innerWidth <= 768) {
+    panel.classList.add('shrunk');
+    showPuzzleNotice();
   }
-  function showPuzzleNotice() {
-    const notice = document.getElementById('puzzleNotice');
-    if (!notice) return;
-    if (window.innerWidth <= 768) {
-      notice.classList.add('show');
-      setTimeout(() => notice.classList.remove('show'), 6000);
-    }
+}
+function restorePuzzleBox() {
+  const panel = document.getElementById('puzzleBoxPanel');
+  if (panel) panel.classList.remove('shrunk');
+}
+function showPuzzleNotice() {
+  const notice = document.getElementById('puzzleNotice');
+  if (!notice) return;
+  if (window.innerWidth <= 768) {
+    notice.classList.add('show');
+    setTimeout(() => notice.classList.remove('show'), 6000);
   }
+}
 
-  function pulseCube() {
-    const cube = document.getElementById('labyrinthCube');
-    if (!cube) return;
-    cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
-    setTimeout(() => cube.style.boxShadow = "none", 900);
-  }
-
-  function checkCubeUnlock() {
-    if (Object.values(keys).every(v => v) && !cubeUnlocked) {
-      cubeUnlocked = true;
-
-      const msg = document.getElementById('unlockMessage');
-      if (msg) msg.style.display = 'block';
-      pulseCube();
-
-      const sigil = document.getElementById('hiddenSigil');
-      if (sigil) sigil.style.display = 'block';
-
-      const voidEl = document.getElementById('imgVoidPuzzle');
-      if (voidEl) voidEl.classList.add('unlocked');
-
-      // Fade sigil + cube after 30s
-      setTimeout(() => {
-        if (sigil) sigil.classList.add('fadeOut');
-        const cube = document.getElementById('labyrinthCube');
-        if (cube) cube.classList.add('fadeOut');
-      }, 30000);
-
-      // Transition after 60s
-      setTimeout(() => {
-        hidePanel('puzzleBoxPanel');
-        showPanel('finalBranchPanel');
-
-        // cleanup
-        if (sigil) {
-          sigil.style.display = 'none';
-          sigil.classList.remove('fadeOut');
-        }
-        const cube = document.getElementById('labyrinthCube');
-        if (cube) cube.classList.remove('fadeOut');
-        if (voidEl) voidEl.classList.remove('unlocked');
-      }, 60000);
-    }
-  }
-
-  function resetPuzzleState() {
-    keys = { L:false, D:false, W:false, M:false, S:false, N:false };
-    cubeUnlocked = false;
-    const lights = document.querySelectorAll('#lightsGrid .light-cell');
-    lights.forEach(cell => { cell.classList.remove('on'); cell.style.background = ''; cell.style.boxShadow = ''; });
-    const labCells = document.querySelectorAll('#labyrinthGrid .cell');
-    labCells.forEach(c => c.classList.remove('on'));
-    ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id=>{ const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'none';
-    const dial = document.getElementById('dial'); if (dial) dial.value = 0;
-    const memBtns = document.querySelectorAll('#memoryButtons .mem'); memBtns.forEach(btn => btn.classList.remove('flash'));
-  }
-
-  function initPuzzleBox() {
-    if (puzzleInitDone) { resetPuzzleState(); shrinkPuzzleBox(); return; }
-
-    // Lights Out
-    const lights = document.querySelectorAll('#lightsGrid .light-cell');
-    lights.forEach((cell, idx) => {
-      cell.addEventListener('click', () => {
-        [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (lights[i]) lights[i].classList.toggle('on'); });
-        if ([...lights].every(c => c.classList.contains('on'))) {
-          keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display = 'block';
-          pulseCube(); checkCubeUnlock();
-        }
-      });
+/* ===== Lights Out ===== */
+let lightsTarget = [];
+function configureLightsOut() {
+  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
+  if (!cells.length) return;
+  lightsTarget = shuffle(cells.map((_,i)=>i)).slice(0, Math.max(3, Math.floor(cells.length/4)));
+}
+function isLightsSolved() {
+  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
+  return cells.every((c,i)=> c.classList.contains('on') === lightsTarget.includes(i));
+}
+function wireLightsOutOnce() {
+  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
+  if (!cells.length) return;
+  cells.forEach((cell, idx) => {
+    if (cell.dataset.wired) return;
+    cell.dataset.wired = '1';
+    cell.addEventListener('click', () => {
+      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (cells[i]) cells[i].classList.toggle('on'); });
+      if (isLightsSolved()) {
+        keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display='block';
+        pulseCube(); checkCubeUnlock();
+      }
     });
+  });
+}
 
-    // Dial
-    const dial = document.getElementById('dial');
-    if (dial) {
-      dial.addEventListener('input', e => {
-        if (parseInt(e.target.value, 10) === 3) {
-          keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display = 'block';
+/* ===== Dial locker (combo + direction) ===== */
+function configureDial() {
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const pointer  = document.querySelector('#lockerDial .dial-pointer');
+  const numbers  = document.querySelector('#lockerDial .dial-numbers');
+  if (!dialFace || !pointer || !numbers) return;
+
+  numbers.innerHTML = '';
+  for (let i=0; i<100; i+=5) {
+    const span = document.createElement('span');
+    span.textContent = i;
+    const angle = (i/100)*360;
+    span.style.transform = `rotate(${angle}deg) translate(90px) rotate(-${angle}deg)`;
+    numbers.appendChild(span);
+  }
+}
+function wireDialOnce() {
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const pointer  = document.querySelector('#lockerDial .dial-pointer');
+  if (!dialFace || !pointer || dialFace.dataset.wired) return;
+  dialFace.dataset.wired = '1';
+
+  let dialAngle = 0, dragging=false, startAngle=0, lastAngle=0;
+  const combo = [20,5,75];
+  const directions = ['cw','ccw','cw'];
+  let stage=0; const tol=2;
+
+  function angleToValue(angle){ return Math.round(((angle % 360 + 360) % 360) / 3.6); }
+  function checkCombo(val, dir){
+    const hint = document.getElementById('dialHint');
+    if (Math.abs(val - combo[stage]) <= tol && dir === directions[stage]) {
+      stage++;
+      if (stage < combo.length){
+        if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`;
+      } else {
+        keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display='block';
+        pulseCube(); checkCubeUnlock();
+        if (hint) hint.textContent = `Combo complete! (${combo.join(' → ')})`;
+        stage = 0;
+      }
+    } else if (Math.abs(val - combo[stage]) <= tol && dir !== directions[stage]) {
+      stage = 0;
+      if (hint) hint.textContent = "Wrong direction! Restart combo.";
+    }
+  }
+  function handleMove(x,y,cx,cy){
+    const angle = Math.atan2(y - cy, x - cx) * 180/Math.PI;
+    dialAngle += angle - startAngle; startAngle = angle;
+    pointer.style.transform = `rotate(${dialAngle}deg)`;
+    const val = angleToValue(dialAngle);
+    const dir = (dialAngle - lastAngle) > 0 ? 'cw' : 'ccw'; lastAngle = dialAngle;
+    checkCombo(val, dir);
+  }
+
+  dialFace.addEventListener('mousedown', e=>{
+    dragging = true;
+    const rect = dialFace.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180/Math.PI;
+  });
+  document.addEventListener('mousemove', e=>{
+    if (!dragging) return;
+    const rect = dialFace.getBoundingClientRect();
+    handleMove(e.clientX, e.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
+  });
+  document.addEventListener('mouseup', ()=> dragging=false);
+  dialFace.addEventListener('touchstart', e=>{
+    dragging = true;
+    const rect = dialFace.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    const t = e.touches[0];
+    startAngle = Math.atan2(t.clientY - cy, t.clientX - cx) * 180/Math.PI;
+  });
+  document.addEventListener('touchmove', e=>{
+    if (!dragging) return;
+    const rect = dialFace.getBoundingClientRect();
+    const t = e.touches[0];
+    handleMove(t.clientX, t.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
+  });
+  document.addEventListener('touchend', ()=> dragging=false);
+}
+
+/* ===== Word lock ===== */
+let wordAnswer = '';
+function configureWordLock() {
+  const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
+  wordAnswer = pick(dictionary);
+  const scrambled = shuffle(wordAnswer.split('')).join('');
+  const wordHint  = document.getElementById('wordHint'); if (wordHint) wordHint.textContent = `Unscramble: ${scrambled}`;
+  const wordInput = document.getElementById('wordInput'); if (wordInput) wordInput.value = '';
+}
+function wireWordLockOnce() {
+  const wordInput = document.getElementById('wordInput');
+  if (!wordInput || wordInput.dataset.wired) return;
+  wordInput.dataset.wired = '1';
+  wordInput.addEventListener('input', e => {
+    if (e.target.value.trim().toLowerCase() === wordAnswer) {
+      keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display='block';
+      pulseCube(); checkCubeUnlock();
+    }
+  });
+}
+
+/* ===== Labyrinth (neighbor path) ===== */
+let labPath = [];
+let labProgress = 0;
+function generateLabPath(cells, width, length = 9) {
+  let path = [];
+  let current = Math.floor(Math.random() * cells.length);
+  path.push(current);
+  while (path.length < length) {
+    const r = Math.floor(current / width), c = current % width;
+    const neighbors = [];
+    if (r > 0) neighbors.push(current - width);
+    if (r < width - 1) neighbors.push(current + width);
+    if (c > 0) neighbors.push(current - 1);
+    if (c < width - 1) neighbors.push(current + 1);
+    current = neighbors.length ? pick(neighbors) : Math.floor(Math.random() * cells.length);
+    path.push(current);
+  }
+  return path;
+}
+function configureLabyrinth() {
+  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
+  if (!cells.length) return;
+  const width = Math.sqrt(cells.length) | 0;
+  labPath = generateLabPath(cells, width, 9);
+  labProgress = 0;
+  cells.forEach(c => c.classList.remove('on'));
+}
+function wireLabyrinthOnce() {
+  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
+  if (!cells.length) return;
+  cells.forEach((cell, idx) => {
+    if (cell.dataset.wired) return;
+    cell.dataset.wired = '1';
+    cell.addEventListener('click', () => {
+      if (!labPath.length) return;
+      if (idx === labPath[labProgress]) {
+        cell.classList.add('on'); labProgress++;
+        if (labProgress === labPath.length) {
+          keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display='block';
           pulseCube(); checkCubeUnlock();
         }
-      });
-    }
-
-    // Word Lock
-    const wordInput = document.getElementById('wordInput');
-    if (wordInput) {
-      wordInput.addEventListener('change', e => {
-        if (e.target.value.trim().toLowerCase() === "real") {
-          keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display = 'block';
-          pulseCube(); checkCubeUnlock();
-        }
-      });
-    }
-
-    // Labyrinth Path (randomized)
-    const labCells = document.querySelectorAll('#labyrinthGrid .cell');
-    const gridCount = labCells.length;
-    // Random path with unique indices of length 9
-    const indices = [...Array(gridCount).keys()];
-    const path = shuffleArray(indices).slice(0, 9);
-    let progress = 0;
-    labCells.forEach((cell, idx) => {
-      cell.addEventListener('click', () => {
-        if (idx === path[progress]) {
-          cell.classList.add('on'); progress++;
-          if (progress === path.length) {
-            keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display = 'block';
-            pulseCube(); checkCubeUnlock();
-          }
-        } else {
-          labCells.forEach(c => c.classList.remove('on')); progress = 0;
-        }
-      });
+      } else {
+        cells.forEach(c => c.classList.remove('on')); labProgress = 0;
+      }
     });
+  });
+}
 
-    // Memory (already randomized, uses button count)
-    const memBtns = document.querySelectorAll('#memoryButtons .mem');
-    const startBtn = document.getElementById('startMemory');
-    let memSeq = [], playerSeq = [], playing = false;
+/* ===== Memory (growing sequence) ===== */
+let memSeq = [], playerSeq = [], playing = false;
+function configureMemory() {
+  const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
+  if (!memBtns.length) return;
+  memSeq = []; playerSeq = []; playing = false;
+  memBtns.forEach(btn => btn.classList.remove('flash'));
+}
+function wireMemoryOnce() {
+  const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
+  const startBtn = document.getElementById('startMemory');
+  if (!memBtns.length || !startBtn) return;
 
-    function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
-    function playSequence() {
-      playing = true; let i = 0;
-      const interval = setInterval(() => {
-        const val = memSeq[i];
-        const btn = document.querySelector(`.mem[data-val="${val}"]`);
-        if (btn) flash(btn);
-        i++;
-        if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
-      }, 420);
-    }
-    function nextRound(){ memSeq.push(Math.floor(Math.random() * memBtns.length)); playSequence(); }
+  function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
+  function playSequence() {
+    playing = true; let i = 0;
+    const interval = setInterval(() => {
+      const val = memSeq[i];
+      const btn = document.querySelector(`.mem[data-val="${val}"]`);
+      if (btn) flash(btn);
+      i++;
+      if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
+    }, 450);
+  }
+  function nextRound(){ memSeq.push(Math.floor(Math.random() * memBtns.length)); playSequence(); }
 
-    if (startBtn) {
-      startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
-    }
-    memBtns.forEach(btn => btn.addEventListener('click', () => {
+  if (!startBtn.dataset.wired) {
+    startBtn.dataset.wired = '1';
+    startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
+  }
+  memBtns.forEach(btn => {
+    if (btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', () => {
       if (playing || memSeq.length === 0) return;
       const val = parseInt(btn.dataset.val, 10);
       playerSeq.push(val); flash(btn);
-      for (let i=0;i<playerSeq.length;i++){ if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; } }
-      if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
-        else nextRound();
+      for (let i=0;i<playerSeq.length;i++){
+        if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; }
       }
-    }));
+      if (playerSeq.length === memSeq.length) {
+        if (memSeq.length >= 4) {
+          keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display='block';
+          pulseCube(); checkCubeUnlock();
+        } else nextRound();
+      }
+    });
+  });
+}
 
+/* ===== Math (random target) ===== */
+let mathTarget = 15;
+function configureMath() {
+  const nums = [...document.querySelectorAll('#mathGrid .num')];
+  if (!nums.length) return;
+  mathTarget = Math.floor(12 + Math.random() * 9); // 12–20
+  const mathHint = document.getElementById('mathHint');
+  if (mathHint) mathHint.textContent = `Find a selection that sums to ${mathTarget}`;
+  nums.forEach(btn => { btn.classList.remove('sel'); btn.textContent = String(1 + Math.floor(Math.random() * 9)); });
+}
+function wireMathOnce() {
+  const nums = [...document.querySelectorAll('#mathGrid .num')];
+  if (!nums.length) return;
+  nums.forEach(btn => {
+    if (btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('sel');
+      const sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
+      const sum = sel.reduce((a,b)=>a+b,0);
+      if (sum === mathTarget) {
+        keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display='block';
+        pulseCube(); checkCubeUnlock();
+      } else if (sum > mathTarget) {
+        nums.forEach(n => n.classList.remove('sel'));
+      }
+    });
+  });
+}
+
+/* ===== Initialization & regeneration ===== */
+function initPuzzleBox() {
+  // One-time wiring
+  if (!puzzleInitDone) {
+    wireLightsOutOnce();
+    wireDialOnce();
+    wireWordLockOnce();
+    wireLabyrinthOnce();
+    wireMemoryOnce();
+    wireMathOnce();
     puzzleInitDone = true;
-    resetPuzzleState();
-    shrinkPuzzleBox(); // enforce mobile nesting when opened
   }
 
-  /* Math (target sum fixed at 15) */
-  const nums = document.querySelectorAll('#mathGrid .num');
-  let sel = [];
-  nums.forEach(btn => btn.addEventListener('click', () => {
-    btn.classList.toggle('sel');
-    const val = parseInt(btn.textContent.trim(), 10);
-    if (btn.classList.contains('sel')) sel.push(val); else sel = sel.filter(v => v !== val);
-    const sum = sel.reduce((a,b)=>a+b,0);
-    if (sum === 15) { keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
-    else if (sum > 15) { nums.forEach(n => n.classList.remove('sel')); sel = []; }
-  }));
+  // Fresh randomized content each run
+  resetPuzzleState();
+  configureLightsOut();
+  configureDial();
+  configureWordLock();
+  configureLabyrinth();
+  configureMemory();
+  configureMath();
+  shrinkPuzzleBox();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const regen = document.getElementById('regeneratePuzzles');
+  if (regen && !regen.dataset.wired) {
+    regen.dataset.wired = '1';
+    regen.addEventListener('click', () => {
+      resetPuzzleState();
+      configureLightsOut();
+      configureDial();
+      configureWordLock();
+      configureLabyrinth();
+      configureMemory();
+      configureMath();
+    });
+  }
+});
+
 
   // Final clearance → Superform
   document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
