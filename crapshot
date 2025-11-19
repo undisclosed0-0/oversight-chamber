@@ -4,49 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prestige Triumph — Oversight Chambers (Hybrid, Restored)</title>
-<style>
- /* Prestige container */
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
-  color: #333;
-  margin: 0;
-  padding: 20px;
+
+ <!-- Outer prestige shell (light aura) -->
+ <style>
+/* === Root palette and shared tokens === */
+:root {
+  --gold: #d4b86a;
+  --ivory: #f2f0e9;
+  --slate: #2f3036;
+  --iron: #222;
+
+  /* Verify aura (dark blue → gray) */
+  --verify-bg-start: #2c2f48;
+  --verify-bg-end: #4a4d5f;
+  --verify-border: #3a3d55;
+
+  /* Outer shell */
+  --shell-bg-start: #f5f7fa;
+  --shell-bg-end: #e6ecf0;
+  --shell-card: rgba(255,255,255,0.95);
 }
+
+/* === Outer prestige shell (light aura) === */
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: radial-gradient(circle at top center, var(--shell-bg-start) 0%, var(--shell-bg-end) 100%);
+  color: #333; margin: 0; padding: 20px;
+}
+
 .container {
-  max-width: 900px;
-  margin: auto;
-  background: rgba(255,255,255,0.95);
-  padding: 30px;
-  border-radius: 15px;
+  max-width: 900px; margin: auto;
+  background: var(--shell-card);
+  padding: 30px; border-radius: 15px;
   box-shadow: 0 0 20px rgba(75,63,114,0.2);
   backdrop-filter: blur(6px);
 }
+
 .crest-header {
   width: 100px; height: 100px; margin: 0 auto 20px;
-  background-image: url('https://blogger.googleusercontent.com/img/b/.../An%20abstract%20Masterad.png');
+  background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
   background-size: cover; background-position: center; border-radius: 50%;
   box-shadow: 0 0 20px rgba(194,167,109,0.6);
 }
+
 h1, h2, h3 {
-  color: #4b3f72;
-  text-align: center;
+  color: #4b3f72; text-align: center;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.12);
   margin: 0 0 14px 0;
 }
 
-/* Verification plaque */
+/* === Verification plaque === */
 .verification-plaque {
   margin-top: 25px; padding: 20px;
-  border: 2px solid #c2a76d; border-radius: 12px;
+  border: 2px solid var(--gold); border-radius: 12px;
   background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
   box-shadow: 0 0 15px rgba(194,167,109,0.4);
-  text-align: center;
-  display: none;
+  text-align: center; display: none;
 }
 .verification-plaque textarea {
   width: 100%; height: 120px; margin-top: 10px; padding: 8px;
-  border-radius: 8px; border: 1px solid #c2a76d;
+  border-radius: 8px; border: 1px solid var(--gold);
   font-family: 'Courier New', monospace; font-size: 0.95em; resize: none;
   background: #fffdf8;
 }
@@ -60,16 +77,16 @@ h1, h2, h3 {
   background: linear-gradient(to right, #6a5acd, #4b3f72);
 }
 
-/* Floating crest */
+/* === Floating crest shortcut === */
 .floating-crest {
-  position: fixed; width: 60px; height: 60px; bottom: 20px; right: -115px;
-  background-image: url('https://blogger.googleusercontent.com/img/b/.../An%20abstract%20Masterad.png');
+  position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
+  background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
   background-size: cover; background-position: center; border-radius: 50%;
   box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer; z-index: 101; opacity: 0.95;
 }
 @media (max-width: 860px) { .floating-crest { pointer-events: none; opacity: 0.7; } }
 
-/* Tap shimmer */
+/* === Tap shimmer + zones === */
 .tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
 #tapTopLeft { left: 0; }
 #tapTopRight { right: 0; }
@@ -82,13 +99,10 @@ h1, h2, h3 {
 }
 .tap-shimmer.active { opacity: 1; }
 
-/* Panel shells */
-:root {
-  --gold:#ffd700; --violet:#6a0dad; --iron:#222;
-  --panel-bg: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
-}
+/* === Inner ritual styling (panels) === */
 .panel-shell {
-  background: var(--panel-bg); border: 3px solid #444; border-radius: 12px;
+  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  border: 3px solid #444; border-radius: 12px;
   box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
   padding: 20px; margin-top: 20px; color: var(--gold);
   font-family: 'Orbitron','Courier New', monospace;
@@ -97,59 +111,417 @@ h1, h2, h3 {
   color: var(--gold); text-transform: uppercase;
   text-shadow: 0 0 8px rgba(255,215,0,0.6);
 }
-.panel-shell label { display: block; margin-top: 12px; font-weight: 700; }
-.panel-shell input, .panel-shell select {
-  width: 100%; margin-top: 8px; padding: 10px; border-radius: 6px;
-  border: 2px solid #333; background: #111; color: var(--gold); font-weight: bold;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
-}
-.panel-shell button {
-  margin-top: 15px; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--iron);
-  background: linear-gradient(var(--gold), #b8860b); color: #111; font-weight: bold;
-  text-transform: uppercase; cursor: pointer; box-shadow: 0 0 10px rgba(255,215,0,0.5);
-  transition: transform 0.15s ease, box-shadow 0.3s ease;
-}
-.panel-shell button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
-/* Ritual grid */
-#panelButtons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
-.panel-btn { /* ... unchanged ... */ }
-
-/* Cube faces, Lights Out, Labyrinth, Memory, Locker Dial, etc. */
-/* (Your definitions here are already consistent and valid — no syntax errors) */
-
-/* PuzzleBox panel */
-#puzzleBoxPanel {
-  max-width: 480px; margin: 40px auto; padding: 20px; background: var(--panel-bg);
-  border: 3px solid #444; border-radius: 12px;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
-  color: var(--gold); font-family: 'Orbitron','Courier New', monospace;
+/* === Color panel (rune grid) === */
+#colorPanel { max-width: 880px; margin: 48px auto; padding: 28px; border: 1px solid rgba(212,184,106,0.25); color: var(--ivory); }
+#colorPanel .rune-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  background: #1c1c1c; border: 8px solid #2a2a2a;
 }
+#colorPanel .rune-btn {
+  display: grid; place-items: center; min-height: 100px;
+  border: 6px solid #3a3a3a; background: #2a2b2f;
+  font-family: "Cinzel", serif; font-weight: 700; cursor: pointer;
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.05), inset 0 -4px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6);
+  transition: all 200ms ease;
+}
+#colorPanel .rune-btn .sigil {
+  font-size: 1.6rem; color: rgba(212,184,106,0.9);
+  text-shadow: 0 0 6px rgba(212,184,106,0.6), 0 0 14px rgba(242,240,233,0.35);
+}
+#colorPanel .rune-btn small { margin-top: 6px; font-size: 1rem; color: #aaa; text-shadow: 0 0 3px rgba(0,0,0,0.6); }
+
+/* Active color glows */
+#colorPanel .rune-btn.red.active         { background: radial-gradient(circle at 50% 30%, rgba(160,40,40,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.blue.active        { background: radial-gradient(circle at 50% 30%, rgba(40,100,180,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.green.active       { background: radial-gradient(circle at 50% 30%, rgba(60,150,90,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.mustard.active     { background: radial-gradient(circle at 50% 30%, rgba(190,160,60,0.72), #2a2b2f 70%); }
+#colorPanel .rune-btn.violet.active      { background: radial-gradient(circle at 50% 30%, rgba(130,80,180,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.cyan.active        { background: radial-gradient(circle at 50% 30%, rgba(60,170,190,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.deepred.active     { background: radial-gradient(circle at 50% 30%, rgba(160,50,50,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.emerald.active     { background: radial-gradient(circle at 50% 30%, rgba(50,170,110,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.deepviolet.active  { background: radial-gradient(circle at 50% 30%, rgba(110,60,160,0.75), #2a2b2f 70%); }
+
+#colorPanel .rune-btn.active .sigil,
+#colorPanel .rune-btn.active small {
+  color: var(--ivory);
+  text-shadow: 0 0 6px rgba(255,220,120,0.6), 0 0 14px rgba(255,255,180,0.4);
+}
+
+/* Indicators + readout */
+#colorPanel .indicator-lines { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+#colorPanel .indicator-lines span {
+  width: 28px; height: 4px; border-radius: 2px; background: rgba(90, 60, 30, 0.4);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.6); transition: all 200ms ease;
+}
+#colorPanel .indicator-lines span.active {
+  background: rgba(255,140,60,0.9);
+  box-shadow: 0 0 6px rgba(255,140,60,0.65), 0 0 12px rgba(255,200,120,0.45), 0 0 20px rgba(255,160,80,0.35);
+}
+#sequenceReadout {
+  font-family: "Share Tech Mono", monospace; font-size: 1.2rem; color: #9fe8ff;
+  background: rgba(20, 30, 40, 0.85); border: 2px inset rgba(120,180,200,0.4);
+  padding: 6px 12px; margin-top: 12px; text-align: center; letter-spacing: 0.1em;
+  text-shadow: 0 0 6px rgba(0,255,255,0.4), 0 0 12px rgba(0,180,255,0.25);
+  overflow: hidden; white-space: nowrap;
+}
+
+/* Ritual controls: VERIFY + CLEAR (unified aura) */
+.ritual-controls { display: flex; gap: 16px; justify-content: center; margin-top: 24px; }
+
+/* === Unified ceremonial button aura (dark blue–gray) === */
+.runez-btn {
+  margin-top: 22px; width: 100%; padding: 13px 16px;
+  background: linear-gradient(145deg, var(--verify-bg-start), var(--verify-bg-end));
+  color: var(--ivory);
+  border: 2px solid var(--verify-border);
+  border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  box-shadow: 0 0 14px rgba(90,100,140,0.6), inset 0 0 8px rgba(255,255,255,0.1);
+  cursor: pointer; transition: transform 0.14s ease, box-shadow 0.25s ease;
+}
+.runez-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(90,100,140,0.8), inset 0 0 12px rgba(255,255,255,0.2);
+}
+
+/* Optional palette variants (if you need dynamic verify aura) */
+.runez-btn.rune-red    { background: radial-gradient(circle,#b04444,#d46a6a); border-color:#b04444; }
+.runez-btn.rune-violet { background: radial-gradient(circle,#6a3fa8,#8a6ad4); border-color:#6a3fa8; }
+.runez-btn.rune-gold   { background: radial-gradient(circle,#c2a76d,#f2e6a9); border-color:#c2a76d; }
+
+/* === Admin Chamber — Grey Prestige Hybrid === */
+#adminForm {
+  max-width: 640px; margin: 40px auto; padding: 32px;
+  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  border-radius: 16px; border: 1px solid rgba(212, 184, 106, 0.25);
+  box-shadow: 0 0 20px rgba(212, 184, 106, 0.12), inset 0 0 14px rgba(60, 65, 75, 0.6), 0 10px 24px rgba(0, 0, 0, 0.55);
+  color: var(--ivory); position: relative; overflow: hidden;
+}
+#adminForm h2 {
+  font-size: 1.5rem; text-align: center; margin-bottom: 28px; color: var(--ivory);
+  letter-spacing: 0.05em; text-shadow: 0 0 8px rgba(212, 184, 106, 0.25);
+  position: relative; padding-top: 70px;
+}
+#adminForm h2::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: 56px; height: 56px; transform: translateX(-50%);
+  background: radial-gradient(circle at center, rgba(212,184,106,0.9), rgba(242,240,233,0.85), rgba(95,192,181,0.7));
+  border-radius: 50%; box-shadow: 0 0 12px rgba(212, 184, 106, 0.5), 0 0 20px rgba(95, 192, 181, 0.35);
+}
+#adminForm h2::after {
+  content: ""; position: absolute; top: 12px; left: 50%; width: 28px; height: 28px; transform: translateX(-50%) rotate(45deg);
+  background: linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));
+  box-shadow: 0 0 8px rgba(212, 184, 106, 0.4), inset 0 0 6px rgba(95, 192, 181, 0.25);
+}
+
+/* Admin labels and fields */
+#adminForm label { display: block; margin: 14px 0 6px; font-weight: 600; color: var(--gold); }
+#adminForm input, #adminForm select {
+  width: 100%; padding: 12px 14px; background: var(--slate); color: var(--ivory);
+  border: 1px solid rgba(90, 106, 122, 0.45); border-radius: 10px;
+  box-shadow: inset 0 0 8px rgba(50, 55, 65, 0.6), 0 1px 6px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+#adminForm input:focus, #adminForm select:focus {
+  outline: none; border-color: var(--gold);
+  box-shadow: inset 0 0 10px rgba(212, 184, 106, 0.25), 0 0 10px rgba(212, 184, 106, 0.25);
+  transform: translateY(-1px);
+}
+#adminForm #verifyStatus { margin-top: 14px; font-size: 0.95rem; text-align: center; color: #b0b2bb; }
+
+/* === Public (“prestige”) form — consolidated === */
+.prestige-form {
+  width: 100%; max-width: 600px; margin: 40px auto; padding: 32px;
+  background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  font-family: "Segoe UI", sans-serif; color: #333;
+}
+.prestige-form h1 { font-size: 1.4em; margin-bottom: 20px; text-align: center; color: #4b3f72; }
+.prestige-form label { display: block; margin-top: 14px; margin-bottom: 6px; font-weight: 600; color: #4b3f72; }
+.prestige-form input[type="text"], .prestige-form input[type="tel"], .prestige-form select {
+  width: 100%; padding: 12px 14px; border: 1px solid #b8aee0; border-radius: 6px; font-size: 1em; background: #fafafa; color: #4b3f72;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.prestige-form input:focus, .prestige-form select:focus { border-color: #6a5acd; box-shadow: 0 0 6px rgba(106,90,205,0.3); outline: none; }
+/* Generator button in public form (use unified aura for parity) */
+.prestige-form #genNameBtn { width: 70%; max-width: 320px; }
+.prestige-form #genNameBtn,
+.prestige-form button[type="submit"] {
+  margin-top: 12px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--verify-border);
+  background: linear-gradient(145deg, var(--verify-bg-start), var(--verify-bg-end));
+  color: var(--ivory); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  box-shadow: 0 0 14px rgba(90,100,140,0.6), inset 0 0 8px rgba(255,255,255,0.1);
+  cursor: pointer; transition: transform 0.14s ease, box-shadow 0.25s ease;
+  width: 100%;
+}
+.prestige-form button[type="submit"]:hover,
+.prestige-form #genNameBtn:hover {
+  transform: translateY(-2px); box-shadow: 0 0 20px rgba(90,100,140,0.8), inset 0 0 12px rgba(255,255,255,0.2);
+}
+
+/* === Mystery Box chamber === */
+#mysteryBoxChamber .mystery-title {
+  font-size: 1.6rem; text-align: center; letter-spacing: 0.06em; color: #f6e27a;
+  text-shadow: 0 0 12px rgba(255, 200, 80, 0.35); margin-bottom: 20px;
+}
+#mysteryBoxChamber .mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+
+/* === Oversight entry panel === */
+#oversightPanel { max-width: 480px; margin: 0 auto; padding: 20px; }
+@media (max-width: 860px) { #oversightPanel { width: 90%; margin: 0 auto; } }
+
+/* === Super Code panel inputs === */
+#superCodePanel input[type="text"],
+#superCodePanel input[type="password"] {
+  width: 60%; max-width: 280px; margin: 10px auto; display: block;
+  padding: 10px; border-radius: 6px; border: 2px solid #333; background: #111; color: var(--gold); font-weight: bold; box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+/* Center panel buttons */
+#mysteryBoxPanel button, #finalBranchPanel button, #puzzleBoxPanel button, #superCodePanel button {
+  display: block; margin: 20px auto; text-align: center;
+}
+
+/* === Rune feedback overlays for panel grid === */
+.rune-btn.glow { box-shadow: 0 0 18px rgba(255,215,0,0.9); }
+.rune-btn.after-correct { outline: 2px solid rgba(106,255,106,0.5); box-shadow: 0 0 12px rgba(106,255,106,0.6); }
+.rune-btn.after-wrong   { outline: 2px solid rgba(255,74,74,0.5); box-shadow: 0 0 12px rgba(255,74,74,0.6); }
+.rune-btn.after-correct, .rune-btn.after-wrong { z-index: 1; }
+
+/* === Puzzle Box: imgVoid shell + cube === */
 #imgVoidPuzzle {
-  width: 100%; max-width: 340px; aspect-ratio: 1/1; margin: 0 auto; padding: 16px;
+  width: 100%; max-width: 340px; aspect-ratio: 1 / 1; margin: 0 auto; padding: 16px;
   background: radial-gradient(600px 400px at 50% 50%, rgba(0,0,0,0.85), #0d0d0d);
-  border-radius: 16px;
-  box-shadow: inset 0 0 80px rgba(0,0,0,0.95), 0 0 60px rgba(255,215,0,0.08);
-  display: flex; align-items: center; justify-content: center;
+  border-radius: 16px; box-shadow: inset 0 0 80px rgba(0,0,0,0.95), 0 0 60px rgba(255,215,0,0.08);
   transition: transform 0.6s ease, max-width 0.6s ease;
 }
-@media (max-width: 768px) {
-  #imgVoidPuzzle.shrunk { max-width: 50%; transform: scale(0.9); margin: 0 auto; padding: 12px; }
+#imgVoidPuzzle.unlocked {
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 40px rgba(255,215,0,0.6), 0 0 80px rgba(106,13,173,0.6), 0 0 120px rgba(0,245,181,0.4);
+  animation: auraDance 6s infinite alternate;
 }
+@keyframes auraDance { 0%{ transform: scale(1) rotate(0deg); } 50%{ transform: scale(1.05) rotate(2deg); } 100%{ transform: scale(1) rotate(-2deg); } }
+
+.cube-container {
+  width: 340px; height: 340px; perspective: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: center;
+}
+.cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(-120px) rotateX(-15deg) rotateY(20deg); transition: transform 0.15s ease-out; }
+.cube-face {
+  position: absolute; width: 340px; height: 340px;
+  background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
+  border: 2px solid #555; box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
+  display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 14px; color: #fff;
+}
+.cube-face .rune { display: none; margin-top: 10px; font-size: 22px; color: #00f5b5; text-shadow: 0 0 8px rgba(0,245,181,0.65); }
+.front  { transform: rotateY(0deg)   translateZ(170px); }
+.back   { transform: rotateY(180deg) translateZ(170px); }
+.right  { transform: rotateY(90deg)  translateZ(170px); }
+.left   { transform: rotateY(-90deg) translateZ(170px); }
+.top    { transform: rotateX(90deg)  translateZ(170px); }
+.bottom { transform: rotateX(-90deg) translateZ(170px); }
+
+#unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
+
+/* Lights Out */
+#lightsGrid { display: grid; grid-template-columns: repeat(3, 60px); gap: 6px; }
+#lightsGrid .light-cell {
+  width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7); transition: background 140ms ease, box-shadow 140ms ease; -webkit-appearance: none; appearance: none;
+}
+#lightsGrid .light-cell.on { background: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.7), inset 0 0 6px rgba(0,0,0,0.4); }
+
+/* Labyrinth Path */
+#labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
+#labyrinthGrid .cell { width: 48px; height: 48px; background: #161616; border: 1px solid #3a3a3a; border-radius: 6px; cursor: pointer; transition: background 140ms ease, box-shadow 140ms ease; }
+#labyrinthGrid .cell.on { background: #00b8f5; box-shadow: 0 0 14px rgba(0,184,245,0.55); }
+
+/* Memory */
+#memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
+.mem { width: 64px; height: 64px; border-radius: 10px; font-size: 22px; background: #212121; border: 1px solid #4b4b4b; transition: filter 150ms ease, box-shadow 150ms ease; }
+.mem.flash { filter: brightness(1.6); box-shadow: 0 0 14px rgba(255,255,255,0.4); }
+
+/* Math */
+#mathGrid { display: flex; gap: 10px; }
+.num { min-width: 54px; height: 54px; border-radius: 8px; background: #212121; border: 1px solid #4b4b4b; font-weight: 600; font-size: 18px; transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
+.num.sel { transform: translateY(-2px); background: #333; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
+
+/* Final clearance cube */
+.glowing-cube {
+  width: 120px; height: 120px; margin: 16px auto;
+  background: linear-gradient(145deg, #6a0dad, #ffd700);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(106,13,173,0.8), 0 0 40px rgba(255,215,0,0.6);
+  animation: cubeGlow 3s infinite alternate;
+}
+@keyframes cubeGlow {
+  0%{ transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+  50%{ transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+  100%{ transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+}
+
+/* PuzzleBox panel width (regular size) */
+#puzzleBoxPanel { max-width: 480px; margin: 40px auto; padding: 20px; }
+#imgVoidPuzzle { transition: max-width 0.6s ease; }
+@media (max-width: 768px) {
+  #imgVoidPuzzle.shrunk { max-width: 50%; margin: 0 auto; padding: 12px; }
+}
+
+/* Mobile PuzzleBox notice */
+#puzzleNotice {
+  display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  max-width: 90%; background: rgba(0,0,0,0.85); color: #ffd700;
+  font-family: 'Orbitron','Courier New', monospace; font-size: 0.95em; padding: 12px 18px; border-radius: 10px;
+  box-shadow: 0 0 12px rgba(255,215,0,0.6); z-index: 9999; text-align: center;
+}
+#puzzleNotice.show { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0; transform:translateX(-50%) translateY(20px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
+
+/* Hidden sigil pulse */
+#hiddenSigil {
+  display: none; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+  font-size: 22px; color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.8); animation: pulseSigil 2s infinite;
+}
+@keyframes pulseSigil { 0%{opacity:0.4; transform:translateX(-50%) scale(0.9);} 50%{opacity:1; transform:translateX(-50%) scale(1.1);} 100%{opacity:0.4; transform:translateX(-50%) scale(0.9);} }
+#hiddenSigil.fadeOut { animation: fadeOutSigil 2s forwards; }
+@keyframes fadeOutSigil { from{opacity:1; transform:translateX(-50%) scale(1);} to{opacity:0; transform:translateX(-50%) scale(0.8);} }
+
+/* Cube fade-out */
+#labyrinthCube.fadeOut { animation: fadeOutCube 3s forwards; }
+@keyframes fadeOutCube { from{opacity:1; transform:scale(1) rotateY(0deg);} to{opacity:0; transform:scale(0.85) rotateY(15deg);} }
+
+/* Mystery Box (hidden branch) */
+#mysteryBoxPanel { display: none; border: 3px solid #6a0dad; box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6); color: #e0dfff; text-align: center; position: relative; overflow: hidden; }
+.mystery-title { margin-bottom: 12px; }
+.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+.cube-aura {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%), radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: auraPulse 5s ease-in-out infinite;
+}
+@keyframes auraPulse { 0%,100%{filter:saturate(1); opacity:0.75;} 50%{filter:saturate(1.3); opacity:1;} }
+
+/* Locker dial */
+.locker-dial { width: 180px; height: 180px; position: relative; }
+.locker-dial .dial-face {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: radial-gradient(120px 120px at 50% 50%, #0e0e0e, #111);
+  border: 2px solid #555; box-shadow: inset 0 0 18px rgba(0,0,0,0.8), 0 0 16px rgba(0,245,181,0.15);
+  position: relative;
+}
+.locker-dial .dial-pointer {
+  position: absolute; left: 50%; top: 10%; width: 3px; height: 40%;
+  transform-origin: bottom center; background: #00f5b5; box-shadow: 0 0 10px rgba(0,245,181,0.6);
+}
+.locker-dial .dial-numbers {
+  position: absolute; inset: 0; display: block; pointer-events: none; color: #ddd; font-size: 12px; font-weight: 700;
+}
+.locker-dial .dial-numbers span { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; }
+
+/* Small screen polish */
 @media (max-width: 480px) {
   body { padding: 10px; }
   .container { padding: 20px; }
   h1 { font-size: 1.4em; }
   .crest-header { width: 80px; height: 80px; }
-  #imgVoidPuzzle { max-width: 240px; padding: 12px; }
-  .cube-face { font-size: 12px; padding: 8px; }
 }
 
-/* Mystery Chamber, Admin Chamber, Color Panel, etc. */
-/* (Your definitions are consistent — no syntax errors) */
+/* Tablet/Mobile panel override */
+@media (max-width: 768px) {
+  .panel-shell, #colorPanel, #adminForm, #mysteryBoxChamber {
+    width: 100%; max-width: 100%; margin: 20px auto; padding: 20px; border-radius: 12px;
+  }
+}
+/* Admin VERIFY button (source of truth) */
+#adminForm #verifyTierBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 13px 16px;
+  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
+  color: #f2f0e9;
+  border: 1px solid rgba(212, 184, 106, 0.35);
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.5),
+    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+#adminForm #verifyTierBtn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.6),
+    0 0 14px rgba(212, 184, 106, 0.25);
+  filter: brightness(1.05);
+}
 
-/* Hidden sigil pulse */
-#hiddenSigil { /* ... unchanged ... */ }
+/* Rune VERIFY + CLEAR buttons — identical aura */
+#runeVerifyBtn,
+#runeClearBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 13px 16px;
+  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
+  color: #f2f0e9;
+  border: 1px solid rgba(212, 184, 106, 0.35);
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.5),
+    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+#runeVerifyBtn:hover,
+#runeClearBtn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.6),
+    0 0 14px rgba(212, 184, 106, 0.25);
+  filter: brightness(1.05);
+}
+/* Admin form text field focus aura (source of truth) */
+#adminForm input:focus,
+#adminForm select:focus {
+  outline: none;
+  border-color: #d4b86a;
+  box-shadow:
+    inset 0 0 10px rgba(212, 184, 106, 0.25),
+    0 0 10px rgba(212, 184, 106, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Admin Generator + Rune VERIFY/CLEAR buttons — same glow aura */
+#genNameBtn,
+#runeVerifyBtn,
+#runeClearBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 13px 16px;
+  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
+  color: #f2f0e9;
+  border: 1px solid rgba(212, 184, 106, 0.35);
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.5),
+    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+
+/* Hover glow matches text field focus aura */
+#genNameBtn:hover,
+#runeVerifyBtn:hover,
+#runeClearBtn:hover {
+  transform: translateY(-2px);
+  border-color: #d4b86a;
+  box-shadow:
+    inset 0 0 10px rgba(212, 184, 106, 0.25),
+    0 0 10px rgba(212, 184, 106, 0.25),
+    0 10px 24px rgba(0, 0, 0, 0.6);
+  filter: brightness(1.05);
+}
+
 
   </style>
 </head>
@@ -194,24 +566,81 @@ h1, h2, h3 {
       <textarea id="message" name="message" style="display:none;"></textarea>
       <input type="email" name="email" id="bloggerEmail" style="display:none;">
       <button type="submit" style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">Create Account</button>
+
+      <!--<p id="tapHint" style="margin-top:10px;">Tap top-left then top-right to unlock Admin gate.</p>-->
     </form>
 
     <!-- Admin chamber -->
-    <form id="adminForm" onsubmit="return false;" style="display:none;">
-      <h2>Admin Access</h2>
-      <label for="adminTier">Tier</label>
-      <select id="adminTier" name="adminTier" required>
-        <option value="Admin">Admin</option>
-        <option value="MasterAdmin">Master Admin</option>
-      </select>
-      <label for="adminCode">Clearance Code</label>
-      <input id="adminCode" name="adminCode" required type="password" />
-      <button type="button" id="verifyTierBtn">Verify</button>
-      <p id="verifyStatus"></p>
-    </form>
+<!-- Admin Chamber (hidden by default) -->
+<form id="adminForm"
+      method="POST"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return handleAdminAccess(false);"
+      class="chamber-form"
+      style="display:none;">
+   <h2>Admin Access</h2>
+  
+   <!-- Tier selection -->
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="">-- Select Tier --</option>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">MasterAdmin</option>
+    <option value="Overseer">Overseer</option>
+    <option value="Controller">Controller</option>
+    <option value="Custodian">Custodian</option>
+    <option value="Guardian">Guardian</option>
+    <option value="Sentinel">Sentinel</option>
+    <option value="Supervisor">Supervisor</option>
+    <option value="Coordinator">Coordinator</option>
+    <option value="Director">Director</option>
+    <option value="Chancellor">Chancellor</option>
+    <option value="Prefect">Prefect</option>
+    <option value="Warden">Warden</option>
+    <option value="Marshal">Marshal</option>
+    <option value="Commander">Commander</option>
+    <option value="Principal">Principal</option>
+    <option value="Chief">Chief</option>
+    <option value="SovereignAdmin">SovereignAdmin</option>
+    <option value="LegacyAdmin">LegacyAdmin</option>
+  </select>
 
-    <!-- Ritual Sequence Panel -->
-    <div id="colorPanel" class="panel-shell" style="display:none;">
+ 
+<!-- Specialized name generator -->
+<button type="reset" id="runeClearBtn">Generate Specialized Name</button><br>
+<br>
+<br>
+
+<!-- Target field (same as public form) -->
+<input type="text" id="name" name="name" placeholder="Ceremonial Name" />
+
+  
+
+  <!-- Contact phone -->
+  <label for="adminPhone">Contact Phone</label>
+  <input id="adminPhone" name="phone" type="tel" placeholder="(###) ###-####" required />
+
+  <!-- Clearance code -->
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" type="password" required />
+
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="adminMessage" name="message" style="display:none;"></textarea>
+  <input type="email" id="adminEmail" name="email" style="display:none;">
+
+  <!-- Buttons -->
+  <button type="submit" id="adminSubmitBtn" class="runez-btn">Submit Admin Form</button>
+  <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
+
+  <!-- Status -->
+  <p id="verifyStatus"></p>
+</form>
+
+
+
+<div id="colorPanel" class="panel-shell" style="display:none;">
       <div class="ritual-header" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;">
         <div class="runic">ᚠᛇᚻᛜᚱ</div>
         <div class="sigil" aria-hidden="true" style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 14px rgba(212,184,106,0.45));">
@@ -225,14 +654,14 @@ h1, h2, h3 {
 
       <div class="indicator-lines" id="indicatorLines">
         <span></span><span></span><span></span><span></span>
-      </div>
+</div>
 
       <div id="sequenceReadout" class="sequence">— — —</div>
       <div class="rune-grid" id="panelButtons"></div>
 
       <div class="ritual-controls">
-        <button id="verifySequence" class="verify-btn">VERIFY</button>
-        <button id="clearSequence" class="clear-btn">CLEAR</button>
+        <button type="button" id="runeVerifyBtn">VERIFY</button>
+        <button type="reset" id="runeClearBtn">CLEAR</button>
       </div>
     </div>
 
@@ -243,7 +672,7 @@ h1, h2, h3 {
       <div class="panel-content">
         <p>Rune keypad unlocked. Enter access code to proceed.</p>
         <input id="accessCodeInput" type="text" placeholder="Enter code (X-719-BOX)">
-        <button id="accessCodeBtn">Verify Code</button>
+       <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
         <p id="accessCodeStatus"></p>
       </div>
     </div>
@@ -256,91 +685,85 @@ h1, h2, h3 {
       <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
     </div>
 
-    <!-- Puzzle Box — Labyrinth Cube -->
-    <div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
-      <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
-      <p>Designation: <strong id="nameInPuzzle"></strong></p>
-      <div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
+   <!-- Puzzle Box — Labyrinth Cube -->
+<!-- Puzzle Box — Labyrinth Cube -->
+<div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
+  <p>Designation: <strong id="nameInPuzzle"></strong></p>
+<div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
 
-      <div id="imgVoidPuzzle">
-        <div class="cube-container">
-          <div class="cube" id="labyrinthCube">
-            <!-- Face 1: Lights Out -->
-            <div class="cube-face front">
-              <p>Toggle the pattern</p>
-              <div id="lightsGrid">
-                <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
-                <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
-                <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
-              </div>
-              <div id="runeL" class="rune">Λ</div>
-            </div>
-
-            <!-- Face 2: Locker Dial -->
-            <div class="cube-face back">
-              <p>Locker combination: follow the directions</p>
-              <div id="lockerDial">
-                <div class="dial-face">
-                  <div class="dial-pointer"></div>
-                  <div class="dial-center"></div>
-                  <div class="dial-numbers"></div>
-                </div>
-              </div>
-              <div id="lockerHint">Turn CW — Stage 1</div>
-              <div id="runeD" class="rune">✦</div>
-            </div>
-
-            <!-- Face 3: Labyrinth Path (untouched) -->
-            <div class="cube-face left">
-              <p>Trace the hidden path</p>
-              <div id="labyrinthGrid">
-                <!-- 5x5 grid -->
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-              </div>
-              <div id="runeM" class="rune">Ω</div>
-            </div>
-
-            <!-- Face 4: Memory -->
-            <div class="cube-face top">
-              <p>Repeat the sequence</p>
-              <button id="startMemory">Start</button>
-              <div id="memoryButtons">
-                <button class="mem" data-val="0">▲</button>
-                <button class="mem" data-val="1">◆</button>
-                <button class="mem" data-val="2">⚙</button>
-              </div>
-              <div id="runeS" class="rune">Σ</div>
-            </div>
-
-            <!-- Face 5: Word Scramble -->
-            <div class="cube-face right">
-              <p id="wordHint">Unscramble:</p>
-              <input type="text" id="wordInput" placeholder="Your answer">
-              <div id="runeW" class="rune">Ψ</div>
-            </div>
-
-            <!-- Face 6: Math Sum -->
-            <div class="cube-face bottom">
-              <p id="mathHint">Solve the sum</p>
-              <div id="mathGrid">
-                <button class="num"></button>
-                <button class="num"></button>
-                <button class="num"></button>
-                <button class="num"></button>
-                <button class="num"></button>
-              </div>
-              <div id="runeN" class="rune">Φ</div>
-            </div>
+  <div id="imgVoidPuzzle">
+    <div class="cube-container">
+      <div class="cube" id="labyrinthCube">
+        <div class="cube-face front">
+          <p>Toggle all lights green</p>
+          <div id="lightsGrid">
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
           </div>
+          <div id="runeL" class="rune">Λ</div>
+        </div>
+        <div class="cube-face back">
+  <p>Turn the locker dial in the right order</p>
+
+  <div id="lockerDial" class="locker-dial">
+    <div class="dial-face">
+      <div class="dial-pointer"></div>
+      <div class="dial-numbers"></div>
+    </div>
+  </div>
+
+  <p id="dialHint" style="margin-top:8px; font-size:0.95em; color:#00f5b5;"></p>
+  <div id="runeD" class="rune">✦</div>
+</div>
+
+        </div>
+        <div class="cube-face right">
+  <p id="wordHint">Unscramble: —</p>
+  <input type="text" id="wordInput" placeholder="Your answer">
+  <div id="runeW" class="rune">Ψ</div>
+</div>
+
+        <div class="cube-face left">
+          <p>Trace the hidden path</p>
+          <div id="labyrinthGrid">
+            <!-- 5x5 grid -->
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          </div>
+          <div id="runeM" class="rune">Ω</div>
+        </div>
+        <div class="cube-face top">
+          <p>Repeat the sequence</p>
+          <button id="startMemory">Start</button>
+          <div id="memoryButtons">
+            <button class="mem" data-val="0">▲</button>
+            <button class="mem" data-val="1">◆</button>
+            <button class="mem" data-val="2">⚙</button>
+          </div>
+          <div id="runeS" class="rune">Σ</div>
+        </div>
+        <div class="cube-face bottom">
+  <p id="mathHint">Select numbers to sum to 15</p>
+  <div id="mathGrid">
+    <button class="num">4</button><button class="num">7</button>
+    <button class="num">2</button><button class="num">8</button><button class="num">5</button>
+  </div>
+  <div id="runeN" class="rune">Φ</div>
+</div>
+
         </div>
       </div>
-
-      <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
     </div>
+  </div>
+
+  <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
+</div>
+
 
     <!-- Final Branch -->
     <div id="finalBranchPanel" class="panel-shell" style="display:none;">
@@ -365,8 +788,10 @@ h1, h2, h3 {
       <div class="mystery-crest">♛ ⚚ ⟁</div>
       <div class="cube-aura" aria-hidden="true"></div>
       <form id="superLevelForm" onsubmit="return submitSuperForm();">
-        <div class="panel-sigil"></div>
-        <div class="frost-overlay"></div>
+        <!-- Sigil watermark behind form -->
+  <div class="panel-sigil"></div>
+        <!-- Frost overlay layer -->
+  <div class="frost-overlay"></div>
         <label for="superName">Account Holder</label>
         <input id="superName" name="superName" required type="text" />
         <label for="superTier">Tier</label>
@@ -400,17 +825,16 @@ h1, h2, h3 {
   <div class="tap-shimmer" id="tapShimmer"></div>
   <div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
   <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
+<div id="puzzleNotice">
+  📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
+</div>
 
-  <!-- Mobile notice -->
-  <div id="puzzleNotice">📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.</div>
+<script>
+/* ========== Panel helpers (kept) ========== */
+function showPanel(id){ const el=document.getElementById(id); if(el) el.style.display='block'; }
+function hidePanel(id){ const el=document.getElementById(id); if(el) el.style.display='none'; }
 
-
-
-
-   <script>
-/* ===== Core helpers ===== */
-function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
-function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+/* ========== Clipboard for verification plaque ========== */
 function copyVerification() {
   const textArea = document.getElementById("verificationText");
   if (!textArea) return;
@@ -420,34 +844,193 @@ function copyVerification() {
   alert("Verification text copied. Please paste it into the Google Form field.");
 }
 
-/* ===== Name generator ===== */
+/* ========== Name generator (public + admin use) ========== */
 function generateTieredName(tier) {
   const pools = {
-    Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya"], suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold"] },
-    Steward:  { names:["Elias","Priya","Malcolm","Zara","Omar"], suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line"] },
-    Neighbor: { names:["Ava","Noah","Grace","Leo","Isla"], suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold"] },
-    Contributor:{ names:["Milan","Tessa","Jude","Nina","Arlo"], suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive"] },
-    Observer: { names:["Theo","Luna","Miles","Ivy","Rowan"], suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery"] },
-    Supporter:{ names:["Elena","Caleb","Raya","Finn","Naomi"], suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry"] },
-    Archivist:{ names:["Solenne","Idris","Helena","Lucan","Amara"], suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive"] }
+    Initiate: { names: ["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
+      suffixes: ["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
+    Steward: { names: ["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
+      suffixes: ["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
+    Neighbor: { names: ["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
+      suffixes: ["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
+    Contributor: { names: ["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
+      suffixes: ["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
+    Observer: { names: ["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
+    Supporter: { names: ["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
+    Archivist: { names: ["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
   };
   const pool = pools[tier] || pools.Initiate;
-  const name = pool.names[Math.floor(Math.random()*pool.names.length)];
-  const suffix = pool.suffixes[Math.floor(Math.random()*pool.suffixes.length)];
+  const name = pool.names[Math.floor(Math.random() * pool.names.length)];
+  const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
   return `${name} ${suffix}`;
 }
 function generateNameFromTier() {
   const tier = document.getElementById('role')?.value;
   if (!tier) { alert('Please select a tier first.'); return; }
-  const nameEl = document.getElementById('name');
-  if (nameEl) nameEl.value = generateTieredName(tier);
+  document.getElementById('name').value = generateTieredName(tier);
 }
 
-/* ===== Blogger-friendly helpers ===== */
+/* ========== Blogger helpers (kept) ========== */
 function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
 function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-/* ===== Random helpers ===== */
+/* ========== Public form submit (kept) ========== */
+function submitCeremonialForm() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const role = document.getElementById('role').value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+
+  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
+  localStorage.setItem('userRegistry', JSON.stringify(registry));
+
+  const message = `🪔 Prestige Triumph Verification
+👤 Name: ${name}
+📞 Phone: ${phone}
+🎖 Tier: ${role}
+🆔 Account ID: ${card}
+🔑 Access Code: ${accessCode}`.trim();
+
+  document.getElementById('message').value = message;
+  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+/* ========== Crest unlock shortcut (Superform) ========== */
+function unlockSuperForm() {
+  showPanel('mysteryBoxPanel');
+  const name = document.getElementById('name')?.value.trim();
+  if (name) document.getElementById('superName').value = name;
+  alert("Super-level access form unlocked.");
+}
+
+/* ========== Tap shimmer and admin mobile unlock (kept) ========== */
+let shimmerTimer;
+function shimmerPulse(){
+  const s=document.getElementById('tapShimmer'); if(!s) return;
+  s.classList.add('active');
+  clearTimeout(shimmerTimer);
+  shimmerTimer=setTimeout(()=>s.classList.remove('active'),260);
+}
+let adminTapSequence=[]; let adminTapResetTimer;
+function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
+function checkAdminMobileUnlock(){
+  const correct=['tapTopLeft','tapTopRight'];
+  if(adminTapSequence.join(',')===correct.join(',')){
+    showPanel('adminForm'); shimmerPulse(); resetAdminTap();
+    const hint=document.getElementById('tapHint'); if(hint) hint.textContent="Admin gate unlocked. Verify your tier.";
+  } else {
+    adminTapResetTimer=setTimeout(resetAdminTap,8000);
+  }
+}
+document.getElementById('tapTopLeft')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
+document.getElementById('tapTopRight')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
+
+/* ========== Admin tier codes and logic (kept) ========== */
+const TIER_CODES = {
+  Admin:"A-231-GATE", MasterAdmin:"M-Q8/-CROWN", Overseer:"OVR-442-SIGHT", Controller:"CTRL-993-AXIS",
+  Custodian:"CUST-118-KEEP", Guardian:"GUARD-775-SHIELD", Sentinel:"SENT-560-WATCH", Supervisor:"SUP-823-LINE",
+  Coordinator:"COORD-237-NODE", Director:"DIR-901-ARC", Chancellor:"CHANC-314-SEAL", Prefect:"PREF-628-ORDER",
+  Warden:"WARD-452-GATE", Marshal:"MAR-739-BANNER", Commander:"COMM-888-LEGION", Principal:"PRINC-505-LEDGER",
+  Chief:"CHIEF-272-CREST", SovereignAdmin:"SOV-999-CROWN", LegacyAdmin:"LEG-777-ARCHIVE"
+};
+const HIDDEN_CODE = "X-719-BOX";
+
+let ceremonyName = "";
+let superSequence = []; // ritual grid input record
+let tapLog = [];        // ritual grid feedback map
+
+/* Admin: generator button in chamber (kept) */
+document.getElementById('genNameBtn')?.addEventListener('click', () => {
+  const tier = document.getElementById('adminTier').value || 'Initiate';
+  ceremonyName = generateTieredName(tier);
+  document.getElementById('name').value = ceremonyName;
+});
+
+/* Admin handler (kept; avoids overlap by scoping) */
+function handleAdminAccess(isVerifyClick=false) {
+  const tier = document.getElementById('adminTier').value;
+  const code = (document.getElementById('adminCode').value || '').trim();
+  const name = ceremonyName || document.getElementById('name').value.trim();
+  const status = document.getElementById('verifyStatus');
+  const expectedCode = TIER_CODES[tier];
+
+  if (!expectedCode) { status.textContent = "❌ Unknown tier selected."; return false; }
+  if (code !== expectedCode && !(tier === "Admin" || tier === "MasterAdmin")) {
+    status.textContent = `❌ Invalid clearance code for ${tier}.`; return false;
+  }
+
+  if (tier === "Admin" || tier === "MasterAdmin") {
+    if (isVerifyClick) {
+      status.textContent = "✅ Clearance accepted. Unlocking ritual sequence...";
+      ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','finalBranchPanel'].forEach(hidePanel);
+      showPanel('colorPanel');
+      buildRitualGrid();
+    } else {
+      status.textContent = "Use Verify button for Admin/MasterAdmin.";
+    }
+    return false;
+  }
+
+  // Non-Admin tiers -> Blogger route
+  const card = generateCardID();
+  const message = `🔐 Admin Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${expectedCode}`.trim();
+
+  document.getElementById('adminMessage').value = message;
+  document.getElementById('adminEmail').value = "prestige@triumph.org";
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+
+  alert("Admin form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+
+  return false;
+}
+
+/* Bind Admin submit + verify (scoped to admin chamber) */
+document.getElementById('adminForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); handleAdminAccess(false); });
+document.querySelector('#adminForm #verifyTierBtn')?.addEventListener('click', ()=>handleAdminAccess(true));
+
+/* Reveal Admin form shortcuts (kept) */
+document.addEventListener('keydown',(e)=>{
+  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='a'){
+    const f=document.getElementById('adminForm'); if(f){ f.style.display='block'; alert("Admin access form unlocked."); }
+  }
+});
+
+/* Admin verify button visibility (scoped to admin chamber only) */
+document.getElementById('adminCode')?.addEventListener('input', ()=>{
+  const tierSel = document.getElementById('adminTier').value;
+  const code = document.getElementById('adminCode').value.trim();
+  const verifyBtn = document.querySelector('#adminForm #verifyTierBtn');
+  if (!verifyBtn) return;
+  if ((tierSel === 'Admin' && code === TIER_CODES.Admin) || (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
+    verifyBtn.style.display = 'block';
+  } else {
+    verifyBtn.style.display = 'none';
+  }
+});
+
+/* ========== Utility: shuffle array (missing helper restored) ========== */
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -456,96 +1039,12 @@ function shuffleArray(arr) {
   }
   return a;
 }
-function arraysMatch(a, b) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}
 
-/* ===== Ceremony-wide codes ===== */
-const TIER_CODES = { Admin: "A-231-GATE", MasterAdmin: "M-Q8/-CROWN" };
-const HIDDEN_CODE = "X-719-BOX";
-
-let ceremonyName = "";
-let superSequence = [];
+/* ========== Ritual Grid (Color Sequence) ========== */
 let requiredSequence = [];
-let tapLog = [];
 
-/* ===== Puzzle state ===== */
-let puzzleInitDone = false;
-let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
-let cubeUnlocked = false;
-
-/* ===== Mobile void handling ===== */
-function shrinkPuzzleBox() {
-  const voidEl = document.getElementById('imgVoidPuzzle');
-  if (voidEl && window.innerWidth <= 768) {
-    voidEl.classList.add('shrunk');
-    showPuzzleNotice();
-  }
-}
-function restorePuzzleBox() {
-  const voidEl = document.getElementById('imgVoidPuzzle');
-  if (voidEl) voidEl.classList.remove('shrunk');
-}
-function showPuzzleNotice() {
-  const notice = document.getElementById('puzzleNotice');
-  if (!notice) return;
-  if (window.innerWidth <= 768) {
-    notice.classList.add('show');
-    setTimeout(() => notice.classList.remove('show'), 6000);
-  }
-}
-
-/* ===== Tap shimmer ===== */
-let shimmerTimer;
-function shimmerPulse(){
-  const s = document.getElementById('tapShimmer');
-  if (!s) return;
-  s.classList.add('active');
-  clearTimeout(shimmerTimer);
-  shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
-}
-
-/* ===== Cube aura pulse ===== */
-function pulseCube() {
-  const cube = document.getElementById('labyrinthCube');
-  if (!cube) return;
-  cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
-  setTimeout(() => cube.style.boxShadow = "none", 900);
-}
-
-/* ===== Unlock check ===== */
-function checkCubeUnlock() {
-  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
-    cubeUnlocked = true;
-
-    const msg = document.getElementById('unlockMessage');
-    const sigil = document.getElementById('hiddenSigil');
-    const voidEl = document.getElementById('imgVoidPuzzle');
-
-    if (msg) msg.style.display = 'block';
-    if (sigil) sigil.style.display = 'block';
-    if (voidEl) voidEl.classList.add('unlocked');
-    pulseCube();
-
-    setTimeout(() => { if (sigil) sigil.classList.add('fadeOut'); const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut'); }, 30000);
-    setTimeout(() => {
-      hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel');
-      if (sigil) { sigil.style.display = 'none'; sigil.classList.remove('fadeOut'); }
-      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.remove('fadeOut');
-      if (voidEl) voidEl.classList.remove('unlocked');
-      restorePuzzleBox();
-    }, 60000);
-  }
-}
-
-/* ===== Ritual grid ===== */
 function buildRitualGrid(){
-  const panel = document.getElementById('panelButtons');
-  if (!panel) return;
+  const panel = document.getElementById('panelButtons'); if(!panel) return;
   panel.innerHTML = "";
 
   const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
@@ -553,6 +1052,8 @@ function buildRitualGrid(){
   const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
 
   requiredSequence = shuffleArray(colors).slice(0,4);
+  superSequence = []; tapLog = [];
+  renderSequence(); updateIndicators();
 
   colors.forEach(c=>{
     const btn = document.createElement('button');
@@ -565,11 +1066,19 @@ function buildRitualGrid(){
     panel.appendChild(btn);
   });
 
-  superSequence = [];
-  tapLog = [];
-  renderSequence();
-  updateIndicators();
+  // Ritual VERIFY/CLEAR scoped within colorPanel (avoids adminForm conflicts)
+  const ritualVerify = document.querySelector('#colorPanel .ritual-controls button:nth-child(1)');
+  const ritualClear  = document.querySelector('#colorPanel .ritual-controls button:nth-child(2)');
+  if (ritualVerify && !ritualVerify.dataset.wired) {
+    ritualVerify.dataset.wired = '1';
+    ritualVerify.addEventListener('click', verifySequenceAttempt);
+  }
+  if (ritualClear && !ritualClear.dataset.wired) {
+    ritualClear.dataset.wired = '1';
+    ritualClear.addEventListener('click', clearSequence);
+  }
 }
+
 function handleRitualTap(color, btn){
   superSequence.push(color);
   tapLog.push({ color, btn });
@@ -577,11 +1086,11 @@ function handleRitualTap(color, btn){
   btn.classList.toggle('active');
   updateIndicators();
   btn.classList.add('glow');
-  setTimeout(() => btn.classList.remove('glow'), 1200);
+  setTimeout(()=>btn.classList.remove('glow'),1200);
 }
+
 function renderSequence(){
-  const sequenceReadout = document.getElementById('sequenceReadout');
-  if (!sequenceReadout) return;
+  const sequenceReadout = document.getElementById('sequenceReadout'); if(!sequenceReadout) return;
   const text = superSequence.length ? superSequence.join('~') : '----';
   sequenceReadout.textContent = '';
   let i = 0;
@@ -591,6 +1100,7 @@ function renderSequence(){
     if (i >= text.length) clearInterval(interval);
   }, 40);
 }
+
 function updateIndicators() {
   const indicators = document.querySelectorAll('#indicatorLines span');
   indicators.forEach((bar, i) => {
@@ -599,44 +1109,283 @@ function updateIndicators() {
   });
 }
 
-/* ===== Puzzle wiring ===== */
+function arraysMatch(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+function verifySequenceAttempt(){
+  const attemptColors = superSequence.slice(0,4);
+  const attemptTaps   = tapLog.slice(0,4);
+  const correct = arraysMatch(attemptColors, requiredSequence);
+
+  const sequenceReadout = document.getElementById('sequenceReadout');
+  if (correct) {
+    sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
+    sequenceReadout.style.color = "#6aff6a";
+    hidePanel('colorPanel');
+    showPanel('superCodePanel');
+    const nameInPuzzle = document.getElementById('nameInPuzzle');
+    const nameInRitual = document.getElementById('nameInRitual');
+    if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
+  } else {
+    sequenceReadout.textContent = "ACCESS DENIED";
+    sequenceReadout.style.color = "#ff4a4a";
+  }
+
+  // Faint gestures for first 4 taps
+  attemptTaps.forEach(({ color, btn }, i) => {
+    btn.classList.remove('after-correct','after-wrong');
+    if (color === requiredSequence[i]) {
+      btn.classList.add('after-correct');
+      setTimeout(() => btn.classList.remove('after-correct'), 4000);
+    } else {
+      btn.classList.add('after-wrong');
+      setTimeout(() => btn.classList.remove('after-wrong'), 1200);
+    }
+  });
+
+  superSequence = [];
+  tapLog = [];
+  updateIndicators();
+}
+
+function clearSequence(){
+  superSequence = [];
+  tapLog = [];
+  renderSequence();
+  document.querySelectorAll('#panelButtons .rune-btn').forEach(btn => {
+    btn.classList.remove('active','after-correct','after-wrong','glow');
+  });
+  updateIndicators();
+}
+
+/* Access Code Panel → Mystery Box Chamber */
+document.getElementById('accessConfirmBtn')?.addEventListener('click', () => {
+  const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
+  const s = document.getElementById('accessCodeStatus');
+  if (v === HIDDEN_CODE) {
+    s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
+    setTimeout(() => {
+      hidePanel('superCodePanel');
+      showPanel('mysteryBoxChamber');
+    }, 600);
+  } else {
+    s.textContent = '❌ Incorrect code.';
+  }
+});
+
+
+/* ========== Mystery Box → Puzzle Box entry ========== */
+document.getElementById('attemptPuzzleBtn')?.addEventListener('click', () => {
+  hidePanel('mysteryBoxChamber');
+  showPanel('puzzleBoxPanel');
+  initPuzzleBox();
+});
+
+/* ========== Puzzle Box (consolidated and guarded) ========== */
+let puzzleInitDone = false;
+let cubeUnlocked = false;
+let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
+
+function pulseCube() {
+  const cube = document.getElementById('labyrinthCube');
+  if (!cube) return;
+  cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
+  setTimeout(() => cube.style.boxShadow = "none", 900);
+}
+function showPuzzleNotice() {
+  const notice = document.getElementById('puzzleNotice');
+  if (!notice) return;
+  if (window.innerWidth <= 768) {
+    notice.classList.add('show');
+    setTimeout(() => notice.classList.remove('show'), 6000);
+  }
+}
+function shrinkPuzzleBox() {
+  const shell = document.getElementById('imgVoidPuzzle');
+  if (shell && window.innerWidth <= 768) { shell.classList.add('shrunk'); showPuzzleNotice(); }
+}
+function restorePuzzleBox() {
+  const shell = document.getElementById('imgVoidPuzzle');
+  if (shell) shell.classList.remove('shrunk');
+}
+
+function checkCubeUnlock() {
+  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
+    cubeUnlocked = true;
+
+    const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'block';
+    const sigil = document.getElementById('hiddenSigil'); if (sigil) sigil.style.display = 'block';
+    const voidEl = document.getElementById('imgVoidPuzzle'); if (voidEl) voidEl.classList.add('unlocked');
+    pulseCube();
+
+    setTimeout(() => {
+      if (sigil) sigil.classList.add('fadeOut');
+      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut');
+    }, 30000);
+
+    setTimeout(() => {
+      hidePanel('puzzleBoxPanel');
+      showPanel('finalBranchPanel');
+      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.remove('fadeOut');
+      if (sigil) { sigil.style.display = 'none'; sigil.classList.remove('fadeOut'); }
+      const voidEl2 = document.getElementById('imgVoidPuzzle'); if (voidEl2) voidEl2.classList.remove('unlocked');
+      restorePuzzleBox();
+    }, 60000);
+  }
+}
+
 function resetPuzzleState() {
   keys = { L:false, D:false, W:false, M:false, S:false, N:false };
   cubeUnlocked = false;
-  document.querySelectorAll('#lightsGrid .light-cell').forEach(cell => { cell.classList.remove('on'); cell.style.background=''; cell.style.boxShadow=''; });
+  document.querySelectorAll('#lightsGrid .light-cell').forEach(c => { c.classList.remove('on'); c.style.background=''; c.style.boxShadow=''; });
   document.querySelectorAll('#labyrinthGrid .cell').forEach(c => c.classList.remove('on'));
   document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
-  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id=>{ const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'none';
-  const hint = document.getElementById('lockerHint'); if (hint) hint.textContent = 'Turn CW — Stage 1';
+  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id => { const el=document.getElementById(id); if (el) el.style.display='none'; });
+  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
+  const hint = document.getElementById('dialHint'); if (hint) { hint.textContent=''; hint.style.color='#00f5b5'; }
 }
 
+/* Lights Out */
+let lightsTarget = [];
 function configureLightsOut() {
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
   if (!cells.length) return;
-  const targetOn = shuffleArray([...Array(cells.length).keys()]).slice(0,4);
-  function isSolved(){ return cells.every((c,i)=> c.classList.contains('on') === targetOn.includes(i)); }
+  lightsTarget = shuffleArray(cells.map((_,i)=>i)).slice(0,4);
+}
+function isLightsSolved() {
+  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
+  return cells.every((c,i)=> c.classList.contains('on') === lightsTarget.includes(i));
+}
+function wireLightsOutOnce() {
+  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
+  if (!cells.length) return;
   cells.forEach((cell, idx) => {
     if (cell.dataset.wired) return;
     cell.dataset.wired = '1';
     cell.addEventListener('click', () => {
       [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (cells[i]) cells[i].classList.toggle('on'); });
-      if (isSolved()) { keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display='block'; pulseCube(); checkCubeUnlock(); }
+      if (isLightsSolved()) { keys.L = true; document.getElementById('runeL').style.display='block'; pulseCube(); checkCubeUnlock(); }
     });
   });
 }
 
-function generateLabPath(cells, width, length=9){
-  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
-  let path = []; let current = Math.floor(Math.random()*cells.length); path.push(current);
+/* Locker Dial */
+function configureDial() {
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const numbers  = document.querySelector('#lockerDial .dial-numbers');
+  if (!dialFace || !numbers) return;
+  numbers.innerHTML = '';
+  for (let i=0; i<100; i+=5) {
+    const span = document.createElement('span');
+    span.textContent = i;
+    const angle = (i/100)*360;
+    span.style.transform = `rotate(${angle}deg) translate(75px) rotate(-${angle}deg)`;
+    numbers.appendChild(span);
+  }
+}
+function wireDialOnce() {
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const pointer  = document.querySelector('#lockerDial .dial-pointer');
+  if (!dialFace || !pointer || dialFace.dataset.wired) return;
+  dialFace.dataset.wired = '1';
+
+  let dialAngle = 0, dragging=false, startAngle=0, lastAngle=0;
+  const combo = [20, 5, 75];
+  const directions = ['cw','ccw','cw'];
+  let stage=0; const tol=2;
+  function angleToValue(angle){ return Math.round(((angle % 360 + 360) % 360) / 3.6); }
+  function checkCombo(val, dir){
+    const hint = document.getElementById('dialHint');
+    if (Math.abs(val - combo[stage]) <= tol && dir === directions[stage]) {
+      stage++;
+      if (stage < combo.length){
+        if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`;
+      } else {
+        keys.D = true; document.getElementById('runeD').style.display='block';
+        if (hint) { hint.textContent = `Combo complete! (${combo.join(' → ')})`; hint.style.color='#6aff6a'; }
+        pulseCube(); checkCubeUnlock();
+        stage = 0;
+      }
+    } else if (Math.abs(val - combo[stage]) <= tol && dir !== directions[stage]) {
+      stage = 0; if (hint) { hint.textContent = "Wrong direction! Restart combo."; hint.style.color='#ff4a4a'; }
+    }
+  }
+  function handleMove(x,y,cx,cy){
+    const angle = Math.atan2(y - cy, x - cx) * 180/Math.PI;
+    dialAngle += angle - startAngle; startAngle = angle;
+    pointer.style.transform = `rotate(${dialAngle}deg)`;
+    const val = angleToValue(dialAngle);
+    const dir = (dialAngle - lastAngle) > 0 ? 'cw' : 'ccw'; lastAngle = dialAngle;
+    checkCombo(val, dir);
+  }
+
+  dialFace.addEventListener('mousedown', e=>{
+    dragging = true;
+    const rect = dialFace.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180/Math.PI;
+  });
+  document.addEventListener('mousemove', e=>{
+    if (!dragging) return;
+    const rect = dialFace.getBoundingClientRect();
+    handleMove(e.clientX, e.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
+  });
+  document.addEventListener('mouseup', ()=> dragging=false);
+
+  dialFace.addEventListener('touchstart', e=>{
+    dragging = true;
+    const rect = dialFace.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    const t = e.touches[0];
+    startAngle = Math.atan2(t.clientY - cy, t.clientX - cx) * 180/Math.PI;
+  }, { passive: true });
+  document.addEventListener('touchmove', e=>{
+    if (!dragging) return;
+    const rect = dialFace.getBoundingClientRect();
+    const t = e.touches[0];
+    handleMove(t.clientX, t.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
+  }, { passive: true });
+  document.addEventListener('touchend', ()=> dragging=false);
+}
+
+/* Word Lock */
+let wordAnswer = '';
+function configureWordLock() {
+  const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
+  wordAnswer = dictionary[Math.floor(Math.random()*dictionary.length)];
+  const scrambled = [...wordAnswer].sort(()=>Math.random()-0.5).join('');
+  const wordHint  = document.getElementById('wordHint'); if (wordHint) wordHint.textContent = `Unscramble: ${scrambled}`;
+  const wordInput = document.getElementById('wordInput'); if (wordInput) wordInput.value = '';
+}
+function wireWordLockOnce() {
+  const wordInput = document.getElementById('wordInput');
+  if (!wordInput || wordInput.dataset.wired) return;
+  wordInput.dataset.wired = '1';
+  wordInput.addEventListener('input', e => {
+    if (e.target.value.trim().toLowerCase() === wordAnswer) {
+      keys.W = true; document.getElementById('runeW').style.display='block';
+      pulseCube(); checkCubeUnlock();
+    }
+  });
+}
+
+/* Labyrinth Path */
+let labPath = []; let labProgress = 0;
+function generateLabPath(cells, width, length = 9) {
+  let path = []; let current = Math.floor(Math.random() * cells.length);
+  path.push(current);
   while (path.length < length) {
-    const r = Math.floor(current/width), c = current%width;
+    const r = Math.floor(current / width), c = current % width;
     const neighbors = [];
     if (r > 0) neighbors.push(current - width);
-    if (r < width-1) neighbors.push(current + width);
+    if (r < width - 1) neighbors.push(current + width);
     if (c > 0) neighbors.push(current - 1);
-    if (c < width-1) neighbors.push(current + 1);
-    current = neighbors.length ? pick(neighbors) : Math.floor(Math.random()*cells.length);
+    if (c < width - 1) neighbors.push(current + 1);
+    current = neighbors.length ? neighbors[Math.floor(Math.random()*neighbors.length)]
+                               : Math.floor(Math.random() * cells.length);
     path.push(current);
   }
   return path;
@@ -644,30 +1393,39 @@ function generateLabPath(cells, width, length=9){
 function configureLabyrinth() {
   const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
   if (!cells.length) return;
-  const width = Math.sqrt(cells.length)|0;
-  const path = generateLabPath(cells, width, 9);
-  let progress = 0;
+  const width = Math.sqrt(cells.length) | 0;
+  labPath = generateLabPath(cells, width, 9);
+  labProgress = 0;
+  cells.forEach(c => c.classList.remove('on'));
+}
+function wireLabyrinthOnce() {
+  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
+  if (!cells.length) return;
   cells.forEach((cell, idx) => {
-    cell.classList.remove('on');
-    if (!cell.dataset.wired) {
-      cell.dataset.wired = '1';
-      cell.addEventListener('click', () => {
-        if (idx === path[progress]) {
-          cell.classList.add('on'); progress++;
-          if (progress === path.length) { keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display='block'; pulseCube(); checkCubeUnlock(); }
-        } else {
-          cells.forEach(c => c.classList.remove('on')); progress = 0;
-        }
-      });
-    }
+    if (cell.dataset.wired) return;
+    cell.dataset.wired = '1';
+    cell.addEventListener('click', () => {
+      if (!labPath.length) return;
+      if (idx === labPath[labProgress]) {
+        cell.classList.add('on'); labProgress++;
+        if (labProgress === labPath.length) { keys.M = true; document.getElementById('runeM').style.display='block'; pulseCube(); checkCubeUnlock(); }
+      } else {
+        cells.forEach(c => c.classList.remove('on')); labProgress = 0;
+      }
+    });
   });
 }
 
+/* Memory */
+let memSeq = [], playerSeq = [], playing = false;
 function configureMemory() {
+  memSeq = []; playerSeq = []; playing = false;
+  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
+}
+function wireMemoryOnce() {
   const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
   const startBtn = document.getElementById('startMemory');
   if (!memBtns.length || !startBtn) return;
-  let memSeq = [], playerSeq = [], playing = false;
 
   function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
   function playSequence() {
@@ -693,410 +1451,231 @@ function configureMemory() {
       if (playing || memSeq.length === 0) return;
       const val = parseInt(btn.dataset.val, 10);
       playerSeq.push(val); flash(btn);
-      for (let i=0;i<playerSeq.length;i++){ if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; } }
+      for (let i=0;i<playerSeq.length;i++){
+        if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; }
+      }
       if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display = 'block'; pulseCube(); checkCubeUnlock(); }
+        if (memSeq.length >= 4) { keys.S = true; document.getElementById('runeS').style.display='block'; pulseCube(); checkCubeUnlock(); }
         else nextRound();
       }
     });
   });
 }
 
-function configureLockerDial() {
-  const face = document.querySelector('#lockerDial .dial-face');
-  const pointer = document.querySelector('#lockerDial .dial-pointer');
-  const numbers = document.querySelector('#lockerDial .dial-numbers');
-  const hint = document.getElementById('lockerHint');
-  if (!face || !pointer || !numbers || !hint) return;
-
-  numbers.innerHTML = '';
-  for (let i=0;i<100;i+=5){
-    const span = document.createElement('span');
-    span.textContent = i;
-    const angle = (i/100)*360;
-    span.style.position = 'absolute';
-    span.style.left = '50%';
-    span.style.top = '50%';
-    span.style.transformOrigin = '0 0';
-    span.style.transform = `rotate(${angle}deg) translate(90px) rotate(-${angle}deg)`;
-    numbers.appendChild(span);
-  }
-
-  const pool = shuffleArray([...Array(100).keys()]);
-  const combo = [pool[20], pool[40], pool[60]].map(v => Math.round(v/5)*5 % 100);
-  const directions = ['cw','ccw','cw'];
-  let stage = 0, dragging = false, startAngle = 0, dialAngle = 0, lastAngle = 0;
-
-  function angleToValue(angle){
-    const normalized = ((angle % 360) + 360) % 360;
-    return Math.round(normalized / 3.6); // 0–100
-  }
-  function updateHint() {
-    if (stage < combo.length) {
-      const dirLabel = directions[stage] === 'cw' ? 'CW' : 'CCW';
-      hint.textContent = `Stage ${stage+1}/3 — turn ${dirLabel} to ${combo[stage]}`;
-    } else {
-      hint.textContent = `Combo complete! (${combo.join(' → ')})`;
-    }
-  }
-  updateHint();
-
-  function checkCombo(val, dir){
-    const target = combo[stage];
-    if (Math.abs(val - target) <= 2 && dir === directions[stage]) {
-      stage++;
-      updateHint();
-      if (stage === combo.length) {
-        keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display = 'block';
-        pulseCube(); checkCubeUnlock();
-        stage = 0;
-      }
-    } else if (Math.abs(val - target) <= 2 && dir !== directions[stage]) {
-      stage = 0;
-      hint.textContent = "Wrong direction! Restart combo.";
-      setTimeout(updateHint, 1200);
-    }
-  }
-  function handleMove(x,y,cx,cy){
-    const angle = Math.atan2(y - cy, x - cx) * 180/Math.PI;
-    dialAngle += angle - startAngle;
-    startAngle = angle;
-    pointer.style.transform = `rotate(${dialAngle}deg)`;
-    const val = angleToValue(dialAngle);
-    const dir = (dialAngle - lastAngle) > 0 ? 'cw' : 'ccw';
-    lastAngle = dialAngle;
-    checkCombo(val, dir);
-  }
-
-  if (!face.dataset.wired) {
-    face.dataset.wired = '1';
-    face.addEventListener('mousedown', e => {
-      dragging = true;
-      const rect = face.getBoundingClientRect();
-      const cx = rect.left + rect.width/2;
-      const cy = rect.top + rect.height/2;
-      startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180/Math.PI;
+/* Math */
+let mathTarget = 15;
+function configureMath() {
+  const nums = [...document.querySelectorAll('#mathGrid .num')];
+  if (!nums.length) return;
+  mathTarget = Math.floor(12 + Math.random()*9); // 12–20
+  const mathHint = document.getElementById('mathHint');
+  if (mathHint) mathHint.textContent = `Find a selection that sums to ${mathTarget}`;
+  nums.forEach(btn => { btn.classList.remove('sel'); btn.textContent = String(1 + Math.floor(Math.random()*9)); });
+}
+function wireMathOnce() {
+  const nums = [...document.querySelectorAll('#mathGrid .num')];
+  if (!nums.length) return;
+  nums.forEach(btn => {
+    if (btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('sel');
+      const sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
+      const sum = sel.reduce((a,b)=>a+b,0);
+      if (sum === mathTarget) { keys.N = true; document.getElementById('runeN').style.display='block'; pulseCube(); checkCubeUnlock(); }
+      else if (sum > mathTarget) { nums.forEach(n => n.classList.remove('sel')); }
     });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const rect = face.getBoundingClientRect();
-      handleMove(e.clientX, e.clientY, rect.left + rect.width/2, rect.top + rect.height/2);
-    });
-    document.addEventListener('mouseup', ()=> dragging=false);
-
-    face.addEventListener('touchstart', e => {
-      dragging = true;
-      const rect = face.getBoundingClientRect();
-      const cx = rect.left + rect.width/2;
-      const cy = rect.top + rect.height/2;
-      const t = e.touches[0];
-      startAngle = Math.atan2(t.clientY - cy, t.clientX - cx) * 180/Math.PI;
-    }, { passive: true });
-    document.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      const rect = face.getBoundingClientRect();
-      const t = e.touches[0];
-      handleMove(t.clientX, t.clientY, rect.left + rect.width/2, rect.top + rect.height/2);
-    }, { passive: true });
-    document.addEventListener('touchend', ()=> dragging=false, { passive: true });
-  }
+  });
 }
 
-/* ===== Superform submit ===== */
-function submitCeremonialForm() {
-  const nameEl = document.getElementById('name');
-  const phoneEl = document.getElementById('phone');
-  const roleEl = document.getElementById('role');
-  if (!nameEl || !phoneEl || !roleEl) return false;
-
-  const name = nameEl.value.trim();
-  const phone = phoneEl.value.trim();
-  const role = roleEl.value;
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
-
-  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
-  localStorage.setItem('userRegistry', JSON.stringify(registry));
-
-  const message = `
-🪔 Prestige Triumph Verification
-👤 Name: ${name}
-📞 Phone: ${phone}
-🎖 Tier: ${role}
-🆔 Account ID: ${card}
-🔑 Access Code: ${accessCode}
-  `.trim();
-
-  const msgEl = document.getElementById('message');
-  const emailEl = document.getElementById('bloggerEmail');
-  const verTextEl = document.getElementById('verificationText');
-  const plaqueEl = document.getElementById('verificationPlaque');
-
-  if (msgEl) msgEl.value = message;
-  if (emailEl) emailEl.value = "prestige@triumph.org";
-  if (verTextEl) verTextEl.value = message;
-  if (plaqueEl) plaqueEl.style.display = "block";
-
-  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
-  setTimeout(() => {
-    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 10000);
-
-  return false;
-}
-function unlockSuperForm() {
-  showPanel('mysteryBoxPanel');
-  const name = document.getElementById('name')?.value.trim();
-  if (name) {
-    const superName = document.getElementById('superName');
-    if (superName) superName.value = name;
-  }
-  alert("Super-level access form unlocked.");
-}
-function submitSuperForm() {
-  const code = document.getElementById("superCode")?.value.trim();
-  if (code !== "TRIUMPH-777") {
-    alert("Invalid super-level clearance code.");
-    return false;
-  }
-  const name = document.getElementById("superName")?.value.trim() || '';
-  const tier = document.getElementById("superTier")?.value || '';
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
-  const message = `
-👑 Super-Level Access Submission
-👤 Name: ${name}
-🎖 Tier: ${tier}
-🆔 Account ID: ${card}
-🔑 Clearance Code: ${accessCode}
-  `.trim();
-  const verTextEl = document.getElementById('verificationText');
-  const plaqueEl = document.getElementById('verificationPlaque');
-  if (verTextEl) verTextEl.value = message;
-  if (plaqueEl) plaqueEl.style.display = "block";
-  alert("Super-level form submitted. Redirecting...");
-  setTimeout(() => {
-    window.location.href = `https://mrhim00.blogspot.com/2025/10/Admin-issued.html?card=${encodeURIComponent(card)}`;
-  }, 10000);
-  return false;
-}
-
-/* ===== Bind everything after DOM is ready ===== */
-document.addEventListener("DOMContentLoaded", function () {
-  /* Admin tap unlock (top-left then top-right) */
-  let adminTapSequence = [];
-  let adminTapResetTimer;
-  function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
-  function checkAdminMobileUnlock(){
-    const correct = ['tapTopLeft','tapTopRight'];
-    if (adminTapSequence.join(',') === correct.join(',')) {
-      showPanel('adminForm'); shimmerPulse(); resetAdminTap();
-    } else {
-      adminTapResetTimer = setTimeout(resetAdminTap, 8000);
-    }
-  }
-  const tl = document.getElementById('tapTopLeft');
-  const tr = document.getElementById('tapTopRight');
-  if (tl) tl.addEventListener('click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
-  if (tr) tr.addEventListener('click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
-
-  /* Admin verify → ritual */
-  const verifyBtn = document.getElementById('verifyTierBtn');
-  if (verifyBtn) verifyBtn.addEventListener('click', ()=>{
-    const status = document.getElementById('verifyStatus');
-    const tierSel = document.getElementById('adminTier')?.value;
-    const code = (document.getElementById('adminCode')?.value || '').trim();
-    if (!code) { if (status) status.textContent = "Enter clearance code."; return; }
-
-    ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','mysteryBoxChamber','finalBranchPanel'].forEach(hidePanel);
-
-    const ok = (tierSel === 'Admin' && code === TIER_CODES.Admin) ||
-               (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
-               (code === HIDDEN_CODE);
-
-    if (ok) {
-      const role = document.getElementById('role')?.value || 'Initiate';
-      ceremonyName = generateTieredName(role);
-      if (status) status.textContent = "✅ Verified. Proceed to the ritual.";
-      const nameEl = document.getElementById('nameInRitual'); if (nameEl) nameEl.textContent = ceremonyName;
-      superSequence = [];
-      showPanel('colorPanel');
-      buildRitualGrid();
-    } else {
-      if (status) status.textContent = "❌ Invalid clearance for selected tier.";
-    }
-  });
-
-  /* Ritual sequence verify */
-  const verifySeqBtn = document.getElementById('verifySequence');
-  if (verifySeqBtn) verifySeqBtn.addEventListener('click', () => {
-    const attemptColors = superSequence.slice(0,4);
-    const attemptTaps   = tapLog.slice(0,4);
-    const correct = arraysMatch(attemptColors, requiredSequence);
-
-    const sequenceReadout = document.getElementById('sequenceReadout');
-    if (sequenceReadout) {
-      if (correct) {
-        sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
-        sequenceReadout.style.color = "#6aff6a";
-        hidePanel('colorPanel');
-        showPanel('superCodePanel');
-        const nameInPuzzle = document.getElementById('nameInPuzzle');
-        const nameInRitual = document.getElementById('nameInRitual');
-        if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
-      } else {
-        sequenceReadout.textContent = "ACCESS DENIED";
-        sequenceReadout.style.color = "#ff4a4a";
-      }
-    }
-
-    attemptTaps.forEach(({ color, btn }, i) => {
-      btn.classList.remove('after-correct','after-wrong');
-      if (color === requiredSequence[i]) {
-        btn.classList.add('after-correct');
-        setTimeout(() => btn.classList.remove('after-correct'), 4000);
-      } else {
-        btn.classList.add('after-wrong');
-        setTimeout(() => btn.classList.remove('after-wrong'), 1200);
-      }
-    });
-
-    superSequence = [];
-    tapLog = [];
-    updateIndicators();
-  });
-
-  const clearSeqBtn = document.getElementById('clearSequence');
-  if (clearSeqBtn) clearSeqBtn.addEventListener('click', () => {
-    superSequence = [];
-    tapLog = [];
-    renderSequence();
-    document.querySelectorAll('.rune-btn').forEach(btn => {
-      btn.classList.remove('active','after-correct','after-wrong','glow');
-    });
-    updateIndicators();
-  });
-
-  /* Access Panel → Mystery Box Chamber */
-  const accessCodeBtn = document.getElementById('accessCodeBtn');
-  if (accessCodeBtn) accessCodeBtn.addEventListener('click', () => {
-    const v = document.getElementById('accessCodeInput')?.value.trim().toUpperCase();
-    const s = document.getElementById('accessCodeStatus');
-    if (v === 'X-719-BOX') {
-      if (s) s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
-      setTimeout(() => { hidePanel('superCodePanel'); showPanel('mysteryBoxChamber'); }, 600);
-    } else {
-      if (s) s.textContent = '❌ Incorrect code.';
-    }
-  });
-
-  const attemptPuzzleBtn = document.getElementById('attemptPuzzleBtn');
-  if (attemptPuzzleBtn) attemptPuzzleBtn.addEventListener('click', () => {
-    hidePanel('mysteryBoxChamber');
-    showPanel('puzzleBoxPanel');
-    initPuzzleBox();
-  });
-
-  /* Final clearance → Superform */
-  const toFinalBtn = document.getElementById('toFinalClearanceBtn');
-  if (toFinalBtn) toFinalBtn.addEventListener('click', () => { hidePanel('finalBranchPanel'); showPanel('finalClearancePanel'); });
-
-  const finalClearBtn = document.getElementById('finalClearanceBtn');
-  if (finalClearBtn) finalClearBtn.addEventListener('click', ()=>{
-    const code = document.getElementById('finalClearanceCode')?.value.trim();
-    const revealed = document.getElementById('revealedPassword')?.textContent.trim();
-    const status = document.getElementById('finalClearanceStatus');
-    if (code === revealed) {
-      if (status) status.textContent = "✅ Clearance accepted. Superform unlocked.";
-      setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); const sname = document.getElementById('superName'); if (sname) sname.value = ceremonyName; }, 800);
-    } else {
-      if (status) status.textContent = "❌ Incorrect code.";
-    }
-  });
-
-  /* Public form submit binding */
-  const loveForm = document.getElementById('love-form');
-  if (loveForm) loveForm.onsubmit = submitCeremonialForm;
-
-  /* Superform submit binding */
-  const superLevelForm = document.getElementById('superLevelForm');
-  if (superLevelForm) superLevelForm.onsubmit = submitSuperForm;
-
-  /* Crest shortcut */
-  const crest = document.querySelector('.floating-crest');
-  if (crest) crest.addEventListener('click', unlockSuperForm);
-
-  /* Cube rotation (interactive) */
-  const cubeEl = document.getElementById('labyrinthCube');
-  let draggingCube = false, startX = 0, startY = 0, rotX = -15, rotY = 20;
-  function updateRotation() { if (cubeEl) cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
-  if (cubeEl) {
-    cubeEl.addEventListener('mousedown', e => { draggingCube = true; startX = e.clientX; startY = e.clientY; });
-    window.addEventListener('mousemove', e => {
-      if (!draggingCube) return;
-      const dx = e.clientX - startX, dy = e.clientY - startY;
-      startX = e.clientX; startY = e.clientY;
-      rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
-    });
-    window.addEventListener('mouseup', () => draggingCube = false);
-    cubeEl.addEventListener('touchstart', e => { draggingCube = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
-    cubeEl.addEventListener('touchmove', e => {
-      if (!draggingCube) return;
-      const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-      rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
-    }, { passive: true });
-    cubeEl.addEventListener('touchend', () => draggingCube = false, { passive: true });
-    updateRotation();
-  }
-
-  /* Keyboard unlock shortcuts */
-  document.addEventListener("DOMContentLoaded", function () {
-  document.addEventListener("keydown", function (e) {
-    // Admin form unlock
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-      const adminForm = document.getElementById("adminForm");
-      if (adminForm) {
-        adminForm.style.display = "block";
-        alert("Admin access form unlocked.");
-      }
-    }
-
-    // Superform unlock
-    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
-      const superPanel = document.getElementById("mysteryBoxPanel");
-      if (superPanel) {
-        superPanel.style.display = "block";
-        alert("Super-level access form unlocked.");
-      }
-});
-
-/* ===== Puzzle init orchestrator ===== */
+/* PuzzleBox init orchestration */
 function initPuzzleBox() {
   if (!puzzleInitDone) {
-    configureLightsOut();
-    configureLabyrinth();
-    configureMemory();
-    configureWordLock();   // add scramble
-    configureMath();       // add math sum
-    configureLockerDial(); // dial/locker
-    wireWordLock();
-    wireMath();
+    wireLightsOutOnce();
+    wireDialOnce();
+    wireWordLockOnce();
+    wireLabyrinthOnce();
+    wireMemoryOnce();
+    wireMathOnce();
     puzzleInitDone = true;
-  } else {
-    // refresh puzzles that need new randomization each run
-    configureLockerDial();
-    configureWordLock();
-    configureMath();
-    configureLightsOut();
   }
   resetPuzzleState();
+  configureLightsOut();
+  configureDial();
+  configureWordLock();
+  configureLabyrinth();
+  configureMemory();
+  configureMath();
   shrinkPuzzleBox();
 }
 
+/* Final branch → Final clearance panel */
+document.getElementById('toFinalClearanceBtn')?.addEventListener('click', () => {
+  hidePanel('finalBranchPanel');
+  showPanel('finalClearancePanel');
+});
+
+/* Final clearance → Superform */
+document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
+  const code = document.getElementById('finalClearanceCode').value.trim();
+  const revealed = document.getElementById('revealedPassword').textContent.trim();
+  const status = document.getElementById('finalClearanceStatus');
+  if (code === revealed) {
+    status.textContent = "✅ Clearance accepted. Superform unlocked.";
+    setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
+  } else {
+    status.textContent = "❌ Incorrect code.";
+  }
+});
+
+/* Superform submit (Prestige route) */
+function submitSuperForm() {
+  const code = document.getElementById("superCode").value.trim();
+  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
+  const name = document.getElementById("superName").value.trim();
+  const tier = document.getElementById("superTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+  const message = `👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}`.trim();
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+  alert("Super-level form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+  return false;
+}
+
+/* Cube rotation (interactive) */
+(function bindCubeRotation(){
+  const cubeEl = document.getElementById('labyrinthCube');
+  if (!cubeEl) return;
+  let dragging=false, startX=0, startY=0, rotX=-15, rotY=20;
+  function updateRotation(){ cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+  cubeEl.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    startX = e.clientX; startY = e.clientY;
+    rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
+  });
+  window.addEventListener('mouseup', () => dragging = false);
+  cubeEl.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
+  cubeEl.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
+  }, { passive: true });
+  cubeEl.addEventListener('touchend', () => dragging = false);
+  updateRotation();
+})();
+
+/* Keyboard shortcut to show Superform directly (kept) */
+document.addEventListener("keydown", function (e) {
+  if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+    const superPanel = document.getElementById("mysteryBoxPanel");
+    if (superPanel) {
+      superPanel.style.display = "block";
+      alert("Super-level access form unlocked.");
+    }
+  }
+});
+
+/* ======= Public form: generator hook (scoped to love-form) ======= */
+document.getElementById('love-form')?.addEventListener('click', (e)=>{
+  if (e.target && e.target.id === 'genNameBtn') {
+    generateNameFromTier();
+  }
+});
+
+/* ======= Superform binding ======= */
+document.getElementById('superLevelForm')?.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  submitSuperForm();
+});
+
+/* ======= Access code panel quality-of-life ======= */
+document.getElementById('accessCodeInput')?.addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('accessCodeBtn')?.click();
+  }
+});
+
+/* Scoped CLEAR in Super Code panel (does not interfere with ritual CLEAR) */
+(function bindSuperCodeClear(){
+  const wrap = document.getElementById('superCodePanel');
+  if (!wrap) return;
+  const clearBtn = wrap.querySelector('#clearBtn');
+  if (clearBtn && !clearBtn.dataset.wired) {
+    clearBtn.dataset.wired = '1';
+    clearBtn.addEventListener('click', ()=>{
+      const input = document.getElementById('accessCodeInput');
+      const status = document.getElementById('accessCodeStatus');
+      if (input) input.value = '';
+      if (status) status.textContent = '';
+    });
+  }
+})();
+
+/* ======= Admin form visibility via mobile tap zones (guarded) ======= */
+(function bindAdminVisibilityShortcuts(){
+  const adminForm = document.getElementById('adminForm');
+  const zoneRight = document.getElementById('tapTopRight');
+  if (zoneRight && adminForm) {
+    zoneRight.addEventListener('click', ()=> { adminForm.style.display = 'block'; });
+  }
+  document.addEventListener('keydown', (e)=>{
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a' && adminForm) {
+      adminForm.style.display = 'block';
+      alert("Admin access form unlocked.");
+    }
+  });
+})();
+
+/* ======= Ritual panel: ensure buttons remain scoped even if rebuilt ======= */
+(function guardRitualControls(){
+  const colorPanel = document.getElementById('colorPanel');
+  if (!colorPanel) return;
+  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
+  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
+
+  if (verifyBtn && !verifyBtn.dataset.wired) {
+    verifyBtn.dataset.wired = '1';
+    verifyBtn.addEventListener('click', verifySequenceAttempt);
+  }
+  if (clearBtn && !clearBtn.dataset.wired) {
+    clearBtn.dataset.wired = '1';
+    clearBtn.addEventListener('click', clearSequence);
+  }
+})();
+
+/* ======= Final safety: reassert scoping on bfcache restore ======= */
+window.addEventListener('pageshow', ()=>{
+  const colorPanel = document.getElementById('colorPanel');
+  if (!colorPanel) return;
+  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
+  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
+  if (verifyBtn && !verifyBtn.dataset.wired) {
+    verifyBtn.dataset.wired = '1';
+    verifyBtn.addEventListener('click', verifySequenceAttempt);
+  }
+  if (clearBtn && !clearBtn.dataset.wired) {
+    clearBtn.dataset.wired = '1';
+    clearBtn.addEventListener('click', clearSequence);
+  }
+});
+</script>
 
 
-  </script>
+
+
+
+
 </body>
 </html>
