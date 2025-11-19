@@ -6,309 +6,280 @@
   <title>Prestige Triumph — Oversight Chambers (Hybrid, Restored)</title>
 
  <!-- Outer prestige shell (light aura) -->
- <style>
-/* === Root palette and shared tokens === */
-:root {
-  --gold: #d4b86a;
-  --ivory: #f2f0e9;
-  --slate: #2f3036;
-  --iron: #222;
+  <style>
+    /* Prestige container */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top center, #f5f7fa 0%, #e6ecf0 100%);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: rgba(255,255,255,0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(75,63,114,0.2);
+      backdrop-filter: blur(6px);
+    }
+    .crest-header {
+      width: 100px; height: 100px; margin: 0 auto 20px;
+      background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
+      background-size: cover; background-position: center; border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194,167,109,0.6);
+    }
+    h1, h2, h3 {
+      color: #4b3f72;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.12);
+      margin: 0 0 14px 0;
+    }
 
-  /* Verify aura (dark blue → gray) */
-  --verify-bg-start: #2c2f48;
-  --verify-bg-end: #4a4d5f;
-  --verify-border: #3a3d55;
+    /* Verification plaque (outer prestige) */
+    .verification-plaque {
+      margin-top: 25px; padding: 20px;
+      border: 2px solid #c2a76d; border-radius: 12px;
+      background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
+      box-shadow: 0 0 15px rgba(194,167,109,0.4);
+      text-align: center;
+      display: none;
+    }
+    .verification-plaque textarea {
+      width: 100%; height: 120px; margin-top: 10px; padding: 8px;
+      border-radius: 8px; border: 1px solid #c2a76d;
+      font-family: 'Courier New', monospace; font-size: 0.95em; resize: none;
+      background: #fffdf8;
+    }
+    .verification-plaque button {
+      margin-top: 12px; padding: 10px 20px;
+      background: linear-gradient(to right, #4b3f72, #6a5acd);
+      color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em;
+      box-shadow: 0 4px 12px rgba(75,63,114,0.3);
+    }
+    .verification-plaque button:hover {
+      background: linear-gradient(to right, #6a5acd, #4b3f72);
+    }
 
-  /* Outer shell */
-  --shell-bg-start: #f5f7fa;
-  --shell-bg-end: #e6ecf0;
-  --shell-card: rgba(255,255,255,0.95);
-}
+    /* Floating crest (desktop shortcut) */
+    .floating-crest {
+      position: fixed; width: 60px; height: 60px; bottom: 20px; right: -115px;
+      background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
+      background-size: cover; background-position: center; border-radius: 50%;
+      box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer; z-index: 101; opacity: 0.95;
+    }
+    @media (max-width: 860px) { .floating-crest { pointer-events: none; opacity: 0.7; } }
 
-/* === Outer prestige shell (light aura) === */
-body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: radial-gradient(circle at top center, var(--shell-bg-start) 0%, var(--shell-bg-end) 100%);
-  color: #333; margin: 0; padding: 20px;
-}
+    /* Tap shimmer + zones (kept) */
+    .tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
+    #tapTopLeft { left: 0; }
+    #tapTopRight { right: 0; }
+    .tap-shimmer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 998;
+      background:
+        radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
+        radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(106,90,205,0.22), transparent 70%);
+      opacity: 0; transition: opacity 260ms ease;
+    }
+    .tap-shimmer.active { opacity: 1; }
 
-.container {
-  max-width: 900px; margin: auto;
-  background: var(--shell-card);
-  padding: 30px; border-radius: 15px;
-  box-shadow: 0 0 20px rgba(75,63,114,0.2);
-  backdrop-filter: blur(6px);
-}
+    /* Ceremonial chambers (inner dark ritual styling) */
+    :root {
+      --gold:#ffd700; --violet:#6a0dad; --iron:#222;
+      --panel-bg: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+    }
+    .panel-shell {
+      background: var(--panel-bg); border: 3px solid #444; border-radius: 12px;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
+      padding: 20px; margin-top: 20px; color: var(--gold);
+      font-family: 'Orbitron','Courier New', monospace;
+    }
+    .panel-shell h2, .panel-shell h3 {
+      color: var(--gold); text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(255,215,0,0.6);
+    }
+    .panel-shell label { display: block; margin-top: 12px; font-weight: 700; }
+    .panel-shell input, .panel-shell select {
+      width: 100%; margin-top: 8px; padding: 10px; border-radius: 6px;
+      border: 2px solid #333; background: #111; color: var(--gold); font-weight: bold;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+    }
+    .panel-shell button {
+      margin-top: 15px; padding: 10px 20px; border-radius: 8px; border: 2px solid var(--iron);
+      background: linear-gradient(var(--gold), #b8860b); color: #111; font-weight: bold;
+      text-transform: uppercase; cursor: pointer; box-shadow: 0 0 10px rgba(255,215,0,0.5);
+      transition: transform 0.15s ease, box-shadow 0.3s ease;
+    }
+    .panel-shell button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
-.crest-header {
-  width: 100px; height: 100px; margin: 0 auto 20px;
-  background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
-  background-size: cover; background-position: center; border-radius: 50%;
-  box-shadow: 0 0 20px rgba(194,167,109,0.6);
-}
+    /* Ritual grid buttons */
+    #panelButtons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+    .panel-btn {
+      padding: 16px; border-radius: 12px; border: 2px solid #333;
+      background: radial-gradient(circle at 30% 30%, #1a1a1a, #0d0d0d);
+      color: var(--gold); font-weight: 700;
+      text-shadow: 0 0 6px rgba(255,215,0,0.6);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 10px rgba(255,215,0,0.25);
+      transform: translateY(0);
+      transition: transform 0.15s ease, box-shadow 0.3s ease;
+      animation: runePulse 3s infinite;
+    }
+    .panel-btn:hover { transform: translateY(-3px); box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 18px rgba(255,215,0,0.6); }
+    @keyframes runePulse { 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.12);} }
 
-h1, h2, h3 {
-  color: #4b3f72; text-align: center;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.12);
-  margin: 0 0 14px 0;
-}
+    /* Access keypad sigil */
+    .panel-sigil {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: 6em; color: rgba(255,215,0,0.08);
+      text-shadow: 0 0 15px rgba(255,215,0,0.2); pointer-events: none; z-index: 0;
+    }
+    #superCodePanel .panel-content { position: relative; z-index: 1; }
 
-/* === Verification plaque === */
-.verification-plaque {
-  margin-top: 25px; padding: 20px;
-  border: 2px solid var(--gold); border-radius: 12px;
-  background: linear-gradient(to bottom, #fdfcfb, #f3e8e2);
-  box-shadow: 0 0 15px rgba(194,167,109,0.4);
-  text-align: center; display: none;
-}
-.verification-plaque textarea {
-  width: 100%; height: 120px; margin-top: 10px; padding: 8px;
-  border-radius: 8px; border: 1px solid var(--gold);
-  font-family: 'Courier New', monospace; font-size: 0.95em; resize: none;
-  background: #fffdf8;
-}
-.verification-plaque button {
-  margin-top: 12px; padding: 10px 20px;
-  background: linear-gradient(to right, #4b3f72, #6a5acd);
-  color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em;
-  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
-}
-.verification-plaque button:hover {
-  background: linear-gradient(to right, #6a5acd, #4b3f72);
-}
-
-/* === Floating crest shortcut === */
-.floating-crest {
-  position: fixed; width: 60px; height: 60px; bottom: 20px; right: 20px;
-  background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7Xr0yArKKpo2gvFLpUcm9fMR5CgbrkBYTEChDOnIM59NhDxBVFHChMPQQzeVXKnIsS7FOxP4witstDDBjLciMAM1Tq0g_bM86dXGYMLHYms0KiFJniK_gJS0PjbxhgAE1DhdLHvwpD_Id-B2mtbW7SqgWDX72S05uifuP-Ag_XQQMqJGBBNvzV88OjYc/s1600/An%20abstract%20Masterad.png');
-  background-size: cover; background-position: center; border-radius: 50%;
-  box-shadow: 0 0 20px rgba(194,167,109,0.6); cursor: pointer; z-index: 101; opacity: 0.95;
-}
-@media (max-width: 860px) { .floating-crest { pointer-events: none; opacity: 0.7; } }
-
-/* === Tap shimmer + zones === */
-.tap-zone { position: fixed; width: 64px; height: 64px; top: 0; z-index: 999; }
-#tapTopLeft { left: 0; }
-#tapTopRight { right: 0; }
-.tap-shimmer {
-  position: fixed; inset: 0; pointer-events: none; z-index: 998;
-  background:
-    radial-gradient(120px 120px at 32px 32px, rgba(255,215,0,0.25), transparent 70%),
-    radial-gradient(120px 120px at calc(100% - 32px) 32px, rgba(106,90,205,0.22), transparent 70%);
-  opacity: 0; transition: opacity 260ms ease;
-}
-.tap-shimmer.active { opacity: 1; }
-
-/* === Inner ritual styling (panels) === */
-.panel-shell {
-  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
-  border: 3px solid #444; border-radius: 12px;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.18);
-  padding: 20px; margin-top: 20px; color: var(--gold);
-  font-family: 'Orbitron','Courier New', monospace;
-}
-.panel-shell h2, .panel-shell h3 {
-  color: var(--gold); text-transform: uppercase;
-  text-shadow: 0 0 8px rgba(255,215,0,0.6);
-}
-
-/* === Color panel (rune grid) === */
-#colorPanel { max-width: 880px; margin: 48px auto; padding: 28px; border: 1px solid rgba(212,184,106,0.25); color: var(--ivory); }
-#colorPanel .rune-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
-  background: #1c1c1c; border: 8px solid #2a2a2a;
-}
-#colorPanel .rune-btn {
-  display: grid; place-items: center; min-height: 100px;
-  border: 6px solid #3a3a3a; background: #2a2b2f;
-  font-family: "Cinzel", serif; font-weight: 700; cursor: pointer;
-  box-shadow: inset 0 2px 6px rgba(255,255,255,0.05), inset 0 -4px 8px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6);
-  transition: all 200ms ease;
-}
-#colorPanel .rune-btn .sigil {
-  font-size: 1.6rem; color: rgba(212,184,106,0.9);
-  text-shadow: 0 0 6px rgba(212,184,106,0.6), 0 0 14px rgba(242,240,233,0.35);
-}
-#colorPanel .rune-btn small { margin-top: 6px; font-size: 1rem; color: #aaa; text-shadow: 0 0 3px rgba(0,0,0,0.6); }
-
-/* Active color glows */
-#colorPanel .rune-btn.red.active         { background: radial-gradient(circle at 50% 30%, rgba(160,40,40,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.blue.active        { background: radial-gradient(circle at 50% 30%, rgba(40,100,180,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.green.active       { background: radial-gradient(circle at 50% 30%, rgba(60,150,90,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.mustard.active     { background: radial-gradient(circle at 50% 30%, rgba(190,160,60,0.72), #2a2b2f 70%); }
-#colorPanel .rune-btn.violet.active      { background: radial-gradient(circle at 50% 30%, rgba(130,80,180,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.cyan.active        { background: radial-gradient(circle at 50% 30%, rgba(60,170,190,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.deepred.active     { background: radial-gradient(circle at 50% 30%, rgba(160,50,50,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.emerald.active     { background: radial-gradient(circle at 50% 30%, rgba(50,170,110,0.75), #2a2b2f 70%); }
-#colorPanel .rune-btn.deepviolet.active  { background: radial-gradient(circle at 50% 30%, rgba(110,60,160,0.75), #2a2b2f 70%); }
-
-#colorPanel .rune-btn.active .sigil,
-#colorPanel .rune-btn.active small {
-  color: var(--ivory);
-  text-shadow: 0 0 6px rgba(255,220,120,0.6), 0 0 14px rgba(255,255,180,0.4);
-}
-
-/* Indicators + readout */
-#colorPanel .indicator-lines { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
-#colorPanel .indicator-lines span {
-  width: 28px; height: 4px; border-radius: 2px; background: rgba(90, 60, 30, 0.4);
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.6); transition: all 200ms ease;
-}
-#colorPanel .indicator-lines span.active {
-  background: rgba(255,140,60,0.9);
-  box-shadow: 0 0 6px rgba(255,140,60,0.65), 0 0 12px rgba(255,200,120,0.45), 0 0 20px rgba(255,160,80,0.35);
-}
-#sequenceReadout {
-  font-family: "Share Tech Mono", monospace; font-size: 1.2rem; color: #9fe8ff;
-  background: rgba(20, 30, 40, 0.85); border: 2px inset rgba(120,180,200,0.4);
-  padding: 6px 12px; margin-top: 12px; text-align: center; letter-spacing: 0.1em;
-  text-shadow: 0 0 6px rgba(0,255,255,0.4), 0 0 12px rgba(0,180,255,0.25);
-  overflow: hidden; white-space: nowrap;
+    /* Cube (Labyrinth) */
+   .cube-container {
+  width: 340px;
+  height: 340px;
+  perspective: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Ritual controls: VERIFY + CLEAR (unified aura) */
-.ritual-controls { display: flex; gap: 16px; justify-content: center; margin-top: 24px; }
-
-/* === Unified ceremonial button aura (dark blue–gray) === */
-.runez-btn {
-  margin-top: 22px; width: 100%; padding: 13px 16px;
-  background: linear-gradient(145deg, var(--verify-bg-start), var(--verify-bg-end));
-  color: var(--ivory);
-  border: 2px solid var(--verify-border);
-  border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  box-shadow: 0 0 14px rgba(90,100,140,0.6), inset 0 0 8px rgba(255,255,255,0.1);
-  cursor: pointer; transition: transform 0.14s ease, box-shadow 0.25s ease;
-}
-.runez-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(90,100,140,0.8), inset 0 0 12px rgba(255,255,255,0.2);
-}
-
-/* Optional palette variants (if you need dynamic verify aura) */
-.runez-btn.rune-red    { background: radial-gradient(circle,#b04444,#d46a6a); border-color:#b04444; }
-.runez-btn.rune-violet { background: radial-gradient(circle,#6a3fa8,#8a6ad4); border-color:#6a3fa8; }
-.runez-btn.rune-gold   { background: radial-gradient(circle,#c2a76d,#f2e6a9); border-color:#c2a76d; }
-
-/* === Admin Chamber — Grey Prestige Hybrid === */
-#adminForm {
-  max-width: 640px; margin: 40px auto; padding: 32px;
-  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
-  border-radius: 16px; border: 1px solid rgba(212, 184, 106, 0.25);
-  box-shadow: 0 0 20px rgba(212, 184, 106, 0.12), inset 0 0 14px rgba(60, 65, 75, 0.6), 0 10px 24px rgba(0, 0, 0, 0.55);
-  color: var(--ivory); position: relative; overflow: hidden;
-}
-#adminForm h2 {
-  font-size: 1.5rem; text-align: center; margin-bottom: 28px; color: var(--ivory);
-  letter-spacing: 0.05em; text-shadow: 0 0 8px rgba(212, 184, 106, 0.25);
-  position: relative; padding-top: 70px;
-}
-#adminForm h2::before {
-  content: ""; position: absolute; top: 0; left: 50%; width: 56px; height: 56px; transform: translateX(-50%);
-  background: radial-gradient(circle at center, rgba(212,184,106,0.9), rgba(242,240,233,0.85), rgba(95,192,181,0.7));
-  border-radius: 50%; box-shadow: 0 0 12px rgba(212, 184, 106, 0.5), 0 0 20px rgba(95, 192, 181, 0.35);
-}
-#adminForm h2::after {
-  content: ""; position: absolute; top: 12px; left: 50%; width: 28px; height: 28px; transform: translateX(-50%) rotate(45deg);
-  background: linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));
-  box-shadow: 0 0 8px rgba(212, 184, 106, 0.4), inset 0 0 6px rgba(95, 192, 181, 0.25);
-}
-
-/* Admin labels and fields */
-#adminForm label { display: block; margin: 14px 0 6px; font-weight: 600; color: var(--gold); }
-#adminForm input, #adminForm select {
-  width: 100%; padding: 12px 14px; background: var(--slate); color: var(--ivory);
-  border: 1px solid rgba(90, 106, 122, 0.45); border-radius: 10px;
-  box-shadow: inset 0 0 8px rgba(50, 55, 65, 0.6), 0 1px 6px rgba(0, 0, 0, 0.35);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
-}
-#adminForm input:focus, #adminForm select:focus {
-  outline: none; border-color: var(--gold);
-  box-shadow: inset 0 0 10px rgba(212, 184, 106, 0.25), 0 0 10px rgba(212, 184, 106, 0.25);
-  transform: translateY(-1px);
-}
-#adminForm #verifyStatus { margin-top: 14px; font-size: 0.95rem; text-align: center; color: #b0b2bb; }
-
-/* === Public (“prestige”) form — consolidated === */
-.prestige-form {
-  width: 100%; max-width: 600px; margin: 40px auto; padding: 32px;
-  background: #fff; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  font-family: "Segoe UI", sans-serif; color: #333;
-}
-.prestige-form h1 { font-size: 1.4em; margin-bottom: 20px; text-align: center; color: #4b3f72; }
-.prestige-form label { display: block; margin-top: 14px; margin-bottom: 6px; font-weight: 600; color: #4b3f72; }
-.prestige-form input[type="text"], .prestige-form input[type="tel"], .prestige-form select {
-  width: 100%; padding: 12px 14px; border: 1px solid #b8aee0; border-radius: 6px; font-size: 1em; background: #fafafa; color: #4b3f72;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-.prestige-form input:focus, .prestige-form select:focus { border-color: #6a5acd; box-shadow: 0 0 6px rgba(106,90,205,0.3); outline: none; }
-/* Generator button in public form (use unified aura for parity) */
-.prestige-form #genNameBtn { width: 70%; max-width: 320px; }
-.prestige-form #genNameBtn,
-.prestige-form button[type="submit"] {
-  margin-top: 12px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--verify-border);
-  background: linear-gradient(145deg, var(--verify-bg-start), var(--verify-bg-end));
-  color: var(--ivory); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  box-shadow: 0 0 14px rgba(90,100,140,0.6), inset 0 0 8px rgba(255,255,255,0.1);
-  cursor: pointer; transition: transform 0.14s ease, box-shadow 0.25s ease;
+   .cube {
   width: 100%;
-}
-.prestige-form button[type="submit"]:hover,
-.prestige-form #genNameBtn:hover {
-  transform: translateY(-2px); box-shadow: 0 0 20px rgba(90,100,140,0.8), inset 0 0 12px rgba(255,255,255,0.2);
-}
-
-/* === Mystery Box chamber === */
-#mysteryBoxChamber .mystery-title {
-  font-size: 1.6rem; text-align: center; letter-spacing: 0.06em; color: #f6e27a;
-  text-shadow: 0 0 12px rgba(255, 200, 80, 0.35); margin-bottom: 20px;
-}
-#mysteryBoxChamber .mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
-
-/* === Oversight entry panel === */
-#oversightPanel { max-width: 480px; margin: 0 auto; padding: 20px; }
-@media (max-width: 860px) { #oversightPanel { width: 90%; margin: 0 auto; } }
-
-/* === Super Code panel inputs === */
-#superCodePanel input[type="text"],
-#superCodePanel input[type="password"] {
-  width: 60%; max-width: 280px; margin: 10px auto; display: block;
-  padding: 10px; border-radius: 6px; border: 2px solid #333; background: #111; color: var(--gold); font-weight: bold; box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
-}
-/* Center panel buttons */
-#mysteryBoxPanel button, #finalBranchPanel button, #puzzleBoxPanel button, #superCodePanel button {
-  display: block; margin: 20px auto; text-align: center;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(-120px) rotateX(-15deg) rotateY(20deg);
+  transition: transform 0.15s ease-out;
 }
 
-/* === Rune feedback overlays for panel grid === */
-.rune-btn.glow { box-shadow: 0 0 18px rgba(255,215,0,0.9); }
-.rune-btn.after-correct { outline: 2px solid rgba(106,255,106,0.5); box-shadow: 0 0 12px rgba(106,255,106,0.6); }
-.rune-btn.after-wrong   { outline: 2px solid rgba(255,74,74,0.5); box-shadow: 0 0 12px rgba(255,74,74,0.6); }
-.rune-btn.after-correct, .rune-btn.after-wrong { z-index: 1; }
+    .cube-face {
+      position: absolute; width: 340px; height: 340px;
+      background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
+      border: 2px solid #555; box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 14px; color: #fff;
+    }
+    .cube-face .rune { display: none; margin-top: 10px; font-size: 22px; color: #00f5b5; text-shadow: 0 0 8px rgba(0,245,181,0.65); }
+    .front  { transform: rotateY(0deg)   translateZ(170px); }
+    .back   { transform: rotateY(180deg) translateZ(170px); }
+    .right  { transform: rotateY(90deg)  translateZ(170px); }
+    .left   { transform: rotateY(-90deg) translateZ(170px); }
+    .top    { transform: rotateX(90deg)  translateZ(170px); }
+    .bottom { transform: rotateX(-90deg) translateZ(170px); }
+    #unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
 
-/* === Puzzle Box: imgVoid shell + cube === */
+   /* Lights Out */
+/* Lights Out */
+/* Lights Out — final override */
+/* Lights Out */
+#lightsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 6px;
+}
+
+#lightsGrid .light-cell {
+  width: 60px;
+  height: 60px;
+  background: #000;              /* solid black OFF state */
+  border: 1px solid #333;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+  transition: background 140ms ease, box-shadow 140ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#lightsGrid .light-cell.on {
+  background: #ffd700;           /* glowing gold ON state */
+  box-shadow: 0 0 14px rgba(255,215,0,0.7),
+              inset 0 0 6px rgba(0,0,0,0.4);
+}
+
+    /* Labyrinth Path */
+    #labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
+    #labyrinthGrid .cell { width: 48px; height: 48px; background: #161616; border: 1px solid #3a3a3a; border-radius: 6px; cursor: pointer; transition: background 140ms ease, box-shadow 140ms ease; }
+    #labyrinthGrid .cell.on { background: #00b8f5; box-shadow: 0 0 14px rgba(0,184,245,0.55); }
+
+    /* Memory */
+    #memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
+    .mem { width: 64px; height: 64px; border-radius: 10px; font-size: 22px; background: #212121; border: 1px solid #4b4b4b; transition: filter 150ms ease, box-shadow 150ms ease; }
+    .mem.flash { filter: brightness(1.6); box-shadow: 0 0 14px rgba(255,255,255,0.4); }
+
+    /* Math */
+    #mathGrid { display: flex; gap: 10px; }
+    .num { min-width: 54px; height: 54px; border-radius: 8px; background: #212121; border: 1px solid #4b4b4b; font-weight: 600; font-size: 18px; transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
+    .num.sel { transform: translateY(-2px); background: #333; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
+
+    /* Final clearance mini-cube (visual) */
+    .glowing-cube {
+      width: 120px; height: 120px; margin: 16px auto;
+      background: linear-gradient(145deg, #6a0dad, #ffd700);
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(106,13,173,0.8), 0 0 40px rgba(255,215,0,0.6);
+      animation: cubeGlow 3s infinite alternate;
+    }
+    @keyframes cubeGlow {
+      0%   { transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+      50%  { transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
+      100% { transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+    }
+
+    /* Small screen polish */
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .container { padding: 20px; }
+      h1 { font-size: 1.4em; }
+      .crest-header { width: 80px; height: 80px; }
+    }
+/* Void shell for Puzzle Box */
 #imgVoidPuzzle {
-  width: 100%; max-width: 340px; aspect-ratio: 1 / 1; margin: 0 auto; padding: 16px;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  padding: 16px;
   background: radial-gradient(600px 400px at 50% 50%, rgba(0,0,0,0.85), #0d0d0d);
-  border-radius: 16px; box-shadow: inset 0 0 80px rgba(0,0,0,0.95), 0 0 60px rgba(255,215,0,0.08);
-  transition: transform 0.6s ease, max-width 0.6s ease;
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.9),
+    0 0 40px rgba(255,215,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-#imgVoidPuzzle.unlocked {
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 0 40px rgba(255,215,0,0.6), 0 0 80px rgba(106,13,173,0.6), 0 0 120px rgba(0,245,181,0.4);
-  animation: auraDance 6s infinite alternate;
-}
-@keyframes auraDance { 0%{ transform: scale(1) rotate(0deg); } 50%{ transform: scale(1.05) rotate(2deg); } 100%{ transform: scale(1) rotate(-2deg); } }
 
+/* Cube container */
 .cube-container {
-  width: 340px; height: 340px; perspective: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: center;
+  width: 340px;
+  height: 340px;
+  perspective: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(-120px) rotateX(-15deg) rotateY(20deg); transition: transform 0.15s ease-out; }
+
 .cube-face {
-  position: absolute; width: 340px; height: 340px;
-  background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
-  border: 2px solid #555; box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
-  display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 14px; color: #fff;
+  width: 340px;
+  height: 340px;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
-.cube-face .rune { display: none; margin-top: 10px; font-size: 22px; color: #00f5b5; text-shadow: 0 0 8px rgba(0,245,181,0.65); }
+.cube-face * {
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+
+/* True cube transforms */
 .front  { transform: rotateY(0deg)   translateZ(170px); }
 .back   { transform: rotateY(180deg) translateZ(170px); }
 .right  { transform: rotateY(90deg)  translateZ(170px); }
@@ -316,118 +287,420 @@ h1, h2, h3 {
 .top    { transform: rotateX(90deg)  translateZ(170px); }
 .bottom { transform: rotateX(-90deg) translateZ(170px); }
 
-#unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
-
-/* Lights Out */
-#lightsGrid { display: grid; grid-template-columns: repeat(3, 60px); gap: 6px; }
-#lightsGrid .light-cell {
-  width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.7); transition: background 140ms ease, box-shadow 140ms ease; -webkit-appearance: none; appearance: none;
-}
-#lightsGrid .light-cell.on { background: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.7), inset 0 0 6px rgba(0,0,0,0.4); }
-
-/* Labyrinth Path */
-#labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
-#labyrinthGrid .cell { width: 48px; height: 48px; background: #161616; border: 1px solid #3a3a3a; border-radius: 6px; cursor: pointer; transition: background 140ms ease, box-shadow 140ms ease; }
-#labyrinthGrid .cell.on { background: #00b8f5; box-shadow: 0 0 14px rgba(0,184,245,0.55); }
-
-/* Memory */
-#memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
-.mem { width: 64px; height: 64px; border-radius: 10px; font-size: 22px; background: #212121; border: 1px solid #4b4b4b; transition: filter 150ms ease, box-shadow 150ms ease; }
-.mem.flash { filter: brightness(1.6); box-shadow: 0 0 14px rgba(255,255,255,0.4); }
-
-/* Math */
-#mathGrid { display: flex; gap: 10px; }
-.num { min-width: 54px; height: 54px; border-radius: 8px; background: #212121; border: 1px solid #4b4b4b; font-weight: 600; font-size: 18px; transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
-.num.sel { transform: translateY(-2px); background: #333; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
-
-/* Final clearance cube */
-.glowing-cube {
-  width: 120px; height: 120px; margin: 16px auto;
-  background: linear-gradient(145deg, #6a0dad, #ffd700);
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(106,13,173,0.8), 0 0 40px rgba(255,215,0,0.6);
-  animation: cubeGlow 3s infinite alternate;
-}
-@keyframes cubeGlow {
-  0%{ transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
-  50%{ transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
-  100%{ transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
+/* Rune styling */
+.rune {
+  display: none;
+  margin-top: 10px;
+  font-size: 22px;
+  color: #00f5b5;
+  text-shadow: 0 0 8px rgba(0,245,181,0.65);
 }
 
-/* PuzzleBox panel width (regular size) */
-#puzzleBoxPanel { max-width: 480px; margin: 40px auto; padding: 20px; }
-#imgVoidPuzzle { transition: max-width 0.6s ease; }
-@media (max-width: 768px) {
-  #imgVoidPuzzle.shrunk { max-width: 50%; margin: 0 auto; padding: 12px; }
+/* Inputs and buttons */
+.cube-face input,
+.cube-face button,
+.cube-face .cell,
+.cube-face .num {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-/* Mobile PuzzleBox notice */
-#puzzleNotice {
-  display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  max-width: 90%; background: rgba(0,0,0,0.85); color: #ffd700;
-  font-family: 'Orbitron','Courier New', monospace; font-size: 0.95em; padding: 12px 18px; border-radius: 10px;
-  box-shadow: 0 0 12px rgba(255,215,0,0.6); z-index: 9999; text-align: center;
+#dial {
+  width: 100%;
+  margin-top: 8px;
 }
-#puzzleNotice.show { display: block; animation: fadeIn 0.4s ease; }
-@keyframes fadeIn { from{opacity:0; transform:translateX(-50%) translateY(20px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
 
-/* Hidden sigil pulse */
-#hiddenSigil {
-  display: none; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-  font-size: 22px; color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.8); animation: pulseSigil 2s infinite;
+#wordInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #666;
+  background: #111;
+  color: #fff;
 }
-@keyframes pulseSigil { 0%{opacity:0.4; transform:translateX(-50%) scale(0.9);} 50%{opacity:1; transform:translateX(-50%) scale(1.1);} 100%{opacity:0.4; transform:translateX(-50%) scale(0.9);} }
-#hiddenSigil.fadeOut { animation: fadeOutSigil 2s forwards; }
-@keyframes fadeOutSigil { from{opacity:1; transform:translateX(-50%) scale(1);} to{opacity:0; transform:translateX(-50%) scale(0.8);} }
 
-/* Cube fade-out */
-#labyrinthCube.fadeOut { animation: fadeOutCube 3s forwards; }
-@keyframes fadeOutCube { from{opacity:1; transform:scale(1) rotateY(0deg);} to{opacity:0; transform:scale(0.85) rotateY(15deg);} }
-
-/* Mystery Box (hidden branch) */
-#mysteryBoxPanel { display: none; border: 3px solid #6a0dad; box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6); color: #e0dfff; text-align: center; position: relative; overflow: hidden; }
-.mystery-title { margin-bottom: 12px; }
-.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
-.cube-aura {
-  position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background: radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%), radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
-  animation: auraPulse 5s ease-in-out infinite;
-}
-@keyframes auraPulse { 0%,100%{filter:saturate(1); opacity:0.75;} 50%{filter:saturate(1.3); opacity:1;} }
-
-/* Locker dial */
-.locker-dial { width: 180px; height: 180px; position: relative; }
-.locker-dial .dial-face {
-  width: 100%; height: 100%; border-radius: 50%;
-  background: radial-gradient(120px 120px at 50% 50%, #0e0e0e, #111);
-  border: 2px solid #555; box-shadow: inset 0 0 18px rgba(0,0,0,0.8), 0 0 16px rgba(0,245,181,0.15);
-  position: relative;
-}
-.locker-dial .dial-pointer {
-  position: absolute; left: 50%; top: 10%; width: 3px; height: 40%;
-  transform-origin: bottom center; background: #00f5b5; box-shadow: 0 0 10px rgba(0,245,181,0.6);
-}
-.locker-dial .dial-numbers {
-  position: absolute; inset: 0; display: block; pointer-events: none; color: #ddd; font-size: 12px; font-weight: 700;
-}
-.locker-dial .dial-numbers span { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; }
-
-/* Small screen polish */
+/* Mobile scaling */
 @media (max-width: 480px) {
-  body { padding: 10px; }
-  .container { padding: 20px; }
-  h1 { font-size: 1.4em; }
-  .crest-header { width: 80px; height: 80px; }
-}
-
-/* Tablet/Mobile panel override */
-@media (max-width: 768px) {
-  .panel-shell, #colorPanel, #adminForm, #mysteryBoxChamber {
-    width: 100%; max-width: 100%; margin: 20px auto; padding: 20px; border-radius: 12px;
+  #imgVoidPuzzle {
+    max-width: 240px;
+    padding: 12px;
+  }
+  .cube-face {
+    font-size: 12px;
+    padding: 8px;
   }
 }
-/* Admin VERIFY button (source of truth) */
+
+    #imgVoidPuzzle {
+  box-shadow:
+    inset 0 0 80px rgba(0,0,0,0.95),
+    0 0 60px rgba(255,215,0,0.08);
+}
+/* Panel always regular size */
+#puzzleBoxPanel {
+  max-width: 480px;   /* fixed ceremonial width */
+  margin: 40px auto;
+  padding: 20px;
+  background: var(--panel-bg);
+  border: 3px solid #444;
+  border-radius: 12px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8),
+              0 0 20px rgba(255,215,0,0.18);
+  color: var(--gold);
+  font-family: 'Orbitron','Courier New', monospace;
+}
+
+/* Void shell default */
+#imgVoidPuzzle {
+  transition: transform 0.6s ease, max-width 0.6s ease;
+}
+
+/* Mobile shrink state */
+@media (max-width: 768px) {
+  #imgVoidPuzzle.shrunk {
+    max-width: 50%;   /* half the panel width */
+    transform: scale(0.9); /* slight inward shrink */
+    margin: 0 auto;
+    padding: 12px;
+  }
+}
+
+
+
+    /* Prestige main form */
+.prestige-form input, .prestige-form select, .prestige-form button {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+/* Chamber forms (Admin + Super) */
+.chamber-form {
+  background: radial-gradient(circle at center, #1a1a1a, #0d0d0d);
+  border: 3px solid #444;
+  color: var(--gold);
+  font-family: 'Orbitron','Courier New', monospace;
+}
+.chamber-form input, .chamber-form select {
+  background: #111;
+  border: 2px solid #333;
+  color: var(--gold);
+}
+/* Main ceremonial form buttons */
+.prestige-form #genNameBtn {
+  margin-top: 10px;
+  background: #c2a76d; /* rich gold */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.95em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+.prestige-form #genNameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Prestige ceremonial form container */
+.prestige-form {
+  max-width: 480px;                /* slightly wider for balance */
+  margin: 40px auto;
+  padding: 28px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* Headings */
+.prestige-form h1 {
+  font-size: 1.4em;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #4b3f72;                  /* ceremonial purple */
+}
+
+/* Labels */
+.prestige-form label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #4b3f72;                  /* purple accent */
+}
+
+/* Inputs & selects */
+.prestige-form input[type="text"],
+.prestige-form input[type="tel"],
+.prestige-form select {
+  width: 100%;                     /* full width for clean alignment */
+  padding: 12px 14px;
+  border: 1px solid #b8aee0;       /* soft purple border */
+  border-radius: 6px;
+  font-size: 1em;
+  background: #fafafa;
+  color: #4b3f72;                  /* purple text */
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.prestige-form input:focus,
+.prestige-form select:focus {
+  border-color: #6a5acd;
+  box-shadow: 0 0 6px rgba(106,90,205,0.3);
+  outline: none;
+}
+
+/* Gold generator button */
+.prestige-form #genNameBtn {
+  margin-top: 10px;
+  background: #c2a76d;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.95em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+.prestige-form #genNameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Purple submit button */
+.prestige-form button[type="submit"] {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
+  transition: transform 0.15s ease, background 0.25s ease;
+}
+.prestige-form button[type="submit"]:hover {
+  background: linear-gradient(to right, #6a5acd, #4b3f72);
+  transform: translateY(-2px);
+}
+
+.prestige-form {
+  width: 100%;
+  max-width: 600px;       /* wider, matches chamber panels */
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.prestige-form input[type="text"],
+.prestige-form input[type="tel"],
+.prestige-form select {
+  .prestige-form label {
+  color: #4b3f72;          /* purple headings */
+}
+.prestige-form input,
+.prestige-form select {
+  border: 1px solid #b8aee0;
+  color: #4b3f72;
+}
+width: 100%;             /* full width */
+  box-sizing: border-box;  /* padding doesn’t break alignment */
+}
+/* Mystery Chamber — using the correct ID */
+#mysteryBoxChamber {
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 32px;
+  background: radial-gradient(1200px 600px at 50% -20%, rgba(255, 230, 120, 0.08), transparent 60%),
+              linear-gradient(180deg, #0b0b12 0%, #0e0e18 100%);
+  border-radius: 16px;
+  box-shadow:
+    0 0 24px rgba(255, 200, 80, 0.15),
+    inset 0 0 18px rgba(255, 220, 120, 0.06),
+    0 12px 30px rgba(0, 0, 0, 0.6);
+  color: #e9e3ff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header and title */
+#mysteryBoxChamber .chamber-title {
+  font-size: 1.6rem;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: #f6e27a;
+  text-shadow: 0 0 12px rgba(255, 200, 80, 0.35);
+  margin-bottom: 20px;
+}
+
+/* Labels and inputs */
+#mysteryBoxChamber label {
+  display: block;
+  margin: 16px 0 8px;
+  font-weight: 600;
+  color: #cbbcff;
+}
+#mysteryBoxChamber input,
+#mysteryBoxChamber select {
+  width: 100%;
+  padding: 12px 14px;
+  background: #11111a;
+  color: #e9e3ff;
+  border: 1px solid #6a5acd;
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(106, 90, 205, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#mysteryBoxChamber input:focus,
+#mysteryBoxChamber select:focus {
+  border-color: #b5a9ff;
+  box-shadow: 0 0 10px rgba(181, 169, 255, 0.35);
+  outline: none;
+}
+
+/* Submit button */
+#mysteryBoxChamber .mystery-submit {
+  margin-top: 26px;
+  width: 100%;
+  padding: 14px 16px;
+  background: linear-gradient(90deg, #f2d16b, #f8e58f);
+  color: #11111a;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 0 18px rgba(255, 220, 120, 0.45);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease;
+}
+#mysteryBoxChamber .mystery-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 230, 140, 0.6);
+}
+@media (max-width: 768px) {
+  .panel-shell,
+  #colorPanel,
+  #adminForm,
+  #mysteryBoxChamber {
+    width: 100%;
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 12px;
+  }
+}
+
+ /* Admin Chamber — Grey Prestige Hybrid */
+#adminForm {
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 32px;
+  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(212, 184, 106, 0.25); /* prestige gold trace */
+  box-shadow:
+    0 0 20px rgba(212, 184, 106, 0.12),
+    inset 0 0 14px rgba(60, 65, 75, 0.6),
+    0 10px 24px rgba(0, 0, 0, 0.55);
+  color: #f2f0e9;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Title with sigil marker above (interlocked geometry) */
+#adminForm h2 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 28px;
+  color: #f2f0e9;                /* ivory */
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px rgba(212, 184, 106, 0.25); /* prestige glow */
+  position: relative;
+  padding-top: 70px;             /* headroom for sigil */
+}
+
+/* Sigil marker — golden/ivory/teal ring */
+#adminForm h2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at center,
+    rgba(212,184,106,0.9) 0%,     /* gold */
+    rgba(242,240,233,0.85) 42%,   /* ivory */
+    rgba(95,192,181,0.7) 100%     /* teal undertone */
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 0 12px rgba(212, 184, 106, 0.5),
+    0 0 20px rgba(95, 192, 181, 0.35);
+}
+
+/* Interlocked square inside the ring */
+#adminForm h2::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%) rotate(45deg);
+  background: linear-gradient(135deg,
+    rgba(242,240,233,0.95),       /* ivory */
+    rgba(212,184,106,0.85)        /* gold */
+  );
+  box-shadow:
+    0 0 8px rgba(212, 184, 106, 0.4),
+    inset 0 0 6px rgba(95, 192, 181, 0.25);
+}
+
+/* Labels */
+#adminForm label {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 600;
+  color: #d4b86a;
+}
+
+/* Inputs & selects */
+#adminForm input,
+#adminForm select {
+  width: 100%;
+  padding: 12px 14px;
+  background: #2f3036;
+  color: #f2f0e9;
+  border: 1px solid rgba(90, 106, 122, 0.45); /* slate undertone */
+  border-radius: 10px;
+  box-shadow:
+    inset 0 0 8px rgba(50, 55, 65, 0.6),
+    0 1px 6px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+#adminForm input:focus,
+#adminForm select:focus {
+  outline: none;
+  border-color: #d4b86a;
+  box-shadow:
+    inset 0 0 10px rgba(212, 184, 106, 0.25),
+    0 0 10px rgba(212, 184, 106, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Verify button */
 #adminForm #verifyTierBtn {
   margin-top: 22px;
   width: 100%;
@@ -452,76 +725,564 @@ h1, h2, h3 {
   filter: brightness(1.05);
 }
 
-/* Rune VERIFY + CLEAR buttons — identical aura */
-#runeVerifyBtn,
-#runeClearBtn {
+/* Status message */
+#adminForm #verifyStatus {
+  margin-top: 14px;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #b0b2bb;
+}
+/* Panel container */
+#colorPanel {
+  max-width: 880px;
+  margin: 48px auto;
+  padding: 28px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #2a2b2f 0%, #3a3b42 100%);
+  box-shadow: 0 0 40px rgba(212,184,106,0.12), inset 0 0 24px rgba(30,30,35,0.85);
+  border: 1px solid rgba(212,184,106,0.25);
+  color: #f2f0e9;
+}
+
+/* Grid wall */
+#colorPanel .rune-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: #1c1c1c;
+  border: 8px solid #2a2a2a;
+}
+
+/* Keystone base */
+#colorPanel .rune-btn {
+  display: grid;
+  place-items: center;
+  min-height: 100px;
+  border: 6px solid #3a3a3a;
+  background: #2a2b2f;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.05),
+              inset 0 -4px 8px rgba(0,0,0,0.9),
+              0 0 12px rgba(0,0,0,0.6);
+  transition: all 200ms ease;
+}
+
+/* Sigils glowing faintly */
+#colorPanel .rune-btn .sigil {
+  font-size: 1.6rem;
+  color: rgba(212,184,106,0.9);
+  text-shadow: 0 0 6px rgba(212,184,106,0.6),
+               0 0 14px rgba(242,240,233,0.35);
+}
+#colorPanel .rune-btn small {
+  margin-top: 6px;
+  font-size: 1rem;
+  color: #aaa;
+  text-shadow: 0 0 3px rgba(0,0,0,0.6);
+}
+
+/* Active states */
+#colorPanel .rune-btn.red.active    { background: radial-gradient(circle at 50% 30%, rgba(160,40,40,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.blue.active   { background: radial-gradient(circle at 50% 30%, rgba(40,100,180,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.green.active  { background: radial-gradient(circle at 50% 30%, rgba(60,150,90,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.mustard.active{ background: radial-gradient(circle at 50% 30%, rgba(190,160,60,0.72), #2a2b2f 70%); }
+#colorPanel .rune-btn.violet.active { background: radial-gradient(circle at 50% 30%, rgba(130,80,180,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.cyan.active   { background: radial-gradient(circle at 50% 30%, rgba(60,170,190,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.deepred.active{ background: radial-gradient(circle at 50% 30%, rgba(160,50,50,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.emerald.active{ background: radial-gradient(circle at 50% 30%, rgba(50,170,110,0.75), #2a2b2f 70%); }
+#colorPanel .rune-btn.deepviolet.active{ background: radial-gradient(circle at 50% 30%, rgba(110,60,160,0.75), #2a2b2f 70%); }
+
+/* Active inscriptions glow brighter */
+#colorPanel .rune-btn.active .sigil,
+#colorPanel .rune-btn.active small {
+  color: #f2f0e9;
+  text-shadow: 0 0 6px rgba(255,220,120,0.6),
+               0 0 14px rgba(255,255,180,0.4);
+}
+
+/* Indicator lines */
+#colorPanel .indicator-lines {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+#colorPanel .indicator-lines span {
+  width: 28px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(90, 60, 30, 0.4);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
+  transition: all 200ms ease;
+}
+#colorPanel .indicator-lines span.active {
+  background: rgba(255,140,60,0.9);
+  box-shadow: 0 0 6px rgba(255,140,60,0.65),
+              0 0 12px rgba(255,200,120,0.45),
+              0 0 20px rgba(255,160,80,0.35);
+}
+
+/* Controls and readout */
+#colorPanel .ritual-controls {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 24px;
+}
+#colorPanel #sequenceReadout {
+  font-family: "Share Tech Mono", monospace;
+  font-size: 1.2rem;
+  color: #9fe8ff;
+  background: rgba(20, 30, 40, 0.85);
+  border: 2px inset rgba(120,180,200,0.4);
+  padding: 6px 12px;
+  margin-top: 12px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 6px rgba(0,255,255,0.4),
+               0 0 12px rgba(0,180,255,0.25);
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* Default (normal screen) */
+#puzzleBoxPanel {
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+/* Void shell default */
+#imgVoidPuzzle {
+  transition: max-width 0.6s ease; /* only animate width */
+}
+
+/* Mobile shrink state */
+@media (max-width: 768px) {
+  #imgVoidPuzzle.shrunk {
+    max-width: 50%;   /* half the panel width */
+    margin: 0 auto;
+    padding: 12px;
+  }
+}
+
+}
+// When Puzzle Box opens
+function openPuzzleBox() {
+  document.getElementById('puzzleBoxPanel').classList.add('shrunk');
+  document.getElementById('puzzleBoxPanel').style.display = 'block';
+}
+
+// When Puzzle Box is solved or closed
+function closePuzzleBox() {
+  document.getElementById('puzzleBoxPanel').classList.remove('shrunk');
+  document.getElementById('puzzleBoxPanel').style.display = 'none';
+}
+
+/* Shrink state for mobile */
+@media (max-width: 768px) {
+  #imgVoidPuzzle.shrunk {
+    max-width: 50%;   /* half screen width */
+    margin: 0 auto;
+    padding: 12px;
+  }
+}
+
+/* Mobile PuzzleBox notification */
+#puzzleNotice {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  background: rgba(0,0,0,0.85);
+  color: #ffd700;
+  font-family: 'Orbitron','Courier New', monospace;
+  font-size: 0.95em;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(255,215,0,0.6);
+  z-index: 9999;
+  text-align: center;
+}
+#puzzleNotice.show {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#hiddenSigil {
+  display: none;
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  color: #ffd700;
+  text-shadow: 0 0 12px rgba(255,215,0,0.8);
+  animation: pulseSigil 2s infinite;
+}
+
+@keyframes pulseSigil {
+  0%   { opacity: 0.4; transform: translateX(-50%) scale(0.9); }
+  50%  { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+  100% { opacity: 0.4; transform: translateX(-50%) scale(0.9); }
+}
+
+/* Fade-out effect */
+#hiddenSigil.fadeOut {
+  animation: fadeOutSigil 2s forwards;
+}
+
+@keyframes fadeOutSigil {
+  from { opacity: 1; transform: translateX(-50%) scale(1); }
+  to   { opacity: 0; transform: translateX(-50%) scale(0.8); }
+}
+
+#imgVoidPuzzle.unlocked {
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.9),
+    0 0 40px rgba(255,215,0,0.6),
+    0 0 80px rgba(106,13,173,0.6),
+    0 0 120px rgba(0,245,181,0.4);
+  animation: auraDance 6s infinite alternate;
+}
+
+@keyframes auraDance {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.05) rotate(2deg); }
+  100% { transform: scale(1) rotate(-2deg); }
+}
+/* Cube fade-out */
+#labyrinthCube.fadeOut {
+  animation: fadeOutCube 3s forwards;
+}
+
+@keyframes fadeOutCube {
+  from { opacity: 1; transform: scale(1) rotateY(0deg); }
+  to   { opacity: 0; transform: scale(0.85) rotateY(15deg); }
+}
+
+/* === Mystery Box chamber (hidden branch) === */
+#mysteryBoxPanel {
+  display: none;
+  border: 3px solid var(--violet);
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6);
+  color: #e0dfff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mystery-title { margin-bottom: 12px; }
+.mystery-crest { font-size: 2em; margin-bottom: 16px; text-shadow: 0 0 12px rgba(255,215,0,0.8); }
+
+/* Glowing cube aura behind Mystery Box */
+.cube-aura {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%),
+    radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: auraPulse 5s ease-in-out infinite;
+}
+@keyframes auraPulse {
+  0%, 100% { filter: saturate(1); opacity: 0.75; }
+  50%      { filter: saturate(1.3); opacity: 1; }
+}
+/* Oversight entry panel */
+#oversightPanel {
+  max-width: 480px;       /* fixed ceremonial width */
+  margin: 0 auto;         /* center horizontally */
+  padding: 20px;
+}
+
+/* Tablet/Mobile override */
+@media (max-width: 860px) {
+  #oversightPanel {
+    width: 90%;           /* responsive but centered */
+    margin: 0 auto;
+  }
+}
+
+#adminCode {
+  width: 60%;             /* narrower field */
+  max-width: 280px;       /* ceremonial cap */
+  margin: 10px auto;      /* center it */
+  display: block;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  background: #111;
+  color: var(--gold);
+  font-weight: bold;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+/* Center all ritual buttons */
+#mysteryBoxPanel button,
+#finalBranchPanel button,
+#puzzleBoxPanel button,
+#superCodePanel button {
+  display: block;
+  margin: 20px auto;   /* centers horizontally */
+  text-align: center;
+}
+#superCodePanel input[type="text"],
+#superCodePanel input[type="password"] {
+  width: 60%;          /* narrower */
+  max-width: 280px;    /* ceremonial cap */
+  margin: 10px auto;   /* center */
+  display: block;
+}
+/* Baseline rune button to ensure the overlay is visible */
+.rune-btn {
+  position: relative;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease, outline-color 0.2s ease;
+}
+
+/* Tap shimmer */
+.rune-btn.glow {
+  box-shadow: 0 0 18px rgba(255,215,0,0.9);
+}
+
+/* Correct faint gesture */
+.rune-btn.after-correct {
+  /* keep original color class visible; add subtle overlay */
+  outline: 2px solid rgba(106,255,106,0.5);
+  box-shadow: 0 0 12px rgba(106,255,106,0.6);
+}
+
+/* Wrong faint gesture (brief) */
+.rune-btn.after-wrong {
+  outline: 2px solid rgba(255,74,74,0.5);
+  box-shadow: 0 0 12px rgba(255,74,74,0.6);
+}/* Locker dial */
+.locker-dial { width: 180px; height: 180px; position: relative; }
+.locker-dial .dial-face {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: radial-gradient(120px 120px at 50% 50%, #0e0e0e, #111);
+  border: 2px solid #555;
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.8), 0 0 16px rgba(0,245,181,0.15);
+  position: relative;
+}
+.locker-dial .dial-pointer {
+  position: absolute; left: 50%; top: 10%;
+  width: 3px; height: 40%;
+  transform-origin: bottom center;
+  background: #00f5b5;
+  box-shadow: 0 0 10px rgba(0,245,181,0.6);
+}
+.locker-dial .dial-numbers {
+  position: absolute; inset: 0; display: block;
+  pointer-events: none; color: #ddd; font-size: 12px; font-weight: 700;
+}
+.locker-dial .dial-numbers span {
+  position: absolute; left: 50%; top: 50%;
+  transform-origin: 0 0;
+}
+
+
+/* Optional: prevent other styles from erasing our hints */
+.rune-btn.after-correct, .rune-btn.after-wrong {
+  z-index: 1;
+}
+
+/* Submit button — prestige aura */
+#adminSubmitBtn {
   margin-top: 22px;
   width: 100%;
-  padding: 13px 16px;
-  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
-  color: #f2f0e9;
-  border: 1px solid rgba(212, 184, 106, 0.35);
+  padding: 14px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: #fff;
+  border: none;
   border-radius: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.5),
-    inset 0 0 6px rgba(212, 184, 106, 0.12);
+  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
 }
-#runeVerifyBtn:hover,
-#runeClearBtn:hover {
+#adminSubmitBtn:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.6),
-    0 0 14px rgba(212, 184, 106, 0.25);
-  filter: brightness(1.05);
+  box-shadow: 0 6px 16px rgba(75,63,114,0.4);
 }
-/* Admin form text field focus aura (source of truth) */
-#adminForm input:focus,
-#adminForm select:focus {
+
+/* Verify button — distinct gold aura */
+#verifyTierBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #d4b86a, #f2e6a9);
+  color: #111;
+  border: 1px solid #d4b86a;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(212,184,106,0.4);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease;
+}
+#verifyTierBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(212,184,106,0.6);
+}
+/* Submit button — prestige aura with rune glow */
+#adminSubmitBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 14px;
+  background: radial-gradient(circle at 50% 50%, #4b3f72, #6a5acd);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 12px rgba(75,63,114,0.6), inset 0 0 8px rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+#adminSubmitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(106,90,205,0.8), inset 0 0 12px rgba(255,255,255,0.25);
+}
+
+/* Verify button — rune-inspired gold aura */
+#verifyTierBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  background: radial-gradient(circle at 50% 50%, #d4b86a, #f2e6a9);
+  color: #111;
+  border: 2px solid #d4b86a;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 0 14px rgba(212,184,106,0.6), inset 0 0 8px rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.25s ease;
+}
+#verifyTierBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(212,184,106,0.8), inset 0 0 12px rgba(255,255,255,0.3);
+}
+/* Verify button adopts rune palette colors */
+#verifyTierBtn.rune-red    { background: radial-gradient(circle,#b04444,#d46a6a); border-color:#b04444; }
+#verifyTierBtn.rune-violet { background: radial-gradient(circle,#6a3fa8,#8a6ad4); border-color:#6a3fa8; }
+#verifyTierBtn.rune-gold   { background: radial-gradient(circle,#c2a76d,#f2e6a9); border-color:#c2a76d; }
+
+/* Example: assign on appear (JS) */
+#adminSubmitBtn {
+  margin-top: 22px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #4b3f72, #6a5acd);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(75,63,114,0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+}
+#adminSubmitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(75,63,114,0.4);
+}
+/* Form container */
+.chamber-form {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 18px;
+}
+
+/* Labels */
+.chamber-form label {
+  display: block;
+  margin: 14px 0 8px;
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+/* Inputs + selects + textareas — unified sizing */
+.chamber-form input[type="text"],
+.chamber-form input[type="password"],
+.chamber-form input[type="tel"],
+.chamber-form input[type="email"],
+.chamber-form select,
+.chamber-form textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  color: #eee;
+  background: #1f1f28;
+  border: 1px solid #3a3a46;
+  border-radius: 10px;
   outline: none;
-  border-color: #d4b86a;
-  box-shadow:
-    inset 0 0 10px rgba(212, 184, 106, 0.25),
-    0 0 10px rgba(212, 184, 106, 0.25);
-  transform: translateY(-1px);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Admin Generator + Rune VERIFY/CLEAR buttons — same glow aura */
-#genNameBtn,
-#runeVerifyBtn,
-#runeClearBtn {
-  margin-top: 22px;
+.chamber-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.chamber-form input:focus,
+.chamber-form select:focus,
+.chamber-form textarea:focus {
+  border-color: #d4b86a;
+  box-shadow: 0 0 10px rgba(212,184,106,0.35), inset 0 0 6px rgba(255,255,255,0.08);
+}
+
+/* Helper text / status */
+#verifyStatus {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #e6d691;
+}
+
+/* Unified rune aura for Admin Submit + Generate */
+.btn-rune {
+  display: inline-block;
   width: 100%;
-  padding: 13px 16px;
-  background: linear-gradient(90deg, #4a4b52, #5a6a7a);
-  color: #f2f0e9;
-  border: 1px solid rgba(212, 184, 106, 0.35);
+  padding: 14px 16px;
+  margin-top: 16px;
+  background: linear-gradient(145deg, #f2e6a9, #d4b86a);
+  color: #111;
+  border: 2px solid #d4b86a;
   border-radius: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.5),
-    inset 0 0 6px rgba(212, 184, 106, 0.12);
+    0 0 12px rgba(212,184,106,0.55),
+    inset 0 0 8px rgba(255,255,255,0.22);
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+  transition: transform 0.14s ease, box-shadow 0.25s ease;
 }
 
-/* Hover glow matches text field focus aura */
-#genNameBtn:hover,
-#runeVerifyBtn:hover,
-#runeClearBtn:hover {
+.btn-rune:hover {
   transform: translateY(-2px);
-  border-color: #d4b86a;
   box-shadow:
-    inset 0 0 10px rgba(212, 184, 106, 0.25),
-    0 0 10px rgba(212, 184, 106, 0.25),
-    0 10px 24px rgba(0, 0, 0, 0.6);
-  filter: brightness(1.05);
+    0 0 18px rgba(212,184,106,0.75),
+    inset 0 0 12px rgba(255,255,255,0.30);
 }
 
+/* Optional: side-by-side buttons on wide screens */
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .btn-row {
+    grid-template-columns: 1fr;
+  }
+}
 
   </style>
 </head>
@@ -579,8 +1340,14 @@ h1, h2, h3 {
       onsubmit="return handleAdminAccess(false);"
       class="chamber-form"
       style="display:none;">
-   <h2>Admin Access</h2>
-  
+
+  <h2>Admin Access</h2>
+<!-- Specialized name generator -->
+<button type="button" id="genNameBtn">Generate Specialized Name</button>
+
+<!-- Target field (same as public form) -->
+<input type="text" id="name" name="name" placeholder="Ceremonial Name" />
+
    <!-- Tier selection -->
   <label for="adminTier">Tier</label>
   <select id="adminTier" name="adminTier" required>
@@ -606,17 +1373,6 @@ h1, h2, h3 {
     <option value="LegacyAdmin">LegacyAdmin</option>
   </select>
 
- 
-<!-- Specialized name generator -->
-<button type="reset" id="runeClearBtn">Generate Specialized Name</button><br>
-<br>
-<br>
-
-<!-- Target field (same as public form) -->
-<input type="text" id="name" name="name" placeholder="Ceremonial Name" />
-
-  
-
   <!-- Contact phone -->
   <label for="adminPhone">Contact Phone</label>
   <input id="adminPhone" name="phone" type="tel" placeholder="(###) ###-####" required />
@@ -631,7 +1387,7 @@ h1, h2, h3 {
   <input type="email" id="adminEmail" name="email" style="display:none;">
 
   <!-- Buttons -->
-  <button type="submit" id="adminSubmitBtn" class="runez-btn">Submit Admin Form</button>
+  <button type="submit" id="adminSubmitBtn">Submit Admin Form</button>
   <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
 
   <!-- Status -->
@@ -660,8 +1416,8 @@ h1, h2, h3 {
       <div class="rune-grid" id="panelButtons"></div>
 
       <div class="ritual-controls">
-        <button type="button" id="runeVerifyBtn">VERIFY</button>
-        <button type="reset" id="runeClearBtn">CLEAR</button>
+        <button id="verifySequence" class="verify-btn">VERIFY</button>
+        <button id="clearSequence" class="clear-btn">CLEAR</button>
       </div>
     </div>
 
@@ -672,7 +1428,7 @@ h1, h2, h3 {
       <div class="panel-content">
         <p>Rune keypad unlocked. Enter access code to proceed.</p>
         <input id="accessCodeInput" type="text" placeholder="Enter code (X-719-BOX)">
-       <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
+        <button id="accessCodeBtn">Verify Code</button>
         <p id="accessCodeStatus"></p>
       </div>
     </div>
@@ -829,169 +1585,223 @@ h1, h2, h3 {
   📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
 </div>
 
-<script>
-/* ========== Panel helpers (kept) ========== */
-function showPanel(id){ const el=document.getElementById(id); if(el) el.style.display='block'; }
-function hidePanel(id){ const el=document.getElementById(id); if(el) el.style.display='none'; }
+  <script>
+  /* Helpers: panel show/hide */
+  function showPanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'block'; }
+  function hidePanel(id){ const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
-/* ========== Clipboard for verification plaque ========== */
-function copyVerification() {
-  const textArea = document.getElementById("verificationText");
-  if (!textArea) return;
-  textArea.select();
-  textArea.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Verification text copied. Please paste it into the Google Form field.");
-}
+  /* Copy verification */
+  function copyVerification() {
+    const textArea = document.getElementById("verificationText");
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert("Verification text copied. Please paste it into the Google Form field.");
+  }
 
-/* ========== Name generator (public + admin use) ========== */
+ /* Name generator */
 function generateTieredName(tier) {
   const pools = {
-    Initiate: { names: ["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
-      suffixes: ["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
-    Steward: { names: ["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
-      suffixes: ["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
-    Neighbor: { names: ["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
-      suffixes: ["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
-    Contributor: { names: ["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
-      suffixes: ["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
-    Observer: { names: ["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes: ["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
-    Supporter: { names: ["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes: ["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
-    Archivist: { names: ["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes: ["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
+    Initiate: {
+      names: ["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
+      suffixes: ["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"]
+    },
+    Steward: {
+      names: ["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
+      suffixes: ["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"]
+    },
+    Neighbor: {
+      names: ["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
+      suffixes: ["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"]
+    },
+    Contributor: {
+      names: ["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
+      suffixes: ["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"]
+    },
+    Observer: {
+      names: ["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"]
+    },
+    Supporter: {
+      names: ["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"]
+    },
+    Archivist: {
+      names: ["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"]
+    }
   };
+
   const pool = pools[tier] || pools.Initiate;
   const name = pool.names[Math.floor(Math.random() * pool.names.length)];
   const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
   return `${name} ${suffix}`;
 }
+
 function generateNameFromTier() {
-  const tier = document.getElementById('role')?.value;
+  const tier = document.getElementById('role').value;
   if (!tier) { alert('Please select a tier first.'); return; }
   document.getElementById('name').value = generateTieredName(tier);
 }
 
-/* ========== Blogger helpers (kept) ========== */
-function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
-function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-/* ========== Public form submit (kept) ========== */
-function submitCeremonialForm() {
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const role = document.getElementById('role').value;
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
+  /* Blogger-friendly helpers */
+  function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
+  function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
-  localStorage.setItem('userRegistry', JSON.stringify(registry));
+  /* Public form submit */
+  function submitCeremonialForm() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const role = document.getElementById('role').value;
+    const card = generateCardID();
+    const accessCode = generateAccessCode();
 
-  const message = `🪔 Prestige Triumph Verification
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
+
+    const message = `
+🪔 Prestige Triumph Verification
 👤 Name: ${name}
 📞 Phone: ${phone}
 🎖 Tier: ${role}
 🆔 Account ID: ${card}
-🔑 Access Code: ${accessCode}`.trim();
+🔑 Access Code: ${accessCode}
+    `.trim();
 
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
+    document.getElementById('message').value = message;
+    document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+    document.getElementById('verificationText').value = message;
+    document.getElementById('verificationPlaque').style.display = "block";
 
-  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
-  setTimeout(() => {
-    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 10000);
+    alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
+    setTimeout(() => {
+      window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+    }, 10000);
 
-  return false;
-}
-
-/* ========== Crest unlock shortcut (Superform) ========== */
-function unlockSuperForm() {
-  showPanel('mysteryBoxPanel');
-  const name = document.getElementById('name')?.value.trim();
-  if (name) document.getElementById('superName').value = name;
-  alert("Super-level access form unlocked.");
-}
-
-/* ========== Tap shimmer and admin mobile unlock (kept) ========== */
-let shimmerTimer;
-function shimmerPulse(){
-  const s=document.getElementById('tapShimmer'); if(!s) return;
-  s.classList.add('active');
-  clearTimeout(shimmerTimer);
-  shimmerTimer=setTimeout(()=>s.classList.remove('active'),260);
-}
-let adminTapSequence=[]; let adminTapResetTimer;
-function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
-function checkAdminMobileUnlock(){
-  const correct=['tapTopLeft','tapTopRight'];
-  if(adminTapSequence.join(',')===correct.join(',')){
-    showPanel('adminForm'); shimmerPulse(); resetAdminTap();
-    const hint=document.getElementById('tapHint'); if(hint) hint.textContent="Admin gate unlocked. Verify your tier.";
-  } else {
-    adminTapResetTimer=setTimeout(resetAdminTap,8000);
+    return false;
   }
-}
-document.getElementById('tapTopLeft')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
-document.getElementById('tapTopRight')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
 
-/* ========== Admin tier codes and logic (kept) ========== */
+  /* Crest unlock shortcut */
+  function unlockSuperForm() {
+    showPanel('mysteryBoxPanel');
+    const name = document.getElementById('name').value.trim();
+    if (name) document.getElementById('superName').value = name;
+    alert("Super-level access form unlocked.");
+  }
+
+  /* Tap shimmer */
+  let shimmerTimer;
+  function shimmerPulse(){
+    const s = document.getElementById('tapShimmer');
+    s.classList.add('active');
+    clearTimeout(shimmerTimer);
+    shimmerTimer = setTimeout(() => s.classList.remove('active'), 260);
+  }
+
+  /* Tap unlock (admin): top-left then top-right */
+  let adminTapSequence = [];
+  let adminTapResetTimer;
+  function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
+  function checkAdminMobileUnlock(){
+    const correct = ['tapTopLeft','tapTopRight'];
+    if (adminTapSequence.join(',') === correct.join(',')) {
+      showPanel('adminForm'); shimmerPulse(); resetAdminTap();
+      const hint = document.getElementById('tapHint');
+      if (hint) hint.textContent = "Admin gate unlocked. Verify your tier.";
+    } else {
+      adminTapResetTimer = setTimeout(resetAdminTap, 8000);
+    }
+  }
+  document.getElementById('tapTopLeft').addEventListener('click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
+  document.getElementById('tapTopRight').addEventListener('click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
+
+  /* Codes */ // Expanded clearance codes for Admin tiers
+
+ // Expanded clearance codes for Admin tiers
 const TIER_CODES = {
-  Admin:"A-231-GATE", MasterAdmin:"M-Q8/-CROWN", Overseer:"OVR-442-SIGHT", Controller:"CTRL-993-AXIS",
-  Custodian:"CUST-118-KEEP", Guardian:"GUARD-775-SHIELD", Sentinel:"SENT-560-WATCH", Supervisor:"SUP-823-LINE",
-  Coordinator:"COORD-237-NODE", Director:"DIR-901-ARC", Chancellor:"CHANC-314-SEAL", Prefect:"PREF-628-ORDER",
-  Warden:"WARD-452-GATE", Marshal:"MAR-739-BANNER", Commander:"COMM-888-LEGION", Principal:"PRINC-505-LEDGER",
-  Chief:"CHIEF-272-CREST", SovereignAdmin:"SOV-999-CROWN", LegacyAdmin:"LEG-777-ARCHIVE"
+  Admin:          "A-231-GATE",
+  MasterAdmin:    "M-Q8/-CROWN",
+  Overseer:       "OVR-442-SIGHT",
+  Controller:     "CTRL-993-AXIS",
+  Custodian:      "CUST-118-KEEP",
+  Guardian:       "GUARD-775-SHIELD",
+  Sentinel:       "SENT-560-WATCH",
+  Supervisor:     "SUP-823-LINE",
+  Coordinator:    "COORD-237-NODE",
+  Director:       "DIR-901-ARC",
+  Chancellor:     "CHANC-314-SEAL",
+  Prefect:        "PREF-628-ORDER",
+  Warden:         "WARD-452-GATE",
+  Marshal:        "MAR-739-BANNER",
+  Commander:      "COMM-888-LEGION",
+  Principal:      "PRINC-505-LEDGER",
+  Chief:          "CHIEF-272-CREST",
+  SovereignAdmin: "SOV-999-CROWN",
+  LegacyAdmin:    "LEG-777-ARCHIVE"
 };
+
 const HIDDEN_CODE = "X-719-BOX";
 
 let ceremonyName = "";
-let superSequence = []; // ritual grid input record
-let tapLog = [];        // ritual grid feedback map
+let superSequence = [];
 
-/* Admin: generator button in chamber (kept) */
-document.getElementById('genNameBtn')?.addEventListener('click', () => {
-  const tier = document.getElementById('adminTier').value || 'Initiate';
-  ceremonyName = generateTieredName(tier);
-  document.getElementById('name').value = ceremonyName;
-});
+/* Random helpers */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function generateRandomSequence(pool, length) {
+  const seq = [];
+  for (let i = 0; i < length; i++) {
+    seq.push(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  return seq;
+}
 
-/* Admin handler (kept; avoids overlap by scoping) */
-function handleAdminAccess(isVerifyClick=false) {
+// Admin form submit
+// Unified Admin form handler
+function handleAdminAccess(isVerifyClick = false) {
   const tier = document.getElementById('adminTier').value;
   const code = (document.getElementById('adminCode').value || '').trim();
   const name = ceremonyName || document.getElementById('name').value.trim();
   const status = document.getElementById('verifyStatus');
-  const expectedCode = TIER_CODES[tier];
 
-  if (!expectedCode) { status.textContent = "❌ Unknown tier selected."; return false; }
+  const expectedCode = TIER_CODES[tier];
+  if (!expectedCode) {
+    status.textContent = "❌ Unknown tier selected.";
+    return false;
+  }
   if (code !== expectedCode && !(tier === "Admin" || tier === "MasterAdmin")) {
-    status.textContent = `❌ Invalid clearance code for ${tier}.`; return false;
+    status.textContent = `❌ Invalid clearance code for ${tier}.`;
+    return false;
   }
 
+  // Admin + MasterAdmin path
   if (tier === "Admin" || tier === "MasterAdmin") {
     if (isVerifyClick) {
       status.textContent = "✅ Clearance accepted. Unlocking ritual sequence...";
-      ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','finalBranchPanel'].forEach(hidePanel);
-      showPanel('colorPanel');
-      buildRitualGrid();
+      showPanel('colorPanel'); // or puzzleBoxPanel depending on your flow
     } else {
       status.textContent = "Use Verify button for Admin/MasterAdmin.";
     }
     return false;
   }
 
-  // Non-Admin tiers -> Blogger route
+  // Everyone else → Blogger submission + plaque
   const card = generateCardID();
-  const message = `🔐 Admin Access Submission
+  const message = `
+🔐 Admin Access Submission
 👤 Name: ${name}
 🎖 Tier: ${tier}
 🆔 Account ID: ${card}
-🔑 Clearance Code: ${expectedCode}`.trim();
+🔑 Clearance Code: ${expectedCode}
+  `.trim();
 
   document.getElementById('adminMessage').value = message;
   document.getElementById('adminEmail').value = "prestige@triumph.org";
@@ -1006,116 +1816,120 @@ function handleAdminAccess(isVerifyClick=false) {
   return false;
 }
 
-/* Bind Admin submit + verify (scoped to admin chamber) */
-document.getElementById('adminForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); handleAdminAccess(false); });
-document.querySelector('#adminForm #verifyTierBtn')?.addEventListener('click', ()=>handleAdminAccess(true));
+// Hook up form submit (non‑Admin tiers)
+document.getElementById('adminForm').onsubmit = () => handleAdminAccess(false);
 
-/* Reveal Admin form shortcuts (kept) */
-document.addEventListener('keydown',(e)=>{
-  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='a'){
-    const f=document.getElementById('adminForm'); if(f){ f.style.display='block'; alert("Admin access form unlocked."); }
-  }
-});
+// Hook up Verify button (Admin/MasterAdmin ritual path)
+document.getElementById('verifyTierBtn').addEventListener('click', () => handleAdminAccess(true));
 
-/* Admin verify button visibility (scoped to admin chamber only) */
-document.getElementById('adminCode')?.addEventListener('input', ()=>{
-  const tierSel = document.getElementById('adminTier').value;
-  const code = document.getElementById('adminCode').value.trim();
-  const verifyBtn = document.querySelector('#adminForm #verifyTierBtn');
-  if (!verifyBtn) return;
-  if ((tierSel === 'Admin' && code === TIER_CODES.Admin) || (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
-    verifyBtn.style.display = 'block';
-  } else {
-    verifyBtn.style.display = 'none';
-  }
-});
 
-/* ========== Utility: shuffle array (missing helper restored) ========== */
-function shuffleArray(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+  /* Verify → ritual panel */
+  document.getElementById('verifyTierBtn').addEventListener('click', ()=>{
+    const status = document.getElementById('verifyStatus');
+    const tierSel = document.getElementById('adminTier').value;
+    const code = (document.getElementById('adminCode').value || '').trim();
+    if (!code) { status.textContent = "Enter clearance code."; return; }
 
-/* ========== Ritual Grid (Color Sequence) ========== */
-let requiredSequence = [];
+    // reset downstream
+    ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','mysteryBoxChamber','finalBranchPanel'].forEach(hidePanel);
 
-function buildRitualGrid(){
-  const panel = document.getElementById('panelButtons'); if(!panel) return;
-  panel.innerHTML = "";
+    const ok = (tierSel === 'Admin' && code === TIER_CODES.Admin) ||
+               (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
+               (code === HIDDEN_CODE);
 
-  const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
-  const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
-  const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
-
-  requiredSequence = shuffleArray(colors).slice(0,4);
-  superSequence = []; tapLog = [];
-  renderSequence(); updateIndicators();
-
-  colors.forEach(c=>{
-    const btn = document.createElement('button');
-    btn.type = "button";
-    btn.className = "rune-btn " + c;
-    const sigil = glyphs[Math.floor(Math.random()*glyphs.length)];
-    const num   = numbers[Math.floor(Math.random()*numbers.length)];
-    btn.innerHTML = `<span class="sigil">${sigil}</span><small>${num}</small>`;
-    btn.addEventListener('click', ()=>handleRitualTap(c, btn));
-    panel.appendChild(btn);
+    if (ok) {
+      const role = document.getElementById('role').value || 'Initiate';
+      ceremonyName = generateTieredName(role);
+      status.textContent = "✅ Verified. Proceed to the ritual.";
+      const nameEl = document.getElementById('nameInRitual'); if (nameEl) nameEl.textContent = ceremonyName;
+      superSequence = [];
+      showPanel('colorPanel'); 
+      buildRitualGrid();
+    } else {
+      status.textContent = "❌ Invalid clearance for selected tier.";
+    }
   });
 
-  // Ritual VERIFY/CLEAR scoped within colorPanel (avoids adminForm conflicts)
-  const ritualVerify = document.querySelector('#colorPanel .ritual-controls button:nth-child(1)');
-  const ritualClear  = document.querySelector('#colorPanel .ritual-controls button:nth-child(2)');
-  if (ritualVerify && !ritualVerify.dataset.wired) {
-    ritualVerify.dataset.wired = '1';
-    ritualVerify.addEventListener('click', verifySequenceAttempt);
+  /* Ritual grid (color sequence) */
+  let requiredSequence = []; // SINGLE definition (randomized per build)
+
+  function buildRitualGrid(){
+    const panel = document.getElementById('panelButtons');
+    panel.innerHTML = "";
+
+    const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
+    const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
+    const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
+
+   
+    // Fresh randomized required sequence for this round (only 4 needed)
+requiredSequence = shuffleArray(colors).slice(0,4);
+
+
+    colors.forEach(c=>{
+      const btn = document.createElement('button');
+      btn.type = "button";
+      btn.className = "rune-btn " + c;
+
+      const sigil = glyphs[Math.floor(Math.random()*glyphs.length)];
+      const num   = numbers[Math.floor(Math.random()*numbers.length)];
+
+      btn.innerHTML = `<span class="sigil">${sigil}</span><small>${num}</small>`;
+      btn.addEventListener('click', ()=>handleRitualTap(c, btn));
+      panel.appendChild(btn);
+    });
+
+    superSequence = [];
+    renderSequence();
+    updateIndicators();
   }
-  if (ritualClear && !ritualClear.dataset.wired) {
-    ritualClear.dataset.wired = '1';
-    ritualClear.addEventListener('click', clearSequence);
-  }
-}
+
+  // Store exact taps with button refs for accurate feedback
+let tapLog = []; // [{ color, btn }, …]
 
 function handleRitualTap(color, btn){
   superSequence.push(color);
-  tapLog.push({ color, btn });
+  tapLog.push({ color, btn }); // keep the actual button tapped
+
   renderSequence();
   btn.classList.toggle('active');
   updateIndicators();
+
+  // Immediate shimmer
   btn.classList.add('glow');
-  setTimeout(()=>btn.classList.remove('glow'),1200);
+  setTimeout(() => btn.classList.remove('glow'), 1200);
 }
 
-function renderSequence(){
-  const sequenceReadout = document.getElementById('sequenceReadout'); if(!sequenceReadout) return;
-  const text = superSequence.length ? superSequence.join('~') : '----';
-  sequenceReadout.textContent = '';
-  let i = 0;
-  const interval = setInterval(() => {
-    sequenceReadout.textContent += text[i] || '';
-    i++;
-    if (i >= text.length) clearInterval(interval);
-  }, 40);
-}
 
-function updateIndicators() {
-  const indicators = document.querySelectorAll('#indicatorLines span');
-  indicators.forEach((bar, i) => {
-    if (i < superSequence.length) bar.classList.add('active');
-    else bar.classList.remove('active');
-  });
-}
+  function renderSequence(){
+    const sequenceReadout = document.getElementById('sequenceReadout');
+    const text = superSequence.length ? superSequence.join('~') : '----';
+    sequenceReadout.textContent = '';
+    let i = 0;
+    const interval = setInterval(() => {
+      sequenceReadout.textContent += text[i] || '';
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, 40);
+  }
 
-function arraysMatch(a, b) {
+  function updateIndicators() {
+    const indicators = document.querySelectorAll('#indicatorLines span');
+    indicators.forEach((bar, i) => {
+      if (i < superSequence.length) bar.classList.add('active');
+      else bar.classList.remove('active');
+    });
+  }
+
+ function arraysMatch(a, b) {
   if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
   return true;
 }
 
-function verifySequenceAttempt(){
+document.getElementById('verifySequence').addEventListener('click', () => {
   const attemptColors = superSequence.slice(0,4);
   const attemptTaps   = tapLog.slice(0,4);
   const correct = arraysMatch(attemptColors, requiredSequence);
@@ -1134,7 +1948,7 @@ function verifySequenceAttempt(){
     sequenceReadout.style.color = "#ff4a4a";
   }
 
-  // Faint gestures for first 4 taps
+  // Faint gestures
   attemptTaps.forEach(({ color, btn }, i) => {
     btn.classList.remove('after-correct','after-wrong');
     if (color === requiredSequence[i]) {
@@ -1149,46 +1963,55 @@ function verifySequenceAttempt(){
   superSequence = [];
   tapLog = [];
   updateIndicators();
-}
+});
 
-function clearSequence(){
+
+
+ document.getElementById('clearSequence').addEventListener('click', () => {
   superSequence = [];
   tapLog = [];
   renderSequence();
-  document.querySelectorAll('#panelButtons .rune-btn').forEach(btn => {
+  document.querySelectorAll('.rune-btn').forEach(btn => {
     btn.classList.remove('active','after-correct','after-wrong','glow');
   });
   updateIndicators();
-}
-
-/* Access Code Panel → Mystery Box Chamber */
-document.getElementById('accessConfirmBtn')?.addEventListener('click', () => {
-  const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-  const s = document.getElementById('accessCodeStatus');
-  if (v === HIDDEN_CODE) {
-    s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
-    setTimeout(() => {
-      hidePanel('superCodePanel');
-      showPanel('mysteryBoxChamber');
-    }, 600);
-  } else {
-    s.textContent = '❌ Incorrect code.';
-  }
+  // If you want a fresh randomized sequence on Clear:
+  // buildRitualGrid();
 });
 
+  /* Access Panel → Mystery Box Chamber */
+  document.getElementById('accessCodeBtn').addEventListener('click', () => {
+    const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
+    const s = document.getElementById('accessCodeStatus');
+    if (v === 'X-719-BOX') {
+      s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
+      setTimeout(() => {
+        hidePanel('superCodePanel');
+        showPanel('mysteryBoxChamber');
+      }, 600);
+    } else {
+      s.textContent = '❌ Incorrect code.';
+    }
+  });
 
-/* ========== Mystery Box → Puzzle Box entry ========== */
-document.getElementById('attemptPuzzleBtn')?.addEventListener('click', () => {
-  hidePanel('mysteryBoxChamber');
-  showPanel('puzzleBoxPanel');
-  initPuzzleBox();
-});
+  document.getElementById('attemptPuzzleBtn').addEventListener('click', () => {
+    hidePanel('mysteryBoxChamber');
+    showPanel('puzzleBoxPanel');
+    initPuzzleBox();
+  });
 
-/* ========== Puzzle Box (consolidated and guarded) ========== */
+/* ===== Puzzle Box: consolidated, guarded, no-dupes ===== */
+
+/* State */
 let puzzleInitDone = false;
 let cubeUnlocked = false;
 let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
 
+/* Small helpers */
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+/* Atmosphere helpers */
 function pulseCube() {
   const cube = document.getElementById('labyrinthCube');
   if (!cube) return;
@@ -1205,13 +2028,17 @@ function showPuzzleNotice() {
 }
 function shrinkPuzzleBox() {
   const shell = document.getElementById('imgVoidPuzzle');
-  if (shell && window.innerWidth <= 768) { shell.classList.add('shrunk'); showPuzzleNotice(); }
+  if (shell && window.innerWidth <= 768) {
+    shell.classList.add('shrunk');
+    showPuzzleNotice();
+  }
 }
 function restorePuzzleBox() {
   const shell = document.getElementById('imgVoidPuzzle');
   if (shell) shell.classList.remove('shrunk');
 }
 
+/* Unlock orchestration */
 function checkCubeUnlock() {
   if (Object.values(keys).every(v => v) && !cubeUnlocked) {
     cubeUnlocked = true;
@@ -1221,39 +2048,47 @@ function checkCubeUnlock() {
     const voidEl = document.getElementById('imgVoidPuzzle'); if (voidEl) voidEl.classList.add('unlocked');
     pulseCube();
 
+    // Fade sigil + cube after 30s
     setTimeout(() => {
       if (sigil) sigil.classList.add('fadeOut');
-      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut');
+      const cube = document.getElementById('labyrinthCube');
+      if (cube) cube.classList.add('fadeOut');
     }, 30000);
 
+    // Transition after 60s
     setTimeout(() => {
       hidePanel('puzzleBoxPanel');
       showPanel('finalBranchPanel');
-      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.remove('fadeOut');
+      // cleanup
+      const cube = document.getElementById('labyrinthCube');
+      if (cube) cube.classList.remove('fadeOut');
       if (sigil) { sigil.style.display = 'none'; sigil.classList.remove('fadeOut'); }
-      const voidEl2 = document.getElementById('imgVoidPuzzle'); if (voidEl2) voidEl2.classList.remove('unlocked');
+      if (voidEl) voidEl.classList.remove('unlocked');
       restorePuzzleBox();
     }, 60000);
   }
 }
 
+/* Reset */
 function resetPuzzleState() {
   keys = { L:false, D:false, W:false, M:false, S:false, N:false };
   cubeUnlocked = false;
+
   document.querySelectorAll('#lightsGrid .light-cell').forEach(c => { c.classList.remove('on'); c.style.background=''; c.style.boxShadow=''; });
   document.querySelectorAll('#labyrinthGrid .cell').forEach(c => c.classList.remove('on'));
   document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
   ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id => { const el=document.getElementById(id); if (el) el.style.display='none'; });
+
   const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
   const hint = document.getElementById('dialHint'); if (hint) { hint.textContent=''; hint.style.color='#00f5b5'; }
 }
 
-/* Lights Out */
+/* ===== Lights Out (target pattern) ===== */
 let lightsTarget = [];
 function configureLightsOut() {
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
   if (!cells.length) return;
-  lightsTarget = shuffleArray(cells.map((_,i)=>i)).slice(0,4);
+  lightsTarget = shuffle(cells.map((_,i)=>i)).slice(0, 4);
 }
 function isLightsSolved() {
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
@@ -1267,16 +2102,20 @@ function wireLightsOutOnce() {
     cell.dataset.wired = '1';
     cell.addEventListener('click', () => {
       [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (cells[i]) cells[i].classList.toggle('on'); });
-      if (isLightsSolved()) { keys.L = true; document.getElementById('runeL').style.display='block'; pulseCube(); checkCubeUnlock(); }
+      if (isLightsSolved()) {
+        keys.L = true; const el = document.getElementById('runeL'); if (el) el.style.display='block';
+        pulseCube(); checkCubeUnlock();
+      }
     });
   });
 }
 
-/* Locker Dial */
+/* ===== Locker dial (combo + direction) ===== */
 function configureDial() {
   const dialFace = document.querySelector('#lockerDial .dial-face');
   const numbers  = document.querySelector('#lockerDial .dial-numbers');
   if (!dialFace || !numbers) return;
+
   numbers.innerHTML = '';
   for (let i=0; i<100; i+=5) {
     const span = document.createElement('span');
@@ -1296,6 +2135,7 @@ function wireDialOnce() {
   const combo = [20, 5, 75];
   const directions = ['cw','ccw','cw'];
   let stage=0; const tol=2;
+
   function angleToValue(angle){ return Math.round(((angle % 360 + 360) % 360) / 3.6); }
   function checkCombo(val, dir){
     const hint = document.getElementById('dialHint');
@@ -1304,13 +2144,14 @@ function wireDialOnce() {
       if (stage < combo.length){
         if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`;
       } else {
-        keys.D = true; document.getElementById('runeD').style.display='block';
+        keys.D = true; const el = document.getElementById('runeD'); if (el) el.style.display='block';
         if (hint) { hint.textContent = `Combo complete! (${combo.join(' → ')})`; hint.style.color='#6aff6a'; }
         pulseCube(); checkCubeUnlock();
         stage = 0;
       }
     } else if (Math.abs(val - combo[stage]) <= tol && dir !== directions[stage]) {
-      stage = 0; if (hint) { hint.textContent = "Wrong direction! Restart combo."; hint.style.color='#ff4a4a'; }
+      stage = 0;
+      if (hint) { hint.textContent = "Wrong direction! Restart combo."; hint.style.color='#ff4a4a'; }
     }
   }
   function handleMove(x,y,cx,cy){
@@ -1351,12 +2192,12 @@ function wireDialOnce() {
   document.addEventListener('touchend', ()=> dragging=false);
 }
 
-/* Word Lock */
+/* ===== Word lock (scramble) ===== */
 let wordAnswer = '';
 function configureWordLock() {
   const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
-  wordAnswer = dictionary[Math.floor(Math.random()*dictionary.length)];
-  const scrambled = [...wordAnswer].sort(()=>Math.random()-0.5).join('');
+  wordAnswer = pick(dictionary);
+  const scrambled = shuffle(wordAnswer.split('')).join('');
   const wordHint  = document.getElementById('wordHint'); if (wordHint) wordHint.textContent = `Unscramble: ${scrambled}`;
   const wordInput = document.getElementById('wordInput'); if (wordInput) wordInput.value = '';
 }
@@ -1366,16 +2207,18 @@ function wireWordLockOnce() {
   wordInput.dataset.wired = '1';
   wordInput.addEventListener('input', e => {
     if (e.target.value.trim().toLowerCase() === wordAnswer) {
-      keys.W = true; document.getElementById('runeW').style.display='block';
+      keys.W = true; const el = document.getElementById('runeW'); if (el) el.style.display='block';
       pulseCube(); checkCubeUnlock();
     }
   });
 }
 
-/* Labyrinth Path */
-let labPath = []; let labProgress = 0;
+/* ===== Labyrinth path (neighbor connected) ===== */
+let labPath = [];
+let labProgress = 0;
 function generateLabPath(cells, width, length = 9) {
-  let path = []; let current = Math.floor(Math.random() * cells.length);
+  let path = [];
+  let current = Math.floor(Math.random() * cells.length);
   path.push(current);
   while (path.length < length) {
     const r = Math.floor(current / width), c = current % width;
@@ -1384,8 +2227,7 @@ function generateLabPath(cells, width, length = 9) {
     if (r < width - 1) neighbors.push(current + width);
     if (c > 0) neighbors.push(current - 1);
     if (c < width - 1) neighbors.push(current + 1);
-    current = neighbors.length ? neighbors[Math.floor(Math.random()*neighbors.length)]
-                               : Math.floor(Math.random() * cells.length);
+    current = neighbors.length ? pick(neighbors) : Math.floor(Math.random() * cells.length);
     path.push(current);
   }
   return path;
@@ -1408,7 +2250,10 @@ function wireLabyrinthOnce() {
       if (!labPath.length) return;
       if (idx === labPath[labProgress]) {
         cell.classList.add('on'); labProgress++;
-        if (labProgress === labPath.length) { keys.M = true; document.getElementById('runeM').style.display='block'; pulseCube(); checkCubeUnlock(); }
+        if (labProgress === labPath.length) {
+          keys.M = true; const el = document.getElementById('runeM'); if (el) el.style.display='block';
+          pulseCube(); checkCubeUnlock();
+        }
       } else {
         cells.forEach(c => c.classList.remove('on')); labProgress = 0;
       }
@@ -1416,7 +2261,7 @@ function wireLabyrinthOnce() {
   });
 }
 
-/* Memory */
+/* ===== Memory (growing sequence) ===== */
 let memSeq = [], playerSeq = [], playing = false;
 function configureMemory() {
   memSeq = []; playerSeq = []; playing = false;
@@ -1455,14 +2300,16 @@ function wireMemoryOnce() {
         if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; }
       }
       if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; document.getElementById('runeS').style.display='block'; pulseCube(); checkCubeUnlock(); }
-        else nextRound();
+        if (memSeq.length >= 4) {
+          keys.S = true; const el = document.getElementById('runeS'); if (el) el.style.display='block';
+          pulseCube(); checkCubeUnlock();
+        } else nextRound();
       }
     });
   });
 }
 
-/* Math */
+/* ===== Math (dynamic target and values) ===== */
 let mathTarget = 15;
 function configureMath() {
   const nums = [...document.querySelectorAll('#mathGrid .num')];
@@ -1482,14 +2329,19 @@ function wireMathOnce() {
       btn.classList.toggle('sel');
       const sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
       const sum = sel.reduce((a,b)=>a+b,0);
-      if (sum === mathTarget) { keys.N = true; document.getElementById('runeN').style.display='block'; pulseCube(); checkCubeUnlock(); }
-      else if (sum > mathTarget) { nums.forEach(n => n.classList.remove('sel')); }
+      if (sum === mathTarget) {
+        keys.N = true; const el = document.getElementById('runeN'); if (el) el.style.display='block';
+        pulseCube(); checkCubeUnlock();
+      } else if (sum > mathTarget) {
+        nums.forEach(n => n.classList.remove('sel'));
+      }
     });
   });
 }
 
-/* PuzzleBox init orchestration */
+/* ===== Initialization & entry ===== */
 function initPuzzleBox() {
+  // Wire once
   if (!puzzleInitDone) {
     wireLightsOutOnce();
     wireDialOnce();
@@ -1499,6 +2351,7 @@ function initPuzzleBox() {
     wireMathOnce();
     puzzleInitDone = true;
   }
+  // Fresh content each run
   resetPuzzleState();
   configureLightsOut();
   configureDial();
@@ -1509,171 +2362,212 @@ function initPuzzleBox() {
   shrinkPuzzleBox();
 }
 
-/* Final branch → Final clearance panel */
-document.getElementById('toFinalClearanceBtn')?.addEventListener('click', () => {
-  hidePanel('finalBranchPanel');
-  showPanel('finalClearancePanel');
-});
+  // Final clearance → Superform
+  document.getElementById('toFinalClearanceBtn').addEventListener('click', () => {
+    hidePanel('finalBranchPanel');
+    showPanel('finalClearancePanel');
+  });
 
-/* Final clearance → Superform */
-document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
-  const code = document.getElementById('finalClearanceCode').value.trim();
-  const revealed = document.getElementById('revealedPassword').textContent.trim();
-  const status = document.getElementById('finalClearanceStatus');
-  if (code === revealed) {
-    status.textContent = "✅ Clearance accepted. Superform unlocked.";
-    setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
-  } else {
-    status.textContent = "❌ Incorrect code.";
-  }
-});
+  document.getElementById('finalClearanceBtn').addEventListener('click', ()=>{
+    const code = document.getElementById('finalClearanceCode').value.trim();
+    const revealed = document.getElementById('revealedPassword').textContent.trim();
+    const status = document.getElementById('finalClearanceStatus');
+    if (code === revealed) {
+      status.textContent = "✅ Clearance accepted. Superform unlocked.";
+      setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
+    } else {
+      status.textContent = "❌ Incorrect code.";
+    }
+  });
 
-/* Superform submit (Prestige route) */
-function submitSuperForm() {
-  const code = document.getElementById("superCode").value.trim();
-  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
-  const name = document.getElementById("superName").value.trim();
-  const tier = document.getElementById("superTier").value;
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
-  const message = `👑 Super-Level Access Submission
+  // Superform submit (Prestige route)
+  function submitSuperForm() {
+    const code = document.getElementById("superCode").value.trim();
+    if (code !== "TRIUMPH-777") {
+      alert("Invalid super-level clearance code.");
+      return false;
+    }
+    const name = document.getElementById("superName").value.trim();
+    const tier = document.getElementById("superTier").value;
+    const card = generateCardID();
+    const accessCode = generateAccessCode();
+    const message = `
+👑 Super-Level Access Submission
 👤 Name: ${name}
 🎖 Tier: ${tier}
 🆔 Account ID: ${card}
-🔑 Clearance Code: ${accessCode}`.trim();
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
-  alert("Super-level form submitted. Redirecting...");
-  setTimeout(() => {
-    window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 10000);
-  return false;
-}
+🔑 Clearance Code: ${accessCode}
+    `.trim();
+    document.getElementById('verificationText').value = message;
+    document.getElementById('verificationPlaque').style.display = "block";
+    alert("Super-level form submitted. Redirecting...");
+    setTimeout(() => {
+      window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+    }, 10000);
+    return false;
+  }
 
-/* Cube rotation (interactive) */
-(function bindCubeRotation(){
+  // Interactive rotation for the Labyrinth Cube
   const cubeEl = document.getElementById('labyrinthCube');
-  if (!cubeEl) return;
-  let dragging=false, startX=0, startY=0, rotX=-15, rotY=20;
-  function updateRotation(){ cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
-  cubeEl.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    const dx = e.clientX - startX, dy = e.clientY - startY;
-    startX = e.clientX; startY = e.clientY;
-    rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
-  });
-  window.addEventListener('mouseup', () => dragging = false);
-  cubeEl.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
-  cubeEl.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
-    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-    rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
-  }, { passive: true });
-  cubeEl.addEventListener('touchend', () => dragging = false);
-  updateRotation();
-})();
-
-/* Keyboard shortcut to show Superform directly (kept) */
-document.addEventListener("keydown", function (e) {
-  if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
-    const superPanel = document.getElementById("mysteryBoxPanel");
-    if (superPanel) {
-      superPanel.style.display = "block";
-      alert("Super-level access form unlocked.");
-    }
-  }
-});
-
-/* ======= Public form: generator hook (scoped to love-form) ======= */
-document.getElementById('love-form')?.addEventListener('click', (e)=>{
-  if (e.target && e.target.id === 'genNameBtn') {
-    generateNameFromTier();
-  }
-});
-
-/* ======= Superform binding ======= */
-document.getElementById('superLevelForm')?.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  submitSuperForm();
-});
-
-/* ======= Access code panel quality-of-life ======= */
-document.getElementById('accessCodeInput')?.addEventListener('keydown', (e)=>{
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    document.getElementById('accessCodeBtn')?.click();
-  }
-});
-
-/* Scoped CLEAR in Super Code panel (does not interfere with ritual CLEAR) */
-(function bindSuperCodeClear(){
-  const wrap = document.getElementById('superCodePanel');
-  if (!wrap) return;
-  const clearBtn = wrap.querySelector('#clearBtn');
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', ()=>{
-      const input = document.getElementById('accessCodeInput');
-      const status = document.getElementById('accessCodeStatus');
-      if (input) input.value = '';
-      if (status) status.textContent = '';
+  let dragging = false, startX = 0, startY = 0, rotX = -15, rotY = 20;
+  function updateRotation() { if (cubeEl) cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+  if (cubeEl) {
+    cubeEl.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      startX = e.clientX; startY = e.clientY;
+      rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
     });
+    window.addEventListener('mouseup', () => dragging = false);
+    cubeEl.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
+    cubeEl.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+      rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
+    }, { passive: true });
+    cubeEl.addEventListener('touchend', () => dragging = false);
+    updateRotation();
   }
-})();
 
-/* ======= Admin form visibility via mobile tap zones (guarded) ======= */
-(function bindAdminVisibilityShortcuts(){
-  const adminForm = document.getElementById('adminForm');
-  const zoneRight = document.getElementById('tapTopRight');
-  if (zoneRight && adminForm) {
-    zoneRight.addEventListener('click', ()=> { adminForm.style.display = 'block'; });
-  }
-  document.addEventListener('keydown', (e)=>{
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a' && adminForm) {
-      adminForm.style.display = 'block';
-      alert("Admin access form unlocked.");
+  // Keyboard unlock shortcuts
+  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("keydown", function (e) {
+      // Unlock Admin Form: Ctrl + Shift + A
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+        const adminForm = document.getElementById("adminForm");
+        if (adminForm) {
+          adminForm.style.display = "block";
+          alert("Admin access form unlocked.");
+        }
+      }
+      // Unlock Super Form: Ctrl + Alt + Q
+      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
+        const superPanel = document.getElementById("mysteryBoxPanel");
+        if (superPanel) {
+          superPanel.style.display = "block";
+          alert("Super-level access form unlocked.");
+        }
+      }
+    });
+  });
+
+
+
+</script>
+<!-- … your Admin form markup … -->
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Reveal Admin form by keyboard sequence
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+      document.getElementById('adminForm').style.display = 'block';
     }
   });
-})();
 
-/* ======= Ritual panel: ensure buttons remain scoped even if rebuilt ======= */
-(function guardRitualControls(){
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
-  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
-  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
+  // Reveal Admin form by mobile tap zone
+  document.getElementById('tapTopRight')?.addEventListener('click', () => {
+    document.getElementById('adminForm').style.display = 'block';
+  });
 
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
-  }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
-})();
+  // Show Verify button only for Admin/MasterAdmin with correct code
+  document.getElementById('adminCode').addEventListener('input', () => {
+    const tierSel = document.getElementById('adminTier').value;
+    const code = document.getElementById('adminCode').value.trim();
+    const verifyBtn = document.getElementById('verifyTierBtn');
 
-/* ======= Final safety: reassert scoping on bfcache restore ======= */
-window.addEventListener('pageshow', ()=>{
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
-  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
-  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
-  }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
+    if ((tierSel === 'Admin' && code === TIER_CODES.Admin) ||
+        (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
+      verifyBtn.style.display = 'block';
+    } else {
+      verifyBtn.style.display = 'none';
+    }
+  });
 });
 </script>
+<!-- Admin Chamber form markup here -->
 
+<!-- Scripts at the bottom -->
+<script>
+  // Specialized Name Generator
+  function generateTieredName(tier, gender="neutral") {
+    const pools = {
+      Admin: {
+        male:    ["Xyric","Velonar","Kaelith","Druvenor","Myrosan","Tavricus"],
+        female:  ["Xyraen","Velona","Kaelira","Druvena","Myrosa","Tavrica"],
+        neutral: ["Xyra","Velon","Orith","Kaelen","Druven","Myros","Tavric","Zerath"],
+        suffixes:["of the Gate Sigil","of the Iron Seal","of the Hidden Ledger","of the Crown Archive"]
+      },
+      MasterAdmin: {
+        male:    ["Solvarn","Eryndor","Calethor","Thyrosan","Lumielor","Varrosan"],
+        female:  ["Solvara","Eryndra","Caletha","Thyrosa","Lumiela","Varrosa"],
+        neutral: ["Solvar","Eryndor","Caleth","Thyros","Lumiel","Varros","Nerith","Olyra"],
+        suffixes:["of the Eternal Crown","of the Master Seal","of the Oversight Chamber","of the Sovereign Archive"]
+      }
+      // … add SovereignAdmin, LegacyAdmin, etc.
+    };
 
+    const defaultPool = {
+      neutral:["Lena","Jamal","Sofia","Kai","Maya","Jonas","Clara"],
+      suffixes:["of the Community Fold","of the Opening Gate","of the Dawn Register"]
+    };
 
+    const pool = pools[tier] || defaultPool;
+    const namePool = pool[gender] || pool.neutral;
+    const prefix = namePool[Math.floor(Math.random() * namePool.length)];
+    const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
+    return `${prefix} ${suffix}`;
+  }
+
+  // Hook to button
+  document.addEventListener('DOMContentLoaded', () => {
+  const genBtn = document.getElementById('genNameBtn');
+  genBtn.addEventListener('click', () => {
+    const tier = document.getElementById('adminTier').value || 'Admin'; // default if needed
+    const ceremonialName = generateTieredName(tier);
+    document.getElementById('name').value = ceremonialName;
+  });
+});
+  
+  
+  function showVerifyButtonWithAura(tier) {
+  const btn = document.getElementById('verifyTierBtn');
+  btn.classList.remove('rune-red','rune-violet','rune-gold');
+  // Simple mapping — tune as desired
+  const map = {
+    Admin: 'rune-gold',
+    MasterAdmin: 'rune-violet',
+    SovereignAdmin: 'rune-gold',
+    LegacyAdmin: 'rune-red'
+  };
+  btn.classList.add(map[tier] || 'rune-gold');
+  btn.style.display = 'block';
+}
+const tierSel = document.getElementById('adminTier').value;
+const code = document.getElementById('adminCode').value.trim();
+if ((tierSel === 'Admin' && code === TIER_CODES.Admin) ||
+    (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin) ||
+    (tierSel === 'SovereignAdmin' && code === TIER_CODES.SovereignAdmin) ||
+    (tierSel === 'LegacyAdmin' && code === TIER_CODES.LegacyAdmin)) {
+  showVerifyButtonWithAura(tierSel);
+} else {
+  document.getElementById('verifyTierBtn').style.display = 'none';
+}
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const genBtn = document.getElementById('genNameBtn');
+  genBtn.addEventListener('click', () => {
+    const tier = document.getElementById('adminTier').value || 'Admin';
+    const ceremonialName = generateTieredName(tier);
+    document.getElementById('name').value = ceremonialName;
+  });
+});
+</script>
 
 
 
