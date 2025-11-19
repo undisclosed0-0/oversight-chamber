@@ -548,24 +548,12 @@ h1, h2, h3 {
     <div class="crest-header"></div>
     <h1>Prestige Triumph: Oversight Entry</h1>
 
-    <!-- Blogger widget1 (source of truth) -->
-    <iframe name="hidden_iframe" style="display:none;"></iframe>
-    <form id="love-form"
-          method="POST"
-          action="https://www.blogger.com/contact-form.do"
-          target="hidden_iframe"
-          style="display:none;">
-      <input type="text" id="name" name="name" />
-      <input type="tel" id="phone" name="phone" />
-      <textarea id="message" name="message"></textarea>
-      <input type="email" id="bloggerEmail" name="email" />
-    </form>
-
     <!-- Public form -->
-    <form id="publicForm"
-          onsubmit="return submitCeremonialForm();"
-          class="prestige-form"
-          style="max-width:600px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
+    <form id="love-form" method="POST" class="prestige-form"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return submitCeremonialForm();"
+      style="max-width:600px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
       <label for="role">Select Tier</label>
       <select id="role" name="role" required>
         <option value="">Select your role</option>
@@ -589,63 +577,88 @@ h1, h2, h3 {
         </button>
       </div>
 
-      <input type="text" id="publicName" placeholder="Ceremonial Name" required />
-      <label for="publicPhone">Contact Number</label>
-      <input type="tel" id="publicPhone" placeholder="e.g., +1 616-555-1234" required />
+      <input type="text" id="name" name="name" placeholder="e.g., Solenne of the Third Tier" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
+      <label for="phone">Contact Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="e.g., +1 616-555-1234" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
 
-      <button type="submit"
-              style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">
-        Create Account
-      </button>
+      <textarea id="message" name="message" style="display:none;"></textarea>
+      <input type="email" name="email" id="bloggerEmail" style="display:none;">
+      <button type="submit" style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">Create Account</button>
+
+      <!--<p id="tapHint" style="margin-top:10px;">Tap top-left then top-right to unlock Admin gate.</p>-->
     </form>
 
     <!-- Admin chamber -->
-    <form id="adminForm"
-          onsubmit="return handleAdminAccess(false);"
-          class="chamber-form"
-          style="display:none;">
-      <h2>Admin Access</h2>
+<!-- Admin Chamber (hidden by default) -->
+<form id="adminForm"
+      method="POST"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return handleAdminAccess(false);"
+      class="chamber-form"
+      style="display:none;">
+   <h2>Admin Access</h2>
+  
+   <!-- Tier selection -->
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="">-- Select Tier --</option>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">MasterAdmin</option>
+    <option value="Overseer">Overseer</option>
+    <option value="Controller">Controller</option>
+    <option value="Custodian">Custodian</option>
+    <option value="Guardian">Guardian</option>
+    <option value="Sentinel">Sentinel</option>
+    <option value="Supervisor">Supervisor</option>
+    <option value="Coordinator">Coordinator</option>
+    <option value="Director">Director</option>
+    <option value="Chancellor">Chancellor</option>
+    <option value="Prefect">Prefect</option>
+    <option value="Warden">Warden</option>
+    <option value="Marshal">Marshal</option>
+    <option value="Commander">Commander</option>
+    <option value="Principal">Principal</option>
+    <option value="Chief">Chief</option>
+    <option value="SovereignAdmin">SovereignAdmin</option>
+    <option value="LegacyAdmin">LegacyAdmin</option>
+  </select>
 
-      <label for="adminTier">Tier</label>
-      <select id="adminTier" required>
-        <option value="">-- Select Tier --</option>
-        <option value="Admin">Admin</option>
-        <option value="MasterAdmin">MasterAdmin</option>
-        <option value="Overseer">Overseer</option>
-        <option value="Controller">Controller</option>
-        <option value="Custodian">Custodian</option>
-        <option value="Guardian">Guardian</option>
-        <option value="Sentinel">Sentinel</option>
-        <option value="Supervisor">Supervisor</option>
-        <option value="Coordinator">Coordinator</option>
-        <option value="Director">Director</option>
-        <option value="Chancellor">Chancellor</option>
-        <option value="Prefect">Prefect</option>
-        <option value="Warden">Warden</option>
-        <option value="Marshal">Marshal</option>
-        <option value="Commander">Commander</option>
-        <option value="Principal">Principal</option>
-        <option value="Chief">Chief</option>
-        <option value="SovereignAdmin">SovereignAdmin</option>
-        <option value="LegacyAdmin">LegacyAdmin</option>
-      </select>
+ 
+<!-- Specialized name generator -->
+<button type="button" id="adminGenNameBtn"class="runez-btn">Generate Specialized Name</button><br>
+<br>
+<br>
 
-      <button type="button" id="adminGenNameBtn" class="runez-btn">Generate Specialized Name</button>
-      <br><br><br>
+<!-- Target field (same as public form) -->
+<input type="text" id="adminName" name="name" placeholder="Ceremonial Name" />
 
-      <input type="text" id="adminName" placeholder="Ceremonial Name" />
-      <label for="adminPhone">Contact Phone</label>
-      <input id="adminPhone" type="tel" placeholder="(###) ###-####" required />
-      <label for="adminCode">Clearance Code</label>
-      <input id="adminCode" type="password" required />
+  
 
-      <button type="submit" id="adminSubmitBtn" class="runez-btn">Submit Admin Form</button>
-      <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
-      <p id="verifyStatus"></p>
-    </form>
+  <!-- Contact phone -->
+  <label for="adminPhone">Contact Phone</label>
+  <input id="adminPhone" name="phone" type="tel" placeholder="(###) ###-####" required />
 
-    <!-- Ritual panels -->
-    <div id="colorPanel" class="panel-shell" style="display:none;">
+  <!-- Clearance code -->
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" type="password" required />
+
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="adminMessage" name="message" style="display:none;"></textarea>
+  <input type="email" id="adminEmail" name="email" style="display:none;">
+
+  <!-- Buttons -->
+  <button type="submit" id="runeClearBtn" class="runez-btn">Submit Admin Form</button>
+  <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
+
+  <!-- Status -->
+  <p id="verifyStatus"></p>
+</form>
+
+
+
+<div id="colorPanel" class="panel-shell" style="display:none;">
       <div class="ritual-header" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;">
         <div class="runic">ᚠᛇᚻᛜᚱ</div>
         <div class="sigil" aria-hidden="true" style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 14px rgba(212,184,106,0.45));">
@@ -654,27 +667,35 @@ h1, h2, h3 {
           <span class="sigil-square" style="position:absolute;width:36px;height:36px;transform:rotate(45deg);background:linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));"></span>
         </div>
       </div>
+
       <p class="designation">Designation: <strong id="nameInRitual"></strong></p>
-      <div class="indicator-lines" id="indicatorLines"><span></span><span></span><span></span><span></span></div>
+
+      <div class="indicator-lines" id="indicatorLines">
+        <span></span><span></span><span></span><span></span>
+</div>
+
       <div id="sequenceReadout" class="sequence">— — —</div>
       <div class="rune-grid" id="panelButtons"></div>
+
       <div class="ritual-controls">
         <button type="button" id="runeVerifyBtn">VERIFY</button>
         <button type="reset" id="runeClearBtn">CLEAR</button>
       </div>
     </div>
 
+    <!-- Access keypad -->
     <div id="superCodePanel" class="panel-shell" style="display:none; position:relative;">
       <h3>Access Panel</h3>
       <div class="panel-sigil">♛</div>
       <div class="panel-content">
         <p>Rune keypad unlocked. Enter access code to proceed.</p>
         <input id="accessCodeInput" type="text" placeholder="Enter code (X-719-BOX)">
-        <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
+       <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
         <p id="accessCodeStatus"></p>
       </div>
     </div>
 
+    <!-- Mystery Box chamber -->
     <div id="mysteryBoxChamber" class="panel-shell" style="display:none;">
       <h2 class="mystery-title">Mystery Box Chamber</h2>
       <div class="mystery-crest">♛ ⚚ ⟁</div>
@@ -682,77 +703,85 @@ h1, h2, h3 {
       <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
     </div>
 
-    <div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
-      <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
-      <p>Designation: <strong id="nameInPuzzle"></strong></p>
-      <div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
-      <div id="imgVoidPuzzle">
-        <div class="cube-container">
-          <div class="cube" id="labyrinthCube">
-            <div class="cube-face front">
-              <p>Toggle all lights green</p>
-                            <!-- back face -->
-            <div class="cube-face back">
-              <p>Turn the locker dial in the right order</p>
-              <div id="lockerDial" class="locker-dial">
-                <div class="dial-face">
-                  <div class="dial-pointer"></div>
-                  <div class="dial-numbers"></div>
-                </div>
-              </div>
-              <p id="dialHint" style="margin-top:8px; font-size:0.95em; color:#00f5b5;"></p>
-              <div id="runeD" class="rune">✦</div>
-            </div>
+   <!-- Puzzle Box — Labyrinth Cube -->
+<!-- Puzzle Box — Labyrinth Cube -->
+<div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
+  <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
+  <p>Designation: <strong id="nameInPuzzle"></strong></p>
+<div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
 
-            <!-- right face -->
-            <div class="cube-face right">
-              <p id="wordHint">Unscramble: —</p>
-              <input type="text" id="wordInput" placeholder="Your answer">
-              <div id="runeW" class="rune">Ψ</div>
-            </div>
+  <div id="imgVoidPuzzle">
+    <div class="cube-container">
+      <div class="cube" id="labyrinthCube">
+        <div class="cube-face front">
+          <p>Toggle all lights green</p>
+          <div id="lightsGrid">
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
+            <button class="light-cell"></button><button class="light-cell"></button><button class="light-cell"></button>
+          </div>
+          <div id="runeL" class="rune">Λ</div>
+        </div>
+        <div class="cube-face back">
+  <p>Turn the locker dial in the right order</p>
 
-            <!-- left face -->
-            <div class="cube-face left">
-              <p>Trace the hidden path</p>
-              <div id="labyrinthGrid">
-                <!-- 5x5 grid -->
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-              </div>
-              <div id="runeM" class="rune">Ω</div>
-            </div>
+  <div id="lockerDial" class="locker-dial">
+    <div class="dial-face">
+      <div class="dial-pointer"></div>
+      <div class="dial-numbers"></div>
+    </div>
+  </div>
 
-            <!-- top face -->
-            <div class="cube-face top">
-              <p>Repeat the sequence</p>
-              <button id="startMemory">Start</button>
-              <div id="memoryButtons">
-                <button class="mem" data-val="0">▲</button>
-                <button class="mem" data-val="1">◆</button>
-                <button class="mem" data-val="2">⚙</button>
-              </div>
-              <div id="runeS" class="rune">Σ</div>
-            </div>
+  <p id="dialHint" style="margin-top:8px; font-size:0.95em; color:#00f5b5;"></p>
+  <div id="runeD" class="rune">✦</div>
+</div>
 
-            <!-- bottom face -->
-            <div class="cube-face bottom">
-              <p id="mathHint">Select numbers to sum to 15</p>
-              <div id="mathGrid">
-                <button class="num">4</button><button class="num">7</button>
-                <button class="num">2</button><button class="num">8</button><button class="num">5</button>
-              </div>
-              <div id="runeN" class="rune">Φ</div>
-            </div>
+        </div>
+        <div class="cube-face right">
+  <p id="wordHint">Unscramble: —</p>
+  <input type="text" id="wordInput" placeholder="Your answer">
+  <div id="runeW" class="rune">Ψ</div>
+</div>
 
-          </div><!-- end cube -->
-        </div><!-- end cube-container -->
-      </div><!-- end imgVoidPuzzle -->
+        <div class="cube-face left">
+          <p>Trace the hidden path</p>
+          <div id="labyrinthGrid">
+            <!-- 5x5 grid -->
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+          </div>
+          <div id="runeM" class="rune">Ω</div>
+        </div>
+        <div class="cube-face top">
+          <p>Repeat the sequence</p>
+          <button id="startMemory">Start</button>
+          <div id="memoryButtons">
+            <button class="mem" data-val="0">▲</button>
+            <button class="mem" data-val="1">◆</button>
+            <button class="mem" data-val="2">⚙</button>
+          </div>
+          <div id="runeS" class="rune">Σ</div>
+        </div>
+        <div class="cube-face bottom">
+  <p id="mathHint">Select numbers to sum to 15</p>
+  <div id="mathGrid">
+    <button class="num">4</button><button class="num">7</button>
+    <button class="num">2</button><button class="num">8</button><button class="num">5</button>
+  </div>
+  <div id="runeN" class="rune">Φ</div>
+</div>
 
-      <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
-    </div><!-- end puzzleBoxPanel -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
+</div>
+
 
     <!-- Final Branch -->
     <div id="finalBranchPanel" class="panel-shell" style="display:none;">
@@ -777,6 +806,10 @@ h1, h2, h3 {
       <div class="mystery-crest">♛ ⚚ ⟁</div>
       <div class="cube-aura" aria-hidden="true"></div>
       <form id="superLevelForm" onsubmit="return submitSuperForm();">
+        <!-- Sigil watermark behind form -->
+  <div class="panel-sigil"></div>
+        <!-- Frost overlay layer -->
+  <div class="frost-overlay"></div>
         <label for="superName">Account Holder</label>
         <input id="superName" name="superName" required type="text" />
         <label for="superTier">Tier</label>
@@ -798,7 +831,7 @@ h1, h2, h3 {
       <textarea id="verificationText" readonly></textarea>
       <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
     </div>
-  </div><!-- end container -->
+  </div>
 
   <!-- Crest shortcut -->
   <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
@@ -810,17 +843,16 @@ h1, h2, h3 {
   <div class="tap-shimmer" id="tapShimmer"></div>
   <div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
   <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
-  <div id="puzzleNotice">
-    📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
-  </div>
-</body>
+<div id="puzzleNotice">
+  📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
+</div>
 
 <script>
-/* ===== Panel helpers (kept) ===== */
+/* ========== Panel helpers (kept) ========== */
 function showPanel(id){ const el=document.getElementById(id); if(el) el.style.display='block'; }
 function hidePanel(id){ const el=document.getElementById(id); if(el) el.style.display='none'; }
 
-/* ===== Clipboard for verification plaque ===== */
+/* ========== Clipboard for verification plaque ========== */
 function copyVerification() {
   const textArea = document.getElementById("verificationText");
   if (!textArea) return;
@@ -830,23 +862,23 @@ function copyVerification() {
   alert("Verification text copied. Please paste it into the Google Form field.");
 }
 
-/* ===== Name generator (public + admin use) ===== */
+/* ========== Name generator (public + admin use) ========== */
 function generateTieredName(tier) {
   const pools = {
-    Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
-      suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
-    Steward: { names:["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
-      suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
-    Neighbor: { names:["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
-      suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
-    Contributor: { names:["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
-      suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
-    Observer: { names:["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
-    Supporter: { names:["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
-    Archivist: { names:["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
+    Initiate: { names: ["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
+      suffixes: ["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
+    Steward: { names: ["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
+      suffixes: ["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
+    Neighbor: { names: ["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
+      suffixes: ["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
+    Contributor: { names: ["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
+      suffixes: ["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
+    Observer: { names: ["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
+    Supporter: { names: ["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
+    Archivist: { names: ["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
+      suffixes: ["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
   };
   const pool = pools[tier] || pools.Initiate;
   const name = pool.names[Math.floor(Math.random() * pool.names.length)];
@@ -859,11 +891,11 @@ function generateNameFromTier() {
   document.getElementById('name').value = generateTieredName(tier);
 }
 
-/* ===== Blogger helpers ===== */
+/* ========== Blogger helpers (kept) ========== */
 function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
 function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-/* ===== Public form submit (love-form) ===== */
+/* ========== Public form submit (kept) ========== */
 function submitCeremonialForm() {
   const name = document.getElementById('name').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -882,28 +914,20 @@ function submitCeremonialForm() {
 🆔 Account ID: ${card}
 🔑 Access Code: ${accessCode}`.trim();
 
-  // Fill love-form actual fields (secondary IDs)
   document.getElementById('message').value = message;
   document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-
-  // Plaque (proxy)
   document.getElementById('verificationText').value = message;
   document.getElementById('verificationPlaque').style.display = "block";
-
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
 
   alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
   setTimeout(() => {
     window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
+  }, 10000);
 
   return false;
 }
 
-/* ===== Crest unlock shortcut (Superform) ===== */
+/* ========== Crest unlock shortcut (Superform) ========== */
 function unlockSuperForm() {
   showPanel('mysteryBoxPanel');
   const name = document.getElementById('name')?.value.trim();
@@ -911,7 +935,7 @@ function unlockSuperForm() {
   alert("Super-level access form unlocked.");
 }
 
-/* ===== Tap shimmer and admin mobile unlock ===== */
+/* ========== Tap shimmer and admin mobile unlock (kept) ========== */
 let shimmerTimer;
 function shimmerPulse(){
   const s=document.getElementById('tapShimmer'); if(!s) return;
@@ -933,7 +957,7 @@ function checkAdminMobileUnlock(){
 document.getElementById('tapTopLeft')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
 document.getElementById('tapTopRight')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
 
-/* ===== Admin tier codes ===== */
+/* ========== Admin tier codes and logic (kept) ========== */
 const TIER_CODES = {
   Admin:"A-231-GATE", MasterAdmin:"M-Q8/-CROWN", Overseer:"OVR-442-SIGHT", Controller:"CTRL-993-AXIS",
   Custodian:"CUST-118-KEEP", Guardian:"GUARD-775-SHIELD", Sentinel:"SENT-560-WATCH", Supervisor:"SUP-823-LINE",
@@ -947,67 +971,115 @@ let ceremonyName = "";
 let superSequence = []; // ritual grid input record
 let tapLog = [];        // ritual grid feedback map
 
-/* ===== Admin specialized name generator ===== */
+/* Admin: Specialized name generator */
+  
+ /* Specialized Admin-tier name generator (distinct from public pools) */
 function generateAdminSpecializedName(tier) {
   const pools = {
-    Admin: { names:["Xyric","Velonar","Kaelith","Druvenor","Myrosan","Tavricus","Zerath","Olyren","Nerith","Solvion"],
-      suffixes:["of the Gate Sigil","of the Iron Seal","of the Hidden Ledger","of the Crown Archive","of the Watch Spire"] },
-    MasterAdmin: { names:["Solvarn","Eryndor","Calethor","Thyrosan","Lumielor","Varrosan","Aurethor","Calyrian","Therion","Vaelor"],
-      suffixes:["of the Eternal Crown","of the Master Seal","of the Oversight Chamber","of the Sovereign Archive","of the Prime Ledger"] },
-    Overseer: { names:["Maraven","Oristar","Kyreth","Valmor","Serath","Ilyrion","Drevan","Koriel","Navros","Pelior"],
-      suffixes:["of the Panoptic Tier","of the Vigil Crest","of the Oversight Watch","of the Long View","of the Sentinel Ledger"] },
-    Controller: { names:["Branth","Cyris","Tavren","Morix","Elion","Kadroth","Fenlor","Rystan","Ulric","Veldor"],
-      suffixes:["of the Axis Chamber","of the Control Seal","of the Switch Crest","of the Relay Archive","of the Circuit Ledger"] },
-    Custodian: { names:["Amaret","Soriel","Bastin","Eldra","Hamon","Lethir","Norian","Pelra","Quenel","Serin"],
-      suffixes:["of the Keep Fold","of the Vault Seal","of the Memory Hold","of the Chamber Keys","of the Archive Lock"] },
-    Guardian: { names:["Rhaeth","Galenor","Mireth","Thalen","Corvus","Eryx","Jorrel","Kaeth","Lorik","Serros"],
-      suffixes:["of the Shield Line","of the Gate Ward","of the Crest Watch","of the Hall Guard","of the Bastion Seal"] },
-    Sentinel: { names:["Ariste","Caden","Delys","Ferox","Ithar","Kynos","Lyren","Maelor","Nestor","Pyron"],
-      suffixes:["of the Upper Watch","of the Quiet Keep","of the Night Vigil","of the Sight Line","of the Lamp Crest"] },
-    Supervisor: { names:["Renvar","Tessan","Orwyn","Marella","Dorian","Helis","Karaen","Leoris","Navor","Selyn"],
-      suffixes:["of the Line Ledger","of the Flow Tier","of the Review Crest","of the Pattern Scroll","of the Rhythm Archive"] },
-    Coordinator: { names:["Arion","Belis","Coraen","Demin","Elvar","Faryn","Galius","Heryn","Islor","Jalara"],
-      suffixes:["of the Node Tier","of the Thread Ledger","of the Mesh Crest","of the Lattice Archive","of the Sequence Seal"] },
-    Director: { names:["Callion","Drexor","Eamon","Fiora","Helion","Ivara","Jorik","Kaelis","Lyraen","Mavros"],
-      suffixes:["of the Arc Chamber","of the Prime Tier","of the Guiding Seal","of the Lineage Archive","of the Crest Ledger"] },
-    Chancellor: { names:["Aurel","Beren","Cyral","Demos","Elara","Fidel","Galen","Helia","Isran","Joriel"],
-      suffixes:["of the Council Seal","of the Civic Crest","of the Scroll Authority","of the Ledger Court","of the Archive Seat"] },
-    Prefect: { names:["Ardan","Basile","Cyrion","Delios","Ephra","Feron","Gaius","Helor","Iason","Jaryn"],
-      suffixes:["of the Order Seal","of the Hall Rule","of the Crest Codex","of the Tier Decree","of the Ledger Law"] },
-    Warden: { names:["Brenor","Cadal","Dethis","Eryon","Faelis","Gorath","Halden","Ivern","Jareth","Kalen"],
-      suffixes:["of the Gate Hold","of the Lock Tier","of the Bar Crest","of the Guard Archive","of the Seal Chain"] },
-    Marshal: { names:["Caldris","Dorian","Eryx","Faelor","Gareth","Harion","Jalen","Korath","Lyris","Mavren"],
-      suffixes:["of the Banner Line","of the Crest March","of the Field Seal","of the Standard Archive","of the Rally Ledger"] },
-    Commander: { names:["Corvin","Darex","Eidon","Feran","Galen","Hector","Ilyon","Jaro","Kaelis","Leron"],
-      suffixes:["of the Legion Crest","of the Column Seal","of the Order March","of the Line Archive","of the Command Ledger"] },
-    Principal: { names:["Alestor","Bryn","Calyx","Demos","Eland","Fiora","Galen","Helis","Ionar","Jarin"],
-      suffixes:["of the Ledger Seat","of the Crest Chair","of the Prime Scroll","of the Tier Authority","of the Archive Root"] },
-    Chief: { names:["Avar","Bastion","Cairn","Dorel","Evanor","Ferran","Garran","Helion","Ithar","Jaro"],
-      suffixes:["of the Crest Line","of the Root Ledger","of the Core Seal","of the Upper Archive","of the Crown Scroll"] },
-    SovereignAdmin: { names:["Solvarn","Aurion","Calther","Eryndor","Lumiel","Thyros","Varros","Xerion","Ylath","Zevran"],
-      suffixes:["of the Sovereign Crown","of the Eternal Seal","of the Prime Archive","of the Royal Ledger","of the High Chamber"] },
-    LegacyAdmin: { names:["Arion","Belor","Cyris","Drevan","Elion","Faryn","Galen","Helor","Ilyas","Jorren"],
-      suffixes:["of the Legacy Archive","of the Elder Seal","of the Ancestral Ledger","of the Memory Court","of the Root Chamber"] }
+    Admin: {
+      names: ["Xyric","Velonar","Kaelith","Druvenor","Myrosan","Tavricus","Zerath","Olyren","Nerith","Solvion"],
+      suffixes: ["of the Gate Sigil","of the Iron Seal","of the Hidden Ledger","of the Crown Archive","of the Watch Spire"]
+    },
+    MasterAdmin: {
+      names: ["Solvarn","Eryndor","Calethor","Thyrosan","Lumielor","Varrosan","Aurethor","Calyrian","Therion","Vaelor"],
+      suffixes: ["of the Eternal Crown","of the Master Seal","of the Oversight Chamber","of the Sovereign Archive","of the Prime Ledger"]
+    },
+    Overseer: {
+      names: ["Maraven","Oristar","Kyreth","Valmor","Serath","Ilyrion","Drevan","Koriel","Navros","Pelior"],
+      suffixes: ["of the Panoptic Tier","of the Vigil Crest","of the Oversight Watch","of the Long View","of the Sentinel Ledger"]
+    },
+    Controller: {
+      names: ["Branth","Cyris","Tavren","Morix","Elion","Kadroth","Fenlor","Rystan","Ulric","Veldor"],
+      suffixes: ["of the Axis Chamber","of the Control Seal","of the Switch Crest","of the Relay Archive","of the Circuit Ledger"]
+    },
+    Custodian: {
+      names: ["Amaret","Soriel","Bastin","Eldra","Hamon","Lethir","Norian","Pelra","Quenel","Serin"],
+      suffixes: ["of the Keep Fold","of the Vault Seal","of the Memory Hold","of the Chamber Keys","of the Archive Lock"]
+    },
+    Guardian: {
+      names: ["Rhaeth","Galenor","Mireth","Thalen","Corvus","Eryx","Jorrel","Kaeth","Lorik","Serros"],
+      suffixes: ["of the Shield Line","of the Gate Ward","of the Crest Watch","of the Hall Guard","of the Bastion Seal"]
+    },
+    Sentinel: {
+      names: ["Ariste","Caden","Delys","Ferox","Ithar","Kynos","Lyren","Maelor","Nestor","Pyron"],
+      suffixes: ["of the Upper Watch","of the Quiet Keep","of the Night Vigil","of the Sight Line","of the Lamp Crest"]
+    },
+    Supervisor: {
+      names: ["Renvar","Tessan","Orwyn","Marella","Dorian","Helis","Karaen","Leoris","Navor","Selyn"],
+      suffixes: ["of the Line Ledger","of the Flow Tier","of the Review Crest","of the Pattern Scroll","of the Rhythm Archive"]
+    },
+    Coordinator: {
+      names: ["Arion","Belis","Coraen","Demin","Elvar","Faryn","Galius","Heryn","Islor","Jalara"],
+      suffixes: ["of the Node Tier","of the Thread Ledger","of the Mesh Crest","of the Lattice Archive","of the Sequence Seal"]
+    },
+    Director: {
+      names: ["Callion","Drexor","Eamon","Fiora","Helion","Ivara","Jorik","Kaelis","Lyraen","Mavros"],
+      suffixes: ["of the Arc Chamber","of the Prime Tier","of the Guiding Seal","of the Lineage Archive","of the Crest Ledger"]
+    },
+    Chancellor: {
+      names: ["Aurel","Beren","Cyral","Demos","Elara","Fidel","Galen","Helia","Isran","Joriel"],
+      suffixes: ["of the Council Seal","of the Civic Crest","of the Scroll Authority","of the Ledger Court","of the Archive Seat"]
+    },
+    Prefect: {
+      names: ["Ardan","Basile","Cyrion","Delios","Ephra","Feron","Gaius","Helor","Iason","Jaryn"],
+      suffixes: ["of the Order Seal","of the Hall Rule","of the Crest Codex","of the Tier Decree","of the Ledger Law"]
+    },
+    Warden: {
+      names: ["Brenor","Cadal","Dethis","Eryon","Faelis","Gorath","Halden","Ivern","Jareth","Kalen"],
+      suffixes: ["of the Gate Hold","of the Lock Tier","of the Bar Crest","of the Guard Archive","of the Seal Chain"]
+    },
+    Marshal: {
+      names: ["Caldris","Dorian","Eryx","Faelor","Gareth","Harion","Jalen","Korath","Lyris","Mavren"],
+      suffixes: ["of the Banner Line","of the Crest March","of the Field Seal","of the Standard Archive","of the Rally Ledger"]
+    },
+    Commander: {
+      names: ["Corvin","Darex","Eidon","Feran","Galen","Hector","Ilyon","Jaro","Kaelis","Leron"],
+      suffixes: ["of the Legion Crest","of the Column Seal","of the Order March","of the Line Archive","of the Command Ledger"]
+    },
+    Principal: {
+      names: ["Alestor","Bryn","Calyx","Demos","Eland","Fiora","Galen","Helis","Ionar","Jarin"],
+      suffixes: ["of the Ledger Seat","of the Crest Chair","of the Prime Scroll","of the Tier Authority","of the Archive Root"]
+    },
+    Chief: {
+      names: ["Avar","Bastion","Cairn","Dorel","Evanor","Ferran","Garran","Helion","Ithar","Jaro"],
+      suffixes: ["of the Crest Line","of the Root Ledger","of the Core Seal","of the Upper Archive","of the Crown Scroll"]
+    },
+    SovereignAdmin: {
+      names: ["Solvarn","Aurion","Calther","Eryndor","Lumiel","Thyros","Varros","Xerion","Ylath","Zevran"],
+      suffixes: ["of the Sovereign Crown","of the Eternal Seal","of the Prime Archive","of the Royal Ledger","of the High Chamber"]
+    },
+    LegacyAdmin: {
+      names: ["Arion","Belor","Cyris","Drevan","Elion","Faryn","Galen","Helor","Ilyas","Jorren"],
+      suffixes: ["of the Legacy Archive","of the Elder Seal","of the Ancestral Ledger","of the Memory Court","of the Root Chamber"]
+    }
   };
   const pool = pools[tier] || pools.Admin;
   const name = pool.names[Math.floor(Math.random() * pool.names.length)];
   const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
   return `${name} ${suffix}`;
 }
+ 
+  
+  
+  
+  
+  
+/* Admin: Specialized name generator (uses admin-only pools) */
 document.getElementById('adminGenNameBtn')?.addEventListener('click', () => {
   const tier = document.getElementById('adminTier').value || 'Admin';
   const generated = generateAdminSpecializedName(tier);
-  ceremonyName = generated;
+  ceremonyName = generated; // unified for verify + downstream panels
   document.getElementById('adminName').value = generated;
-  document.getElementById('nameInRitual').textContent = generated;
+  document.getElementById('nameInRitual').textContent = generated; // shows designation in ritual grid
 });
 
-/* ===== Admin handler (rehardwired) ===== */
+
+
+/* Admin handler (kept; avoids overlap by scoping) */
 function handleAdminAccess(isVerifyClick=false) {
   const tier = document.getElementById('adminTier').value;
   const code = (document.getElementById('adminCode').value || '').trim();
   const name = ceremonyName || document.getElementById('adminName').value.trim();
-  const phone = document.getElementById('adminPhone')?.value.trim() || '';
   const status = document.getElementById('verifyStatus');
   const expectedCode = TIER_CODES[tier];
 
@@ -1028,91 +1100,68 @@ function handleAdminAccess(isVerifyClick=false) {
     return false;
   }
 
-  // Non-Admin tiers → Blogger route via love-form fields
+  // Non-Admin tiers -> Blogger route
   const card = generateCardID();
   const message = `🔐 Admin Access Submission
 👤 Name: ${name}
-📞 Phone: ${phone || '—'}
 🎖 Tier: ${tier}
 🆔 Account ID: ${card}
 🔑 Clearance Code: ${expectedCode}`.trim();
 
-  // Fill love-form’s actual fields (secondary IDs)
-  // Ensure public name/phone/role can carry admin submission (dual recognition)
-  document.getElementById('name').value = name;
-  document.getElementById('phone').value = phone || '';
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-
-  // Plaque (proxy)
+  document.getElementById('adminMessage').value = message;
+  document.getElementById('adminEmail').value = "prestige@triumph.org";
   document.getElementById('verificationText').value = message;
   document.getElementById('verificationPlaque').style.display = "block";
-
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
 
   alert("Admin form submitted. Redirecting...");
   setTimeout(() => {
     window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
+  }, 10000);
 
   return false;
 }
 
-/* ===== Superform submit (rehardwired) ===== */
-function submitSuperForm() {
-  const code = document.getElementById("superCode").value.trim();
-  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
-  const name = document.getElementById("superName").value.trim();
-  const tier = document.getElementById("superTier").value;
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
+/* Bind Admin submit + verify (scoped to admin chamber) */
+document.getElementById('adminForm')?.addEventListener('submit', (e)=>{ e.preventDefault(); handleAdminAccess(false); });
+document.querySelector('#adminForm #verifyTierBtn')?.addEventListener('click', ()=>handleAdminAccess(true));
 
-  const message = `👑 Super-Level Access Submission
-👤 Name: ${name}
-🎖 Tier: ${tier}
-🆔 Account ID: ${card}
-🔑 Clearance Code: ${code}
-🔑 Access Code: ${accessCode}`.trim();
+/* Reveal Admin form shortcuts (kept) */
+document.addEventListener('keydown',(e)=>{
+  if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='a'){
+    const f=document.getElementById('adminForm'); if(f){ f.style.display='block'; alert("Admin access form unlocked."); }
+  }
+});
 
-  // Fill love-form’s actual fields
-  document.getElementById('name').value = name;           // public name field reused
-  document.getElementById('phone').value = '';            // optional: leave blank
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+/* Admin verify button visibility (scoped to admin chamber only) */
+document.getElementById('adminCode')?.addEventListener('input', ()=>{
+  const tierSel = document.getElementById('adminTier').value;
+  const code = document.getElementById('adminCode').value.trim();
+  const verifyBtn = document.querySelector('#adminForm #verifyTierBtn');
+  if (!verifyBtn) return;
+  if ((tierSel === 'Admin' && code === TIER_CODES.Admin) || (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
+    verifyBtn.style.display = 'block';
+  } else {
+    verifyBtn.style.display = 'none';
+  }
+});
 
-  // Plaque (proxy)
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
-
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
-
-  alert("Super-level form submitted. Redirecting...");
-  setTimeout(() => {
-    window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
-  return false;
-}
-
-/* ===== Ritual Grid (Color Sequence) and Puzzle Box (kept) ===== */
-/* Your existing color panel, super code, puzzle box, memory, math logic below remain unchanged. */
+/* ========== Utility: shuffle array (missing helper restored) ========== */
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
+
+/* ========== Ritual Grid (Color Sequence) ========== */
 let requiredSequence = [];
+
 function buildRitualGrid(){
   const panel = document.getElementById('panelButtons'); if(!panel) return;
   panel.innerHTML = "";
+
   const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
   const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
   const numbers = ["231","85/","V2ζ","₣2","77X","9Ø","31Δ","8.98","27$","719"];
@@ -1132,6 +1181,7 @@ function buildRitualGrid(){
     panel.appendChild(btn);
   });
 
+  // Ritual VERIFY/CLEAR scoped within colorPanel (avoids adminForm conflicts)
   const ritualVerify = document.querySelector('#colorPanel .ritual-controls button:nth-child(1)');
   const ritualClear  = document.querySelector('#colorPanel .ritual-controls button:nth-child(2)');
   if (ritualVerify && !ritualVerify.dataset.wired) {
@@ -1143,6 +1193,7 @@ function buildRitualGrid(){
     ritualClear.addEventListener('click', clearSequence);
   }
 }
+
 function handleRitualTap(color, btn){
   superSequence.push(color);
   tapLog.push({ color, btn });
@@ -1152,6 +1203,7 @@ function handleRitualTap(color, btn){
   btn.classList.add('glow');
   setTimeout(()=>btn.classList.remove('glow'),1200);
 }
+
 function renderSequence(){
   const sequenceReadout = document.getElementById('sequenceReadout'); if(!sequenceReadout) return;
   const text = superSequence.length ? superSequence.join('~') : '----';
@@ -1163,17 +1215,21 @@ function renderSequence(){
     if (i >= text.length) clearInterval(interval);
   }, 40);
 }
+
 function updateIndicators() {
   const indicators = document.querySelectorAll('#indicatorLines span');
   indicators.forEach((bar, i) => {
-    if (i < superSequence.length) bar.classList.add('active'); else bar.classList.remove('active');
+    if (i < superSequence.length) bar.classList.add('active');
+    else bar.classList.remove('active');
   });
 }
+
 function arraysMatch(a, b) {
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
   return true;
 }
+
 function verifySequenceAttempt(){
   const attemptColors = superSequence.slice(0,4);
   const attemptTaps   = tapLog.slice(0,4);
@@ -1193,6 +1249,7 @@ function verifySequenceAttempt(){
     sequenceReadout.style.color = "#ff4a4a";
   }
 
+  // Faint gestures for first 4 taps
   attemptTaps.forEach(({ color, btn }, i) => {
     btn.classList.remove('after-correct','after-wrong');
     if (color === requiredSequence[i]) {
@@ -1208,6 +1265,7 @@ function verifySequenceAttempt(){
   tapLog = [];
   updateIndicators();
 }
+
 function clearSequence(){
   superSequence = [];
   tapLog = [];
@@ -1224,20 +1282,24 @@ document.getElementById('accessConfirmBtn')?.addEventListener('click', () => {
   const s = document.getElementById('accessCodeStatus');
   if (v === HIDDEN_CODE) {
     s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
-    setTimeout(() => { hidePanel('superCodePanel'); showPanel('mysteryBoxChamber'); }, 600);
+    setTimeout(() => {
+      hidePanel('superCodePanel');
+      showPanel('mysteryBoxChamber');
+    }, 600);
   } else {
     s.textContent = '❌ Incorrect code.';
   }
 });
 
-/* Mystery Box → Puzzle Box entry */
+
+/* ========== Mystery Box → Puzzle Box entry ========== */
 document.getElementById('attemptPuzzleBtn')?.addEventListener('click', () => {
   hidePanel('mysteryBoxChamber');
   showPanel('puzzleBoxPanel');
   initPuzzleBox();
 });
 
-/* Puzzle Box consolidation (kept) */
+/* ========== Puzzle Box (consolidated and guarded) ========== */
 let puzzleInitDone = false;
 let cubeUnlocked = false;
 let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
@@ -1264,16 +1326,24 @@ function restorePuzzleBox() {
   const shell = document.getElementById('imgVoidPuzzle');
   if (shell) shell.classList.remove('shrunk');
 }
+
 function checkCubeUnlock() {
   if (Object.values(keys).every(v => v) && !cubeUnlocked) {
     cubeUnlocked = true;
+
     const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'block';
     const sigil = document.getElementById('hiddenSigil'); if (sigil) sigil.style.display = 'block';
     const voidEl = document.getElementById('imgVoidPuzzle'); if (voidEl) voidEl.classList.add('unlocked');
     pulseCube();
-    setTimeout(() => { if (sigil) sigil.classList.add('fadeOut'); const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut'); }, 30000);
+
     setTimeout(() => {
-      hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel');
+      if (sigil) sigil.classList.add('fadeOut');
+      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut');
+    }, 30000);
+
+    setTimeout(() => {
+      hidePanel('puzzleBoxPanel');
+      showPanel('finalBranchPanel');
       const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.remove('fadeOut');
       if (sigil) { sigil.style.display = 'none'; sigil.classList.remove('fadeOut'); }
       const voidEl2 = document.getElementById('imgVoidPuzzle'); if (voidEl2) voidEl2.classList.remove('unlocked');
@@ -1281,6 +1351,7 @@ function checkCubeUnlock() {
     }, 60000);
   }
 }
+
 function resetPuzzleState() {
   keys = { L:false, D:false, W:false, M:false, S:false, N:false };
   cubeUnlocked = false;
@@ -1291,6 +1362,8 @@ function resetPuzzleState() {
   const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
   const hint = document.getElementById('dialHint'); if (hint) { hint.textContent=''; hint.style.color='#00f5b5'; }
 }
+
+/* Lights Out */
 let lightsTarget = [];
 function configureLightsOut() {
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
@@ -1313,6 +1386,8 @@ function wireLightsOutOnce() {
     });
   });
 }
+
+/* Locker Dial */
 function configureDial() {
   const dialFace = document.querySelector('#lockerDial .dial-face');
   const numbers  = document.querySelector('#lockerDial .dial-numbers');
@@ -1331,6 +1406,7 @@ function wireDialOnce() {
   const pointer  = document.querySelector('#lockerDial .dial-pointer');
   if (!dialFace || !pointer || dialFace.dataset.wired) return;
   dialFace.dataset.wired = '1';
+
   let dialAngle = 0, dragging=false, startAngle=0, lastAngle=0;
   const combo = [20, 5, 75];
   const directions = ['cw','ccw','cw'];
@@ -1340,11 +1416,13 @@ function wireDialOnce() {
     const hint = document.getElementById('dialHint');
     if (Math.abs(val - combo[stage]) <= tol && dir === directions[stage]) {
       stage++;
-      if (stage < combo.length){ if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`; }
-      else {
+      if (stage < combo.length){
+        if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`;
+      } else {
         keys.D = true; document.getElementById('runeD').style.display='block';
         if (hint) { hint.textContent = `Combo complete! (${combo.join(' → ')})`; hint.style.color='#6aff6a'; }
-        pulseCube(); checkCubeUnlock(); stage = 0;
+        pulseCube(); checkCubeUnlock();
+        stage = 0;
       }
     } else if (Math.abs(val - combo[stage]) <= tol && dir !== directions[stage]) {
       stage = 0; if (hint) { hint.textContent = "Wrong direction! Restart combo."; hint.style.color='#ff4a4a'; }
@@ -1358,6 +1436,7 @@ function wireDialOnce() {
     const dir = (dialAngle - lastAngle) > 0 ? 'cw' : 'ccw'; lastAngle = dialAngle;
     checkCombo(val, dir);
   }
+
   dialFace.addEventListener('mousedown', e=>{
     dragging = true;
     const rect = dialFace.getBoundingClientRect();
@@ -1370,6 +1449,7 @@ function wireDialOnce() {
     handleMove(e.clientX, e.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
   });
   document.addEventListener('mouseup', ()=> dragging=false);
+
   dialFace.addEventListener('touchstart', e=>{
     dragging = true;
     const rect = dialFace.getBoundingClientRect();
@@ -1385,6 +1465,8 @@ function wireDialOnce() {
   }, { passive: true });
   document.addEventListener('touchend', ()=> dragging=false);
 }
+
+/* Word Lock */
 let wordAnswer = '';
 function configureWordLock() {
   const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
@@ -1404,6 +1486,8 @@ function wireWordLockOnce() {
     }
   });
 }
+
+/* Labyrinth Path */
 let labPath = []; let labProgress = 0;
 function generateLabPath(cells, width, length = 9) {
   let path = []; let current = Math.floor(Math.random() * cells.length);
@@ -1446,6 +1530,8 @@ function wireLabyrinthOnce() {
     });
   });
 }
+
+/* Memory */
 let memSeq = [], playerSeq = [], playing = false;
 function configureMemory() {
   memSeq = []; playerSeq = []; playing = false;
@@ -1455,6 +1541,7 @@ function wireMemoryOnce() {
   const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
   const startBtn = document.getElementById('startMemory');
   if (!memBtns.length || !startBtn) return;
+
   function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
   function playSequence() {
     playing = true; let i = 0;
@@ -1467,6 +1554,7 @@ function wireMemoryOnce() {
     }, 450);
   }
   function nextRound(){ memSeq.push(Math.floor(Math.random() * memBtns.length)); playSequence(); }
+
   if (!startBtn.dataset.wired) {
     startBtn.dataset.wired = '1';
     startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
@@ -1488,6 +1576,8 @@ function wireMemoryOnce() {
     });
   });
 }
+
+/* Math */
 let mathTarget = 15;
 function configureMath() {
   const nums = [...document.querySelectorAll('#mathGrid .num')];
@@ -1512,6 +1602,8 @@ function wireMathOnce() {
     });
   });
 }
+
+/* PuzzleBox init orchestration */
 function initPuzzleBox() {
   if (!puzzleInitDone) {
     wireLightsOutOnce();
@@ -1532,10 +1624,13 @@ function initPuzzleBox() {
   shrinkPuzzleBox();
 }
 
-/* ===== Final branch / clearance ===== */
+/* Final branch → Final clearance panel */
 document.getElementById('toFinalClearanceBtn')?.addEventListener('click', () => {
-  hidePanel('finalBranchPanel'); showPanel('finalClearancePanel');
+  hidePanel('finalBranchPanel');
+  showPanel('finalClearancePanel');
 });
+
+/* Final clearance → Superform */
 document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
   const code = document.getElementById('finalClearanceCode').value.trim();
   const revealed = document.getElementById('revealedPassword').textContent.trim();
@@ -1548,7 +1643,29 @@ document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
   }
 });
 
-/* ===== Cube rotation ===== */
+/* Superform submit (Prestige route) */
+function submitSuperForm() {
+  const code = document.getElementById("superCode").value.trim();
+  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
+  const name = document.getElementById("superName").value.trim();
+  const tier = document.getElementById("superTier").value;
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+  const message = `👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Clearance Code: ${accessCode}`.trim();
+  document.getElementById('verificationText').value = message;
+  document.getElementById('verificationPlaque').style.display = "block";
+  alert("Super-level form submitted. Redirecting...");
+  setTimeout(() => {
+    window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+  }, 10000);
+  return false;
+}
+
+/* Cube rotation (interactive) */
 (function bindCubeRotation(){
   const cubeEl = document.getElementById('labyrinthCube');
   if (!cubeEl) return;
@@ -1573,7 +1690,7 @@ document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
   updateRotation();
 })();
 
-/* ===== Keyboard shortcut: show Superform ===== */
+/* Keyboard shortcut to show Superform directly (kept) */
 document.addEventListener("keydown", function (e) {
   if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
     const superPanel = document.getElementById("mysteryBoxPanel");
@@ -1584,46 +1701,65 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-/* ===== Public form: generator hook (scoped to love-form) ===== */
+/* ======= Public form: generator hook (scoped to love-form) ======= */
 document.getElementById('love-form')?.addEventListener('click', (e)=>{
   if (e.target && e.target.id === 'genNameBtn') {
     generateNameFromTier();
   }
 });
 
-/* ===== Superform binding ===== */
+/* ======= Superform binding ======= */
 document.getElementById('superLevelForm')?.addEventListener('submit', (e)=>{
   e.preventDefault();
   submitSuperForm();
 });
 
-/* ===== Admin binding ===== */
-document.getElementById('adminForm')?.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  handleAdminAccess(false);
-});
-document.querySelector('#adminForm #verifyTierBtn')?.addEventListener('click', ()=>handleAdminAccess(true));
-
-/* ===== Admin verify button visibility ===== */
-document.getElementById('adminCode')?.addEventListener('input', ()=>{
-  const tierSel = document.getElementById('adminTier').value;
-  const code = document.getElementById('adminCode').value.trim();
-  const verifyBtn = document.querySelector('#adminForm #verifyTierBtn');
-  if (!verifyBtn) return;
-  if ((tierSel === 'Admin' && code === TIER_CODES.Admin) ||
-      (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
-    verifyBtn.style.display = 'block';
-  } else {
-    verifyBtn.style.display = 'none';
+/* ======= Access code panel quality-of-life ======= */
+document.getElementById('accessCodeInput')?.addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('accessCodeBtn')?.click();
   }
 });
 
-/* ===== Scoping guards (ritual controls) ===== */
+/* Scoped CLEAR in Super Code panel (does not interfere with ritual CLEAR) */
+(function bindSuperCodeClear(){
+  const wrap = document.getElementById('superCodePanel');
+  if (!wrap) return;
+  const clearBtn = wrap.querySelector('#clearBtn');
+  if (clearBtn && !clearBtn.dataset.wired) {
+    clearBtn.dataset.wired = '1';
+    clearBtn.addEventListener('click', ()=>{
+      const input = document.getElementById('accessCodeInput');
+      const status = document.getElementById('accessCodeStatus');
+      if (input) input.value = '';
+      if (status) status.textContent = '';
+    });
+  }
+})();
+
+/* ======= Admin form visibility via mobile tap zones (guarded) ======= */
+(function bindAdminVisibilityShortcuts(){
+  const adminForm = document.getElementById('adminForm');
+  const zoneRight = document.getElementById('tapTopRight');
+  if (zoneRight && adminForm) {
+    zoneRight.addEventListener('click', ()=> { adminForm.style.display = 'block'; });
+  }
+  document.addEventListener('keydown', (e)=>{
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a' && adminForm) {
+      adminForm.style.display = 'block';
+      alert("Admin access form unlocked.");
+    }
+  });
+})();
+
+/* ======= Ritual panel: ensure buttons remain scoped even if rebuilt ======= */
 (function guardRitualControls(){
   const colorPanel = document.getElementById('colorPanel');
   if (!colorPanel) return;
   const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
   const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
+
   if (verifyBtn && !verifyBtn.dataset.wired) {
     verifyBtn.dataset.wired = '1';
     verifyBtn.addEventListener('click', verifySequenceAttempt);
@@ -1633,6 +1769,8 @@ document.getElementById('adminCode')?.addEventListener('input', ()=>{
     clearBtn.addEventListener('click', clearSequence);
   }
 })();
+
+/* ======= Final safety: reassert scoping on bfcache restore ======= */
 window.addEventListener('pageshow', ()=>{
   const colorPanel = document.getElementById('colorPanel');
   if (!colorPanel) return;
@@ -1648,6 +1786,7 @@ window.addEventListener('pageshow', ()=>{
   }
 });
 </script>
+
 
 
 
