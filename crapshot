@@ -298,92 +298,77 @@ h1, h2, h3 {
 }
 @keyframes auraDance { 0%{ transform: scale(1) rotate(0deg); } 50%{ transform: scale(1.05) rotate(2deg); } 100%{ transform: scale(1) rotate(-2deg); } }
 
-.cube-container {
-  width: 340px; height: 340px; perspective: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: center;
-}
-.cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transform: translateZ(-120px) rotateX(-15deg) rotateY(20deg); transition: transform 0.15s ease-out; }
-.cube-face {
-  position: absolute; width: 340px; height: 340px;
-  background: radial-gradient(120px 120px at 50% 40%, rgba(25,25,25,0.95), rgba(12,12,12,0.95));
-  border: 2px solid #555; box-shadow: inset 0 0 40px rgba(0,255,180,0.08);
-  display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 14px; color: #fff;
-}
-.cube-face .rune { display: none; margin-top: 10px; font-size: 22px; color: #00f5b5; text-shadow: 0 0 8px rgba(0,245,181,0.65); }
-.front  { transform: rotateY(0deg)   translateZ(170px); }
-.back   { transform: rotateY(180deg) translateZ(170px); }
-.right  { transform: rotateY(90deg)  translateZ(170px); }
-.left   { transform: rotateY(-90deg) translateZ(170px); }
-.top    { transform: rotateX(90deg)  translateZ(170px); }
-.bottom { transform: rotateX(-90deg) translateZ(170px); }
+/* --- Minimal merged styles (focused on Puzzle Box + panel safety) --- */
+:root{ --gold:#d4b86a; --ivory:#f2f0e9; --dark:#161616; --accent:#00f5b5; --verify-bg-start:#2c2f48; --verify-bg-end:#4a4d5f; }
 
-#unlockMessage { display: none; margin-top: 10px; font-size: 18px; color: #00f5b5; letter-spacing: 0.3px; text-align: center; }
+body{font-family:Segoe UI,system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif; margin:18px;background:linear-gradient(#f5f7fa,#e6ecf0); color:#222;}
+.container{max-width:960px;margin:0 auto;padding:20px;background:rgba(255,255,255,0.95);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.06);}
 
-/* Lights Out */
-#lightsGrid { display: grid; grid-template-columns: repeat(3, 60px); gap: 6px; }
-#lightsGrid .light-cell {
-  width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.7); transition: background 140ms ease, box-shadow 140ms ease; -webkit-appearance: none; appearance: none;
-}
-#lightsGrid .light-cell.on { background: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.7), inset 0 0 6px rgba(0,0,0,0.4); }
+/* panel shell */
+.panel-shell{padding:18px;border-radius:12px;margin:18px 0;background:linear-gradient(180deg,#222,#2f2f33);color:var(--ivory);box-shadow:0 6px 20px rgba(0,0,0,0.6);}
+.panel-shell h2{margin:0 0 10px;font-family:Orbitron,Segoe UI,monospace;color:var(--gold);text-align:center;}
 
-/* Labyrinth Path */
-#labyrinthGrid { display: grid; grid-template-columns: repeat(5,48px); gap: 6px; }
-#labyrinthGrid .cell { width: 48px; height: 48px; background: #161616; border: 1px solid #3a3a3a; border-radius: 6px; cursor: pointer; transition: background 140ms ease, box-shadow 140ms ease; }
-#labyrinthGrid .cell.on { background: #00b8f5; box-shadow: 0 0 14px rgba(0,184,245,0.55); }
+/* puzzle container and cube */
+#puzzleBoxPanel{max-width:520px;margin:18px auto;display:none;}
+#imgVoidPuzzle{max-width:420px;margin:10px auto;display:none;}
+.cube-container{perspective:1100px;}
+.cube{width:100%;height:420px;position:relative;transform-style:preserve-3d;transform:translateZ(-170px) rotateX(-15deg) rotateY(20deg);transition:transform .16s ease-out;}
+.cube-face{position:absolute;left:0;top:0;width:100%;height:100%;box-sizing:border-box;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;backface-visibility:hidden;}
+.cube-face p{margin:6px 0 12px;color:#dfeffd;}
+.cube-face.front{transform:rotateY(0deg) translateZ(calc(50%));}
+.cube-face.back{transform:rotateY(180deg) translateZ(calc(50%));}
+.cube-face.right{transform:rotateY(90deg) translateZ(calc(50%));}
+.cube-face.left{transform:rotateY(-90deg) translateZ(calc(50%));}
+.cube-face.top{transform:rotateX(90deg) translateZ(calc(50%));}
+.cube-face.bottom{transform:rotateX(-90deg) translateZ(calc(50%));}
 
-/* Memory */
-#memoryButtons { margin-top: 8px; display: flex; gap: 10px; }
-.mem { width: 64px; height: 64px; border-radius: 10px; font-size: 22px; background: #212121; border: 1px solid #4b4b4b; transition: filter 150ms ease, box-shadow 150ms ease; }
-.mem.flash { filter: brightness(1.6); box-shadow: 0 0 14px rgba(255,255,255,0.4); }
+/* lights */
+#lightsGrid{display:grid;grid-template-columns:repeat(3,60px);gap:8px;margin:8px 0;}
+.light-cell{width:60px;height:60px;background:#0b0b0b;border-radius:8px;border:1px solid #333;cursor:pointer;transition:all 160ms;}
+.light-cell.on{background:#ffd700;box-shadow:0 0 14px rgba(255,215,0,0.7);}
 
-/* Math */
-#mathGrid { display: flex; gap: 10px; }
-.num { min-width: 54px; height: 54px; border-radius: 8px; background: #212121; border: 1px solid #4b4b4b; font-weight: 600; font-size: 18px; transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
-.num.sel { transform: translateY(-2px); background: #333; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
+/* labyrinth grid */
+#labyrinthGrid{display:grid;grid-template-columns:repeat(5,48px);gap:6px;margin:8px 0;}
+.cell{width:48px;height:48px;background:#0d0d0d;border-radius:6px;border:1px solid #333;cursor:pointer;transition:all 120ms;}
+.cell.on{background:#00b8f5;box-shadow:0 0 12px rgba(0,184,245,0.6);}
 
-/* Final clearance cube */
-.glowing-cube {
-  width: 120px; height: 120px; margin: 16px auto;
-  background: linear-gradient(145deg, #6a0dad, #ffd700);
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(106,13,173,0.8), 0 0 40px rgba(255,215,0,0.6);
-  animation: cubeGlow 3s infinite alternate;
-}
-@keyframes cubeGlow {
-  0%{ transform: rotateY(0deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
-  50%{ transform: rotateY(180deg) rotateX(20deg); box-shadow: 0 0 40px rgba(255,215,0,0.8); }
-  100%{ transform: rotateY(360deg) rotateX(0deg); box-shadow: 0 0 20px rgba(106,13,173,0.8); }
-}
+/* memory */
+#memoryButtons{display:flex;gap:10px;margin:6px 0;}
+.mem{width:64px;height:64px;border-radius:10px;background:#141414;border:1px solid #444;color:#fff;font-size:20px;cursor:pointer;}
+.mem.flash{filter:brightness(1.6);box-shadow:0 0 14px rgba(255,255,255,0.28);}
 
-/* PuzzleBox panel width (regular size) */
-#puzzleBoxPanel { max-width: 480px; margin: 40px auto; padding: 20px; }
-#imgVoidPuzzle { transition: max-width 0.6s ease; }
-@media (max-width: 768px) {
-  #imgVoidPuzzle.shrunk { max-width: 50%; margin: 0 auto; padding: 12px; }
-}
+/* math */
+#mathGrid{display:flex;gap:10px;margin:6px 0;}
+.num{min-width:54px;height:54px;border-radius:8px;background:#141414;border:1px solid #444;color:#fff;font-weight:700;cursor:pointer;}
+.num.sel{transform:translateY(-3px);background:#2b2b2b;box-shadow:0 0 10px rgba(255,255,255,0.06);}
 
-/* Mobile PuzzleBox notice */
-#puzzleNotice {
-  display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  max-width: 90%; background: rgba(0,0,0,0.85); color: #ffd700;
-  font-family: 'Orbitron','Courier New', monospace; font-size: 0.95em; padding: 12px 18px; border-radius: 10px;
-  box-shadow: 0 0 12px rgba(255,215,0,0.6); z-index: 9999; text-align: center;
-}
-#puzzleNotice.show { display: block; animation: fadeIn 0.4s ease; }
-@keyframes fadeIn { from{opacity:0; transform:translateX(-50%) translateY(20px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
+/* runes */
+.rune{display:none;margin-top:12px;font-size:22px;color:var(--accent);text-shadow:0 0 10px rgba(0,245,181,0.6);}
 
-/* Hidden sigil pulse */
-#hiddenSigil {
-  display: none; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-  font-size: 22px; color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.8); animation: pulseSigil 2s infinite;
-}
-@keyframes pulseSigil { 0%{opacity:0.4; transform:translateX(-50%) scale(0.9);} 50%{opacity:1; transform:translateX(-50%) scale(1.1);} 100%{opacity:0.4; transform:translateX(-50%) scale(0.9);} }
-#hiddenSigil.fadeOut { animation: fadeOutSigil 2s forwards; }
-@keyframes fadeOutSigil { from{opacity:1; transform:translateX(-50%) scale(1);} to{opacity:0; transform:translateX(-50%) scale(0.8);} }
+/* locker dial */
+.locker-dial{width:180px;height:180px;position:relative;margin:6px 0;}
+.locker-dial .dial-face{width:100%;height:100%;border-radius:50%;position:relative;background:radial-gradient(circle,#0d0d0d,#060606);box-shadow:inset 0 0 18px rgba(0,0,0,0.7);overflow:visible;}
+.locker-dial .dial-pointer{position:absolute;left:50%;top:8%;width:8px;height:46%;transform-origin:bottom center;background:linear-gradient(180deg,#ffd66b,#f1b600);border-radius:4px;box-shadow:0 0 14px rgba(255,200,60,0.9);transform:rotate(0deg);}
+.locker-dial .dial-numbers{position:absolute;inset:0;pointer-events:none;}
+.locker-dial .dial-numbers span{position:absolute;left:50%;top:50%;transform-origin:0 0;color:#ddd;font-weight:700;font-size:12px;pointer-events:none;}
 
-/* Cube fade-out */
-#labyrinthCube.fadeOut { animation: fadeOutCube 3s forwards; }
-@keyframes fadeOutCube { from{opacity:1; transform:scale(1) rotateY(0deg);} to{opacity:0; transform:scale(0.85) rotateY(15deg);} }
+/* dial center feedback */
+.locker-dial .center-value{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.65);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;box-shadow:0 6px 14px rgba(0,0,0,0.6);}
+
+/* UI controls */
+.controls{display:flex;gap:12px;justify-content:center;margin-top:14px;}
+.btn{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--verify-bg-start),var(--verify-bg-end));color:var(--ivory);cursor:pointer;font-weight:700;}
+.small{padding:6px 10px;font-size:0.9rem}
+
+/* status */
+.status{margin-top:12px;text-align:center;color:#b8dff3;font-family:monospace;}
+
+/* puzzle notice and hidden sigil */
+#puzzleNotice{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:10px 14px;background:rgba(0,0,0,0.9);color:var(--gold);border-radius:8px;z-index:9999;}
+#hiddenSigil{display:none;margin-top:6px;color:var(--gold);}
+
+/* small responsive */
+@media(max-width:640px){ .cube{height:360px} .locker-dial{width:150px;height:150px} }
 
 /* Mystery Box (hidden branch) */
 #mysteryBoxPanel { display: none; border: 3px solid #6a0dad; box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(138,43,226,0.6); color: #e0dfff; text-align: center; position: relative; overflow: hidden; }
@@ -540,6 +525,99 @@ h1, h2, h3 {
   font-weight: 600;          /* prestige emphasis */
 }
 
+/* Puzzle Box / Cube — corrected and defensive */
+
+#imgVoidPuzzle { display: none; max-width: 420px; margin: 0 auto; padding: 16px; box-sizing: border-box; }
+#imgVoidPuzzle.active { display: block; }
+
+/* container perspective */
+.cube-container { perspective: 1100px; -webkit-perspective: 1100px; width: 100%; max-width: 420px; margin: 0 auto; box-sizing: border-box; }
+
+/* cube sizing and 3D environment */
+.cube {
+  width: 100%;
+  height: 420px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  transition: transform 160ms ease-out;
+  will-change: transform;
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+/* ensure faces fill the cube and are backface-hidden */
+.cube-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  pointer-events: auto;
+}
+
+/* Use a fixed translateZ to avoid calc issues — match half the cube height */
+.cube-face.front  { transform: rotateY(0deg)   translateZ(210px); }
+.cube-face.back   { transform: rotateY(180deg) translateZ(210px); }
+.cube-face.right  { transform: rotateY(90deg)  translateZ(210px); }
+.cube-face.left   { transform: rotateY(-90deg) translateZ(210px); }
+.cube-face.top    { transform: rotateX(90deg)  translateZ(210px); }
+.cube-face.bottom { transform: rotateX(-90deg) translateZ(210px); }
+
+/* ensure inner controls remain clickable and visible */
+.cube-face * { pointer-events: auto; position: relative; z-index: 2; }
+
+/* defensive min-size so translateZ has meaning */
+#imgVoidPuzzle, .cube { min-height: 300px; min-width: 300px; }
+
+/* Lights grid */
+#lightsGrid { display: grid; grid-template-columns: repeat(3, 60px); gap: 8px; margin: 8px 0; }
+.light-cell { width: 60px; height: 60px; border-radius: 8px; background: #0b0b0b; border: 1px solid #333; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.light-cell.on { background: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,.7); }
+
+/* Labyrinth grid */
+#labyrinthGrid { display: grid; grid-template-columns: repeat(5, 48px); gap: 6px; margin: 8px 0; }
+#labyrinthGrid .cell { width: 48px; height: 48px; border-radius: 6px; background: #0d0d0d; border: 1px solid #333; cursor: pointer; }
+#labyrinthGrid .cell.on { background: #00b8f5; box-shadow: 0 0 12px rgba(0,184,245,0.6); }
+
+/* Memory */
+#memoryButtons { display:flex; gap:10px; margin:8px 0; }
+.mem { width:64px; height:64px; border-radius:10px; background:#141414; border:1px solid #444; color:#fff; font-size:20px; cursor:pointer; -webkit-appearance:none; appearance:none; }
+.mem.flash { filter:brightness(1.6); box-shadow:0 0 14px rgba(255,255,255,0.28); }
+
+/* Math */
+#mathGrid { display:flex; gap:10px; margin:8px 0; }
+.num { min-width:54px; height:54px; border-radius:8px; background:#141414; border:1px solid #444; color:#fff; font-weight:700; cursor:pointer; -webkit-appearance:none; appearance:none; }
+.num.sel { transform: translateY(-3px); background:#2b2b2b; box-shadow: 0 0 10px rgba(255,255,255,0.06); }
+
+/* Locker dial — geometry + pointer */
+.locker-dial { width: 180px; height: 180px; position: relative; box-sizing: border-box; }
+.locker-dial .dial-face { width: 100%; height: 100%; border-radius: 50%; position: relative; background: radial-gradient(circle,#0d0d0d,#060606); border:2px solid #444; overflow: visible; }
+.locker-dial .dial-numbers { position: absolute; inset:0; pointer-events:none; }
+.locker-dial .dial-numbers span { position: absolute; left:50%; top:50%; transform-origin:0 0; color:#ddd; font-weight:700; font-size:12px; pointer-events:none; }
+.locker-dial .dial-pointer { position:absolute; left:50%; top:8%; width:6px; height:46%; transform-origin: bottom center; background: linear-gradient(180deg,#ffd700,#f0b800); border-radius:3px; box-shadow:0 0 14px rgba(255,190,0,0.9); transform: rotate(0deg); pointer-events:auto; }
+
+/* Dial center readout */
+.locker-dial .center-value { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(0,0,0,0.65); color:#fff; padding:6px 10px; border-radius:8px; font-weight:700; z-index:3; }
+
+/* puzzle notice and sigil */
+#puzzleNotice { display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%); padding:10px 14px; background:rgba(0,0,0,0.9); color:var(--gold); border-radius:8px; }
+#hiddenSigil { display:none; color:var(--gold); margin-top:6px; }
+
+/* responsive adjustments */
+@media (max-width:640px) {
+  .cube { height: 360px; }
+  .locker-dial { width:150px; height:150px; }
+  .cube-face { padding: 12px; }
+}
 
   </style>
 </head>
@@ -548,24 +626,12 @@ h1, h2, h3 {
     <div class="crest-header"></div>
     <h1>Prestige Triumph: Oversight Entry</h1>
 
-    <!-- Blogger widget1 (source of truth) -->
-    <iframe name="hidden_iframe" style="display:none;"></iframe>
-    <form id="love-form"
-          method="POST"
-          action="https://www.blogger.com/contact-form.do"
-          target="hidden_iframe"
-          style="display:none;">
-      <input type="text" id="name" name="name" />
-      <input type="tel" id="phone" name="phone" />
-      <textarea id="message" name="message"></textarea>
-      <input type="email" id="bloggerEmail" name="email" />
-    </form>
-
     <!-- Public form -->
-    <form id="publicForm"
-          onsubmit="return submitCeremonialForm();"
-          class="prestige-form"
-          style="max-width:600px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
+    <form id="love-form" method="POST" class="prestige-form"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return submitCeremonialForm();"
+      style="max-width:600px;margin:40px auto;padding:32px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12);">
       <label for="role">Select Tier</label>
       <select id="role" name="role" required>
         <option value="">Select your role</option>
@@ -589,63 +655,88 @@ h1, h2, h3 {
         </button>
       </div>
 
-      <input type="text" id="publicName" placeholder="Ceremonial Name" required />
-      <label for="publicPhone">Contact Number</label>
-      <input type="tel" id="publicPhone" placeholder="e.g., +1 616-555-1234" required />
+      <input type="text" id="name" name="name" placeholder="e.g., Solenne of the Third Tier" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
+      <label for="phone">Contact Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="e.g., +1 616-555-1234" required style="width:100%;padding:12px 14px;border:1px solid #b8aee0;border-radius:6px;background:#fafafa;color:#4b3f72;">
 
-      <button type="submit"
-              style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">
-        Create Account
-      </button>
+      <textarea id="message" name="message" style="display:none;"></textarea>
+      <input type="email" name="email" id="bloggerEmail" style="display:none;">
+      <button type="submit" style="margin-top:24px;width:100%;padding:14px;background:linear-gradient(to right,#4b3f72,#6a5acd);color:white;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;">Create Account</button>
+
+      <!--<p id="tapHint" style="margin-top:10px;">Tap top-left then top-right to unlock Admin gate.</p>-->
     </form>
 
     <!-- Admin chamber -->
-    <form id="adminForm"
-          onsubmit="return handleAdminAccess(false);"
-          class="chamber-form"
-          style="display:none;">
-      <h2>Admin Access</h2>
+<!-- Admin Chamber (hidden by default) -->
+<form id="adminForm"
+      method="POST"
+      action="https://www.blogger.com/contact-form.do"
+      target="hidden_iframe"
+      onsubmit="return handleAdminAccess(false);"
+      class="chamber-form"
+      style="display:none;">
+   <h2>Admin Access</h2>
+  
+   <!-- Tier selection -->
+  <label for="adminTier">Tier</label>
+  <select id="adminTier" name="adminTier" required>
+    <option value="">-- Select Tier --</option>
+    <option value="Admin">Admin</option>
+    <option value="MasterAdmin">MasterAdmin</option>
+    <option value="Overseer">Overseer</option>
+    <option value="Controller">Controller</option>
+    <option value="Custodian">Custodian</option>
+    <option value="Guardian">Guardian</option>
+    <option value="Sentinel">Sentinel</option>
+    <option value="Supervisor">Supervisor</option>
+    <option value="Coordinator">Coordinator</option>
+    <option value="Director">Director</option>
+    <option value="Chancellor">Chancellor</option>
+    <option value="Prefect">Prefect</option>
+    <option value="Warden">Warden</option>
+    <option value="Marshal">Marshal</option>
+    <option value="Commander">Commander</option>
+    <option value="Principal">Principal</option>
+    <option value="Chief">Chief</option>
+    <option value="SovereignAdmin">SovereignAdmin</option>
+    <option value="LegacyAdmin">LegacyAdmin</option>
+  </select>
 
-      <label for="adminTier">Tier</label>
-      <select id="adminTier" required>
-        <option value="">-- Select Tier --</option>
-        <option value="Admin">Admin</option>
-        <option value="MasterAdmin">MasterAdmin</option>
-        <option value="Overseer">Overseer</option>
-        <option value="Controller">Controller</option>
-        <option value="Custodian">Custodian</option>
-        <option value="Guardian">Guardian</option>
-        <option value="Sentinel">Sentinel</option>
-        <option value="Supervisor">Supervisor</option>
-        <option value="Coordinator">Coordinator</option>
-        <option value="Director">Director</option>
-        <option value="Chancellor">Chancellor</option>
-        <option value="Prefect">Prefect</option>
-        <option value="Warden">Warden</option>
-        <option value="Marshal">Marshal</option>
-        <option value="Commander">Commander</option>
-        <option value="Principal">Principal</option>
-        <option value="Chief">Chief</option>
-        <option value="SovereignAdmin">SovereignAdmin</option>
-        <option value="LegacyAdmin">LegacyAdmin</option>
-      </select>
+ 
+<!-- Specialized name generator -->
+<button type="button" id="adminGenNameBtn"class="runez-btn">Generate Specialized Name</button><br>
+<br>
+<br>
 
-      <button type="button" id="adminGenNameBtn" class="runez-btn">Generate Specialized Name</button>
-      <br><br><br>
+<!-- Target field (same as public form) -->
+<input type="text" id="adminName" name="name" placeholder="Ceremonial Name" />
 
-      <input type="text" id="adminName" placeholder="Ceremonial Name" />
-      <label for="adminPhone">Contact Phone</label>
-      <input id="adminPhone" type="tel" placeholder="(###) ###-####" required />
-      <label for="adminCode">Clearance Code</label>
-      <input id="adminCode" type="password" required />
+  
 
-      <button type="submit" id="adminSubmitBtn" class="runez-btn">Submit Admin Form</button>
-      <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
-      <p id="verifyStatus"></p>
-    </form>
+  <!-- Contact phone -->
+  <label for="adminPhone">Contact Phone</label>
+  <input id="adminPhone" name="phone" type="tel" placeholder="(###) ###-####" required />
 
-    <!-- Ritual panels -->
-    <div id="colorPanel" class="panel-shell" style="display:none;">
+  <!-- Clearance code -->
+  <label for="adminCode">Clearance Code</label>
+  <input id="adminCode" name="adminCode" type="password" required />
+
+
+  <!-- Hidden Blogger fields -->
+  <textarea id="adminMessage" name="message" style="display:none;"></textarea>
+  <input type="email" id="adminEmail" name="email" style="display:none;">
+
+  <!-- Buttons -->
+  <button type="submit" id="runeClearBtn" class="runez-btn">Submit Admin Form</button>
+  <button type="button" id="verifyTierBtn" style="display:none;">Verify</button>
+
+  <!-- Status -->
+  <p id="verifyStatus"></p>
+</form>
+
+
+
+<div id="colorPanel" class="panel-shell" style="display:none;">
       <div class="ritual-header" style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;">
         <div class="runic">ᚠᛇᚻᛜᚱ</div>
         <div class="sigil" aria-hidden="true" style="position:relative;width:72px;height:72px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 14px rgba(212,184,106,0.45));">
@@ -654,27 +745,35 @@ h1, h2, h3 {
           <span class="sigil-square" style="position:absolute;width:36px;height:36px;transform:rotate(45deg);background:linear-gradient(135deg, rgba(242,240,233,0.95), rgba(212,184,106,0.85));"></span>
         </div>
       </div>
+
       <p class="designation">Designation: <strong id="nameInRitual"></strong></p>
-      <div class="indicator-lines" id="indicatorLines"><span></span><span></span><span></span><span></span></div>
+
+      <div class="indicator-lines" id="indicatorLines">
+        <span></span><span></span><span></span><span></span>
+</div>
+
       <div id="sequenceReadout" class="sequence">— — —</div>
       <div class="rune-grid" id="panelButtons"></div>
+
       <div class="ritual-controls">
         <button type="button" id="runeVerifyBtn">VERIFY</button>
         <button type="reset" id="runeClearBtn">CLEAR</button>
       </div>
     </div>
 
+    <!-- Access keypad -->
     <div id="superCodePanel" class="panel-shell" style="display:none; position:relative;">
       <h3>Access Panel</h3>
       <div class="panel-sigil">♛</div>
       <div class="panel-content">
         <p>Rune keypad unlocked. Enter access code to proceed.</p>
         <input id="accessCodeInput" type="text" placeholder="Enter code (X-719-BOX)">
-        <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
+       <button type="button" id="accessConfirmBtn" class="runez-btn">CONFIRM</button>
         <p id="accessCodeStatus"></p>
       </div>
     </div>
 
+    <!-- Mystery Box chamber -->
     <div id="mysteryBoxChamber" class="panel-shell" style="display:none;">
       <h2 class="mystery-title">Mystery Box Chamber</h2>
       <div class="mystery-crest">♛ ⚚ ⟁</div>
@@ -682,77 +781,80 @@ h1, h2, h3 {
       <button id="attemptPuzzleBtn">Attempt Puzzle Box</button>
     </div>
 
-    <div id="puzzleBoxPanel" class="panel-shell" style="display:none;">
-      <h2 class="mystery-title">Puzzle Box — Labyrinth Cube</h2>
-      <p>Designation: <strong id="nameInPuzzle"></strong></p>
-      <div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
-      <div id="imgVoidPuzzle">
+   <!-- Puzzle Box — Labyrinth Cube -->
+
+  <div class="container">
+    <h1 style="text-align:center;color:#4b3f72">Prestige Triumph — Puzzle Box test</h1>
+
+    <!-- Controls to show puzzle -->
+    <div style="text-align:center;margin:18px 0">
+      <button id="attemptPuzzleBtn" class="btn">OPEN PUZZLE BOX</button>
+    </div>
+
+    <!-- Puzzle Panel -->
+    <div id="puzzleBoxPanel" class="panel-shell" aria-hidden="true">
+      <h2>Puzzle Box — Labyrinth Cube</h2>
+      <p style="text-align:center;color:#cfeefc">Designation: <strong id="nameInPuzzle">—</strong></p>
+
+      <div id="imgVoidPuzzle" aria-hidden="true">
         <div class="cube-container">
-          <div class="cube" id="labyrinthCube">
+          <div class="cube" id="labyrinthCube" aria-hidden="true">
+            <!-- FRONT: Lights -->
             <div class="cube-face front">
               <p>Toggle all lights green</p>
-                            <!-- back face -->
+              <div id="lightsGrid" aria-label="lights grid"></div>
+              <div id="runeL" class="rune">Λ</div>
+            </div>
+
+            <!-- BACK: Locker dial -->
             <div class="cube-face back">
               <p>Turn the locker dial in the right order</p>
-              <div id="lockerDial" class="locker-dial">
-                <div class="dial-face">
-                  <div class="dial-pointer"></div>
-                  <div class="dial-numbers"></div>
-                </div>
+              <div id="lockerDial" class="locker-dial" aria-hidden="false">
+                <div class="dial-face"><div class="dial-pointer" id="dialPointer"></div><div class="dial-numbers" id="dialNumbers"></div></div>
+                <div class="center-value" id="dialCenter">--</div>
               </div>
-              <p id="dialHint" style="margin-top:8px; font-size:0.95em; color:#00f5b5;"></p>
+              <p id="dialHint" class="status">Rotate dial; try combos.</p>
               <div id="runeD" class="rune">✦</div>
             </div>
 
-            <!-- right face -->
+            <!-- RIGHT: Word -->
             <div class="cube-face right">
-              <p id="wordHint">Unscramble: —</p>
-              <input type="text" id="wordInput" placeholder="Your answer">
+              <p id="wordHint">Unscramble: <span id="scrambledWord">—</span></p>
+              <input id="wordInput" type="text" placeholder="type answer" style="padding:8px;border-radius:6px;border:1px solid #555;background:#0b0b0b;color:#fff;">
               <div id="runeW" class="rune">Ψ</div>
             </div>
 
-            <!-- left face -->
+            <!-- LEFT: Labyrinth -->
             <div class="cube-face left">
               <p>Trace the hidden path</p>
-              <div id="labyrinthGrid">
-                <!-- 5x5 grid -->
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-              </div>
+              <div id="labyrinthGrid" aria-label="labyrinth grid"></div>
               <div id="runeM" class="rune">Ω</div>
             </div>
 
-            <!-- top face -->
+            <!-- TOP: Memory -->
             <div class="cube-face top">
               <p>Repeat the sequence</p>
-              <button id="startMemory">Start</button>
-              <div id="memoryButtons">
-                <button class="mem" data-val="0">▲</button>
-                <button class="mem" data-val="1">◆</button>
-                <button class="mem" data-val="2">⚙</button>
-              </div>
+              <button id="startMemory" class="btn small">Start</button>
+              <div id="memoryButtons"></div>
               <div id="runeS" class="rune">Σ</div>
             </div>
 
-            <!-- bottom face -->
+            <!-- BOTTOM: Math -->
             <div class="cube-face bottom">
               <p id="mathHint">Select numbers to sum to 15</p>
-              <div id="mathGrid">
-                <button class="num">4</button><button class="num">7</button>
-                <button class="num">2</button><button class="num">8</button><button class="num">5</button>
-              </div>
+              <div id="mathGrid"></div>
               <div id="runeN" class="rune">Φ</div>
             </div>
+          </div>
+        </div>
+      </div>
 
-          </div><!-- end cube -->
-        </div><!-- end cube-container -->
-      </div><!-- end imgVoidPuzzle -->
+      <p id="unlockMessage" class="status" style="display:none">✨ The Labyrinth Cube Unlocks! ✨</p>
+      <div id="hiddenSigil">✧ Triumphal Sigil ✧</div>
+    </div>
 
-      <p id="unlockMessage" style="display:none;">✨ The Labyrinth Cube Unlocks! ✨</p>
-    </div><!-- end puzzleBoxPanel -->
+    <div id="puzzleNotice">Tip: Use the dial center to read current label</div>
+  </div>
 
     <!-- Final Branch -->
     <div id="finalBranchPanel" class="panel-shell" style="display:none;">
@@ -777,6 +879,10 @@ h1, h2, h3 {
       <div class="mystery-crest">♛ ⚚ ⟁</div>
       <div class="cube-aura" aria-hidden="true"></div>
       <form id="superLevelForm" onsubmit="return submitSuperForm();">
+        <!-- Sigil watermark behind form -->
+  <div class="panel-sigil"></div>
+        <!-- Frost overlay layer -->
+  <div class="frost-overlay"></div>
         <label for="superName">Account Holder</label>
         <input id="superName" name="superName" required type="text" />
         <label for="superTier">Tier</label>
@@ -798,7 +904,7 @@ h1, h2, h3 {
       <textarea id="verificationText" readonly></textarea>
       <button type="button" onclick="copyVerification()">📋 Copy Verification Text</button>
     </div>
-  </div><!-- end container -->
+  </div>
 
   <!-- Crest shortcut -->
   <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
@@ -810,43 +916,57 @@ h1, h2, h3 {
   <div class="tap-shimmer" id="tapShimmer"></div>
   <div id="tapTopLeft" class="tap-zone" aria-hidden="true"></div>
   <div id="tapTopRight" class="tap-zone" aria-hidden="true"></div>
-  <div id="puzzleNotice">
-    📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
-  </div>
-</body>
-
+<div id="puzzleNotice">
+  📱 For true Puzzle Box engagement, reduce your screen size to 50% on mobile.
+</div>
 <script>
-/* ===== Panel helpers (kept) ===== */
-function showPanel(id){ const el=document.getElementById(id); if(el) el.style.display='block'; }
-function hidePanel(id){ const el=document.getElementById(id); if(el) el.style.display='none'; }
+/* =========================
+   Prestige Triumph — Consolidated Script
+   Single-file canonical copy (paste into your page)
+   - idempotent wiring
+   - no duplicate global helpers
+   - retains original UX and flows
+   ========================= */
 
-/* ===== Clipboard for verification plaque ===== */
+/* -------------------------
+   Shared small utilities
+   ------------------------- */
+const $ = id => document.getElementById(id);
+function safeAddEvent(el, evt, fn, opts) { if (!el) return; el.addEventListener(evt, fn, opts); }
+function onceWire(el, key, fn) { if (!el) return; if (el.dataset && el.dataset[key]) return; if (el.dataset) el.dataset[key] = '1'; fn(); }
+function shuffleArray(arr) { const a = Array.isArray(arr) ? [...arr] : []; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function arraysMatch(a, b) { if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; }
+
+/* -------------------------
+   Panel helpers (idempotent)
+   ------------------------- */
+function showPanel(id) { const el = $(id); if (el) { el.style.display = 'block'; el.setAttribute('aria-hidden','false'); } }
+function hidePanel(id) { const el = $(id); if (el) { el.style.display = 'none'; el.setAttribute('aria-hidden','true'); } }
+
+/* -------------------------
+   Verification plaque / clipboard
+   ------------------------- */
 function copyVerification() {
-  const textArea = document.getElementById("verificationText");
+  const textArea = $('verificationText');
   if (!textArea) return;
   textArea.select();
   textArea.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Verification text copied. Please paste it into the Google Form field.");
+  try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+  alert('Verification text copied. Please paste it into the Google Form field.');
 }
 
-/* ===== Name generator (public + admin use) ===== */
+/* -------------------------
+   Name generators (public)
+   ------------------------- */
 function generateTieredName(tier) {
   const pools = {
-    Initiate: { names:["Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"],
-      suffixes:["of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
-    Steward: { names:["Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"],
-      suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
-    Neighbor: { names:["Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"],
-      suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
-    Contributor: { names:["Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"],
-      suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
-    Observer: { names:["Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
-    Supporter: { names:["Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
-    Archivist: { names:["Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"],
-      suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
+    Initiate: { names:[ "Lena","Jamal","Sofia","Kai","Maya","Aria","Jonas","Clara","Mateo","Nora","Ethan","Layla","Owen","Iris","Caleb","Zoe","Lucas","Amira","Noah","Elise","Ravi","Chloe","Daniel","Isla","Micah"], suffixes:[ "of the Welcome Ledger","of the First Entry","of the Community Fold","of the Opening Gate","of the Dawn Register","of the Entry Scroll","of the Common Hall","of the First Circle","of the Hearth Record","of the Entryway","of the Shared Beginning","of the Welcome Chamber","of the Initial Archive","of the Entry Crest","of the Common Ledger","of the First Bond","of the Entry Tier","of the Hearth Fold","of the Welcome Archive","of the Entry Seal"] },
+    Steward: { names:[ "Elias","Priya","Malcolm","Zara","Omar","Jonah","Fatima","Marcus","Leila","Hassan","Claudia","Rafael","Nadia","Victor","Amal","Simone","Darius","Farah","Julien","Anika","Mateo","Selene","Harun","Lucia","Khalid"], suffixes:["of the Civic Watch","of the Shared Archive","of the Stewardship Line","of the Civic Chamber","of the Guardian Fold","of the Civic Register","of the Watchful Tier","of the Civic Crest","of the Steward’s Bond","of the Civic Archive","of the Guardian Ledger","of the Civic Seal","of the Stewardship Archive","of the Civic Scroll","of the Watch Chamber","of the Civic Fold","of the Stewardship Crest","of the Civic Tier","of the Guardian Archive","of the Civic Authority"] },
+    Neighbor: { names:[ "Ava","Noah","Grace","Leo","Isla","Hugo","Mila","Samir","Clara","Julian","Tara","Felix","Nina","Oscar","Amira","Eli","Sienna","Mateo","Lila","Jonas","Raya","Victor","Nora","Arjun","Elena"], suffixes:["of the Local Registry","of the Neighborhood Tier","of the Common Fold","of the Shared Street","of the Neighbor’s Archive","of the Local Crest","of the Common Ledger","of the Hearth Tier","of the Local Archive","of the Neighbor’s Bond","of the Shared Ledger","of the Local Scroll","of the Common Register","of the Neighbor’s Seal","of the Local Fold","of the Shared Archive","of the Hearth Crest","of the Local Tier","of the Neighbor’s Archive","of the Common Authority"] },
+    Contributor: { names:[ "Milan","Tessa","Jude","Nina","Arlo","Ravi","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah"], suffixes:["of the Support Ledger","of the Contributor Line","of the Community Archive","of the Shared Ledger","of the Contribution Crest","of the Support Archive","of the Contributor’s Bond","of the Community Fold","of the Support Register","of the Contribution Seal","of the Contributor’s Archive","of the Support Scroll","of the Community Ledger","of the Contribution Tier","of the Support Crest","of the Contributor’s Fold","of the Community Seal","of the Contribution Archive","of the Support Tier","of the Contributor’s Authority"] },
+    Observer: { names:[ "Theo","Luna","Miles","Ivy","Rowan","Clara","Jonas","Elise","Mateo","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"], suffixes:["of the Quiet Watch","of the Passive Tier","of the Ledger Periphery","of the Silent Archive","of the Watchful Crest","of the Quiet Register","of the Passive Fold","of the Ledger Edge","of the Silent Ledger","of the Watch Chamber","of the Quiet Seal","of the Passive Archive","of the Ledger Scroll","of the Silent Crest","of the Watch Archive","of the Quiet Tier","of the Passive Ledger","of the Ledger Crest","of the Silent Fold","of the Watch Authority"] },
+    Supporter: { names:[ "Elena","Caleb","Raya","Finn","Naomi","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"], suffixes:["of the Advocacy Fold","of the Support Tier","of the Donor Registry","of the Patron’s Archive","of the Support Crest","of the Advocacy Ledger","of the Donor’s Bond","of the Support Archive","of the Patron’s Fold","of the Advocacy Scroll","of the Support Register","of the Donor’s Seal","of the Patron’s Ledger","of the Advocacy Tier","of the Support Authority","of the Donor’s Archive","of the Patron’s Crest","of the Advocacy Archive","of the Support Seal","of the Donor’s Authority"] },
+    Archivist: { names:[ "Solenne","Idris","Helena","Lucan","Amara","Jonas","Clara","Mateo","Nora","Amira","Daniel","Layla","Owen","Iris","Chloe","Lucas","Noah","Zoe","Micah","Anya","Victor","Nora","Julien","Farah","Simone"], suffixes:["of the Memory Vault","of the Archivist Line","of the Tiered Archive","of the Record Chamber","of the Archive Crest","of the Memory Ledger","of the Archivist’s Bond","of the Tiered Ledger","of the Record Scroll","of the Archive Seal","of the Memory Archive","of the Archivist’s Fold","of the Tiered Register","of the Record Archive","of the Archive Authority","of the Memory Crest","of the Archivist’s Archive","of the Tiered Seal","of the Record Ledger","of the Archive Tier"] }
   };
   const pool = pools[tier] || pools.Initiate;
   const name = pool.names[Math.floor(Math.random() * pool.names.length)];
@@ -854,86 +974,132 @@ function generateTieredName(tier) {
   return `${name} ${suffix}`;
 }
 function generateNameFromTier() {
-  const tier = document.getElementById('role')?.value;
+  const tier = $('role')?.value;
   if (!tier) { alert('Please select a tier first.'); return; }
-  document.getElementById('name').value = generateTieredName(tier);
+  const el = $('name');
+  if (el) el.value = generateTieredName(tier);
 }
 
-/* ===== Blogger helpers ===== */
+/* -------------------------
+   Admin specialized name generator
+   ------------------------- */
+function generateAdminSpecializedName(tier) {
+  const pools = {
+    Admin: { names:["Xyric","Velonar","Kaelith","Druvenor","Myrosan","Tavricus","Zerath","Olyren","Nerith","Solvion"], suffixes:["of the Gate Sigil","of the Iron Seal","of the Hidden Ledger","of the Crown Archive","of the Watch Spire"] },
+    MasterAdmin: { names:["Solvarn","Eryndor","Calethor","Thyrosan","Lumielor","Varrosan","Aurethor","Calyrian","Therion","Vaelor"], suffixes:["of the Eternal Crown","of the Master Seal","of the Oversight Chamber","of the Sovereign Archive","of the Prime Ledger"] },
+    Overseer: { names:["Maraven","Oristar","Kyreth","Valmor","Serath","Ilyrion","Drevan","Koriel","Navros","Pelior"], suffixes:["of the Panoptic Tier","of the Vigil Crest","of the Oversight Watch","of the Long View","of the Sentinel Ledger"] },
+    Controller: { names:["Branth","Cyris","Tavren","Morix","Elion","Kadroth","Fenlor","Rystan","Ulric","Veldor"], suffixes:["of the Axis Chamber","of the Control Seal","of the Switch Crest","of the Relay Archive","of the Circuit Ledger"] },
+    Custodian: { names:["Amaret","Soriel","Bastin","Eldra","Hamon","Lethir","Norian","Pelra","Quenel","Serin"], suffixes:["of the Keep Fold","of the Vault Seal","of the Memory Hold","of the Chamber Keys","of the Archive Lock"] },
+    Guardian: { names:["Rhaeth","Galenor","Mireth","Thalen","Corvus","Eryx","Jorrel","Kaeth","Lorik","Serros"], suffixes:["of the Shield Line","of the Gate Ward","of the Crest Watch","of the Hall Guard","of the Bastion Seal"] },
+    Sentinel: { names:["Ariste","Caden","Delys","Ferox","Ithar","Kynos","Lyren","Maelor","Nestor","Pyron"], suffixes:["of the Upper Watch","of the Quiet Keep","of the Night Vigil","of the Sight Line","of the Lamp Crest"] },
+    Supervisor: { names:["Renvar","Tessan","Orwyn","Marella","Dorian","Helis","Karaen","Leoris","Navor","Selyn"], suffixes:["of the Line Ledger","of the Flow Tier","of the Review Crest","of the Pattern Scroll","of the Rhythm Archive"] },
+    Coordinator: { names:["Arion","Belis","Coraen","Demin","Elvar","Faryn","Galius","Heryn","Islor","Jalara"], suffixes:["of the Node Tier","of the Thread Ledger","of the Mesh Crest","of the Lattice Archive","of the Sequence Seal"] },
+    Director: { names:["Callion","Drexor","Eamon","Fiora","Helion","Ivara","Jorik","Kaelis","Lyraen","Mavros"], suffixes:["of the Arc Chamber","of the Prime Tier","of the Guiding Seal","of the Lineage Archive","of the Crest Ledger"] },
+    Chancellor: { names:["Aurel","Beren","Cyral","Demos","Elara","Fidel","Galen","Helia","Isran","Joriel"], suffixes:["of the Council Seal","of the Civic Crest","of the Scroll Authority","of the Ledger Court","of the Archive Seat"] },
+    Prefect: { names:["Ardan","Basile","Cyrion","Delios","Ephra","Feron","Gaius","Helor","Iason","Jaryn"], suffixes:["of the Order Seal","of the Hall Rule","of the Crest Codex","of the Tier Decree","of the Ledger Law"] },
+    Warden: { names:["Brenor","Cadal","Dethis","Eryon","Faelis","Gorath","Halden","Ivern","Jareth","Kalen"], suffixes:["of the Gate Hold","of the Lock Tier","of the Bar Crest","of the Guard Archive","of the Seal Chain"] },
+    Marshal: { names:["Caldris","Dorian","Eryx","Faelor","Gareth","Harion","Jalen","Korath","Lyris","Mavren"], suffixes:["of the Banner Line","of the Crest March","of the Field Seal","of the Standard Archive","of the Rally Ledger"] },
+    Commander: { names:["Corvin","Darex","Eidon","Feran","Galen","Hector","Ilyon","Jaro","Kaelis","Leron"], suffixes:["of the Legion Crest","of the Column Seal","of the Order March","of the Line Archive","of the Command Ledger"] },
+    Principal: { names:["Alestor","Bryn","Calyx","Demos","Eland","Fiora","Galen","Helis","Ionar","Jarin"], suffixes:["of the Ledger Seat","of the Crest Chair","of the Prime Scroll","of the Tier Authority","of the Archive Root"] },
+    Chief: { names:["Avar","Bastion","Cairn","Dorel","Evanor","Ferran","Garran","Helion","Ithar","Jaro"], suffixes:["of the Crest Line","of the Root Ledger","of the Core Seal","of the Upper Archive","of the Crown Scroll"] },
+    SovereignAdmin: { names:["Solvarn","Aurion","Calther","Eryndor","Lumiel","Thyros","Varros","Xerion","Ylath","Zevran"], suffixes:["of the Sovereign Crown","of the Eternal Seal","of the Prime Archive","of the Royal Ledger","of the High Chamber"] },
+    LegacyAdmin: { names:["Arion","Belor","Cyris","Drevan","Elion","Faryn","Galen","Helor","Ilyas","Jorren"], suffixes:["of the Legacy Archive","of the Elder Seal","of the Ancestral Ledger","of the Memory Court","of the Root Chamber"] }
+  };
+  const pool = pools[tier] || pools.Admin;
+  const name = pool.names[Math.floor(Math.random() * pool.names.length)];
+  const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
+  return `${name} ${suffix}`;
+}
+
+/* -------------------------
+   Blogger submission / registry (unified)
+   ------------------------- */
 function generateCardID() { return 'CARD-' + Math.random().toString(36).substr(2, 8).toUpperCase(); }
 function generateAccessCode() { return 'ACCESS-' + Math.floor(100000 + Math.random() * 900000); }
 
-/* ===== Public form submit (love-form) ===== */
+function submitToBlogger({ name, phone = '', messageForBlogger = '', plaqueMessage = '', clearanceCode = '', accessCode = '', email = "prestige@triumph.org", redirectURL = '' }) {
+  // store registry locally (non-blocking)
+  try {
+    const cardMatch = (messageForBlogger || '').match(/Account ID:\s*(\S+)/);
+    const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
+    registry[name || `anon_${Date.now()}`] = {
+      role: (messageForBlogger.match(/Tier:\s*(.+)/) || [])[1] || '',
+      phone,
+      card: cardMatch ? cardMatch[1] : '',
+      clearanceCode: clearanceCode || '',
+      accessCode: accessCode || '',
+      created: Date.now(),
+      activated: false
+    };
+    localStorage.setItem('userRegistry', JSON.stringify(registry));
+  } catch (e) { /* non-blocking */ }
+
+  // Preferred hidden form flow
+  const hiddenForm = $('hiddenBloggerForm');
+  const hbName = $('hbName');
+  const hbPhone = $('hbPhone');
+  const hbMessage = $('hbMessage');
+  const hbEmail = $('hbEmail');
+
+  if (hiddenForm && hbName && hbMessage && hbEmail) {
+    hbName.value = name || '';
+    if (hbPhone) hbPhone.value = phone || '';
+    hbMessage.value = messageForBlogger || '';
+    hbEmail.value = email || '';
+    try { hiddenForm.requestSubmit ? hiddenForm.requestSubmit() : hiddenForm.submit(); } catch (err) { hiddenForm.submit(); }
+  } else {
+    // Legacy fallback
+    const legacyName = $('name');
+    const legacyPhone = $('phone');
+    const legacyMsg = $('message');
+    const legacyEmail = $('bloggerEmail');
+    if (legacyName) legacyName.value = name || '';
+    if (legacyPhone) legacyPhone.value = phone || '';
+    if (legacyMsg) legacyMsg.value = messageForBlogger || '';
+    if (legacyEmail) legacyEmail.value = email || '';
+    const loveForm = $('love-form');
+    if (loveForm) {
+      try { loveForm.requestSubmit ? loveForm.requestSubmit() : loveForm.submit(); } catch (err) { loveForm.submit(); }
+    }
+  }
+
+  // show plaque
+  const plaque = $('verificationPlaque');
+  const vText = $('verificationText');
+  if (plaque && vText) {
+    vText.value = plaqueMessage || '';
+    plaque.style.display = 'block';
+  }
+
+  // redirect if provided
+  if (redirectURL) {
+    setTimeout(() => { window.location.href = redirectURL; }, 1000);
+  }
+}
+
+/* -------------------------
+   Public form submit
+   ------------------------- */
 function submitCeremonialForm() {
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const role = document.getElementById('role').value;
+  const name = ($('name')?.value || '').trim();
+  const phone = ($('phone')?.value || '').trim();
+  const role = ($('role')?.value || '').trim();
   const card = generateCardID();
-  const accessCode = generateAccessCode();
-
-  const registry = JSON.parse(localStorage.getItem('userRegistry')) || {};
-  registry[name] = { role, phone, card, accessCode, created: Date.now(), activated: false };
-  localStorage.setItem('userRegistry', JSON.stringify(registry));
-
-  const message = `🪔 Prestige Triumph Verification
+  const messageForBlogger = `🫤 Prestige Triumph Verification
 👤 Name: ${name}
 📞 Phone: ${phone}
 🎖 Tier: ${role}
-🆔 Account ID: ${card}
-🔑 Access Code: ${accessCode}`.trim();
+🆔 Account ID: ${card}`.trim();
+  const plaqueMessage = messageForBlogger;
+  const redirectURL = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
 
-  // Fill love-form actual fields (secondary IDs)
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-
-  // Plaque (proxy)
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
-
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
-
-  alert("Your account request has been received.\n\nRedirecting you to the official Prestige Verification Chamber");
-  setTimeout(() => {
-    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
-
+  submitToBlogger({ name, phone, messageForBlogger, plaqueMessage, clearanceCode: '', accessCode: '', redirectURL });
   return false;
 }
 
-/* ===== Crest unlock shortcut (Superform) ===== */
-function unlockSuperForm() {
-  showPanel('mysteryBoxPanel');
-  const name = document.getElementById('name')?.value.trim();
-  if (name) document.getElementById('superName').value = name;
-  alert("Super-level access form unlocked.");
-}
-
-/* ===== Tap shimmer and admin mobile unlock ===== */
-let shimmerTimer;
-function shimmerPulse(){
-  const s=document.getElementById('tapShimmer'); if(!s) return;
-  s.classList.add('active');
-  clearTimeout(shimmerTimer);
-  shimmerTimer=setTimeout(()=>s.classList.remove('active'),260);
-}
-let adminTapSequence=[]; let adminTapResetTimer;
-function resetAdminTap(){ adminTapSequence=[]; clearTimeout(adminTapResetTimer); }
-function checkAdminMobileUnlock(){
-  const correct=['tapTopLeft','tapTopRight'];
-  if(adminTapSequence.join(',')===correct.join(',')){
-    showPanel('adminForm'); shimmerPulse(); resetAdminTap();
-    const hint=document.getElementById('tapHint'); if(hint) hint.textContent="Admin gate unlocked. Verify your tier.";
-  } else {
-    adminTapResetTimer=setTimeout(resetAdminTap,8000);
-  }
-}
-document.getElementById('tapTopLeft')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); });
-document.getElementById('tapTopRight')?.addEventListener('click',()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); });
-
-/* ===== Admin tier codes ===== */
+/* -------------------------
+   Admin flow and bindings
+   ------------------------- */
 const TIER_CODES = {
   Admin:"A-231-GATE", MasterAdmin:"M-Q8/-CROWN", Overseer:"OVR-442-SIGHT", Controller:"CTRL-993-AXIS",
   Custodian:"CUST-118-KEEP", Guardian:"GUARD-775-SHIELD", Sentinel:"SENT-560-WATCH", Supervisor:"SUP-823-LINE",
@@ -944,174 +1110,103 @@ const TIER_CODES = {
 const HIDDEN_CODE = "X-719-BOX";
 
 let ceremonyName = "";
-let superSequence = []; // ritual grid input record
-let tapLog = [];        // ritual grid feedback map
+let superSequence = [];
+let tapLog = [];
 
-/* ===== Admin specialized name generator ===== */
-function generateAdminSpecializedName(tier) {
-  const pools = {
-    Admin: { names:["Xyric","Velonar","Kaelith","Druvenor","Myrosan","Tavricus","Zerath","Olyren","Nerith","Solvion"],
-      suffixes:["of the Gate Sigil","of the Iron Seal","of the Hidden Ledger","of the Crown Archive","of the Watch Spire"] },
-    MasterAdmin: { names:["Solvarn","Eryndor","Calethor","Thyrosan","Lumielor","Varrosan","Aurethor","Calyrian","Therion","Vaelor"],
-      suffixes:["of the Eternal Crown","of the Master Seal","of the Oversight Chamber","of the Sovereign Archive","of the Prime Ledger"] },
-    Overseer: { names:["Maraven","Oristar","Kyreth","Valmor","Serath","Ilyrion","Drevan","Koriel","Navros","Pelior"],
-      suffixes:["of the Panoptic Tier","of the Vigil Crest","of the Oversight Watch","of the Long View","of the Sentinel Ledger"] },
-    Controller: { names:["Branth","Cyris","Tavren","Morix","Elion","Kadroth","Fenlor","Rystan","Ulric","Veldor"],
-      suffixes:["of the Axis Chamber","of the Control Seal","of the Switch Crest","of the Relay Archive","of the Circuit Ledger"] },
-    Custodian: { names:["Amaret","Soriel","Bastin","Eldra","Hamon","Lethir","Norian","Pelra","Quenel","Serin"],
-      suffixes:["of the Keep Fold","of the Vault Seal","of the Memory Hold","of the Chamber Keys","of the Archive Lock"] },
-    Guardian: { names:["Rhaeth","Galenor","Mireth","Thalen","Corvus","Eryx","Jorrel","Kaeth","Lorik","Serros"],
-      suffixes:["of the Shield Line","of the Gate Ward","of the Crest Watch","of the Hall Guard","of the Bastion Seal"] },
-    Sentinel: { names:["Ariste","Caden","Delys","Ferox","Ithar","Kynos","Lyren","Maelor","Nestor","Pyron"],
-      suffixes:["of the Upper Watch","of the Quiet Keep","of the Night Vigil","of the Sight Line","of the Lamp Crest"] },
-    Supervisor: { names:["Renvar","Tessan","Orwyn","Marella","Dorian","Helis","Karaen","Leoris","Navor","Selyn"],
-      suffixes:["of the Line Ledger","of the Flow Tier","of the Review Crest","of the Pattern Scroll","of the Rhythm Archive"] },
-    Coordinator: { names:["Arion","Belis","Coraen","Demin","Elvar","Faryn","Galius","Heryn","Islor","Jalara"],
-      suffixes:["of the Node Tier","of the Thread Ledger","of the Mesh Crest","of the Lattice Archive","of the Sequence Seal"] },
-    Director: { names:["Callion","Drexor","Eamon","Fiora","Helion","Ivara","Jorik","Kaelis","Lyraen","Mavros"],
-      suffixes:["of the Arc Chamber","of the Prime Tier","of the Guiding Seal","of the Lineage Archive","of the Crest Ledger"] },
-    Chancellor: { names:["Aurel","Beren","Cyral","Demos","Elara","Fidel","Galen","Helia","Isran","Joriel"],
-      suffixes:["of the Council Seal","of the Civic Crest","of the Scroll Authority","of the Ledger Court","of the Archive Seat"] },
-    Prefect: { names:["Ardan","Basile","Cyrion","Delios","Ephra","Feron","Gaius","Helor","Iason","Jaryn"],
-      suffixes:["of the Order Seal","of the Hall Rule","of the Crest Codex","of the Tier Decree","of the Ledger Law"] },
-    Warden: { names:["Brenor","Cadal","Dethis","Eryon","Faelis","Gorath","Halden","Ivern","Jareth","Kalen"],
-      suffixes:["of the Gate Hold","of the Lock Tier","of the Bar Crest","of the Guard Archive","of the Seal Chain"] },
-    Marshal: { names:["Caldris","Dorian","Eryx","Faelor","Gareth","Harion","Jalen","Korath","Lyris","Mavren"],
-      suffixes:["of the Banner Line","of the Crest March","of the Field Seal","of the Standard Archive","of the Rally Ledger"] },
-    Commander: { names:["Corvin","Darex","Eidon","Feran","Galen","Hector","Ilyon","Jaro","Kaelis","Leron"],
-      suffixes:["of the Legion Crest","of the Column Seal","of the Order March","of the Line Archive","of the Command Ledger"] },
-    Principal: { names:["Alestor","Bryn","Calyx","Demos","Eland","Fiora","Galen","Helis","Ionar","Jarin"],
-      suffixes:["of the Ledger Seat","of the Crest Chair","of the Prime Scroll","of the Tier Authority","of the Archive Root"] },
-    Chief: { names:["Avar","Bastion","Cairn","Dorel","Evanor","Ferran","Garran","Helion","Ithar","Jaro"],
-      suffixes:["of the Crest Line","of the Root Ledger","of the Core Seal","of the Upper Archive","of the Crown Scroll"] },
-    SovereignAdmin: { names:["Solvarn","Aurion","Calther","Eryndor","Lumiel","Thyros","Varros","Xerion","Ylath","Zevran"],
-      suffixes:["of the Sovereign Crown","of the Eternal Seal","of the Prime Archive","of the Royal Ledger","of the High Chamber"] },
-    LegacyAdmin: { names:["Arion","Belor","Cyris","Drevan","Elion","Faryn","Galen","Helor","Ilyas","Jorren"],
-      suffixes:["of the Legacy Archive","of the Elder Seal","of the Ancestral Ledger","of the Memory Court","of the Root Chamber"] }
-  };
-  const pool = pools[tier] || pools.Admin;
-  const name = pool.names[Math.floor(Math.random() * pool.names.length)];
-  const suffix = pool.suffixes[Math.floor(Math.random() * pool.suffixes.length)];
-  return `${name} ${suffix}`;
-}
-document.getElementById('adminGenNameBtn')?.addEventListener('click', () => {
-  const tier = document.getElementById('adminTier').value || 'Admin';
-  const generated = generateAdminSpecializedName(tier);
-  ceremonyName = generated;
-  document.getElementById('adminName').value = generated;
-  document.getElementById('nameInRitual').textContent = generated;
+// admin generator button
+onceWire($('adminGenNameBtn'), 'adminGen', () => {
+  safeAddEvent($('adminGenNameBtn'), 'click', () => {
+    const tier = $('adminTier')?.value || 'Admin';
+    const generated = generateAdminSpecializedName(tier);
+    ceremonyName = generated;
+    if ($('adminName')) $('adminName').value = generated;
+    if ($('nameInRitual')) $('nameInRitual').textContent = generated;
+  });
 });
 
-/* ===== Admin handler (rehardwired) ===== */
+// admin handler
 function handleAdminAccess(isVerifyClick=false) {
-  const tier = document.getElementById('adminTier').value;
-  const code = (document.getElementById('adminCode').value || '').trim();
-  const name = ceremonyName || document.getElementById('adminName').value.trim();
-  const phone = document.getElementById('adminPhone')?.value.trim() || '';
-  const status = document.getElementById('verifyStatus');
+  const tier = $('adminTier')?.value;
+  const code = ($('adminCode')?.value || '').trim();
+  const name = ceremonyName || ($('adminName')?.value || '').trim();
+  const phone = ($('adminPhone')?.value || '').trim();
+  const status = $('verifyStatus');
   const expectedCode = TIER_CODES[tier];
 
-  if (!expectedCode) { status.textContent = "❌ Unknown tier selected."; return false; }
+  if (!expectedCode) { if (status) status.textContent = "❌ Unknown tier selected."; return false; }
   if (code !== expectedCode && !(tier === "Admin" || tier === "MasterAdmin")) {
-    status.textContent = `❌ Invalid clearance code for ${tier}.`; return false;
+    if (status) status.textContent = `❌ Invalid clearance code for ${tier}.`; return false;
   }
 
   if (tier === "Admin" || tier === "MasterAdmin") {
     if (isVerifyClick) {
-      status.textContent = "✅ Clearance accepted. Unlocking ritual sequence...";
+      if (status) status.textContent = "✅ Clearance accepted. Unlocking ritual sequence...";
       ['colorPanel','superCodePanel','puzzleBoxPanel','finalClearancePanel','mysteryBoxPanel','finalBranchPanel'].forEach(hidePanel);
       showPanel('colorPanel');
       buildRitualGrid();
     } else {
-      status.textContent = "Use Verify button for Admin/MasterAdmin.";
+      if (status) status.textContent = "Use Verify button for Admin/MasterAdmin.";
     }
     return false;
   }
 
-  // Non-Admin tiers → Blogger route via love-form fields
+  // Non-Admin tiers -> Blogger route (generate card + access code, store locally, send access code to Blogger)
   const card = generateCardID();
-  const message = `🔐 Admin Access Submission
+  const accessCode = generateAccessCode();
+  const clearanceCode = expectedCode;
+
+  const messageForBlogger = `🔐 Admin Access Submission
 👤 Name: ${name}
 📞 Phone: ${phone || '—'}
 🎖 Tier: ${tier}
 🆔 Account ID: ${card}
-🔑 Clearance Code: ${expectedCode}`.trim();
-
-  // Fill love-form’s actual fields (secondary IDs)
-  // Ensure public name/phone/role can carry admin submission (dual recognition)
-  document.getElementById('name').value = name;
-  document.getElementById('phone').value = phone || '';
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
-
-  // Plaque (proxy)
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
-
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
-
-  alert("Admin form submitted. Redirecting...");
-  setTimeout(() => {
-    window.location.href = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
-
-  return false;
-}
-
-/* ===== Superform submit (rehardwired) ===== */
-function submitSuperForm() {
-  const code = document.getElementById("superCode").value.trim();
-  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
-  const name = document.getElementById("superName").value.trim();
-  const tier = document.getElementById("superTier").value;
-  const card = generateCardID();
-  const accessCode = generateAccessCode();
-
-  const message = `👑 Super-Level Access Submission
-👤 Name: ${name}
-🎖 Tier: ${tier}
-🆔 Account ID: ${card}
-🔑 Clearance Code: ${code}
 🔑 Access Code: ${accessCode}`.trim();
 
-  // Fill love-form’s actual fields
-  document.getElementById('name').value = name;           // public name field reused
-  document.getElementById('phone').value = '';            // optional: leave blank
-  document.getElementById('message').value = message;
-  document.getElementById('bloggerEmail').value = "prestige@triumph.org";
+  const plaqueMessage = `🔐 Admin Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}`.trim();
 
-  // Plaque (proxy)
-  document.getElementById('verificationText').value = message;
-  document.getElementById('verificationPlaque').style.display = "block";
+  const redirectURL = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
 
-  // Submit love-form then redirect
-  try {
-    document.getElementById('love-form').requestSubmit ? document.getElementById('love-form').requestSubmit() : document.getElementById('love-form').submit();
-  } catch(e) { document.getElementById('love-form').submit(); }
+  submitToBlogger({
+    name, phone,
+    messageForBlogger, plaqueMessage,
+    clearanceCode, accessCode, redirectURL
+  });
 
-  alert("Super-level form submitted. Redirecting...");
-  setTimeout(() => {
-    window.location.href =  `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
-  }, 1000);
+  alert("Admin form submitted. Redirecting...");
   return false;
 }
+onceWire($('adminForm'), 'adminFormBind', () => {
+  safeAddEvent($('adminForm'), 'submit', (e) => { e.preventDefault(); handleAdminAccess(false); });
+  safeAddEvent(document, 'keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+      const f = $('adminForm'); if (f) { f.style.display='block'; alert('Admin access form unlocked.'); }
+    }
+  });
+  safeAddEvent($('verifyTierBtn'), 'click', () => handleAdminAccess(true));
+});
 
-/* ===== Ritual Grid (Color Sequence) and Puzzle Box (kept) ===== */
-/* Your existing color panel, super code, puzzle box, memory, math logic below remain unchanged. */
-function shuffleArray(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j]];
-  }
-  return a;
-}
+// adminCode -> show verify button if correct for Admin/MasterAdmin
+onceWire($('adminCode'), 'adminCodeInput', () => {
+  safeAddEvent($('adminCode'), 'input', () => {
+    const tierSel = $('adminTier')?.value;
+    const code = ($('adminCode')?.value || '').trim();
+    const verifyBtn = $('verifyTierBtn');
+    if (!verifyBtn) return;
+    if ((tierSel === 'Admin' && code === TIER_CODES.Admin) || (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
+      verifyBtn.style.display = 'block';
+    } else verifyBtn.style.display = 'none';
+  });
+});
+
+/* -------------------------
+   Ritual Grid (Color Sequence)
+   ------------------------- */
 let requiredSequence = [];
 function buildRitualGrid(){
-  const panel = document.getElementById('panelButtons'); if(!panel) return;
+  const panel = $('panelButtons'); if(!panel) return;
   panel.innerHTML = "";
   const colors  = ["red","blue","green","mustard","violet","cyan","deepred","emerald","deepviolet"];
   const glyphs  = ["⟟","Ϟ","⟁","⧖","ᚠ","ζ","₣","⟊","⚚","♛","⧫"];
@@ -1153,7 +1248,7 @@ function handleRitualTap(color, btn){
   setTimeout(()=>btn.classList.remove('glow'),1200);
 }
 function renderSequence(){
-  const sequenceReadout = document.getElementById('sequenceReadout'); if(!sequenceReadout) return;
+  const sequenceReadout = $('sequenceReadout'); if(!sequenceReadout) return;
   const text = superSequence.length ? superSequence.join('~') : '----';
   sequenceReadout.textContent = '';
   let i = 0;
@@ -1169,24 +1264,19 @@ function updateIndicators() {
     if (i < superSequence.length) bar.classList.add('active'); else bar.classList.remove('active');
   });
 }
-function arraysMatch(a, b) {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
-  return true;
-}
 function verifySequenceAttempt(){
   const attemptColors = superSequence.slice(0,4);
   const attemptTaps   = tapLog.slice(0,4);
   const correct = arraysMatch(attemptColors, requiredSequence);
 
-  const sequenceReadout = document.getElementById('sequenceReadout');
+  const sequenceReadout = $('sequenceReadout');
   if (correct) {
     sequenceReadout.textContent = "ACCESS GRANTED >> ACCESS PANEL";
     sequenceReadout.style.color = "#6aff6a";
     hidePanel('colorPanel');
     showPanel('superCodePanel');
-    const nameInPuzzle = document.getElementById('nameInPuzzle');
-    const nameInRitual = document.getElementById('nameInRitual');
+    const nameInPuzzle = $('nameInPuzzle');
+    const nameInRitual = $('nameInRitual');
     if (nameInPuzzle && nameInRitual) nameInPuzzle.textContent = nameInRitual.textContent;
   } else {
     sequenceReadout.textContent = "ACCESS DENIED";
@@ -1218,492 +1308,450 @@ function clearSequence(){
   updateIndicators();
 }
 
-/* Access Code Panel → Mystery Box Chamber */
-document.getElementById('accessConfirmBtn')?.addEventListener('click', () => {
-  const v = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-  const s = document.getElementById('accessCodeStatus');
-  if (v === HIDDEN_CODE) {
-    s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
-    setTimeout(() => { hidePanel('superCodePanel'); showPanel('mysteryBoxChamber'); }, 600);
-  } else {
-    s.textContent = '❌ Incorrect code.';
-  }
+/* -------------------------
+   Super Code Panel -> Mystery Box
+   ------------------------- */
+onceWire($('accessConfirmBtn'), 'accessConfirm', () => {
+  safeAddEvent($('accessConfirmBtn'), 'click', () => {
+    const v = ($('accessCodeInput')?.value || '').trim().toUpperCase();
+    const s = $('accessCodeStatus');
+    if (v === HIDDEN_CODE) {
+      if (s) s.textContent = '✅ Code accepted. Proceeding to Mystery Box...';
+      setTimeout(() => { hidePanel('superCodePanel'); showPanel('mysteryBoxChamber'); }, 600);
+    } else {
+      if (s) s.textContent = '❌ Incorrect code.';
+    }
+  });
 });
 
-/* Mystery Box → Puzzle Box entry */
-document.getElementById('attemptPuzzleBtn')?.addEventListener('click', () => {
-  hidePanel('mysteryBoxChamber');
-  showPanel('puzzleBoxPanel');
-  initPuzzleBox();
+/* -------------------------
+   Mystery Box -> Puzzle Box entry
+   ------------------------- */
+onceWire($('attemptPuzzleBtn'), 'attemptPuzzle', () => {
+  safeAddEvent($('attemptPuzzleBtn'), 'click', () => {
+    hidePanel('mysteryBoxChamber');
+    showPanel('puzzleBoxPanel');
+    initPuzzleBox();
+  });
 });
 
-/* Puzzle Box consolidation (kept) */
+/* -------------------------
+   Puzzle Box consolidated
+   ------------------------- */
 let puzzleInitDone = false;
 let cubeUnlocked = false;
 let keys = { L:false, D:false, W:false, M:false, S:false, N:false };
 
-function pulseCube() {
-  const cube = document.getElementById('labyrinthCube');
-  if (!cube) return;
-  cube.style.boxShadow = "0 0 40px rgba(0,245,181,0.6)";
-  setTimeout(() => cube.style.boxShadow = "none", 900);
-}
-function showPuzzleNotice() {
-  const notice = document.getElementById('puzzleNotice');
-  if (!notice) return;
-  if (window.innerWidth <= 768) {
-    notice.classList.add('show');
-    setTimeout(() => notice.classList.remove('show'), 6000);
-  }
-}
-function shrinkPuzzleBox() {
-  const shell = document.getElementById('imgVoidPuzzle');
-  if (shell && window.innerWidth <= 768) { shell.classList.add('shrunk'); showPuzzleNotice(); }
-}
-function restorePuzzleBox() {
-  const shell = document.getElementById('imgVoidPuzzle');
-  if (shell) shell.classList.remove('shrunk');
-}
-function checkCubeUnlock() {
-  if (Object.values(keys).every(v => v) && !cubeUnlocked) {
-    cubeUnlocked = true;
-    const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display = 'block';
-    const sigil = document.getElementById('hiddenSigil'); if (sigil) sigil.style.display = 'block';
-    const voidEl = document.getElementById('imgVoidPuzzle'); if (voidEl) voidEl.classList.add('unlocked');
-    pulseCube();
-    setTimeout(() => { if (sigil) sigil.classList.add('fadeOut'); const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.add('fadeOut'); }, 30000);
-    setTimeout(() => {
-      hidePanel('puzzleBoxPanel'); showPanel('finalBranchPanel');
-      const cube = document.getElementById('labyrinthCube'); if (cube) cube.classList.remove('fadeOut');
-      if (sigil) { sigil.style.display = 'none'; sigil.classList.remove('fadeOut'); }
-      const voidEl2 = document.getElementById('imgVoidPuzzle'); if (voidEl2) voidEl2.classList.remove('unlocked');
-      restorePuzzleBox();
-    }, 60000);
-  }
-}
-function resetPuzzleState() {
-  keys = { L:false, D:false, W:false, M:false, S:false, N:false };
-  cubeUnlocked = false;
-  document.querySelectorAll('#lightsGrid .light-cell').forEach(c => { c.classList.remove('on'); c.style.background=''; c.style.boxShadow=''; });
-  document.querySelectorAll('#labyrinthGrid .cell').forEach(c => c.classList.remove('on'));
-  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
-  ['runeL','runeD','runeW','runeM','runeS','runeN'].forEach(id => { const el=document.getElementById(id); if (el) el.style.display='none'; });
-  const msg = document.getElementById('unlockMessage'); if (msg) msg.style.display='none';
-  const hint = document.getElementById('dialHint'); if (hint) { hint.textContent=''; hint.style.color='#00f5b5'; }
-}
+/* small helpers for puzzle shell */
+function showPuzzleShell(){ const shell=$('imgVoidPuzzle'); if(shell){ shell.classList.add('active'); shell.style.display='block'; shell.setAttribute('aria-hidden','false'); } }
+function hidePuzzleShell(){ const shell=$('imgVoidPuzzle'); if(shell){ shell.classList.remove('active'); shell.style.display='none'; shell.setAttribute('aria-hidden','true'); } }
+function pulseCube(){ const cube=$('labyrinthCube'); if(!cube) return; cube.style.boxShadow="0 0 40px rgba(0,245,181,0.6)"; setTimeout(()=>{ if(cube) cube.style.boxShadow=''; },900); }
+
+/* puzzle helpers (grids) */
+function buildLightsGrid(){ const grid = $('lightsGrid'); if(!grid) return; grid.innerHTML=''; for(let i=0;i<9;i++){ const b=document.createElement('button'); b.className='light-cell'; grid.appendChild(b); } }
+function buildLabyrinthGrid(){ const grid = $('labyrinthGrid'); if(!grid) return; grid.innerHTML=''; for(let i=0;i<25;i++){ const d=document.createElement('div'); d.className='cell'; grid.appendChild(d); } }
+function buildMemoryButtons(){ const wrap = $('memoryButtons'); if(!wrap) return; wrap.innerHTML=''; const labels=['▲','◆','⚙']; for(let i=0;i<3;i++){ const b=document.createElement('button'); b.className='mem'; b.dataset.val=i; b.textContent=labels[i]; wrap.appendChild(b); } }
+function buildMathButtons(){ const wrap = $('mathGrid'); if(!wrap) return; wrap.innerHTML=''; const nums = [4,7,2,8,5]; nums.forEach(n=>{ const b=document.createElement('button'); b.className='num'; b.textContent = String(n); wrap.appendChild(b); }); }
+
+/* Lights Out logic */
 let lightsTarget = [];
-function configureLightsOut() {
+function configureLightsOut(){
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  if (!cells.length) return;
+  if(!cells.length) return;
   lightsTarget = shuffleArray(cells.map((_,i)=>i)).slice(0,4);
+  cells.forEach(c=>c.classList.remove('on'));
 }
-function isLightsSolved() {
+function wireLightsOutOnce(){
   const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  return cells.every((c,i)=> c.classList.contains('on') === lightsTarget.includes(i));
-}
-function wireLightsOutOnce() {
-  const cells = [...document.querySelectorAll('#lightsGrid .light-cell')];
-  if (!cells.length) return;
-  cells.forEach((cell, idx) => {
-    if (cell.dataset.wired) return;
-    cell.dataset.wired = '1';
-    cell.addEventListener('click', () => {
-      [idx, idx-1, idx+1, idx-3, idx+3].forEach(i => { if (cells[i]) cells[i].classList.toggle('on'); });
-      if (isLightsSolved()) { keys.L = true; document.getElementById('runeL').style.display='block'; pulseCube(); checkCubeUnlock(); }
+  if(!cells.length) return;
+  cells.forEach((cell,idx)=>{
+    if(cell.dataset.wired) return;
+    cell.dataset.wired='1';
+    cell.addEventListener('click',()=>{
+      [idx,idx-1,idx+1,idx-3,idx+3].forEach(i=>{ if(cells[i]) cells[i].classList.toggle('on'); });
+      const correctNow = cells.filter((c,i)=>c.classList.contains('on') && lightsTarget.includes(i)).length;
+      const pct = Math.round(correctNow / Math.max(1, lightsTarget.length) * 100);
+      $('dialHint') && ($('dialHint').textContent = `Lights progress: ${pct}%`);
+      if(cells.every((c,i)=> c.classList.contains('on') === lightsTarget.includes(i))){
+        keys.L=true; $('runeL') && ($('runeL').style.display='block'); pulseCube(); checkCubeUnlock();
+      }
     });
   });
 }
-function configureDial() {
-  const dialFace = document.querySelector('#lockerDial .dial-face');
-  const numbers  = document.querySelector('#lockerDial .dial-numbers');
-  if (!dialFace || !numbers) return;
-  numbers.innerHTML = '';
-  for (let i=0; i<100; i+=5) {
-    const span = document.createElement('span');
-    span.textContent = i;
-    const angle = (i/100)*360;
-    span.style.transform = `rotate(${angle}deg) translate(75px) rotate(-${angle}deg)`;
-    numbers.appendChild(span);
-  }
-}
-function wireDialOnce() {
-  const dialFace = document.querySelector('#lockerDial .dial-face');
-  const pointer  = document.querySelector('#lockerDial .dial-pointer');
-  if (!dialFace || !pointer || dialFace.dataset.wired) return;
-  dialFace.dataset.wired = '1';
-  let dialAngle = 0, dragging=false, startAngle=0, lastAngle=0;
-  const combo = [20, 5, 75];
-  const directions = ['cw','ccw','cw'];
-  let stage=0; const tol=2;
-  function angleToValue(angle){ return Math.round(((angle % 360 + 360) % 360) / 3.6); }
-  function checkCombo(val, dir){
-    const hint = document.getElementById('dialHint');
-    if (Math.abs(val - combo[stage]) <= tol && dir === directions[stage]) {
-      stage++;
-      if (stage < combo.length){ if (hint) hint.textContent = `Stage ${stage+1} of ${combo.length} (${directions[stage]} → ${combo[stage]})`; }
-      else {
-        keys.D = true; document.getElementById('runeD').style.display='block';
-        if (hint) { hint.textContent = `Combo complete! (${combo.join(' → ')})`; hint.style.color='#6aff6a'; }
-        pulseCube(); checkCubeUnlock(); stage = 0;
-      }
-    } else if (Math.abs(val - combo[stage]) <= tol && dir !== directions[stage]) {
-      stage = 0; if (hint) { hint.textContent = "Wrong direction! Restart combo."; hint.style.color='#ff4a4a'; }
+
+/* Labyrinth path */
+let labPath = [], labProgress = 0;
+function generateLabPath(cells, cols, length=9){
+  const total = cells.length; if(!total || cols<=0) return [];
+  const path=[]; let current=Math.floor(Math.random()*total); path.push(current);
+  const maxAttempts=200;
+  while(path.length<length){
+    const r=Math.floor(current/cols), c=current%cols;
+    const neighbors=[];
+    if(r>0) neighbors.push(current-cols);
+    if(r<Math.floor((total-1)/cols)) neighbors.push(current+cols);
+    if(c>0) neighbors.push(current-1);
+    if(c<cols-1) neighbors.push(current+1);
+    let cand = neighbors.filter(n=>!path.includes(n));
+    if(!cand.length) cand = neighbors;
+    let next = cand[Math.floor(Math.random()*cand.length)];
+    if(next===path[path.length-2] && Math.random()<0.6){
+      const alt=cand.filter(x=>x!==next);
+      if(alt.length){ next = alt[Math.floor(Math.random()*alt.length)]; }
     }
+    current=next; path.push(current);
+    if(path.length>length+maxAttempts) break;
   }
-  function handleMove(x,y,cx,cy){
-    const angle = Math.atan2(y - cy, x - cx) * 180/Math.PI;
-    dialAngle += angle - startAngle; startAngle = angle;
-    pointer.style.transform = `rotate(${dialAngle}deg)`;
-    const val = angleToValue(dialAngle);
-    const dir = (dialAngle - lastAngle) > 0 ? 'cw' : 'ccw'; lastAngle = dialAngle;
-    checkCombo(val, dir);
-  }
-  dialFace.addEventListener('mousedown', e=>{
-    dragging = true;
-    const rect = dialFace.getBoundingClientRect();
-    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-    startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180/Math.PI;
-  });
-  document.addEventListener('mousemove', e=>{
-    if (!dragging) return;
-    const rect = dialFace.getBoundingClientRect();
-    handleMove(e.clientX, e.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
-  });
-  document.addEventListener('mouseup', ()=> dragging=false);
-  dialFace.addEventListener('touchstart', e=>{
-    dragging = true;
-    const rect = dialFace.getBoundingClientRect();
-    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-    const t = e.touches[0];
-    startAngle = Math.atan2(t.clientY - cy, t.clientX - cx) * 180/Math.PI;
-  }, { passive: true });
-  document.addEventListener('touchmove', e=>{
-    if (!dragging) return;
-    const rect = dialFace.getBoundingClientRect();
-    const t = e.touches[0];
-    handleMove(t.clientX, t.clientY, rect.left+rect.width/2, rect.top+rect.height/2);
-  }, { passive: true });
-  document.addEventListener('touchend', ()=> dragging=false);
+  return path.slice(0,length);
 }
-let wordAnswer = '';
-function configureWordLock() {
-  const dictionary = ['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
-  wordAnswer = dictionary[Math.floor(Math.random()*dictionary.length)];
-  const scrambled = [...wordAnswer].sort(()=>Math.random()-0.5).join('');
-  const wordHint  = document.getElementById('wordHint'); if (wordHint) wordHint.textContent = `Unscramble: ${scrambled}`;
-  const wordInput = document.getElementById('wordInput'); if (wordInput) wordInput.value = '';
+function configureLabyrinth(){
+  const cells=[...document.querySelectorAll('#labyrinthGrid .cell')];
+  if(!cells.length) return;
+  const cols=5;
+  labPath = generateLabPath(cells,cols,9);
+  labProgress=0;
+  cells.forEach(c=>c.classList.remove('on'));
 }
-function wireWordLockOnce() {
-  const wordInput = document.getElementById('wordInput');
-  if (!wordInput || wordInput.dataset.wired) return;
-  wordInput.dataset.wired = '1';
-  wordInput.addEventListener('input', e => {
-    if (e.target.value.trim().toLowerCase() === wordAnswer) {
-      keys.W = true; document.getElementById('runeW').style.display='block';
-      pulseCube(); checkCubeUnlock();
-    }
-  });
-}
-let labPath = []; let labProgress = 0;
-function generateLabPath(cells, width, length = 9) {
-  let path = []; let current = Math.floor(Math.random() * cells.length);
-  path.push(current);
-  while (path.length < length) {
-    const r = Math.floor(current / width), c = current % width;
-    const neighbors = [];
-    if (r > 0) neighbors.push(current - width);
-    if (r < width - 1) neighbors.push(current + width);
-    if (c > 0) neighbors.push(current - 1);
-    if (c < width - 1) neighbors.push(current + 1);
-    current = neighbors.length ? neighbors[Math.floor(Math.random()*neighbors.length)]
-                               : Math.floor(Math.random() * cells.length);
-    path.push(current);
-  }
-  return path;
-}
-function configureLabyrinth() {
-  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
-  if (!cells.length) return;
-  const width = Math.sqrt(cells.length) | 0;
-  labPath = generateLabPath(cells, width, 9);
-  labProgress = 0;
-  cells.forEach(c => c.classList.remove('on'));
-}
-function wireLabyrinthOnce() {
-  const cells = [...document.querySelectorAll('#labyrinthGrid .cell')];
-  if (!cells.length) return;
-  cells.forEach((cell, idx) => {
-    if (cell.dataset.wired) return;
-    cell.dataset.wired = '1';
-    cell.addEventListener('click', () => {
-      if (!labPath.length) return;
-      if (idx === labPath[labProgress]) {
+function wireLabyrinthOnce(){
+  const cells=[...document.querySelectorAll('#labyrinthGrid .cell')];
+  if(!cells.length) return;
+  cells.forEach((cell,idx)=>{
+    if(cell.dataset.wired) return;
+    cell.dataset.wired='1';
+    cell.addEventListener('click',()=>{
+      if(!labPath.length) return;
+      if(idx===labPath[labProgress]){
         cell.classList.add('on'); labProgress++;
-        if (labProgress === labPath.length) { keys.M = true; document.getElementById('runeM').style.display='block'; pulseCube(); checkCubeUnlock(); }
+        $('dialHint') && ($('dialHint').textContent = `Path ${labProgress}/${labPath.length}`);
+        if(labProgress===labPath.length){ keys.M=true; $('runeM') && ($('runeM').style.display='block'); pulseCube(); checkCubeUnlock(); }
       } else {
-        cells.forEach(c => c.classList.remove('on')); labProgress = 0;
+        cells.forEach(c=>c.classList.remove('on')); labProgress=0;
       }
     });
   });
 }
-let memSeq = [], playerSeq = [], playing = false;
-function configureMemory() {
-  memSeq = []; playerSeq = []; playing = false;
-  document.querySelectorAll('#memoryButtons .mem').forEach(btn => btn.classList.remove('flash'));
-}
-function wireMemoryOnce() {
-  const memBtns = [...document.querySelectorAll('#memoryButtons .mem')];
-  const startBtn = document.getElementById('startMemory');
-  if (!memBtns.length || !startBtn) return;
-  function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'), 220); }
-  function playSequence() {
-    playing = true; let i = 0;
-    const interval = setInterval(() => {
-      const val = memSeq[i];
-      const btn = document.querySelector(`.mem[data-val="${val}"]`);
-      if (btn) flash(btn);
-      i++;
-      if (i >= memSeq.length) { clearInterval(interval); playing = false; playerSeq = []; }
-    }, 450);
-  }
-  function nextRound(){ memSeq.push(Math.floor(Math.random() * memBtns.length)); playSequence(); }
-  if (!startBtn.dataset.wired) {
-    startBtn.dataset.wired = '1';
-    startBtn.addEventListener('click', () => { memSeq = []; playerSeq = []; nextRound(); });
-  }
-  memBtns.forEach(btn => {
-    if (btn.dataset.wired) return;
-    btn.dataset.wired = '1';
-    btn.addEventListener('click', () => {
-      if (playing || memSeq.length === 0) return;
-      const val = parseInt(btn.dataset.val, 10);
+
+/* Memory (Simon) */
+let memSeq=[], playerSeq=[], playingMemory=false;
+function configureMemory(){ memSeq=[]; playerSeq=[]; playingMemory=false; document.querySelectorAll('#memoryButtons .mem').forEach(b=>b.classList.remove('flash')); }
+function wireMemoryOnce(){
+  const memBtns=[...document.querySelectorAll('#memoryButtons .mem')];
+  const startBtn=$('startMemory');
+  if(!memBtns.length || !startBtn) return;
+  function flash(btn){ btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'),220); }
+  function playSequence(){ playingMemory=true; let i=0; const iv=setInterval(()=>{ const v=memSeq[i]; const b=document.querySelector(`.mem[data-val="${v}"]`); if(b) flash(b); i++; if(i>=memSeq.length){ clearInterval(iv); playingMemory=false; playerSeq=[]; } },450); }
+  function nextRound(){ memSeq.push(Math.floor(Math.random()*memBtns.length)); playSequence(); }
+  onceWire(startBtn,'startMem',()=> startBtn.addEventListener('click', ()=>{ memSeq=[]; playerSeq=[]; nextRound(); }) );
+  memBtns.forEach(btn=>{
+    onceWire(btn,'membtn',()=> btn.addEventListener('click', ()=>{
+      if(playingMemory || memSeq.length===0) return;
+      const val=parseInt(btn.dataset.val,10);
       playerSeq.push(val); flash(btn);
-      for (let i=0;i<playerSeq.length;i++){
-        if (playerSeq[i] !== memSeq[i]) { playerSeq = []; playSequence(); return; }
-      }
-      if (playerSeq.length === memSeq.length) {
-        if (memSeq.length >= 4) { keys.S = true; document.getElementById('runeS').style.display='block'; pulseCube(); checkCubeUnlock(); }
+      for(let i=0;i<playerSeq.length;i++) if(playerSeq[i]!==memSeq[i]){ playerSeq=[]; playSequence(); return; }
+      if(playerSeq.length===memSeq.length){
+        if(memSeq.length>=4){ keys.S=true; $('runeS') && ($('runeS').style.display='block'); pulseCube(); checkCubeUnlock(); }
         else nextRound();
       }
-    });
+    }) );
   });
 }
-let mathTarget = 15;
-function configureMath() {
-  const nums = [...document.querySelectorAll('#mathGrid .num')];
-  if (!nums.length) return;
-  mathTarget = Math.floor(12 + Math.random()*9); // 12–20
-  const mathHint = document.getElementById('mathHint');
-  if (mathHint) mathHint.textContent = `Find a selection that sums to ${mathTarget}`;
-  nums.forEach(btn => { btn.classList.remove('sel'); btn.textContent = String(1 + Math.floor(Math.random()*9)); });
-}
-function wireMathOnce() {
-  const nums = [...document.querySelectorAll('#mathGrid .num')];
-  if (!nums.length) return;
-  nums.forEach(btn => {
-    if (btn.dataset.wired) return;
-    btn.dataset.wired = '1';
-    btn.addEventListener('click', () => {
+
+/* Math selection */
+let mathTarget=15;
+function configureMath(){ mathTarget = 12 + Math.floor(Math.random()*9); $('mathHint') && ($('mathHint').textContent = `Find a selection that sums to ${mathTarget}`); document.querySelectorAll('#mathGrid .num').forEach((b,i)=>{ b.classList.remove('sel'); b.textContent = [4,7,2,8,5][i]; }); }
+function wireMathOnce(){
+  const nums=[...document.querySelectorAll('#mathGrid .num')];
+  if(!nums.length) return;
+  nums.forEach(btn=>{
+    if(btn.dataset.wired) return;
+    btn.dataset.wired='1';
+    btn.addEventListener('click', ()=>{
       btn.classList.toggle('sel');
-      const sel = [...document.querySelectorAll('#mathGrid .num.sel')].map(n => parseInt(n.textContent.trim(), 10));
+      const sel=[...document.querySelectorAll('#mathGrid .num.sel')].map(n=>parseInt(n.textContent.trim(),10));
       const sum = sel.reduce((a,b)=>a+b,0);
-      if (sum === mathTarget) { keys.N = true; document.getElementById('runeN').style.display='block'; pulseCube(); checkCubeUnlock(); }
-      else if (sum > mathTarget) { nums.forEach(n => n.classList.remove('sel')); }
+      $('dialHint') && ($('dialHint').textContent = `Math sum: ${sum}/${mathTarget}`);
+      if(sum===mathTarget){ keys.N=true; $('runeN') && ($('runeN').style.display='block'); pulseCube(); checkCubeUnlock(); }
+      else if(sum>mathTarget){ nums.forEach(n=>n.classList.remove('sel')); }
     });
   });
 }
-function initPuzzleBox() {
-  if (!puzzleInitDone) {
-    wireLightsOutOnce();
-    wireDialOnce();
-    wireWordLockOnce();
-    wireLabyrinthOnce();
-    wireMemoryOnce();
-    wireMathOnce();
+
+/* Word unscramble lock */
+let wordAnswer='';
+function configureWordLock(){
+  const dict=['real','rite','unity','aura','glow','crown','honor','veil','phase','orbit'];
+  wordAnswer = dict[Math.floor(Math.random()*dict.length)];
+  const scrambled = shuffleArray([...wordAnswer]).join('');
+  $('scrambledWord') && ($('scrambledWord').textContent = scrambled);
+  $('wordInput') && ($('wordInput').value='');
+}
+function wireWordLockOnce(){
+  const wi=$('wordInput'); if(!wi) return;
+  onceWire(wi,'word',()=> wi.addEventListener('change', e=>{ if((e.target.value||'').trim().toLowerCase()===wordAnswer){ keys.W=true; $('runeW') && ($('runeW').style.display='block'); pulseCube(); checkCubeUnlock(); } }) );
+}
+
+/* Dial (locker) - randomized labels + interactive pointer; combination logic uses OWNER_COMBO if set */
+let dialAngle = 0, dragging=false, startAngle=0, lastAngle=0;
+let dialLabels = [];
+let dialSlots = [];
+const DIAL_SLOTS = 20;
+function configureDial(){
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const numbers = $('dialNumbers');
+  if(!dialFace || !numbers) return;
+  numbers.innerHTML = '';
+  dialSlots = Array.from({length:DIAL_SLOTS},(_,i)=> i * (360 / DIAL_SLOTS));
+  const pool = []; for(let v=0; v<100; v+=5) pool.push(v);
+  dialLabels = shuffleArray(pool).slice(0,DIAL_SLOTS);
+  for(let i=0;i<DIAL_SLOTS;i++){
+    const angle = dialSlots[i];
+    const span = document.createElement('span');
+    span.textContent = String(dialLabels[i]);
+    span.style.transform = `rotate(${angle}deg) translate(75px) rotate(${-angle}deg)`;
+    span.dataset.slot = i;
+    numbers.appendChild(span);
+  }
+  $('dialCenter') && ($('dialCenter').textContent='--');
+  dialFace._labels = dialLabels;
+}
+function valueFromAngle(a){
+  const norm = ((a%360)+360)%360;
+  const idx = Math.round(norm / (360 / DIAL_SLOTS)) % DIAL_SLOTS;
+  return { idx, label: dialLabels[idx] };
+}
+function wireDialOnce(){
+  const dialFace = document.querySelector('#lockerDial .dial-face');
+  const pointer = $('dialPointer');
+  if(!dialFace || !pointer || dialFace.dataset.wired) return;
+  dialFace.dataset.wired='1';
+  dialAngle = 0; dragging=false; startAngle=0; lastAngle=0;
+
+  function updatePointer(){ pointer.style.transform = `rotate(${dialAngle}deg)`; const v = valueFromAngle(dialAngle); $('dialCenter') && ($('dialCenter').textContent = String(v.label)); }
+  function handleMove(clientX, clientY){
+    const rect = dialFace.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    const ang = Math.atan2(clientY - cy, clientX - cx) * 180 / Math.PI;
+    if(isNaN(startAngle)) startAngle = ang;
+    const delta = ang - startAngle; startAngle = ang;
+    dialAngle += delta; updatePointer();
+    proximityHint();
+  }
+
+  function proximityHint(){
+    const desired = window.OWNER_COMBO || [20,5,75];
+    const current = valueFromAngle(dialAngle).label;
+    const d = Math.min(...desired.map(x=>Math.abs(x-current)));
+    const hint = $('dialHint');
+    if(d===0) hint && (hint.textContent = `Exact label ${current}`);
+    else if(d<=5) hint && (hint.textContent = `Very close (${current})`);
+    else if(d<=15) hint && (hint.textContent = `Close (${current})`);
+    else hint && (hint.textContent = `Current: ${current}`);
+  }
+
+  // Mouse
+  dialFace.addEventListener('mousedown', e=>{ dragging=true; const rect=dialFace.getBoundingClientRect(); startAngle = Math.atan2(e.clientY - (rect.top+rect.height/2), e.clientX - (rect.left+rect.width/2)) * 180 / Math.PI; });
+  document.addEventListener('mousemove', e=>{ if(!dragging) return; handleMove(e.clientX,e.clientY); });
+  document.addEventListener('mouseup', ()=>{ if(!dragging) return; dragging=false; const v = valueFromAngle(dialAngle); const targetAngle = dialSlots[v.idx]; dialAngle = targetAngle; updatePointer(); proximityHint(); });
+  // Touch
+  dialFace.addEventListener('touchstart', e=>{ dragging=true; const t=e.touches[0]; const rect=dialFace.getBoundingClientRect(); startAngle = Math.atan2(t.clientY - (rect.top+rect.height/2), t.clientX - (rect.left+rect.width/2)) * 180 / Math.PI; }, {passive:true});
+  document.addEventListener('touchmove', e=>{ if(!dragging) return; const t=e.touches[0]; handleMove(t.clientX,t.clientY); }, {passive:true});
+  document.addEventListener('touchend', ()=>{ if(!dragging) return; dragging=false; const v=valueFromAngle(dialAngle); dialAngle = dialSlots[v.idx]; updatePointer(); proximityHint(); });
+}
+
+/* Owner combo helper */
+window.OWNER_COMBO = null;
+function setOwnerCombo(arr){ if(Array.isArray(arr)) window.OWNER_COMBO = arr; }
+
+/* Combination attempt via clicking center */
+let attemptSequence = [];
+function verifyComboTap(label){
+  attemptSequence.push(label);
+  if(attemptSequence.length > 3) attemptSequence.shift();
+  const expected = window.OWNER_COMBO || [20,5,75];
+  if(attemptSequence.length === expected.length && attemptSequence.every((v,i)=>v===expected[i])){
+    $('dialHint') && ($('dialHint').textContent = 'Combo matched!');
+    keys.D = true; $('runeD') && ($('runeD').style.display='block'); pulseCube(); checkCubeUnlock();
+    attemptSequence = [];
+  } else {
+    let closeness = 0;
+    for(let i=0;i<attemptSequence.length;i++){
+      if(Math.abs(attemptSequence[i]-expected[i]) <= 5) closeness += 1;
+    }
+    if(closeness === attemptSequence.length) $('dialHint') && ($('dialHint').textContent = 'Partial match (close)');
+    else $('dialHint') && ($('dialHint').textContent = `Attempt: ${attemptSequence.join(',')}`);
+  }
+}
+
+/* Puzzle orchestrator */
+function buildAllShells(){
+  buildLightsGrid();
+  buildLabyrinthGrid();
+  buildMemoryButtons();
+  buildMathButtons();
+}
+function wireAllOnce(){
+  wireLightsOutOnce();
+  wireLabyrinthOnce();
+  wireMemoryOnce();
+  wireMathOnce();
+  wireWordLockOnce();
+  wireDialOnce();
+}
+function initPuzzleBox(){
+  if(!puzzleInitDone){
+    buildAllShells();
+    wireAllOnce();
     puzzleInitDone = true;
   }
   resetPuzzleState();
   configureLightsOut();
-  configureDial();
-  configureWordLock();
   configureLabyrinth();
   configureMemory();
   configureMath();
-  shrinkPuzzleBox();
+  configureWordLock();
+  configureDial();
+  const pn = $('puzzleNotice'); if(pn) pn.style.display='block'; setTimeout(()=>{ if(pn) pn.style.display='none'; },4000);
 }
 
-/* ===== Final branch / clearance ===== */
-document.getElementById('toFinalClearanceBtn')?.addEventListener('click', () => {
-  hidePanel('finalBranchPanel'); showPanel('finalClearancePanel');
-});
-document.getElementById('finalClearanceBtn')?.addEventListener('click', ()=>{
-  const code = document.getElementById('finalClearanceCode').value.trim();
-  const revealed = document.getElementById('revealedPassword').textContent.trim();
-  const status = document.getElementById('finalClearanceStatus');
-  if (code === revealed) {
-    status.textContent = "✅ Clearance accepted. Superform unlocked.";
-    setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); document.getElementById('superName').value = ceremonyName; }, 800);
-  } else {
-    status.textContent = "❌ Incorrect code.";
+/* Click center to add dial label attempt */
+safeAddEvent(document, 'click', (e)=> {
+  if(e.target && (e.target.id==='dialCenter' || e.target.id==='dialPointer' || e.target.closest('.dial-face')) ){
+    const v = valueFromAngle(dialAngle).label;
+    verifyComboTap(v);
   }
 });
 
-/* ===== Cube rotation ===== */
+/* Expose debugging helpers */
+window._PT = {
+  initPuzzleBox, configureDial, dialLabels: ()=>dialLabels, setOwnerCombo
+};
+
+/* -------------------------
+   Final branch -> Final clearance -> Superform
+   ------------------------- */
+onceWire($('toFinalClearanceBtn'), 'toFinal', ()=> safeAddEvent($('toFinalClearanceBtn'), 'click', ()=>{ hidePanel('finalBranchPanel'); showPanel('finalClearancePanel'); }));
+onceWire($('finalClearanceBtn'), 'finalClear', ()=> safeAddEvent($('finalClearanceBtn'), 'click', ()=>{
+  const code = ($('finalClearanceCode')?.value || '').trim();
+  const revealed = ($('revealedPassword')?.textContent || '').trim();
+  const status = $('finalClearanceStatus');
+  if (code === revealed) {
+    status && (status.textContent = "✅ Clearance accepted. Superform unlocked.");
+    setTimeout(()=>{ hidePanel('finalClearancePanel'); showPanel('mysteryBoxPanel'); $('superName') && ($('superName').value = ceremonyName || ''); }, 800);
+  } else status && (status.textContent = "❌ Incorrect code.");
+}));
+
+/* Superform submit */
+function submitSuperForm() {
+  const code = ($('superCode')?.value || '').trim();
+  if (code !== "TRIUMPH-777") { alert("Invalid super-level clearance code."); return false; }
+  const name = ($('superName')?.value || '').trim();
+  const tier = ($('superTier')?.value || '').trim();
+  const card = generateCardID();
+  const accessCode = generateAccessCode();
+  const clearanceCode = code;
+
+  const messageForBlogger = `👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}
+🔑 Access Code: ${accessCode}`.trim();
+
+  const plaqueMessage = `👑 Super-Level Access Submission
+👤 Name: ${name}
+🎖 Tier: ${tier}
+🆔 Account ID: ${card}`.trim();
+
+  const redirectURL = `https://mrhim00.blogspot.com/2025/10/issued.html?card=${encodeURIComponent(card)}`;
+
+  submitToBlogger({ name, phone:'', messageForBlogger, plaqueMessage, clearanceCode, accessCode, redirectURL });
+  alert("Super-level form submitted. Redirecting...");
+  return false;
+}
+onceWire($('superLevelForm'), 'superForm', ()=> safeAddEvent($('superLevelForm'), 'submit', (e)=>{ e.preventDefault(); submitSuperForm(); }));
+
+/* -------------------------
+   Cube rotation binding
+   ------------------------- */
 (function bindCubeRotation(){
-  const cubeEl = document.getElementById('labyrinthCube');
+  const cubeEl = $('labyrinthCube');
   if (!cubeEl) return;
   let dragging=false, startX=0, startY=0, rotX=-15, rotY=20;
   function updateRotation(){ cubeEl.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
-  cubeEl.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
-  window.addEventListener('mousemove', e => {
+  safeAddEvent(cubeEl, 'mousedown', e => { dragging = true; startX = e.clientX; startY = e.clientY; });
+  safeAddEvent(window, 'mousemove', e => {
     if (!dragging) return;
     const dx = e.clientX - startX, dy = e.clientY - startY;
     startX = e.clientX; startY = e.clientY;
     rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
   });
-  window.addEventListener('mouseup', () => dragging = false);
-  cubeEl.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
-  cubeEl.addEventListener('touchmove', e => {
+  safeAddEvent(window, 'mouseup', () => dragging = false);
+  safeAddEvent(cubeEl, 'touchstart', e => { dragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive:true });
+  safeAddEvent(cubeEl, 'touchmove', e => {
     if (!dragging) return;
     const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
     rotY += dx * 0.4; rotX -= dy * 0.4; updateRotation();
-  }, { passive: true });
-  cubeEl.addEventListener('touchend', () => dragging = false);
+  }, { passive:true });
+  safeAddEvent(cubeEl, 'touchend', () => dragging = false);
   updateRotation();
 })();
 
-/* ===== Keyboard shortcut: show Superform ===== */
-document.addEventListener("keydown", function (e) {
+/* -------------------------
+   Shortcuts + UI niceties
+   ------------------------- */
+// keyboard shortcuts
+safeAddEvent(document, 'keydown', function (e) {
   if (e.ctrlKey && e.altKey && e.key.toLowerCase() === "q") {
-    const superPanel = document.getElementById("mysteryBoxPanel");
-    if (superPanel) {
-      superPanel.style.display = "block";
-      alert("Super-level access form unlocked.");
-    }
+    const superPanel = $('mysteryBoxPanel');
+    if (superPanel) { superPanel.style.display = "block"; alert("Super-level access form unlocked."); }
+  }
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+    const f = $('adminForm'); if (f){ f.style.display='block'; alert("Admin access form unlocked."); }
   }
 });
 
-/* ===== Public form: generator hook (scoped to love-form) ===== */
-document.getElementById('love-form')?.addEventListener('click', (e)=>{
-  if (e.target && e.target.id === 'genNameBtn') {
-    generateNameFromTier();
-  }
-});
+// admin mobile tap zones
+onceWire($('tapTopLeft'), 'tapLeft', ()=> safeAddEvent($('tapTopLeft'), 'click', ()=>{ adminTapSequence.push('tapTopLeft'); shimmerPulse(); checkAdminMobileUnlock(); }));
+onceWire($('tapTopRight'), 'tapRight', ()=> safeAddEvent($('tapTopRight'), 'click', ()=>{ adminTapSequence.push('tapTopRight'); shimmerPulse(); checkAdminMobileUnlock(); }));
 
-/* ===== Superform binding ===== */
-document.getElementById('superLevelForm')?.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  submitSuperForm();
-});
+// shimmer pulse helper
+let shimmerTimer;
+function shimmerPulse(){ const s=$('tapShimmer'); if(!s) return; s.classList.add('active'); clearTimeout(shimmerTimer); shimmerTimer=setTimeout(()=>s.classList.remove('active'),260); }
 
-/* ===== Admin binding ===== */
-document.getElementById('adminForm')?.addEventListener('submit', (e)=>{
-  e.preventDefault();
-  handleAdminAccess(false);
-});
-document.querySelector('#adminForm #verifyTierBtn')?.addEventListener('click', ()=>handleAdminAccess(true));
-
-/* ===== Admin verify button visibility ===== */
-document.getElementById('adminCode')?.addEventListener('input', ()=>{
-  const tierSel = document.getElementById('adminTier').value;
-  const code = document.getElementById('adminCode').value.trim();
-  const verifyBtn = document.querySelector('#adminForm #verifyTierBtn');
-  if (!verifyBtn) return;
-  if ((tierSel === 'Admin' && code === TIER_CODES.Admin) ||
-      (tierSel === 'MasterAdmin' && code === TIER_CODES.MasterAdmin)) {
-    verifyBtn.style.display = 'block';
-  } else {
-    verifyBtn.style.display = 'none';
-  }
-});
-
-/* ===== Scoping guards (ritual controls) ===== */
-(function guardRitualControls(){
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
+// ensure ritual controls remain wired after bfcache
+safeAddEvent(window, 'pageshow', ()=>{
+  const colorPanel = $('colorPanel'); if (!colorPanel) return;
   const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
   const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
-  }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
-})();
-window.addEventListener('pageshow', ()=>{
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
-  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
-  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
-  }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
+  if (verifyBtn && !verifyBtn.dataset.wired) { verifyBtn.dataset.wired = '1'; verifyBtn.addEventListener('click', verifySequenceAttempt); }
+  if (clearBtn && !clearBtn.dataset.wired) { clearBtn.dataset.wired = '1'; clearBtn.addEventListener('click', clearSequence); }
 });
 
-  
-  
-  
-  
-  /* ======= Admin form visibility via mobile tap zones (guarded) ======= */
-(function bindAdminVisibilityShortcuts(){
-  const adminForm = document.getElementById('adminForm');
-  const zoneRight = document.getElementById('tapTopRight');
-  if (zoneRight && adminForm) {
-    zoneRight.addEventListener('click', ()=> { adminForm.style.display = 'block'; });
-  }
-  document.addEventListener('keydown', (e)=>{
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a' && adminForm) {
-      adminForm.style.display = 'block';
-      alert("Admin access form unlocked.");
-    }
-  });
-})();
+/* -------------------------
+   Page-level bindings for generator and public widget
+   ------------------------- */
+onceWire($('love-form'), 'loveForm', ()=> safeAddEvent($('love-form'), 'click', (e)=>{ if (e.target && e.target.id === 'genNameBtn') generateNameFromTier(); }));
 
-/* ======= Ritual panel: ensure buttons remain scoped even if rebuilt ======= */
-(function guardRitualControls(){
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
-  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
-  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
+/* -------------------------
+   Minimal boot: wire ritual controls when DOM ready
+   ------------------------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Ensure admin tap zone reveals
+  const adminForm = $('adminForm');
+  const zoneRight = $('tapTopRight');
+  if (zoneRight && adminForm) zoneRight.addEventListener('click', ()=> { adminForm.style.display = 'block'; });
 
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
+  // Bind attempt puzzle if present
+  if ($('attemptPuzzleBtn') && !$('attemptPuzzleBtn').dataset.initialized) {
+    $('attemptPuzzleBtn').dataset.initialized = '1';
+    $('attemptPuzzleBtn').addEventListener('click', ()=> { hidePanel('mysteryBoxChamber'); showPanel('puzzleBoxPanel'); initPuzzleBox(); });
   }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
-})();
 
-/* ======= Final safety: reassert scoping on bfcache restore ======= */
-window.addEventListener('pageshow', ()=>{
-  const colorPanel = document.getElementById('colorPanel');
-  if (!colorPanel) return;
-  const verifyBtn = colorPanel.querySelector('.ritual-controls button:nth-child(1)');
-  const clearBtn  = colorPanel.querySelector('.ritual-controls button:nth-child(2)');
-  if (verifyBtn && !verifyBtn.dataset.wired) {
-    verifyBtn.dataset.wired = '1';
-    verifyBtn.addEventListener('click', verifySequenceAttempt);
-  }
-  if (clearBtn && !clearBtn.dataset.wired) {
-    clearBtn.dataset.wired = '1';
-    clearBtn.addEventListener('click', clearSequence);
-  }
+  // If puzzle panel present and visible on load, init
+  const pb = $('puzzleBoxPanel');
+  if(pb && pb.style.display !== 'none') { showPuzzleShell(); initPuzzleBox(); }
 });
 </script>
-
-
-
-
 
 </body>
 </html>
