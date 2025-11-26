@@ -191,6 +191,7 @@ h1, h2, h3 {
 .runez-btn.rune-violet { background: radial-gradient(circle,#6a3fa8,#8a6ad4); border-color:#6a3fa8; }
 .runez-btn.rune-gold   { background: radial-gradient(circle,#c2a76d,#f2e6a9); border-color:#c2a76d; }
 
+   
 /* === Admin Chamber — Grey Prestige Hybrid === */
 #adminForm {
   max-width: 640px; margin: 40px auto; padding: 32px;
@@ -1485,104 +1486,172 @@ function closePuzzleBox() {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-#finalClearancePanel .final-heading {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #ffd87a;
-  margin-bottom: 12px;
-}
+/* ---------- Trophy Room Final Clearance Styles ---------- */
 
-#finalClearancePanel .final-instruction {
-  text-align: center;
-  font-size: 1rem;
-  color: #e9e3ff;
-  margin-bottom: 18px;
-}
+/* ---------- Final Clearance (fully namespaced to #finalClearancePanel) ---------- */
 
-#finalClearancePanel .final-input-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-#finalClearancePanel #finalClearanceCode {
-  width: 260px;
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-  color: #e9e3ff;
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(6px);
-}
-
-#finalClearancePanel #finalClearanceBtn {
-  padding: 12px 20px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fff8e1;
-  background: radial-gradient(circle at center, #d4b86a 0%, #8b5e3c 100%);
-  border: 2px solid #d4b86a;
+#finalClearancePanel {
+  position: relative;
+  display: none;
+  width: min(920px, 96%);
+  margin: 28px auto;
+  padding: 28px;
   border-radius: 12px;
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.08),
-    0 6px 18px rgba(0,0,0,0.5),
-    inset 0 0 10px rgba(255,255,255,0.12);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: radial-gradient(1200px 400px at 50% 10%, #070607 0%, #050405 40%, #020202 100%);
+  color: #e6fbe8;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.85);
+  overflow: hidden;
+  font-family: 'Share Tech Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#finalClearancePanel #finalClearanceBtn:hover {
-  transform: scale(1.05);
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.12),
-    0 8px 24px rgba(0,0,0,0.6),
-    inset 0 0 14px rgba(255,255,255,0.18);
+/* backdrop */
+#finalClearancePanel .room-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20,6,20,0.85), rgba(6,2,6,0.95));
+  z-index: 0;
+  pointer-events: none;
 }
 
-#finalClearancePanel .final-tier-wrap {
+/* ensure panel content stacks above backdrop */
+#finalClearancePanel > * { position: relative; z-index: 6; }
+
+/* header */
+#finalClearancePanel .mystery-title {
   text-align: center;
-  margin-top: 20px;
-}
-
-#finalClearancePanel .final-tier-wrap label {
-  color: var(--gold);
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px;
-}
-
-#finalClearancePanel #finalTier {
-  min-width: 220px;
-  padding: 8px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.03);
   color: #ffd87a;
-  border: 1px solid rgba(255,255,255,0.06);
-  margin-bottom: 12px;
+  font-size: 1.4rem;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px rgba(255,216,122,0.18);
 }
 
+/* stage & pedestal */
+#finalClearancePanel .trophy-stage {
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  margin: 8px 0 18px;
+  z-index: 6;
+}
+#finalClearancePanel .pedestal { width:260px; height:160px; display:flex; align-items:flex-end; justify-content:center; transform-style:preserve-3d; position:relative; }
+#finalClearancePanel .pedestal-base {
+  width:260px; height:44px; transform:translateY(8px);
+  background: linear-gradient(180deg,#0b0b0b,#060606);
+  border-radius:10px; border:2px solid rgba(217,184,106,0.06);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.85), inset 0 6px 18px rgba(255,255,255,0.02);
+}
+
+/* cube aura (namespaced) */
+#finalClearancePanel .cube-aura {
+  position:absolute; inset:0; pointer-events:none; z-index:1;
+  background:
+    radial-gradient(180px 180px at 30% 40%, rgba(106,13,173,0.25), transparent 70%),
+    radial-gradient(220px 220px at 70% 60%, rgba(255,215,0,0.18), transparent 70%);
+  animation: fc-auraPulse 5s ease-in-out infinite;
+}
+@keyframes fc-auraPulse { 0%,100%{filter:saturate(1);opacity:0.75}50%{filter:saturate(1.3);opacity:1} }
+
+/* keep your .glowing-cube rules elsewhere; add only safe namespaced helpers */
+#finalClearancePanel .glowing-cube { margin: 16px auto; z-index: 7; }
+
+/* instruction */
+#finalClearancePanel .final-instruction { text-align:center; color:#dfffe8; margin:8px 0 14px; z-index:7; }
+
+/* input */
+#finalClearancePanel #finalClearanceCode {
+  padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02); color:#e6fbe8; min-width:260px; font-family:inherit; z-index:8;
+}
+
+/* unlock button (namespaced) */
+#finalClearancePanel .trophy-btn {
+  padding:12px 18px; border-radius:12px;
+  background: linear-gradient(180deg,#ffd87a 0%,#e6b84a 45%,#b8861f 100%);
+  color:#0b0b0b; border:2px solid rgba(255,215,0,0.28);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 18px rgba(255,215,0,0.06), 0 6px 18px rgba(255,200,60,0.08);
+  font-weight:900; letter-spacing:0.06em; cursor:pointer; display:inline-flex; align-items:center; gap:10px;
+  transition: transform .18s ease, box-shadow .18s ease;
+  z-index:8;
+}
+#finalClearancePanel .trophy-btn:hover { transform: translateY(-4px) scale(1.01); }
+
+/* one-time code wrapper (namespaced) */
+#finalClearancePanel .oneTimeCodeWrap { margin-top:12px; text-align:center; z-index:8; position:relative; }
+
+/* reveal button — strongly namespaced to avoid global overrides */
 #finalClearancePanel #generateTierCodeBtn {
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff8e1;
-  background: linear-gradient(135deg, #6b4f2c, #8b5e3c);
-  border: 2px solid #3e2a1a;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 6px rgba(255,255,255,0.1);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-  cursor: pointer;
-  transition: transform 0.2s ease;
+  display:inline-flex !important;
+  align-items:center; justify-content:center; gap:8px;
+  min-height:40px; padding:10px 14px !important; border-radius:10px;
+  background: linear-gradient(180deg,#fff7c8 0%,#ffe79a 45%,#ffd24a 100%) !important;
+  color:#1b1200 !important; border:2px solid rgba(255,200,60,0.95) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55), inset 0 0 36px rgba(255,200,60,0.06) !important;
+  font-weight:800 !important; cursor:pointer !important; z-index:13 !important; position:relative !important;
+  text-transform:none !important; font-family:inherit !important;
 }
 
-#finalClearancePanel #generateTierCodeBtn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+/* ensure pseudo-elements can't hide the label */
+#finalClearancePanel #generateTierCodeBtn::before,
+#finalClearancePanel #generateTierCodeBtn::after { display:none !important; content:none !important; }
+
+/* one-time code display (namespaced) */
+#finalClearancePanel #oneTimeCode,
+#finalClearancePanel .oneTimeCode {
+  display:inline-block; min-width:220px; padding:12px 16px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  color:#dfffe8; border:1px solid rgba(255,255,255,0.04); text-align:center; font-weight:700;
+  letter-spacing:0.06em; transition: background .36s ease, color .36s ease, box-shadow .42s ease, transform .36s ease;
+  z-index:12; position:relative; box-shadow:0 6px 18px rgba(0,0,0,0.5); margin:8px auto 0;
 }
+
+/* revealed state (namespaced) */
+#finalClearancePanel #oneTimeCode.revealed,
+#finalClearancePanel .oneTimeCode.revealed {
+  background: linear-gradient(180deg,#fff8d6 0%,#ffe79a 45%,#ffd24a 100%);
+  color:#1b1200; border:1px solid rgba(255,200,60,0.95);
+  box-shadow: 0 12px 40px rgba(255,200,60,0.12), inset 0 0 80px rgba(255,200,60,0.10), 0 0 160px rgba(255,200,60,0.04);
+  transform: translateY(-6px) scale(1.02);
+}
+#finalClearancePanel #oneTimeCode.revealed::before,
+#finalClearancePanel .oneTimeCode.revealed::before {
+  content: "🏆"; display:inline-block; margin-right:8px; font-size:1.05rem; vertical-align:middle;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+}
+
+/* reveal pulse (namespaced) */
+@keyframes fc-revealPulse { 0%{transform:translateY(-2px) scale(1)}40%{transform:translateY(-8px) scale(1.04)}100%{transform:translateY(-6px) scale(1.02)} }
+#finalClearancePanel #oneTimeCode.revealed.pulse,
+#finalClearancePanel .oneTimeCode.revealed.pulse { animation: fc-revealPulse 760ms ease; }
+
+/* panel buttons grid (namespaced) */
+#finalClearancePanel .panel-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; z-index:7; position:relative; }
+#finalClearancePanel .panel-buttons button { padding:10px; border-radius:8px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); color:#dfffe8; cursor:pointer; }
+
+/* tier select — namespaced and forced dark */
+#finalClearancePanel #finalTier {
+  min-width:220px; padding:8px 10px; border-radius:6px;
+  background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(18,18,18,0.92)) !important;
+  color:#ffd87a !important; border:1px solid rgba(255,255,255,0.04) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) inset !important; font-family:inherit; appearance:none; -webkit-appearance:none;
+  z-index:11 !important;
+}
+#finalClearancePanel #finalTier option { background:#070707; color:#ffd87a; }
+
+/* status text (namespaced) */
+#finalClearancePanel #finalClearanceStatus { text-align:center; margin-top:8px; color:#bfffd0; min-height:1.2em; z-index:8; position:relative; }
+
+/* responsive tweaks (namespaced) */
+@media (max-width:640px) {
+  #finalClearancePanel .panel-buttons { grid-template-columns: repeat(2,1fr); }
+  #finalClearancePanel .pedestal { width:180px; }
+  #finalClearancePanel .glowing-cube { width:100px; height:100px; transform: translateY(-40px) rotateX(14deg) rotateY(-14deg); }
+  #finalClearancePanel #generateTierCodeBtn, #finalClearancePanel .runez-btn { width:100%; max-width:none; }
+  #finalClearancePanel #oneTimeCode { min-width:160px; padding:10px 12px; }
+}
+
    
    /* ---------- Final Branch — Phantom Console (consolidated) ---------- */
 
@@ -1880,55 +1949,39 @@ function closePuzzleBox() {
   80%  { opacity: 0.35; filter: blur(0.6px); transform: translateY(-4px); }
   100% { opacity: 0; transform: translateY(-6px); }
 }
-/* Trophy room backdrop */
-.trophy-room { position: relative; padding: 28px; border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 50% 20%, #0b0b0b 0%, #070707 40%, #050405 100%); box-shadow: 0 0 40px rgba(0,0,0,0.9); }
-
-/* velvet walls */
-.room-backdrop { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,6,20,0.9), rgba(6,2,6,0.95)); background-image: linear-gradient(90deg, rgba(255,255,255,0.01) 0.5px, transparent 0.5px); opacity: 0.95; z-index: 0; }
-
-/* heading sits above stage */
-.final-branch-heading { font-family: 'Share Tech Mono', monospace; color: #d9c07a; text-align: center; font-size: 1.6rem; letter-spacing: 0.12em; z-index: 5; position: relative; text-shadow: 0 0 8px rgba(217,192,122,0.25); }
-
-/* stage and spotlight */
-.trophy-stage { position: relative; width: 100%; display:flex; justify-content:center; align-items:center; margin: 18px 0 8px; z-index: 3; }
-.spotlight { position:absolute; top: -40px; width: 420px; height: 420px; background: radial-gradient(circle at 50% 30%, rgba(255,255,220,0.12), rgba(0,0,0,0) 45%); filter: blur(18px); pointer-events:none; }
-
-/* pedestal */
-.pedestal { position: relative; width: 220px; height: 160px; display:flex; align-items:flex-end; justify-content:center; z-index:4; transform-style: preserve-3d; }
-.pedestal-base { width: 220px; height: 36px; background: linear-gradient(180deg,#0b0b0b,#060606); border: 2px solid rgba(217,192,122,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.8) inset; border-radius: 8px; transform: translateY(8px); }
-
-/* trophy cube */
-.trophy-cube { width: 120px; height: 120px; background: linear-gradient(135deg, rgba(212,184,106,0.12), rgba(0,255,136,0.06)); border: 2px solid rgba(212,184,106,0.28); box-shadow: 0 0 40px rgba(212,184,106,0.08), 0 18px 40px rgba(0,0,0,0.8); transform: translateY(-36px) rotateX(18deg) rotateY(-18deg); border-radius: 6px; display:flex; align-items:center; justify-content:center; transition: transform 420ms cubic-bezier(.2,.9,.2,1), box-shadow 420ms; }
-
-/* cube glow pulse */
-.trophy-cube::after { content:""; position:absolute; inset: -18px; border-radius: 8px; background: radial-gradient(circle, rgba(212,184,106,0.08), transparent 40%); filter: blur(8px); pointer-events:none; opacity:0.9; transition: opacity 420ms; }
-
-/* cube hover/active micro animation */
-.trophy-cube.pulse { transform: translateY(-44px) rotateX(22deg) rotateY(-22deg) scale(1.03); box-shadow: 0 0 60px rgba(212,184,106,0.18), 0 28px 60px rgba(0,0,0,0.9); }
-
-/* hologram area sits below stage */
-.hologram-area { text-align:center; margin-top: 6px; z-index: 4; }
-
-/* tier select as holographic plaque */
-.tier-label { display:block; color:#cfd9b8; font-family: 'Share Tech Mono', monospace; margin-bottom:6px; text-align:center; }
-.tier-select { appearance:none; -webkit-appearance:none; font-family: 'Share Tech Mono', monospace; background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)); color:#bfffd0; border: 1px solid rgba(127,255,176,0.12); padding:10px 14px; border-radius:8px; min-width:220px; box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 8px rgba(127,255,176,0.02); text-align:center; letter-spacing:0.06em; }
-
-/* dropdown presence: add glow and subtle 3D */
-.tier-select:focus, .tier-select:hover { box-shadow: 0 0 18px rgba(127,255,176,0.08), inset 0 0 10px rgba(127,255,176,0.02); outline: none; transform: translateY(-2px); transition: transform 220ms; }
-
-/* reveal plaque styled as ornate plate */
-.reveal-plaque { margin-left: 12px; padding: 12px 20px; border-radius: 10px; background: linear-gradient(180deg, rgba(212,184,106,0.12), rgba(212,184,106,0.06)); color:#0b0b0b; border: 2px solid rgba(212,184,106,0.28); font-weight:700; box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 18px rgba(212,184,106,0.06); cursor:pointer; transition: transform 260ms ease, box-shadow 260ms ease; font-family: 'Share Tech Mono', monospace; }
-.reveal-plaque:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.7), 0 0 36px rgba(212,184,106,0.12); }
-
-/* keep terminal script readable but subtle in trophy room */
-.terminal-script { font-family: 'Share Tech Mono', monospace; color: #bfffd0; text-shadow: 0 0 6px rgba(127,255,176,0.12); margin: 6px 0; }
-
-/* small responsive tweaks */
-@media (max-width:520px) {
-  .trophy-stage { padding: 8px 0; }
-  .trophy-cube { width: 92px; height: 92px; transform: translateY(-28px) rotateX(16deg) rotateY(-16deg); }
-  .tier-select { min-width: 160px; }
+.oneTimeCodeWrap { z-index: 4; margin-top: 12px; text-align:center; }
+.runez-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(127,255,176,0.06), rgba(127,255,176,0.03));
+  color: #07120a;
+  border: 2px solid rgba(127,255,176,0.12);
+  cursor: pointer;
+  font-weight:700;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  font-family: inherit;
 }
+.runez-btn:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 36px rgba(127,255,176,0.08); }
+/* Legibility tweak for runez buttons */
+.runez-btn {
+  color: #0b1f12;               /* slightly deeper green-black for better contrast */
+  font-weight: 800;             /* stronger weight for clarity */
+  font-size: 15px;             /* slightly larger for readability */
+  letter-spacing: 0.03em;      /* gentle tracking to improve character separation */
+  text-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 2px 8px rgba(0,0,0,0.28);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional: stronger outline for low-contrast backgrounds */
+.runez-btn.runez-btn--outlined {
+  color: rgba(255,255,255,0.60) !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.22);
+  font-weight: 700;
+}
+
+
+
 
   </style>
 </head>
@@ -2017,7 +2070,7 @@ function closePuzzleBox() {
 
  
 <!-- Specialized name generator -->
-<button type="button" id="adminGenNameBtn"class="runez-btn">Generate Beloved Name</button><br>
+<button type="button" id="adminGenNameBtn"class="runez-btn runez-btn--outlined">Generate Beloved Name</button><br>
 <br>
 <br>
 
@@ -2178,45 +2231,78 @@ function closePuzzleBox() {
 </div>
 
     <!-- Final Branch QUBE-ACCESS-777-->
-  <div id="finalBranchPanel" class="trophy-room" style="display:none;">
-  <div class="room-backdrop"></div>
+    <!-- Drop this into your page where the Final Branch panel should appear -->
+<div id="finalBranchPanel" class="panel-shell" role="region" aria-label="Final Branch" style="display:none; position:relative;">
+  <!-- Vertical data stream (background) -->
+  <div class="data-stream" aria-hidden="true"></div>
 
-  <header class="final-branch-heading">FINAL BRANCH</header>
+  <!-- Optional ghost crest glow (behind content) -->
+  <div class="sigil-glow" aria-hidden="true"></div>
 
-  <div class="trophy-stage">
-    <div class="spotlight"></div>
-    <div class="pedestal">
-      <div id="trophyCube" class="trophy-cube" aria-hidden="true"></div>
-      <div class="pedestal-base"></div>
-    </div>
-  </div>
+  <!-- Header (monospaced terminal style) -->
+  <h2 class="final-branch-heading" aria-hidden="true">FINAL BRANCH</h2>
 
-  <div class="hologram-area">
-    <pre id="tierHologram" class="terminal-script" aria-live="polite" role="status"></pre>
-    <pre id="finalBranchScript" class="terminal-script"></pre>
-    <p id="mysterySentence" class="terminal-script"></p>
-  </div>
+  <!-- Tier hologram (cycles tier lines like a terminal) -->
+  <pre id="tierHologram" class="terminal-script" aria-live="polite" role="status"></pre>
 
-  <div class="controls">
-    <label for="tierSelect" class="tier-label">Choose one-time tier</label>
-    <select id="tierSelect" class="tier-select" aria-label="Choose tier">
-      <option value="">-- pick tier --</option>
-      <option>Legacy</option>
-      <option>Luminary</option>
-      <option>Sovereign</option>
-      <option>Ascendant</option>
-      <option>Founders</option>
-      <option>Eternal</option>
-      <option>Prime</option>
-      <option>Dominion</option>
-    </select>
+  <!-- Boot script block (separate from tierHologram) -->
+  <pre id="finalBranchScript" class="terminal-script" aria-hidden="false"></pre>
 
-    <button id="toFinalClearanceBtn" class="reveal-plaque" type="button" aria-label="Reveal one-time code">
-      Reveal One-Time Code
+  <!-- Final mystery sentence (revealed after boot sequence) -->
+  <p id="mysterySentence" class="terminal-script" aria-hidden="false"></p>
+
+  <!-- Proceed button (hidden until revealed by JS) -->
+  <div style="text-align:center; margin-top:12px;">
+    <button id="toFinalClearanceBtn" class="branch-sigil-btn" type="button" aria-label="Proceed to Final Clearance Qube">
+      Proceed to Final Clearance Qube
     </button>
   </div>
 </div>
 
+
+
+
+
+
+
+ 
+<!-- Final Clearance Chamber Puzzle Box Mechanism -->
+<div id="finalClearancePanel" class="panel-shell" style="display:none; position:relative;">
+  <h2 class="mystery-title">🎖 CONGRATULATIONS🎖</h2>
+  <div class="glowing-cube"></div>
+
+  <p class="final-instruction">Enter the final clearance code to unlock the Superform.</p>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:16px;">
+    <input id="finalClearanceCode" type="password" placeholder="Re-enter final code" />
+    <button id="finalClearanceBtn" class="trophy-btn">Unlock</button>
+  </div>
+
+  <p id="finalClearanceStatus"></p>
+
+  <!-- One-time tier code controls -->
+  <div class="oneTimeCodeWrap" style="margin-top:12px; text-align:center;">
+    <label for="finalTier" style="color:var(--gold);font-weight:600;display:block;margin-bottom:8px;">Choose one-time tier</label>
+    <select id="finalTier" aria-label="Choose tier for one-time code" style="min-width:220px;padding:8px;border-radius:6px;background:rgba(255,255,255,0.03);color:#ffd87a;border:1px solid rgba(255,255,255,0.06);">
+      <option value="">-- pick tier --</option>
+      <option value="Legacy">Legacy</option>
+      <option value="Luminary">Luminary</option>
+      <option value="Sovereign">Sovereign</option>
+      <option value="Ascendant">Ascendant</option>
+      <option value="Founders">Founders</option>
+      <option value="Eternal">Eternal</option>
+      <option value="Prime">Prime</option>
+      <option value="Dominion">Dominion</option>
+    </select>
+
+    <div style="height:10px;"></div>
+
+    <button id="generateTierCodeBtn" type="button" class="runez-btn" style="max-width:260px;">
+      Reveal One‑Time Code
+    </button>
+
+    <div id="oneTimeCode" class="oneTimeCode" role="status" aria-hidden="true" style="margin-top:12px;"></div>
+  </div>
 
   <!-- Grid container for 8-ball ritual -->
   <div id="panelButtons" class="panel-buttons" style="margin-top:18px;"></div>
@@ -2277,7 +2363,7 @@ function closePuzzleBox() {
   </div>
 
   <!-- Crest shortcut -->
-  <div class="floating-crest" onclick="unlockSuperForm()" title="Unlock Super Form"></div>
+  <div class="floating-crest" onclick="unlockSuperForm()" title="Bonus"></div>
 
   <!-- Blogger iframe target 
   <iframe name="hidden_iframe" style="display:none;"></iframe>
@@ -2537,12 +2623,134 @@ function submitCeremonialForm() {
 
 
 /* ===== Crest unlock shortcut (Superform) ===== */
-function unlockSuperForm() {
-  showPanel('mysteryBoxPanel');
-  const name = document.getElementById('name')?.value.trim();
-  if (name) document.getElementById('superName').value = name;
-  alert("Super-level access form unlocked.");
+/**
+ * Open a target which can be:
+ *  - a full URL (http(s):// or starting with /) -> navigates or opens new tab
+ *  - an element id or selector (e.g., "mysteryBoxPanel" or "#mysteryBoxPanel" or ".panel") -> shows the element
+ *  - a function name (e.g., "openSuperform") -> calls the function if available
+ *
+ * options:
+ *  - newTab: boolean (for URLs)
+ *  - nameField: id of an input to populate with the value from #name (optional)
+ *  - showClass: class to add when revealing an element (default "revealed")
+ *  - displayStyle: style to set when revealing an element (default "block")
+ */
+function openTarget(target, options = {}) {
+  if (!target) return console.warn('openTarget: no target provided');
+
+  const cfg = Object.assign({
+    newTab: false,
+    nameField: 'superName',
+    showClass: 'revealed',
+    displayStyle: 'block'
+  }, options);
+
+  // helper: is URL?
+  const isUrl = (t) => {
+    try {
+      // treat protocol-relative and absolute paths as URLs too
+      return /^([a-zA-Z][a-zA-Z\d+\-.]*:)?\/\//.test(t) || t.startsWith('/');
+    } catch (e) { return false; }
+  };
+
+  // helper: normalize selector/id
+  const normalize = (t) => {
+    if (t.startsWith('#') || t.startsWith('.')) return t;
+    // if it looks like an id (no spaces, no special chars), try id first
+    if (/^[\w-]+$/.test(t)) return `#${t}`;
+    return t;
+  };
+
+  // 1) If it's a URL, navigate or open new tab
+  if (isUrl(target)) {
+    if (cfg.newTab) {
+      window.open(target, '_blank', 'noopener');
+      return;
+    } else {
+      window.location.href = target;
+      return;
+    }
+  }
+
+  // 2) If a global function exists with that name, call it
+  if (typeof window[target] === 'function') {
+    try {
+      window[target]();
+      return;
+    } catch (err) {
+      console.warn('openTarget: error calling function', target, err);
+    }
+  }
+
+  // 3) Try to find an element by id or selector
+  const sel = normalize(target);
+  const el = document.querySelector(sel);
+
+  if (el) {
+    // If it's a form or panel, reveal it
+    // Prefer calling a showPanel helper if available
+    if (typeof window.showPanel === 'function') {
+      try { window.showPanel(el.id || target); } catch (e) { /* ignore */ }
+    }
+
+    // set inline display and add reveal class
+    el.style.display = cfg.displayStyle;
+    if (cfg.showClass) el.classList.add(cfg.showClass);
+
+    // focus first focusable child if present
+    const focusable = el.querySelector('input,button,select,textarea,a[href]');
+    if (focusable) focusable.focus();
+
+    // populate name field if requested
+    const nameVal = document.getElementById('name')?.value?.trim();
+    if (nameVal && cfg.nameField) {
+      const nf = document.getElementById(cfg.nameField);
+      if (nf) nf.value = nameVal;
+    }
+
+    return;
+  }
+
+  // 4) If nothing matched, try calling a "open" prefixed function (openX)
+  const tryFn = 'open' + target[0].toUpperCase() + target.slice(1);
+  if (typeof window[tryFn] === 'function') {
+    try { window[tryFn](); return; } catch (e) { console.warn('openTarget: error calling', tryFn, e); }
+  }
+
+  // 5) fallback: log and optionally navigate to a branch path if looks like one
+  if (/^(branch|form|panel)[\w-]*$/i.test(target)) {
+    // example fallback: /branches/<target>.html
+    const fallbackUrl = `/branches/${target}.html`;
+    window.location.href = fallbackUrl;
+    return;
+  }
+
+  console.warn('openTarget: could not resolve target', target);
 }
+
+/* Convenience wrapper similar to your original function */
+function unlockSuperForm(target = 'https://mrhim00.blogspot.com/2025/11/prestigestore.html', opts = {}) {
+  // populate name into a default field if present
+  const name = document.getElementById('name')?.value?.trim();
+  if (name && opts.nameField) {
+    const nf = document.getElementById(opts.nameField);
+    if (nf) nf.value = name;
+  }
+
+  // call the generic opener
+  openTarget(target, Object.assign({ nameField: opts.nameField || 'superName' }, opts));
+
+  // optional user feedback
+  if (opts.silent !== true) {
+    // use non-blocking UI feedback if available
+    if (typeof showToast === 'function') {
+      showToast('Super-level access opened.');
+    } else {
+      console.info('Super-level access opened for target:', target);
+    }
+  }
+}
+
 
 /* ===== Tap shimmer and admin mobile unlock ===== */
 let shimmerTimer;
@@ -3983,52 +4191,116 @@ function openFinalBranchSuspense() {
   }
 }
 
-  // call this after panel opens
-function emphasizeTrophyAndTier() {
-  const cube = document.getElementById('trophyCube');
-  const tierSelect = document.getElementById('tierSelect');
-  const revealBtn = document.getElementById('toFinalClearanceBtn');
-
-  // subtle cube pulse loop
-  let pulseTimer = setInterval(() => {
-    cube.classList.add('pulse');
-    setTimeout(() => cube.classList.remove('pulse'), 520);
-  }, 2400);
-
-  // when user opens dropdown, make cube react and hologram pause
-  tierSelect.addEventListener('focus', () => {
-    cube.classList.add('pulse');
-    // pause hologram if running
-    const holo = document.getElementById('tierHologram');
-    if (holo && holo._holoInterval) { clearInterval(holo._holoInterval); holo._holoInterval = null; }
-  });
-
-  tierSelect.addEventListener('blur', () => {
-    // resume hologram cycle if desired
-    // startHologramCycle({ tiers: [...], targetId: 'tierHologram', loopCount: 0, displayMs: 1200 });
-  });
-
-  // when reveal is clicked, animate cube and pedestal
-  revealBtn.addEventListener('click', () => {
-    // ceremonial reveal: quick cube lift + glow then show code
-    cube.classList.add('pulse');
-    setTimeout(() => {
-      cube.style.transform = 'translateY(-64px) rotateX(26deg) rotateY(-26deg) scale(1.06)';
-      cube.style.boxShadow = '0 0 120px rgba(212,184,106,0.22), 0 36px 80px rgba(0,0,0,0.9)';
-    }, 220);
-    setTimeout(() => {
-      // restore
-      cube.style.transform = '';
-      cube.style.boxShadow = '';
-      // show your final clearance panel or code reveal here
-      // e.g., showPanel('finalClearancePanel');
-    }, 1600);
-  });
-
-  // return a cleanup function if needed
-  return () => clearInterval(pulseTimer);
-}
-
+  
     </script>
+  
+  <script>
+// Gamified Unlock button handler — replace the previous handler with this block
+document.getElementById('finalClearanceBtn')?.addEventListener('click', () => {
+  const codeInput = document.getElementById('finalClearanceCode');
+  const status = document.getElementById('finalClearanceStatus');
+  const cube = document.querySelector('#finalClearancePanel .glowing-cube');
+  const btn = document.getElementById('finalClearanceBtn');
+  if (!codeInput || !status || !btn) return;
+
+  const code = (codeInput.value || '').trim();
+  if (!code) {
+    status.textContent = 'Enter the final clearance code.';
+    status.style.color = '#ffb3b3';
+    btn.classList.remove('success');
+    return;
+  }
+
+  // gamified button feedback: disable, pulse, staged messages
+  btn.disabled = true;
+  btn.classList.remove('success');
+  status.style.color = '#bfffd0';
+  status.textContent = 'Verifying code integrity...';
+
+  // quick visual: small press animation
+  btn.animate(
+    [{ transform: 'translateY(0)' }, { transform: 'translateY(4px) scale(0.995)' }, { transform: 'translateY(0)' }],
+    { duration: 260 }
+  );
+
+  setTimeout(() => {
+    status.textContent = 'Decrypting ceremonial seal...';
+    setTimeout(() => {
+      // demo validation
+      const ok = code.length >= 6;
+      if (ok) {
+        status.style.color = '#dfffe8';
+        status.textContent = 'Code accepted. Unlocking Superform...';
+        // cube celebration
+        if (cube) {
+          cube.classList.add('pulse');
+          setTimeout(() => cube.classList.remove('pulse'), 900);
+        }
+        // button success flash
+        btn.classList.add('success');
+        setTimeout(() => {
+          btn.disabled = false;
+          // final success message
+          status.textContent = 'Superform unlocked. Proceed to Final Clearance Qube.';
+        }, 900);
+      } else {
+        status.style.color = '#ffb3b3';
+        status.textContent = 'Invalid code. The chamber rejects the attempt.';
+        btn.disabled = false;
+      }
+    }, 900);
+  }, 700);
+});
+
+
+  // One-time tier code generation
+  document.getElementById('generateTierCodeBtn')?.addEventListener('click', () => {
+    const tier = document.getElementById('finalTier')?.value || '';
+    const out = document.getElementById('oneTimeCode');
+    if (!out) return;
+    if (!tier) {
+      out.textContent = 'Select a tier to reveal its one-time code.';
+      out.style.color = '#ffb3b3';
+      return;
+    }
+    out.style.color = '#dfffe8';
+    out.textContent = 'Generating one-time code...';
+    // simulated secure generation
+    setTimeout(() => {
+      const code = generateOneTimeCode(tier);
+      out.textContent = `${tier} • ${code}`;
+      out.setAttribute('aria-hidden', 'false');
+      // small cube pulse to celebrate
+      const cube = document.querySelector('#finalClearancePanel .glowing-cube');
+      if (cube) {
+        cube.classList.add('pulse');
+        setTimeout(() => cube.classList.remove('pulse'), 700);
+      }
+    }, 900);
+  });
+
+  // Simple one-time code generator (deterministic-ish for demo)
+  function generateOneTimeCode(tier) {
+    const seed = (tier + Date.now()).toString();
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0xffffffff;
+    const part = Math.abs(hash).toString(36).slice(0,8).toUpperCase();
+    return part.replace(/(.{4})/g, '$1-').replace(/-$/,'');
+  }
+
+  // Optional: expose a close function
+  window.closeFinalClearancePanel = function() {
+    const panel = document.getElementById('finalClearancePanel');
+    if (!panel) return;
+    panel.style.transition = 'opacity 320ms ease, transform 320ms ease';
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(8px)';
+    setTimeout(() => {
+      panel.style.display = 'none';
+      if (window._finalClearanceCleanup) window._finalClearanceCleanup();
+    }, 360);
+  };
+});
+</script>
 </body>
 </html>
