@@ -711,8 +711,223 @@
 .frost-container.finalized .ring-stack {
   filter: drop-shadow(0 20px 26px rgba(0,0,0,0.5)) saturate(1.1);
 }
+.chamber-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 12px;
+}
+
+@media (min-width: 600px) {
+  .chamber-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .chamber-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+#imgVoid {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  aspect-ratio: 3 / 2;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #0a0f1c, #1c2738);
+}
+.store-card {
+  padding: 12px;
+  border-radius: 10px;
+  background: #1e2a38;
+  color: #fff;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.store-card:active {
+  transform: scale(0.98);
+}
+.chamber-panel {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.chamber-panel.active {
+  display: block;
+  opacity: 1;
+}
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #0f172a;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+/* Hide sticky nav on tablet/desktop */
+@media (min-width: 768px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+.checkout-btn {
+  position: fixed;
+  bottom: 60px;   /* above sticky bar */
+  right: 12px;
+  background: #2ed573;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.cart-btn {
+  margin-bottom: 60px; /* lifts cart above sticky nav */
+}
+
+/* Hide on larger screens */
+@media (min-width: 768px) {
+  .checkout-btn {
+    display: none;
+  }
+}
+.user-login {
+  width: 100%;      /* default full width */
+  max-width: 400px; /* desktop size */
+  margin: 0 auto;
+}
+
+/* Mobile half size */
+@media (max-width: 480px) {
+  .user-login {
+    width: 50%;     /* half screen width */
+    margin: 0 auto;
+  }
+}
+/* Desktop checkout button */
+.checkout-btn-desktop {
+  display: inline-block;
+}
+
+/* Hide desktop checkout on mobile */
+@media (max-width: 767px) {
+  .checkout-btn-desktop {
+    display: none;
+  }
+}
+
+/* Mobile checkout button */
+.checkout-btn-mobile {
+  display: none;
+  position: fixed;
+  bottom: 60px;   /* above sticky bar */
+  right: 12px;
+  background: #2ed573;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Show mobile checkout only on small screens */
+@media (max-width: 767px) {
+  .checkout-btn-mobile {
+    display: block;
+  }
+}
+.billboard-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;       /* horizontal scroll on mobile */
+  gap: 12px;
+  scroll-snap-type: x mandatory; /* smooth snapping */
+}
+
+.billboard {
+  flex: 0 0 auto;
+  width: 240px;
+  height: 140px;
+  background: #1e2a38;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateX(40px);
+  animation: fadeSlide 0.8s ease forwards;
+  scroll-snap-align: start;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.billboard-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.billboard {
+  flex: 0 0 100%;        /* take full width of screen */
+  height: 160px;
+  background: #1e2a38;
+  border-radius: 8px;
+  scroll-snap-align: center;
+}
+
+/* On larger screens, show multiple side by side */
+@media (min-width: 768px) {
+  .billboard {
+    flex: 0 0 240px;     /* fixed size per billboard */
+    margin-right: 12px;
+  }
+}
+
 
   </style>
+<!-- Paste this entire block into the Console -->
+!-- Unified Prestige: HTML hooks, CSS, and JS (paste once before </body>) -->
+<style>
+  /* Core UI */
+  .prestige-slot-final { display:flex; flex-direction:column; gap:8px; align-items:center; padding:8px; box-sizing:border-box; min-width:220px; }
+  .prestige-buzzer { width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; background: radial-gradient(circle at 30% 30%, #ffd87a, #ffb84d 60%); box-shadow:0 8px 24px rgba(255,184,77,0.18); display:inline-flex; align-items:center; justify-content:center; font-weight:800; color:#04131f; font-size:20px; }
+  .prestige-buzzer-label-final { color:#eaf3ff; font-weight:700; font-size:0.92rem; text-align:center; margin-top:6px; }
+  .prestige-widget-final { width:100%; max-width:360px; padding:10px; border-radius:10px; background:linear-gradient(180deg,#071428,#0f2a3a); color:#eaf3ff; box-shadow:0 8px 24px rgba(0,0,0,0.35); display:flex; flex-direction:column; gap:8px; }
+  .prestige-widget-final .input { width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:inherit; box-sizing:border-box; }
+  .prestige-send { padding:8px 10px; border-radius:8px; background:linear-gradient(180deg,#ffd87a,#ffb84d); color:#04131f; font-weight:700; border:none; cursor:pointer; }
+  .prestige-send.ghost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#88ccff; }
+  .prestige-hidden { display:none !important; }
+  .prestige-small { font-size:0.88rem; color:#a8bfd6; }
+
+  /* Modal */
+  .prestige-modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:10010; width:min(720px,92%); max-width:720px; background:#071428; color:#eaf3ff; border-radius:12px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,0.6); display:none; }
+  .prestige-modal textarea { width:100%; height:160px; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:inherit; resize:vertical; box-sizing:border-box; }
+  .prestige-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
+  .prestige-btn { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+  .prestige-btn.primary { background:linear-gradient(180deg,#ffd87a,#ffb84d); color:#04131f; }
+  .prestige-btn.ghost { background:transparent; color:#88ccff; border:1px solid rgba(136,204,255,0.12); }
+
+  /* Positioning helper (keeps your manual inline --x/--y) */
+  .prestige-buzzer.center-over-tap { display:inline-block; transform: translateX(var(--x, 0px)) translateY(var(--y, 0px)); transition: transform .12s ease; z-index:9999; will-change: transform; }
+</style>
 </head>
 <body>
   <div class="wrap">
@@ -975,14 +1190,20 @@
         <div class="store-panel">
           <h4>Rewards</h4>
           <div class="product-grid">
-            <div class="product-card">
-              <div class="product-title">Quest Badge</div>
-              <div class="price">Cost: 5 symbolic tokens</div>
-              <div class="status pending">Pending verification</div>
-            </div>
+            <div class="product-card" onclick="addToCart('Quest Badge', 20, 5, 'hybrid')">
+  <div class="product-icon Quest-Badge"></div>
+  <div class="product-meta">
+    <div class="product-title">Quest Badge</div>
+    <div class="product-cost">💰 20 purchased tokens</div>
+    <div class="product-cost">♦️ 5 symbolic crystals</div>
+    <div class="product-status pending">Pending Verification</div>
+  </div>
+  <div class="product-action">Click to add to cart</div>
+</div>
             <div class="product-card">
               <div class="product-title">Mini‑game Medal</div>
               <div class="price">Cost: 8 symbolic tokens</div>
+               <div class="price">Earns: 3 symbolic</div>
               <div class="status pending">Pending verification</div>
             </div>
             <div class="product-card">
@@ -990,6 +1211,23 @@
               <div class="price">Cost: 10 symbolic tokens</div>
               <div class="status pending">Pending verification</div>
             </div>
+            <div class="product-card" data-task-id="habit-drink-water" data-type="habit" data-symbolic-reward="3" data-token-reward="1" data-habit-cooldown-ms="43200000">
+  <div class="product-title">Drink Water</div>
+  <div class="product-desc">Drink 8oz of water</div>
+  <div class="price">Earns: 3 symbolic</div>
+  <div class="status pending">Pending verification</div>
+</div>
+
+
+<div class="product-card" data-task-id="task-declutter" data-type="task" data-token-reward="8">
+  <div class="product-title">Declutter Desk</div>
+</div>
+
+<div class="product-card" data-task-id="job-volunteer" data-type="job" data-token-reward="0">
+  <div class="product-title">Volunteer Role</div>
+</div>
+
+
           </div>
         </div>
       </div>
@@ -1034,7 +1272,7 @@
           <div class="info-img" aria-hidden="true"></div>
           <h4>✝️ Faith Chamber</h4>
           <p>Spiritual‑only; submit prayer requests—no tokens are used here.</p>
-          <div class="verse">“Be kind to one another, tenderhearted.” — Ephesians 4:32</div>
+          <div class="verse">Be kind to one another tenderhearted — Ephesians 4:32</div>
         </div>
         <div class="store-panel">
           <h4>Prayer submission</h4>
@@ -1052,7 +1290,7 @@
           
 <!-- Cart Chamber -->
 <section id="checkoutPanel" class="chamber frost" >
-  
+  <button class="checkout-btn">Checkout</button>
   <div class="chamber-grid">
     
     <!-- LEFT: Receipt viewer -->
@@ -1061,43 +1299,115 @@
       <h4>🧾 Receipt Viewer</h4>
       <p>Finalized purchases glow gold. Pending shimmer silver until ledger confirmation.</p>
       <div id="receiptTotal">Total: 0 🪙 + 0 ♦ </div>
-    </div>
+      </div>
+    
+    
 
     <!-- RIGHT: Cart list -->
     <div class="store-panel">
       <h4>Cart & Checkout</h4>
       <div id="cartList" class="cart-list"></div>
       <button class="btn ghost-btn" onclick="emptyCart()">Empty Cart</button>
-
+<br><br>
       <button class="btn finalize-btn" onclick="finalizeCart()">Finalize Purchases</button>
-    </div><button id="handoffBtn" class="btn">Send to Ledger</button><br>
+      <br><br>
+    <button id="handoffBtn" class="btn">Send to Ledger</button><br></div>
  <!-- Payment rails and ritual flow -->
          <div class="checkout">
-  <div class="rail">
+  
+            
+  <!-- HTML hooks (keep these where you already placed them) -->
+<div class="prestige-slot-final" data-for-cod="true" id="prestigeSlotFinal">
+  <div class="prestige-buzzer-wrap">
+    <button class="prestige-buzzer center-over-tap" id="prestigeBuzzer" aria-label="Hail Prestige" title="Hail Prestige" style="--x:76px; --y:-10px">🔔</button>
+    <div class="prestige-buzzer-label-final">Need help? Tap the buzzer</div>
+  </div>
+
+  <div class="prestige-widget-final prestige-hidden" id="prestigeWidgetFinal">
+    <div style="font-weight:800">Hail Prestige — Prefilled</div>
+    <div class="row" style="margin-top:6px">
+      <input id="pfName" class="input" placeholder="Your name (optional)" />
+    </div>
+    <div class="row">
+      <input id="pfPhone" class="input" placeholder="Phone (optional)" />
+    </div>
+    <div>
+      <input id="pfIssue" class="input" placeholder="Short issue description (optional)" />
+    </div>
+    <div class="prestige-small">You will confirm creation of a one‑time Jitsi room; Prestige members may take 15–30 minutes to respond.</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="pfSendSms" class="send prestige-send">SMS</button>
+      <button id="pfSendEmail" class="send prestige-send ghost">Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden staff reply and modal/confirm (kept once in DOM) -->
+<textarea id="prestigeHiddenStaffReply" style="display:none"></textarea>
+
+<div class="prestige-modal" id="prestigeModal" aria-hidden="true">
+  <div style="font-weight:800;margin-bottom:8px">Prefilled SMS text</div>
+  <textarea id="prestigeSmsText" readonly></textarea>
+  <div class="prestige-actions">
+    <button id="copySms" class="prestige-btn ghost">Copy SMS</button>
+    <button id="modalSendEmail" class="prestige-btn primary">Send Email</button>
+    <button id="closeModal" class="prestige-btn ghost">Close</button>
+  </div>
+</div>
+
+<div class="prestige-confirm" id="prestigeConfirm" style="display:none" aria-hidden="true">
+  <div style="font-weight:800;margin-bottom:8px">Create one‑time Jitsi room?</div>
+  <div class="prestige-small" style="margin-bottom:12px">This will create a one‑time Jitsi room and notify Prestige members by phone/email. Proceed?</div>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button id="confirmCancel" class="prestige-btn ghost">Cancel</button>
+    <button id="confirmProceed" class="prestige-btn primary">Proceed</button>
+  </div>
+</div>
+           
+           
+</div>
+    <br>
+    <div class="rail">
     <div class="emblem-sigil prestige-pay"></div>
     <strong>Prestige Pay</strong>
     <p>Friendly flow. Finalization confirmed by ledger glow. Requires ceremonial desk approval.</p>
   </div>
+   
   <div class="rail">
     <div class="emblem-sigil cod"></div>
     <strong>Cash on Delivery</strong>
     <p>Verified post-receipt. Status shimmer appears after member confirmation.</p>
   </div>
+    <br>
   <div class="rail">
     <div class="emblem-sigil money-order"></div>
     <strong>Money Order</strong>
     <p>Accepted with pacing. Ledger updates once received and verified.</p>
   </div>
   <div class="rail">
-    <div class="emblem-sigil checkout-cart"></div>
+    <div class="emblem-sigil chckout-cart"></div>
     <strong>Checkout Cart</strong>
     <p>View all pending purchases. Shimmer silver until finalized by Prestige member.</p>
   </div>
-</div>
   </div>
 </section>
       
-      
+     
+    
+          
+          
+    <form id="loveform" style="display:none" method="POST" target="hidden_iframe" action="">
+  <textarea id="loveform_items_list" name="items_list"></textarea>
+  <textarea id="loveform_receipt_text" name="receipt_text"></textarea>
+  <input type="hidden" id="loveform_items_json" name="items_json" value="" />
+  <input type="hidden" id="loveform_username" name="username" value="" />
+  <input type="hidden" id="loveform_email" name="email" value="" />
+  <input type="hidden" id="loveform_accessCode" name="accessCode" value="" />
+</form>
+
+<iframe name="hidden_iframe" style="display:none" aria-hidden="true"></iframe>
+
+
       
       
       
@@ -1143,6 +1453,13 @@
 
  
       
+<nav class="mobile-nav">
+  <button onclick="showPanel('commerce')">Commerce</button>
+  <button onclick="showPanel('gamified')">Gamified</button>
+  <button onclick="showPanel('community')">Community</button>
+  <button onclick="showPanel('faith')">Faith</button>
+</nav>
+
 
 
 
@@ -1163,11 +1480,27 @@
 
     // Verse rotation every 30s (placeholder-ready for live JSON)
     const verses = [
-      "“Let all that you do be done in love.” — 1 Corinthians 16:14",
-      "“Be kind to one another, tenderhearted” — Ephesians 4:32",
-      "“Walk by faith not by sight” — 2 Corinthians 5:7",
-      "“The Lord is my shepherd I shall not want” — Psalm 23:1"
-    ];
+  "Let all that you do be done in love ~ 1 Corinthians 16:14",
+  "Be kind to one another ~ tenderhearted ~ Ephesians 4:32",
+  "Walk by faith not by sight ~ 2 Corinthians 5:7",
+  "The Lord is my shepherd I shall not want ~ Psalm 23:1",
+  "I can do all things through Christ who strengthens me ~ Philippians 4:13",
+  "Trust in the Lord with all your heart ~ Proverbs 3:5",
+  "Do not be anxious about anything ~ Philippians 4:6",
+  "Love your neighbor as yourself ~ Matthew 22:39",
+  "Rejoice always ~ pray without ceasing ~ 1 Thessalonians 5:16-17",
+  "The joy of the Lord is your strength ~ Nehemiah 8:10",
+  "Create in me a clean heart ~ Psalm 51:10",
+  "Blessed are the peacemakers ~ Matthew 5:9",
+  "Your word is a lamp to my feet ~ Psalm 119:105",
+  "He has made everything beautiful in its time ~ Ecclesiastes 3:11",
+  "Be still and know that I am God ~ Psalm 46:10",
+  "Let your light shine before others ~ Matthew 5:16",
+  "Cast all your cares on Him ~ 1 Peter 5:7",
+  "The Lord is my strength and my shield ~ Psalm 28:7",
+  "In everything give thanks ~ 1 Thessalonians 5:18",
+  "The steadfast love of the Lord never ceases ~ Lamentations 3:22"
+];
     let v = 0;
     setInterval(() => {
       v = (v + 1) % verses.length;
@@ -1177,11 +1510,29 @@
 
     // Reflection rotation every 45s
     const reflections = [
-      "Where can you slow down and show care?",
-      "Does this purchase align with your values right now?",
-      "Would gifting this bring someone meaningful joy?",
-      "What patience do you want to practice today?"
-    ];
+  "Where can you slow down and show care?",
+  "Does this purchase align with your values right now?",
+  "Would gifting this bring someone meaningful joy?",
+  "What patience do you want to practice today?",
+  "What effort today felt honest and steady? ~",
+  "Who have you checked in on this week? ~",
+  "Is there a small kindness you’ve overlooked? ~",
+  "What are you grateful for in this moment? ~",
+  "What intention do you want to carry forward? ~",
+  "Where did you feel most present today? ~",
+  "What would generosity look like right now? ~",
+  "Is there someone who needs your quiet support? ~",
+  "What part of your day felt sacred? ~",
+  "What are you resisting that might deserve grace? ~",
+  "How can you honor your limits with kindness? ~",
+  "What gesture could restore someone’s peace? ~",
+  "Where did you notice beauty today? ~",
+  "What truth are you ready to speak gently? ~",
+  "What does integrity look like in this moment? ~",
+  "How can you soften your pace without losing purpose? ~",
+  "What would it mean to lead with compassion today? ~"
+];
+
     setInterval(() => {
       const idx = Math.floor(Math.random() * reflections.length);
       const el = document.getElementById('reflectionBox');
@@ -1190,11 +1541,30 @@
 
     // Community ad placeholder rotation every 6 hours
     const ads = [
-      "Neighbors Helping Neighbors — pledge board updates at dusk.",
-      "Community Crest Night — shared table, shared honor.",
-      "Volunteer Circle — add your hour, lift someone’s week.",
-      "Quiet Generosity — small acts, steady light."
-    ];
+  "Neighbors Helping Neighbors ~ pledge board updates at dusk.",
+  "Community Crest Night ~ shared table, shared honor.",
+  "Volunteer Circle ~ add your hour, lift someone’s week.",
+  "Quiet Generosity ~ small acts, steady light.",
+  "Token Harvest ~ every kindness counts toward the collective bloom.",
+  "Prestige Pledge Hour ~ log your vow, light the chamber.",
+  "Shared Lantern Walk ~ one step, one glow, one bond.",
+  "Kindness Ledger ~ record your ripple, honor the wave.",
+  "Crest Exchange ~ trade tokens for warmth and witness.",
+  "Silent Sigil Drop ~ anonymous gifts, visible impact.",
+  "Unity Scroll ~ sign your name, seal the moment.",
+  "Generosity Pulse ~ chamber lights shift with each act.",
+  "Echo Chamber ~ your kindness echoes through the grid.",
+  "Prestige Pantry ~ contribute quietly, receive openly.",
+  "Civic Bloom ~ every gesture grows the shared garden.",
+  "Token Tribute ~ honor someone with symbolic light.",
+  "Community Weave ~ threads of care form the tapestry.",
+  "Midnight Offering ~ late pledges shimmer with extra grace.",
+  "Shared Ember ~ one spark passed, many warmed.",
+  "Crest Reflection ~ review your impact, renew your vow.",
+  "Kindness Relay ~ pass the gesture, extend the glow.",
+  "Prestige Beacon ~ top contributors light the chamber crest."
+];
+
     setInterval(() => {
       const idx = Math.floor(Math.random() * ads.length);
       const el = document.getElementById('communityAd');
@@ -1238,7 +1608,7 @@
 
     // Initial hash activation if present
     (function initFromHash(){
-      const id = (location.hash || '').replace('#','');
+      const id = (location.hash || '').replace('','');
       if (['commerce','gamified','community','faith','checkoutPanel'].includes(id)) showChamber(id);
     })();
     
@@ -1390,10 +1760,12 @@ function finalizeCart(){
     viewer.className = 'info-img shimmer';
     viewer.innerHTML = `<div class="receipt-confirm">🧾 Submitted • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴><br>Awaiting Prestige verification</div>`;
   }
+(document.getElementById('confirmFinalizeBtn')||document.querySelector('.finalize-btn')||document.querySelector('[data-finalize-btn]')||document.querySelector('button.finalize-btn')).addEventListener('click', ()=>window.promptAndConsumeAccessCode());
 
   document.querySelectorAll('.cart-item').forEach(item => {
     item.classList.add('shimmer');
     item.classList.remove('finalized');
+    
     const s = item.querySelector('.cart-status');
     if (s) s.textContent = 'Pending • Awaiting Prestige verification';
   });
@@ -1449,7 +1821,7 @@ function revealNextCommunity(){
   if (!box) return;
   const el = document.createElement("div");
   el.className = "feed-item fadeSlide"; // fade-in refinement
-  el.textContent = `🤝 ${r[0]} — ${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}`;
+  el.textContent = `🤝 ${r[0]}  ${r[1]} ${r[2] ? "(" + r[2] + ")" : ""}`;
   box.prepend(el);
   // keep last 6 visible
   while (box.children.length > 6) box.removeChild(box.lastChild);
@@ -1582,7 +1954,6 @@ const SHEET_ID = "2PACX-1vQ4o3D2FZ3wrqNxhsgv9shjeulUmqb5Uo0hhJK7axuEpUNPxEk7bgmr
 const GID = "0"; // replace with your tab's gid
 
 // --- Fetch live registry from gviz JSON ---
-// --- Fetch live registry from Google Sheets (gviz JSON) ---
 async function fetchRegistry(){
   const res = await fetch("https://docs.google.com/spreadsheets/d/1eskbyxg5KOvTyOb68_Zdt5W1YeyfOuvBABqnMBN79xM/gviz/tq?tqx=out:json&gid=0");
   const text = await res.text();
@@ -1600,6 +1971,45 @@ async function fetchRegistry(){
       transaction: r.c[5]?.v ?? "",
       status:      r.c[6]?.v ?? "Pending"
     }));
+}
+
+// --- Cart sync helper (use the user object from the sheet) ---
+function syncCartFromUser(u, opts = { resetCartCountOnLogin: false }){
+  if(!u) return;
+  // ensure session identity is set
+  sessionStorage.setItem('activeAccountId', u.accessCode || u.card || u.user);
+  window.currentUserId = sessionStorage.getItem('activeAccountId');
+
+  // header counters
+  const purchasedEl = document.getElementById('purchasedCount');
+  const symbolicEl  = document.getElementById('symbolicCount');
+  if(purchasedEl) purchasedEl.textContent = Number(u.purchased || 0);
+  if(symbolicEl)  symbolicEl.textContent  = Number(u.symbolic || 0);
+
+  // floating cart / checkout balance rows
+  document.querySelectorAll('.floating-cart, .checkout-cart').forEach(container => {
+    let row = container.querySelector('.cart-balance-row');
+    if(!row){
+      row = document.createElement('div');
+      row.className = 'cart-balance-row';
+      row.style.marginTop = '6px';
+      row.style.fontSize = '0.95rem';
+      row.style.color = 'var(--muted)';
+      row.style.display = 'flex';
+      row.style.gap = '10px';
+      container.appendChild(row);
+    }
+    row.innerHTML = `<div><strong>Purchased</strong>: <span class="cart-bal-tokens">${Number(u.purchased||0)}</span></div>
+                     <div><strong>Symbolic</strong>: <span class="cart-bal-symbolic">${Number(u.symbolic||0)}</span></div>`;
+  });
+
+  // optional: reset cart item counters on login
+  if(opts.resetCartCountOnLogin){
+    const cartCount = document.getElementById('cartCount');
+    const floatBadge = document.getElementById('floatingCartCount');
+    if(cartCount) cartCount.textContent = '0';
+    if(floatBadge) floatBadge.textContent = '0';
+  }
 }
 
 // --- Validate login against live sheet ---
@@ -1625,13 +2035,15 @@ async function loginUser(e){
     document.getElementById("userDirectory")?.classList.add("active");
     document.getElementById("loginPanel")?.classList.remove("active");
 
-    renderUserCard(); // pulls live from sheet
+    // render user card and sync cart immediately
+    await renderUserCard(); // pulls live from sheet and updates DOM
+    // ensure cart mirrors the same user object (reset cart count on login)
+    syncCartFromUser(match, { resetCartCountOnLogin: true });
   } else {
     statusEl.textContent = "✗ INVALID USERNAME OR ACCESS CODE";
     statusEl.className = "status pending";
   }
 }
-
 
 // --- Lookup user by access code (from live feed) ---
 async function getUserByAccessCode(code){
@@ -1652,7 +2064,7 @@ async function renderUserCard(){
   if (!grid) return;
 
   grid.innerHTML = `
-    <div class="user-card frost">
+    <div class="user-card frost" data-user-id="${u.accessCode || u.card || u.user}">
       <div class="crest-avatar"></div>
       <div class="user-meta">
         <div class="account-name">${u.user}</div>
@@ -1669,6 +2081,9 @@ async function renderUserCard(){
   const symbolicEl  = document.getElementById("symbolicCount");
   if (purchasedEl) purchasedEl.textContent = u.purchased;
   if (symbolicEl)  symbolicEl.textContent  = u.symbolic;
+
+  // Sync cart and floating UI to match this user immediately
+  syncCartFromUser(u, { resetCartCountOnLogin: false });
 }
 
 // --- Render full ledger table ---
@@ -1693,7 +2108,6 @@ async function renderLedger(){
   `;
 }
 
-
 // --- Wiring ---
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loginBtn")?.addEventListener("click", loginUser);
@@ -1708,6 +2122,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("userDirectory")?.classList.remove("active");
     document.getElementById("loginPanel")?.classList.add("active");
     renderLedger();
+    // clear header/cart balances on logout
+    const purchasedEl = document.getElementById("purchasedCount");
+    const symbolicEl  = document.getElementById("symbolicCount");
+    if (purchasedEl) purchasedEl.textContent = '0';
+    if (symbolicEl)  symbolicEl.textContent  = '0';
+    const cartCount = document.getElementById('cartCount');
+    const floatBadge = document.getElementById('floatingCartCount');
+    if(cartCount) cartCount.textContent = '0';
+    if(floatBadge) floatBadge.textContent = '0';
+    // clear floating cart balance rows
+    document.querySelectorAll('.cart-balance-row').forEach(r => r.remove());
   });
 });
 
@@ -1716,6 +2141,12 @@ window.onload = () => {
   renderLedger();
   const loginPanel = document.getElementById("loginPanel");
   if (loginPanel) loginPanel.classList.add("active", "frost");
+
+  // If session exists, sync cart from that user on page load
+  const code = sessionStorage.getItem('accessCode');
+  if (code) {
+    getUserByAccessCode(code).then(u => { if(u) syncCartFromUser(u, { resetCartCountOnLogin: false }); });
+  }
 };
 
 // --- Polling: refresh every 15s ---
@@ -1723,10 +2154,20 @@ setInterval(() => {
   renderLedger();
   renderUserCard();
 }, 15000);
-  status.classList.remove('pending');
-status.classList.add('finalized');
-status.textContent = '✅ Finalized in Prestige Ledger';
-        
+
+// Safety: ensure status element updates (defensive)
+try {
+  const status = document.getElementById('loginStatus');
+  if (status) {
+    status.classList.remove('pending');
+    status.classList.add('finalized');
+    status.textContent = '✅ Finalized in Prestige Ledger';
+  }
+} catch(e){ /* ignore if not present */ }
+          
+          
+   
+          
 </script>
 
 
@@ -1822,7 +2263,826 @@ function applyFinalizedState(){
     stack.style.animation = 'floatY 4.2s ease-in-out infinite, slowSpin 14s linear infinite';
   });
 })();
+function showPanel(panelId) {
+  document.querySelectorAll('.chamber-panel').forEach(p => {
+    p.classList.remove('active');
+  });
+  document.getElementById(panelId).classList.add('active');
+}
+document.querySelectorAll('.billboard').forEach((bb, i) => {
+  bb.style.animationDelay = `${i * 0.2}s`; // stagger each billboard
+});
 
 </script>
+
+<script>
+/* Populate hidden username/email from directory card into #loveform fields */
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('loveform');
+  if (!form) return;
+
+  // Try common directory selectors; prefer data attributes if present
+  const dirCard = document.querySelector('#userDirectory .user.active') || document.querySelector('#userDirectory .user') || document.querySelector('#userDirectory');
+  let name = '', email = '';
+
+  if (dirCard) {
+    name = dirCard.getAttribute('data-username') || dirCard.querySelector('.account-name')?.textContent?.trim() || dirCard.querySelector('.user-name')?.textContent?.trim() || '';
+    email = dirCard.getAttribute('data-email') || dirCard.querySelector('.account-email')?.textContent?.trim() || '';
+  }
+
+  // Fallbacks: sessionStorage or login input
+  if (!name) name = sessionStorage.getItem('username') || document.getElementById('loginUser')?.value || '';
+  if (!email) email = sessionStorage.getItem('userEmail') || '';
+
+  // Write into hidden form fields
+  const u = document.getElementById('loveform_username');
+  const e = document.getElementById('loveform_email');
+  if (u) u.value = name;
+  if (e) e.value = email;
+});
+</script>
+
+<script>
+
+/* Robust prompt-and-consume helper
+   - Exposes: setOneTimeAccessCode(code), addOneTimeCode(code), promptAndConsumeAccessCode()
+   - Reads/writes obf at static_one_time_obf and keeps an internal records array
+   - Auto-attaches to confirm buttons and always prompts when triggered
+*/
+(function(){
+  const KEY_OBF = 'static_one_time_obf';
+  const KEY_RECORDS = 'static_one_time_records_simple';
+  const KEY_USED = 'static_one_time_used_simple';
+  const VALID_MS = 24 * 60 * 60 * 1000;
+
+  // small safety so reloading this script won't double-attach
+  if(window.__oneTimeHelperLoaded) return;
+  window.__oneTimeHelperLoaded = true;
+
+  // --- crypto helper
+  async function sha256Hex(text){
+    const enc = new TextEncoder().encode(String(text));
+    const d = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(d)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // --- obf helpers (same scheme you used)
+  function b64(s){ return btoa(s); }
+  function unb64(s){ try { return atob(s); } catch(e){ return null; } }
+  function obfFromHashes(hashes){
+    return hashes.map(h=>{
+      const chunks = (h.match(/.{1,8}/g) || []);
+      return b64(chunks.reverse().join(''));
+    }).join('|');
+  }
+  function hashesFromObf(payload){
+    if(!payload) return [];
+    return payload.split('|').map(p=>{
+      const rev = unb64(p);
+      if(!rev) return null;
+      const chunks = rev.match(/.{1,8}/g) || [];
+      return chunks.reverse().join('');
+    }).filter(Boolean);
+  }
+
+  // --- storage helpers
+  function loadRecords(){
+    try { return JSON.parse(localStorage.getItem(KEY_RECORDS) || '[]'); } catch(e){ return []; }
+  }
+  function saveRecords(arr){
+    localStorage.setItem(KEY_RECORDS, JSON.stringify(arr || []));
+    // keep obf in sync for portability
+    const raw = (arr || []).filter(r => !r.usedAt).map(r => r.hash);
+    localStorage.setItem(KEY_OBF, raw.length ? obfFromHashes(raw) : '');
+  }
+  function loadUsed(){ try { return JSON.parse(localStorage.getItem(KEY_USED) || '[]'); } catch(e){ return []; } }
+  function saveUsed(arr){ localStorage.setItem(KEY_USED, JSON.stringify(arr || [])); }
+
+  // hydrate from obf if records empty
+  (function hydrate(){
+    const recs = loadRecords();
+    if(recs.length) return;
+    const obf = localStorage.getItem(KEY_OBF) || '';
+    if(!obf) return;
+    const raw = hashesFromObf(obf);
+    const now = new Date().toISOString();
+    const records = raw.map(h => ({ hash: h, createdAt: now }));
+    saveRecords(records);
+  })();
+
+  // watch for external updates to static_one_time_obf and merge in new hashes
+  let lastObf = localStorage.getItem(KEY_OBF) || '';
+  setInterval(()=>{
+    const obf = localStorage.getItem(KEY_OBF) || '';
+    if(obf && obf !== lastObf){
+      lastObf = obf;
+      const raw = hashesFromObf(obf);
+      const recs = loadRecords();
+      const existing = new Set(recs.map(r=>r.hash.toLowerCase()));
+      const now = new Date().toISOString();
+      raw.forEach(h => { if(!existing.has(h.toLowerCase())) recs.push({ hash: h, createdAt: now }); });
+      saveRecords(recs);
+      console.info('One-time helper merged new obf payload into records');
+    }
+  }, 1200);
+
+  // --- admin helpers
+  async function setOneTimeAccessCode(code){
+    if(!code || typeof code !== 'string') return console.warn('Provide a string code');
+    const h = await sha256Hex(code);
+    const recs = loadRecords().filter(r => r.hash !== h);
+    recs.unshift({ hash: h, createdAt: new Date().toISOString() });
+    saveRecords(recs);
+    // clear used for this hash
+    const used = loadUsed().filter(u => u !== h);
+    saveUsed(used);
+    console.info('One-time access code set (hash stored).');
+    return h;
+  }
+  async function addOneTimeCode(code){
+    if(!code || typeof code !== 'string') return console.warn('Provide a string code');
+    const h = await sha256Hex(code);
+    const recs = loadRecords();
+    if(recs.some(r=>r.hash.toLowerCase()===h.toLowerCase())) return console.warn('Code already present');
+    recs.push({ hash: h, createdAt: new Date().toISOString() });
+    saveRecords(recs);
+    console.info('Added one-time code (hash stored).');
+    return h;
+  }
+  window.setOneTimeAccessCode = setOneTimeAccessCode;
+  window.addOneTimeCode = addOneTimeCode;
+
+  // --- verify and consume
+  function isExpired(rec){
+    try { return (Date.now() - new Date(rec.createdAt).getTime()) > VALID_MS; } catch(e){ return true; }
+  }
+  async function verifyAndConsume(code){
+    const hash = await sha256Hex(code);
+    const recs = loadRecords();
+    const idx = recs.findIndex(r => r.hash.toLowerCase() === hash.toLowerCase());
+    if(idx === -1) return { ok:false, reason:'no-match' };
+    const rec = recs[idx];
+    if(rec.usedAt) return { ok:false, reason:'used' };
+    if(isExpired(rec)) return { ok:false, reason:'expired' };
+    rec.usedAt = new Date().toISOString();
+    recs[idx] = rec;
+    saveRecords(recs);
+    const used = loadUsed();
+    if(!used.includes(rec.hash)) used.push(rec.hash);
+    saveUsed(used);
+    // update obf to remove consumed hashes
+    const remaining = recs.filter(r=>!r.usedAt).map(r=>r.hash);
+    localStorage.setItem(KEY_OBF, remaining.length ? obfFromHashes(remaining) : '');
+    return { ok:true, record: rec };
+  }
+
+  // --- UI finalize helper (minimal)
+  function applyFinalizedUI(){
+    try {
+      document.querySelectorAll('.status.pending').forEach(el=>{ el.classList.remove('pending'); el.classList.add('finalized'); el.textContent = 'Finalized'; });
+      document.querySelectorAll('.shimmer, .cart-item').forEach(el=>{ el.classList.remove('shimmer'); el.classList.add('finalized'); });
+      document.querySelectorAll('.counter.silver').forEach(el=>{ el.classList.remove('silver'); el.classList.add('gold'); });
+      document.querySelectorAll('.frost-container').forEach(el=>el.classList.add('finalized'));
+    } catch(e){ console.error('applyFinalizedUI error', e); }
+  }
+  window.applyFinalizedUI = applyFinalizedUI;
+
+  // --- prompt wrapper (exposed exactly as older version)
+  if(!window.promptAndConsumeAccessCode){
+    window.promptAndConsumeAccessCode = async function(finalizeCallback){
+      // prevent double prompts
+      if(window.__oneTimePromptActive) return false;
+      window.__oneTimePromptActive = true;
+      try {
+        const code = prompt('Enter one-time finalize access code');
+        if(code === null){ window.__oneTimePromptActive = false; return false; }
+        if(!code){ alert('No code entered'); window.__oneTimePromptActive = false; return false; }
+        const res = await verifyAndConsume(code);
+        if(!res.ok){
+          if(res.reason === 'no-match') alert('Access code invalid');
+          else if(res.reason === 'used') alert('Code already used');
+          else if(res.reason === 'expired') alert('Code expired (24h)');
+          else alert('Access code invalid or not available');
+          window.__oneTimePromptActive = false;
+          return false;
+        }
+        // finalize action
+        try {
+          if(typeof finalizeCallback === 'function') finalizeCallback();
+          else if(typeof window.adminFinalizeAll === 'function') window.adminFinalizeAll();
+          else if(typeof window.activateAllFinalized === 'function') window.activateAllFinalized();
+          else {
+            // fallback: mark local accounts finalized
+            try {
+              const KEY_ACCOUNTS = 'static_accounts_registry';
+              const accounts = JSON.parse(localStorage.getItem(KEY_ACCOUNTS) || '{}');
+              Object.keys(accounts).forEach(k => accounts[k].status = 'Finalized');
+              localStorage.setItem(KEY_ACCOUNTS, JSON.stringify(accounts));
+            } catch(e){}
+          }
+          applyFinalizedUI();
+          alert('Access accepted — finalized applied');
+          window.__oneTimePromptActive = false;
+          return true;
+        } catch(e){
+          console.error('finalize callback error', e);
+          alert('Finalization failed; check console');
+          window.__oneTimePromptActive = false;
+          return false;
+        }
+      } catch(e){
+        console.error('promptAndConsumeAccessCode error', e);
+        window.__oneTimePromptActive = false;
+        return false;
+      }
+    };
+  }
+
+  // --- attach to confirm buttons (ensures prompt shows)
+  function attachConfirm(){
+    const selectors = ['#confirmFinalizeBtn','#confirmBtn','.confirm-btn','[data-confirm]'];
+    selectors.forEach(sel=>{
+      const el = document.querySelector(sel);
+      if(el && !el.__oneTimeAttached){
+        el.addEventListener('click', function(ev){
+          ev.preventDefault();
+          // always call promptAndConsumeAccessCode so prompt appears
+          window.promptAndConsumeAccessCode().then(accepted=>{
+            if(accepted){
+              const form = el.closest('form');
+              if(form) form.submit();
+            }
+          });
+        });
+        el.__oneTimeAttached = true;
+      }
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attachConfirm);
+  else attachConfirm();
+
+  // expose verify helper for debugging
+  window.verifyAndConsumeOneTime = verifyAndConsume;
+
+  // info
+  console.info('One-time helper loaded. Use setOneTimeAccessCode(code), addOneTimeCode(code), promptAndConsumeAccessCode().');
+})();
+  
+  // Patch to prevent multiple prompts after acceptance
+(function(){
+  const SELECTORS = ['#confirmFinalizeBtn','#confirmBtn','.confirm-btn','[data-confirm]'];
+  // cooldown in ms after a successful accept to ignore extra clicks
+  const COOLDOWN_MS = 1200;
+
+  // ensure single delegated listener
+  if(!window.__oneTimeDelegatedListenerInstalled){
+    document.addEventListener('click', function delegatedOneTimeHandler(ev){
+      try {
+        // find nearest confirm element
+        const el = ev.target.closest(SELECTORS.join(','));
+        if(!el) return; // not a confirm click
+        // prevent default only for matched confirm elements
+        ev.preventDefault();
+
+        // global reentrancy guard used by your verifier
+        if(window.__oneTimePromptActive) return;
+
+        // short cooldown guard to avoid multiple rapid triggers
+        const last = window.__oneTimeLastTrigger || 0;
+        if(Date.now() - last < COOLDOWN_MS) return;
+        window.__oneTimeLastTrigger = Date.now();
+
+        // call the existing prompt function once
+        // if your page uses promptAndConsumeAccessCode, call that; otherwise call the fallback
+        const fn = window.promptAndConsumeAccessCode || window.promptAndVerifyThenFinalize || window.verifyAndConsumeOneTime;
+        if(typeof fn === 'function'){
+          // call and ignore repeated resolves; the function itself prevents reentry
+          fn().catch(()=>{/* ignore errors */});
+        } else {
+          // fallback: show prompt and call verify helper if available
+          (async function(){
+            const code = prompt('Enter one-time finalize access code');
+            if(!code) return;
+            if(typeof window.verifyAndConsumeOneTime === 'function'){
+              const res = await window.verifyAndConsumeOneTime(code);
+              if(res && res.ok){
+                if(typeof window.applyFinalizedUI === 'function') window.applyFinalizedUI();
+                alert('Access accepted — finalized applied');
+              } else {
+                alert('Access code invalid or already used');
+              }
+            } else {
+              alert('Verifier not available');
+            }
+          })();
+        }
+      } catch(e){
+        console.error('delegatedOneTimeHandler error', e);
+      }
+    }, { capture: false, passive: false });
+
+    window.__oneTimeDelegatedListenerInstalled = true;
+    console.info('One-time delegated confirm handler installed');
+  } else {
+    console.info('Delegated handler already installed');
+  }
+})();
+
+</script><script>
+
+// Cart-scoped markItemsGold — finalizes only items inside cart containers
+(function(){
+  if(window.__markItemsGoldCartScoped) return;
+  window.__markItemsGoldCartScoped = true;
+
+  // update this list to match your cart container(s)
+  const CART_CONTAINERS = ['#checkoutPanel', '.checkout-cart', '.cart-list', '#cartPanel', '.floating-cart'];
+
+  function _applyGoldToCartItem(el){
+    if(!el || el.__goldAppliedCart) return;
+    el.__goldAppliedCart = true;
+    // only change classes/text inside the cart item
+    el.classList.remove('pending','shimmer','status-pend');
+    el.classList.add('finalized','gold');
+    const status = el.querySelector('.status, .product-status, .badge');
+    if(status) status.textContent = 'Verified';
+    // counters inside card
+    el.querySelectorAll('.counter, .price, .product-status').forEach(c=>{
+      c.classList.remove('silver');
+      c.classList.add('gold');
+    });
+    // visual tweak limited to this element
+    try { el.style.boxShadow = el.style.boxShadow || '0 0 12px rgba(255,216,122,0.28)'; } catch(e){}
+  }
+
+  function markItemsGoldInCart(){
+    const containers = CART_CONTAINERS.map(s => document.querySelector(s)).filter(Boolean);
+    if(!containers.length) { console.info('markItemsGoldInCart: no cart containers found'); return false; }
+    const nodes = new Set();
+    containers.forEach(c => c.querySelectorAll('.cart-item, .cart-item.pending, .product-card').forEach(n => nodes.add(n)));
+    if(!nodes.size) { console.info('markItemsGoldInCart: no cart items found'); return false; }
+    nodes.forEach(_applyGoldToCartItem);
+    console.info('markItemsGoldInCart: finalized', nodes.size, 'cart item(s).');
+    return true;
+  }
+
+  // expose
+  window.markItemsGoldInCart = markItemsGoldInCart;
+
+  // auto-hook after verification (safe: only calls cart-scoped function)
+  if(typeof window.promptAndConsumeAccessCode === 'function' && !window.__markItemsGoldCartHooked){
+    const orig = window.promptAndConsumeAccessCode;
+    window.promptAndConsumeAccessCode = async function(...args){
+      const ok = await orig.apply(this, args);
+      if(ok){
+        setTimeout(()=> { try { window.markItemsGoldInCart(); } catch(e){ console.error(e); } }, 120);
+      }
+      return ok;
+    };
+    window.__markItemsGoldCartHooked = true;
+  }
+
+  console.info('markItemsGoldInCart installed — call markItemsGoldInCart() to finalize cart items only.');
+})();
+
+
+</script><script>
+// Cart-scoped updateVerificationText — only updates status text inside cart containers
+(function(){
+  if(window.__updateVerificationTextCartScoped) return;
+  window.__updateVerificationTextCartScoped = true;
+
+  const CART_CONTAINERS = ['#checkoutPanel', '.checkout-cart', '.cart-list', '#cartPanel', '.floating-cart'];
+
+  function updateVerificationTextInCart(){
+    try {
+      const containers = CART_CONTAINERS.map(s => document.querySelector(s)).filter(Boolean);
+      if(!containers.length) { console.info('updateVerificationTextInCart: no cart containers found'); return false; }
+
+      const statusSelectors = ['.status', '.product-status', '.object-status', '.badge', '[data-ledger-status]'];
+      let changed = 0;
+
+      containers.forEach(root => {
+        statusSelectors.forEach(sel => {
+          root.querySelectorAll(sel).forEach(el => {
+            const text = (el.textContent || '').trim();
+            if(/AWAITING|PENDING|VERIFICATION/i.test(text)){
+              el.textContent = 'Verified';
+              changed++;
+            }
+          });
+        });
+
+        // also replace inline text nodes inside the cart container only (defensive)
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+        const nodes = [];
+        while(walker.nextNode()){
+          const n = walker.currentNode;
+          if(!n.nodeValue || !n.nodeValue.trim()) continue;
+          if(/\bAWAITING\s+PRESTIGE\s+VERIFICATION\b/i.test(n.nodeValue) || /\bPENDING\b/i.test(n.nodeValue)){
+            nodes.push(n);
+          }
+        }
+        nodes.forEach(n => { n.nodeValue = n.nodeValue.replace(/\bAWAITING\s+PRESTIGE\s+VERIFICATION\b/gi, 'Verified').replace(/\bPENDING\b/gi, 'Verified'); changed++; });
+      });
+
+      console.info('updateVerificationTextInCart: updated', changed, 'node(s).');
+      return changed > 0;
+    } catch(e){
+      console.error('updateVerificationTextInCart error', e);
+      return false;
+    }
+  }
+
+  // expose and auto-hook after verification
+  window.updateVerificationTextInCart = updateVerificationTextInCart;
+  if(typeof window.promptAndConsumeAccessCode === 'function' && !window.__updateVerificationTextCartHooked){
+    const orig = window.promptAndConsumeAccessCode;
+    window.promptAndConsumeAccessCode = async function(...args){
+      const ok = await orig.apply(this, args);
+      if(ok){
+        setTimeout(()=> { try { window.updateVerificationTextInCart(); } catch(e){ console.error(e); } }, 80);
+      }
+      return ok;
+    };
+    window.__updateVerificationTextCartHooked = true;
+  }
+
+  console.info('updateVerificationTextInCart installed — call updateVerificationTextInCart() to update cart-only verification text.');
+})();
+
+</script>
+<script>
+(function(){
+  // Paste this block at the end of the page (before </body>)
+  document.addEventListener('DOMContentLoaded', () => {
+    // CONFIG
+    const PRESTIGE_NUMBER = '+16164391862';
+    const SUPPORT_EMAIL = 'orginator+store@icloud.com';
+    const JITSI_BASE = 'https://meet.jit.si';
+
+    // Helper: find element by id or fallback selectors
+    function $id(id){ return document.getElementById(id); }
+    function find(selector){ return document.querySelector(selector); }
+
+    // DOM hooks (robust)
+    const buzzer = $id('prestigeBuzzer') || find('.prestige-buzzer') || find('#prestigeSlotFinal .prestige-buzzer');
+    const widget = $id('prestigeWidgetFinal') || $id('prestigeWidget') || find('.prestige-widget-final') || find('.prestige-widget');
+    const nameInput = $id('pfName') || widget?.querySelector('input[placeholder*="name"]');
+    const phoneInput = $id('pfPhone') || widget?.querySelector('input[placeholder*="Phone"]');
+    const issueInput = $id('pfIssue') || widget?.querySelector('input[placeholder*="issue"], textarea');
+    const smsBtn = $id('pfSendSms') || widget?.querySelector('#pfSendSms, .send, .prestige-send');
+    const emailBtn = $id('pfSendEmail') || widget?.querySelector('#pfSendEmail, .send:nth-of-type(2), .prestige-send.ghost');
+
+    // modal and hidden staff reply
+    let hiddenStaff = $id('prestigeHiddenStaffReply');
+    if(!hiddenStaff){ hiddenStaff = document.createElement('textarea'); hiddenStaff.id = 'prestigeHiddenStaffReply'; hiddenStaff.style.display = 'none'; document.body.appendChild(hiddenStaff); }
+
+    let modalEl = $id('prestigeModal') || find('.prestige-modal');
+    let smsTextarea = $id('prestigeSmsText') || (modalEl && modalEl.querySelector('textarea'));
+    let copySmsBtn = $id('copySms') || (modalEl && modalEl.querySelector('#copySms'));
+    let modalSendEmailBtn = $id('modalSendEmail') || (modalEl && modalEl.querySelector('#modalSendEmail'));
+    let closeModalBtn = $id('closeModal') || (modalEl && modalEl.querySelector('#closeModal'));
+
+    // confirm dialog
+    let confirmEl = $id('prestigeConfirm') || find('.prestige-confirm');
+    let confirmProceed = $id('confirmProceed') || (confirmEl && confirmEl.querySelector('#confirmProceed'));
+    let confirmCancel = $id('confirmCancel') || (confirmEl && confirmEl.querySelector('#confirmCancel'));
+
+    // Basic validation
+    if(!smsBtn){
+      console.warn('Prestige: SMS button not found (pfSendSms). Script will not attach SMS handler.');
+    }
+    if(!buzzer) console.warn('Prestige: buzzer not found (prestigeBuzzer).');
+    if(!widget) console.warn('Prestige: widget not found (prestigeWidgetFinal).');
+
+    // Small helpers
+    function genRoom(prefix='prestige', len=8){
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let s = prefix + '-';
+      for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
+      return s;
+    }
+    function collectCartSummaryLines(){
+      const cart = document.querySelector('#cartList');
+      const lines = [];
+      if(!cart) return lines;
+      const nodes = cart.querySelectorAll('.cart-item, .product-card, .cart-row, .cart-entry, .store-item, .item');
+      nodes.forEach(node => {
+        const title = (node.querySelector('.product-title, .title, .name, h4, h3')?.textContent || node.getAttribute('data-title') || '').trim();
+        const price = (node.querySelector('.price, .product-cost, .item-price')?.textContent || node.getAttribute('data-price') || '').trim();
+        const qty = (node.querySelector('.qty, .quantity')?.textContent || node.querySelector('input.qty')?.value || node.getAttribute('data-qty') || '').trim();
+        if(title) lines.push([title, qty ? 'x'+qty : '', price].filter(Boolean).join(' • '));
+      });
+      return lines;
+    }
+    function appendCart(body){
+      const lines = collectCartSummaryLines();
+      if(lines.length) body += '\n\nCart:\n' + lines.join('\n');
+      return body;
+    }
+
+    // Robust SMS opener (tries multiple URI formats and falls back)
+    async function openPrestigeSms(prestigeNumber, messageText){
+      const body = String(messageText || '').trim();
+      const encoded = encodeURIComponent(body);
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+      const isAndroid = /Android/.test(ua);
+
+      const candidates = [];
+      if(isIOS){
+        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+      } else if(isAndroid){
+        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+      } else {
+        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+      }
+
+      function tryAnchor(uri){
+        return new Promise((resolve) => {
+          try {
+            const a = document.createElement('a');
+            a.href = uri;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(()=> { try{ a.remove(); }catch(e){}; resolve(true); }, 250);
+          } catch(e){ resolve(false); }
+        });
+      }
+
+      // prefer native share on some devices
+      if(navigator.share && (isIOS || isAndroid)){
+        try { await navigator.share({ title:'Prestige Care', text: body }); return { status:'shared' }; } catch(e){}
+      }
+
+      for(const uri of candidates){
+        const ok = await tryAnchor(uri);
+        if(ok) return { status:'opened', uri };
+      }
+
+      // fallback: copy to clipboard and show modal
+      try { await navigator.clipboard.writeText(`${body}\n\nPrestige Care: ${prestigeNumber}`); } catch(e){}
+      if(modalEl){
+        if(smsTextarea) smsTextarea.value = `${body}\n\nPrestige Care: ${prestigeNumber}`;
+        modalEl.style.display = 'block';
+      } else {
+        // minimal fallback alert so user knows what to do
+        alert(`${body}\n\nSend to: ${prestigeNumber}`);
+      }
+      return { status:'fallback' };
+    }
+
+    // Confirmation helper
+    function askConfirm(cb){
+      if(!confirmEl || !confirmProceed || !confirmCancel){ cb(true); return; }
+      confirmEl.style.display = 'block';
+      function cleanup(){ confirmEl.style.display = 'none'; confirmProceed.removeEventListener('click', onProceed); confirmCancel.removeEventListener('click', onCancel); }
+      function onProceed(){ cleanup(); cb(true); }
+      function onCancel(){ cleanup(); cb(false); }
+      confirmProceed.addEventListener('click', onProceed);
+      confirmCancel.addEventListener('click', onCancel);
+    }
+
+    // Handlers
+    async function handleSms(){
+      askConfirm(async (ok) => {
+        if(!ok) return;
+        const name = (nameInput?.value || '').trim();
+        const phone = (phoneInput?.value || '').trim();
+        const issue = (issueInput?.value || '').trim();
+        const room = genRoom('prestige',8);
+        const roomLink = `${JITSI_BASE}/${room}`;
+        const smsUser = `Prestige Care — join a secure one-time chatroom to complete verification: ${roomLink} — I’ll be there in 30s.`;
+        let smsBody = appendCart(smsUser);
+        hiddenStaff.value = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
+
+        // friendly message for user (short)
+        const friendly = `Prestige Care — we can help verify your purchase and join a secure chatroom: ${roomLink}\n\nIf you prefer, our team can also assist by email or call.`;
+
+        // call robust opener
+        await openPrestigeSms(PRESTIGE_NUMBER, friendly);
+      });
+    }
+
+    function handleEmail(){
+      askConfirm((ok) => {
+        if(!ok) return;
+        const name = (nameInput?.value || '').trim();
+        const phone = (phoneInput?.value || '').trim();
+        const issue = (issueInput?.value || '').trim();
+        const room = genRoom('prestige',8);
+        const t = buildTemplates ? buildTemplates(name, phone, issue, room) : { subjectStaff: `Prestige Help Request — ${name || '[username]'}`, bodyStaff: `User: ${name}\nPhone: ${phone}\nIssue: ${issue}` };
+        hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${JITSI_BASE}/${room} — I’ll join now.`;
+        openMailto(t.subjectStaff, t.bodyStaff);
+        if(modalEl){ if(smsTextarea) smsTextarea.value = `${t.smsUser || ''}\n\nPrestige Care: ${PRESTIGE_NUMBER}`; modalEl.style.display = 'block'; }
+      });
+    }
+
+    // Attach idempotently
+    if(smsBtn && !smsBtn._prestigeAttached){ smsBtn.addEventListener('click', handleSms); smsBtn._prestigeAttached = true; }
+    if(emailBtn && !emailBtn._prestigeAttached){ emailBtn.addEventListener('click', handleEmail); emailBtn._prestigeAttached = true; }
+    if(buzzer && !buzzer._prestigeToggleInstalled){
+      buzzer.addEventListener('click', () => { widget?.classList.toggle('prestige-hidden'); (nameInput || widget?.querySelector('input'))?.focus(); buzzer.classList.remove('pulse'); });
+      buzzer._prestigeToggleInstalled = true;
+    }
+
+    // Modal actions
+    if(copySmsBtn && smsTextarea && !copySmsBtn._prestigeAttached){
+      copySmsBtn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(smsTextarea.value || ''); copySmsBtn.textContent = 'Copied'; setTimeout(()=> copySmsBtn.textContent = 'Copy SMS',1200); } catch(e){ copySmsBtn.textContent = 'Copy failed'; setTimeout(()=> copySmsBtn.textContent = 'Copy SMS',1200); }
+      });
+      copySmsBtn._prestigeAttached = true;
+    }
+    if(modalSendEmailBtn && !modalSendEmailBtn._prestigeAttached){
+      modalSendEmailBtn.addEventListener('click', () => {
+        const name = (nameInput?.value || '').trim();
+        const phone = (phoneInput?.value || '').trim();
+        const issue = (issueInput?.value || '').trim();
+        const subject = `Prestige Help Request — ${name || '[username]'}`;
+        const body = `User: ${name || '[name]'}\nPhone: ${phone || '[number]'}\nIssue: ${issue || '[short description]'}\n\nPlease respond with Jitsi link via SMS.`;
+        openMailto(subject, body);
+      });
+      modalSendEmailBtn._prestigeAttached = true;
+    }
+    if(closeModalBtn && !closeModalBtn._prestigeAttached){
+      closeModalBtn.addEventListener('click', () => { if(modalEl) modalEl.style.display = 'none'; });
+      closeModalBtn._prestigeAttached = true;
+    }
+
+    // Expose staff helper
+    window.copyStaffReply = window.copyStaffReply || (async function(){ try { const txt = hiddenStaff.value || ''; if(!txt) return false; await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } });
+
+    console.log('Prestige: handlers attached. If SMS still fails on a device, paste navigator.userAgent here.');
+  });
+})();
+  
+  
+  
+  
+(function(){
+  // --- Safe wrapper: ensure buttons are non-submitting and handlers run as user gestures
+  const smsBtn = document.getElementById('pfSendSms');
+  const emailBtn = document.getElementById('pfSendEmail');
+
+  if(smsBtn) smsBtn.type = smsBtn.type || 'button';
+  if(emailBtn) emailBtn.type = emailBtn.type || 'button';
+
+  // --- Helper: safe attach that prevents default and preserves user gesture
+  function safeAttach(btn, handler, name){
+    if(!btn || !handler) return;
+    if(btn._safeAttached) return;
+    btn.addEventListener('click', function(e){
+      try {
+        if(e && typeof e.preventDefault === 'function') e.preventDefault();
+        console.log(`Prestige: ${name} clicked`);
+        // call handler synchronously so browser treats it as a user gesture
+        const res = handler();
+        if(res && typeof res.then === 'function'){
+          res.then(()=> console.log(`Prestige: ${name} handler done`)).catch(err => console.error(err));
+        }
+      } catch(err){
+        console.error(`Prestige: ${name} wrapper error`, err);
+      }
+    }, { passive: false });
+    btn._safeAttached = true;
+  }
+
+  // --- Replace handleSms with a robust version that chooses cart or friendly
+  async function handleSmsReplacement(){
+    // askConfirm compatibility: reuse existing askConfirm if present, otherwise auto-proceed
+    const doAskConfirm = (typeof askConfirm === 'function');
+    const run = async () => {
+      try {
+        console.log('handleSms: start');
+        const nameInput = document.getElementById('pfName');
+        const phoneInput = document.getElementById('pfPhone');
+        const issueInput = document.getElementById('pfIssue');
+
+        const name = (nameInput?.value || '').trim();
+        const phone = (phoneInput?.value || '').trim();
+        const issue = (issueInput?.value || '').trim();
+
+        // generate room (reuse genRoom if available)
+        const room = (typeof genRoom === 'function') ? genRoom('prestige',8) : ('prestige-' + Math.random().toString(36).slice(2,10));
+        const roomLink = (typeof JITSI_BASE !== 'undefined') ? `${JITSI_BASE}/${room}` : `https://meet.jit.si/${room}`;
+
+        // build templates if available, otherwise minimal defaults
+        const t = (typeof buildTemplates === 'function') ? buildTemplates(name, phone, issue, room) : {
+          smsUser: `Prestige Care — join a secure one-time chatroom: ${roomLink}`,
+          staffReply: `Hi ${name||'[name]'}, join here: ${roomLink}`,
+          roomLink
+        };
+
+        // build smsBody with cart lines
+        let smsBody = t.smsUser || `Prestige Care — ${roomLink}`;
+        if(typeof appendCart === 'function') smsBody = appendCart(smsBody);
+        // ensure hidden staff reply exists and is set
+        const hiddenStaff = document.getElementById('prestigeHiddenStaffReply') || (function(){ const ta=document.createElement('textarea'); ta.id='prestigeHiddenStaffReply'; ta.style.display='none'; document.body.appendChild(ta); return ta; })();
+        hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${roomLink}`;
+
+        // friendly fallback
+        const friendly = `Prestige Care — we can help verify your purchase and join a secure chatroom: ${roomLink}\n\nIf you prefer, our team can also assist by email or call.`;
+
+        // decide which message to send: cart if any lines, otherwise friendly
+        const cartLines = (typeof collectCartSummaryLines === 'function') ? collectCartSummaryLines() : [];
+        const messageToSend = (cartLines && cartLines.length) ? smsBody : friendly;
+
+        console.log('handleSms: message chosen', cartLines.length ? 'cart' : 'friendly');
+
+        // call opener (must be defined)
+        if(typeof openPrestigeSms === 'function'){
+          await openPrestigeSms(window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862'), messageToSend);
+        } else if(typeof openSms === 'function'){
+          // fallback to older openSms if present
+          openSms(window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862'), messageToSend);
+        } else {
+          // final fallback: copy to clipboard and show modal/alert
+          try { await navigator.clipboard.writeText(`${messageToSend}\n\nPrestige Care: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`); } catch(e){}
+          const modal = document.getElementById('prestigeModal');
+          if(modal){
+            const ta = document.getElementById('prestigeSmsText');
+            if(ta) ta.value = `${messageToSend}\n\nPrestige Care: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`;
+            modal.style.display = 'block';
+          } else {
+            alert(`${messageToSend}\n\nSend to: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`);
+          }
+        }
+      } catch(err){
+        console.error('handleSms error', err);
+        alert('An error occurred while preparing the SMS. Check console for details.');
+      }
+    };
+
+    if(doAskConfirm){
+      // call existing askConfirm; it should call cb(true) or cb(false)
+      askConfirm(async (ok) => { if(!ok) { console.log('handleSms: user cancelled confirm'); return; } await run(); });
+    } else {
+      // no confirm UI present — proceed immediately
+      await run();
+    }
+  }
+
+  // --- Attach the replacement handler safely
+  safeAttach(smsBtn, handleSmsReplacement, 'SMS');
+
+  // --- Also ensure email button is safe-attached to existing handler if present
+  if(typeof handleEmail === 'function'){
+    safeAttach(emailBtn, handleEmail, 'Email');
+  } else {
+    // if no handleEmail defined, attach a minimal email action that opens mailto with basic info
+    safeAttach(emailBtn, function(){
+      const name = (document.getElementById('pfName')?.value || '').trim();
+      const phone = (document.getElementById('pfPhone')?.value || '').trim();
+      const issue = (document.getElementById('pfIssue')?.value || '').trim();
+      const subject = encodeURIComponent(`Prestige Help Request — ${name || '[username]'}`);
+      const body = encodeURIComponent(`User: ${name || '[name]'}\nPhone: ${phone || '[number]'}\nIssue: ${issue || '[short description]'}\n\nPlease respond with Jitsi link via SMS.`);
+      window.location.href = `mailto:${(typeof SUPPORT_EMAIL !== 'undefined' ? SUPPORT_EMAIL : 'orginator+store@icloud.com')}?subject=${subject}&body=${body}`;
+    }, 'Email (fallback)');
+  }
+
+  console.log('Prestige: handleSmsReplacement attached (cart-aware).');
+})();
+ 
+  
+  
+  // Safe attach: make buttons non-submitting and preserve user gesture
+(function(){
+  const smsBtn = document.getElementById('pfSendSms');
+  const emailBtn = document.getElementById('pfSendEmail');
+  if(smsBtn) smsBtn.type = smsBtn.type || 'button';
+  if(emailBtn) emailBtn.type = emailBtn.type || 'button';
+
+  function safeAttach(btn, handler, name){
+    if(!btn || !handler || btn._safeAttached) return;
+    btn.addEventListener('click', function(e){
+      try {
+        if(e && typeof e.preventDefault === 'function') e.preventDefault();
+        // call handler synchronously so browser treats it as a user gesture
+        const res = handler();
+        if(res && typeof res.then === 'function'){
+          res.catch(err => console.error(`${name} handler error`, err));
+        }
+      } catch(err){
+        console.error(`${name} wrapper error`, err);
+      }
+    }, { passive: false });
+    btn._safeAttached = true;
+  }
+
+  // attach to existing functions (or replacements you will paste next)
+  if(typeof handleSmsReplacement === 'function') safeAttach(smsBtn, handleSmsReplacement, 'SMS');
+  else if(typeof handleSms === 'function') safeAttach(smsBtn, handleSms, 'SMS');
+
+  if(typeof handleEmail === 'function') safeAttach(emailBtn, handleEmail, 'Email');
+})();
+
+</script>
+
+
 </body>
 </html>
