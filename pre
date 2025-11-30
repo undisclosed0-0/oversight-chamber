@@ -2714,178 +2714,400 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script>
 (function(){
-  // Paste this block at the end of the page (before </body>)
+  'use strict';
   document.addEventListener('DOMContentLoaded', () => {
     // CONFIG
-    const PRESTIGE_NUMBER = '+16164391862';
-    const SUPPORT_EMAIL = 'orginator+store@icloud.com';
-    const JITSI_BASE = 'https://meet.jit.si';
+    const PRESTIGE_NUMBER = window.PRESTIGE_NUMBER || '+16164391862';
+    const SUPPORT_EMAIL = window.SUPPORT_EMAIL || 'orginator+store@icloud.com';
+    const JITSI_BASE = window.JITSI_BASE || 'https://meet.jit.si';
 
-    // Helper: find element by id or fallback selectors
-    function $id(id){ return document.getElementById(id); }
-    function find(selector){ return document.querySelector(selector); }
+    // DOM helpers
+    const $id = id => document.getElementById(id);
+    const $q = sel => document.querySelector(sel);
 
-    // DOM hooks (robust)
-    const buzzer = $id('prestigeBuzzer') || find('.prestige-buzzer') || find('#prestigeSlotFinal .prestige-buzzer');
-    const widget = $id('prestigeWidgetFinal') || $id('prestigeWidget') || find('.prestige-widget-final') || find('.prestige-widget');
+    // Hooks
+    const buzzer = $id('prestigeBuzzer') || $q('.prestige-buzzer') || $q('#prestigeSlotFinal .prestige-buzzer');
+    const widget = $id('prestigeWidgetFinal') || $id('prestigeWidget') || $q('.prestige-widget-final') || $q('.prestige-widget');
     const nameInput = $id('pfName') || widget?.querySelector('input[placeholder*="name"]');
     const phoneInput = $id('pfPhone') || widget?.querySelector('input[placeholder*="Phone"]');
     const issueInput = $id('pfIssue') || widget?.querySelector('input[placeholder*="issue"], textarea');
     const smsBtn = $id('pfSendSms') || widget?.querySelector('#pfSendSms, .send, .prestige-send');
     const emailBtn = $id('pfSendEmail') || widget?.querySelector('#pfSendEmail, .send:nth-of-type(2), .prestige-send.ghost');
 
-    // modal and hidden staff reply
+    // Modal and hidden staff reply
     let hiddenStaff = $id('prestigeHiddenStaffReply');
-    if(!hiddenStaff){ hiddenStaff = document.createElement('textarea'); hiddenStaff.id = 'prestigeHiddenStaffReply'; hiddenStaff.style.display = 'none'; document.body.appendChild(hiddenStaff); }
-
-    let modalEl = $id('prestigeModal') || find('.prestige-modal');
-    let smsTextarea = $id('prestigeSmsText') || (modalEl && modalEl.querySelector('textarea'));
-    let copySmsBtn = $id('copySms') || (modalEl && modalEl.querySelector('#copySms'));
-    let modalSendEmailBtn = $id('modalSendEmail') || (modalEl && modalEl.querySelector('#modalSendEmail'));
-    let closeModalBtn = $id('closeModal') || (modalEl && modalEl.querySelector('#closeModal'));
-
-    // confirm dialog
-    let confirmEl = $id('prestigeConfirm') || find('.prestige-confirm');
-    let confirmProceed = $id('confirmProceed') || (confirmEl && confirmEl.querySelector('#confirmProceed'));
-    let confirmCancel = $id('confirmCancel') || (confirmEl && confirmEl.querySelector('#confirmCancel'));
-
-    // Basic validation
-    if(!smsBtn){
-      console.warn('Prestige: SMS button not found (pfSendSms). Script will not attach SMS handler.');
+    if(!hiddenStaff){
+      hiddenStaff = document.createElement('textarea');
+      hiddenStaff.id = 'prestigeHiddenStaffReply';
+      hiddenStaff.style.display = 'none';
+      document.body.appendChild(hiddenStaff);
     }
-    if(!buzzer) console.warn('Prestige: buzzer not found (prestigeBuzzer).');
+    const modalEl = $id('prestigeModal') || $q('.prestige-modal');
+    const smsTextarea = $id('prestigeSmsText') || (modalEl && modalEl.querySelector('textarea'));
+    const copySmsBtn = $id('copySms') || (modalEl && modalEl.querySelector('#copySms'));
+    const modalSendEmailBtn = $id('modalSendEmail') || (modalEl && modalEl.querySelector('#modalSendEmail'));
+    const closeModalBtn = $id('closeModal') || (modalEl && modalEl.querySelector('#closeModal'));
+
+    // Confirm UI fallback
+    const confirmEl = $id('prestigeConfirm') || $q('.prestige-confirm');
+    const confirmProceed = $id('confirmProceed') || (confirmEl && confirmEl.querySelector('#confirmProceed'));
+    const confirmCancel = $id('confirmCancel') || (confirmEl && confirmEl.querySelector('#confirmCancel'));
+
+    // Basic warnings
+    if(!smsBtn) console.warn('Prestige: SMS button not found (pfSendSms).');
     if(!widget) console.warn('Prestige: widget not found (prestigeWidgetFinal).');
 
-    // Small helpers
+    // Utility: generate room id
     function genRoom(prefix='prestige', len=8){
       const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
       let s = prefix + '-';
       for(let i=0;i<len;i++) s += chars[Math.floor(Math.random()*chars.length)];
       return s;
     }
-    function collectCartSummaryLines(){
-      const cart = document.querySelector('#cartList');
+
+    // CART READERS
+    function collectCartSummaryLinesDirect(){
+      const container = document.querySelector('#cartList') || document.querySelector('.cart, .cart-list');
+      const VISUAL = ['.shimmer','.skeleton','.pending','.visual-only','[data-shimmer]','[data-visual]'];
       const lines = [];
-      if(!cart) return lines;
-      const nodes = cart.querySelectorAll('.cart-item, .product-card, .cart-row, .cart-entry, .store-item, .item');
-      nodes.forEach(node => {
-        const title = (node.querySelector('.product-title, .title, .name, h4, h3')?.textContent || node.getAttribute('data-title') || '').trim();
-        const price = (node.querySelector('.price, .product-cost, .item-price')?.textContent || node.getAttribute('data-price') || '').trim();
-        const qty = (node.querySelector('.qty, .quantity')?.textContent || node.querySelector('input.qty')?.value || node.getAttribute('data-qty') || '').trim();
-        if(title) lines.push([title, qty ? 'x'+qty : '', price].filter(Boolean).join(' • '));
+      if(!container) return lines;
+      const items = container.querySelectorAll('.cart-item, .product-card, .cart-row, .cart-entry, .store-item, .item');
+      items.forEach(node => {
+        try {
+          const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
+          let text = '', n;
+          while(n = walker.nextNode()){
+            let p = n.parentNode, skip = false;
+            while(p && p !== document){
+              for(const sel of VISUAL){ try{ if(p.matches && p.matches(sel)){ skip = true; break; } }catch(e){} }
+              if(skip) break;
+              p = p.parentNode;
+            }
+            if(skip) continue;
+            const t = n.nodeValue.replace(/\s+/g,' ').trim();
+            if(t) text += (text ? ' ' : '') + t;
+          }
+          const title = (node.querySelector('.product-title, .title, .name, h4, h3')?.textContent || text || node.getAttribute('data-title') || '').trim();
+          const price = (node.querySelector('.price, .product-cost, .item-price')?.textContent || node.getAttribute('data-price') || '').trim();
+          const qtyEl = node.querySelector('.qty, .quantity') || node.querySelector('input.qty');
+          const qty = qtyEl ? ((qtyEl.value||qtyEl.textContent||'').trim()) : '';
+          if(title){
+            const parts = [ title.replace(/\b(shimmer|pending|awaiting)\b/ig,'').trim(), qty ? 'x'+qty : '', price ].filter(Boolean);
+            lines.push(parts.join(' • '));
+          }
+        } catch(e){
+          console.warn('collectCartSummaryLinesDirect parse error', e);
+        }
       });
       return lines;
     }
-    function appendCart(body){
-      const lines = collectCartSummaryLines();
-      if(lines.length) body += '\n\nCart:\n' + lines.join('\n');
-      return body;
+
+    function buildOneLineCartSummary(maxItems = 3){
+      try {
+        const lines = collectCartSummaryLinesDirect() || [];
+        if(!lines.length) return '';
+        const sample = lines.slice(0, maxItems).join('; ');
+        return sample.length > 200 ? sample.slice(0,197) + '...' : sample;
+      } catch(e){
+        return '';
+      }
     }
 
-    // Robust SMS opener (tries multiple URI formats and falls back)
-    async function openPrestigeSms(prestigeNumber, messageText){
-      const body = String(messageText || '').trim();
-      const encoded = encodeURIComponent(body);
-      const ua = navigator.userAgent || '';
-      const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-      const isAndroid = /Android/.test(ua);
+    // Build SMS preview (no duplicate link)
+    function buildSmsPreview(){
+      const name = (nameInput?.value || '').trim();
+      const phone = (phoneInput?.value || '').trim();
+      const issue = (issueInput?.value || '').trim();
+      const room = genRoom('prestige',8);
+      const roomLink = `${JITSI_BASE}/${room}`;
+      const header = [];
+      if(name) header.push(`Name: ${name}`);
+      if(phone) header.push(`Phone: ${phone}`);
+      if(issue) header.push(`Issue: ${issue}`);
+      header.push(`Join: ${roomLink}`);
+      let body = header.join('\n');
 
-      const candidates = [];
-      if(isIOS){
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-      } else if(isAndroid){
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
-      } else {
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+      const cartLines = collectCartSummaryLinesDirect();
+      if(cartLines && cartLines.length) body += '\n\nCart:\n' + cartLines.join('\n');
+
+      const friendly = `\n\nPrestige Care — we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.`;
+      body += friendly;
+
+      const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
+      return { body, staffReply, roomLink };
+    }
+
+    // Client cart token helpers
+    function ensureCartToken(){
+      try {
+        const KEY = 'prestigeCartToken';
+        let token = localStorage.getItem(KEY);
+        if(token && typeof token === 'string' && token.length >= 8) return token;
+        token = 'cart_' + Math.random().toString(36).slice(2,10);
+        localStorage.setItem(KEY, token);
+        return token;
+      } catch(e){
+        console.warn('ensureCartToken failed', e);
+        return 'cart_' + Math.random().toString(36).slice(2,10);
       }
+    }
 
-      function tryAnchor(uri){
-        return new Promise((resolve) => {
-          try {
-            const a = document.createElement('a');
-            a.href = uri;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(()=> { try{ a.remove(); }catch(e){}; resolve(true); }, 250);
-          } catch(e){ resolve(false); }
+    // Snapshot POST
+    async function createSnapshotAndGetUrl(){
+      try {
+        const cartLines = collectCartSummaryLinesDirect();
+        const payload = {
+          token: ensureCartToken(),
+          name: (nameInput?.value || '').trim(),
+          phone: (phoneInput?.value || '').trim(),
+          issue: (issueInput?.value || '').trim(),
+          cartLines,
+          pageUrl: window.location.href,
+          ts: Date.now()
+        };
+        const res = await fetch('/api/prestige/snapshot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
+        if(!res.ok){ console.warn('snapshot POST failed', res.status); return null; }
+        const json = await res.json();
+        if(json.url) return json.url;
+        if(json.token) return `${window.location.origin}/p/s/${json.token}`;
+        return null;
+      } catch(e){
+        console.warn('createSnapshotAndGetUrl error', e);
+        return null;
       }
-
-      // prefer native share on some devices
-      if(navigator.share && (isIOS || isAndroid)){
-        try { await navigator.share({ title:'Prestige Care', text: body }); return { status:'shared' }; } catch(e){}
-      }
-
-      for(const uri of candidates){
-        const ok = await tryAnchor(uri);
-        if(ok) return { status:'opened', uri };
-      }
-
-      // fallback: copy to clipboard and show modal
-      try { await navigator.clipboard.writeText(`${body}\n\nPrestige Care: ${prestigeNumber}`); } catch(e){}
-      if(modalEl){
-        if(smsTextarea) smsTextarea.value = `${body}\n\nPrestige Care: ${prestigeNumber}`;
-        modalEl.style.display = 'block';
-      } else {
-        // minimal fallback alert so user knows what to do
-        alert(`${body}\n\nSend to: ${prestigeNumber}`);
-      }
-      return { status:'fallback' };
     }
 
-    // Confirmation helper
-    function askConfirm(cb){
-      if(!confirmEl || !confirmProceed || !confirmCancel){ cb(true); return; }
-      confirmEl.style.display = 'block';
-      function cleanup(){ confirmEl.style.display = 'none'; confirmProceed.removeEventListener('click', onProceed); confirmCancel.removeEventListener('click', onCancel); }
-      function onProceed(){ cleanup(); cb(true); }
-      function onCancel(){ cleanup(); cb(false); }
-      confirmProceed.addEventListener('click', onProceed);
-      confirmCancel.addEventListener('click', onCancel);
+    // openPrestigeSms must NOT touch modal UI
+    // --- REPLACE openPrestigeSms WITH THIS ---
+async function openPrestigeSms(prestigeNumber, messageText){
+  const body = String(messageText || '').trim();
+  const encoded = encodeURIComponent(body);
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+
+  const candidates = [];
+  if(isIOS){
+    candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+    candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+  } else {
+    candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+    candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+  }
+
+  function tryAnchor(uri){
+    return new Promise((resolve) => {
+      try {
+        const a = document.createElement('a');
+        a.href = uri;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(()=> { try{ a.remove(); }catch(e){}; resolve(true); }, 300);
+      } catch(e){ resolve(false); }
+    });
+  }
+
+  // prefer native share on mobile
+  if(navigator.share && (isIOS || isAndroid)){
+    try { await navigator.share({ title:'Prestige Care', text: body }); return { status:'shared' }; } catch(e){ /* ignore */ }
+  }
+
+  for(const uri of candidates){
+    try {
+      const ok = await tryAnchor(uri);
+      if(ok) return { status:'opened', uri };
+    } catch(e){
+      console.warn('openPrestigeSms tryAnchor error', e);
+    }
+  }
+
+  // fallback: copy to clipboard (do not touch modal here)
+  try { await navigator.clipboard.writeText(`${body}\n\nPrestige Care: ${prestigeNumber}`); } catch(e){ console.warn('clipboard fallback failed', e); }
+  return { status:'fallback' };
+}
+
+// --- REPLACE handleSms WITH THIS ---
+async function handleSms(){
+  try {
+    console.debug('Prestige: handleSms start');
+
+    // Build preview and token block
+    const preview = (typeof buildSmsPreview === 'function') ? buildSmsPreview() : { body: 'Prestige Care', staffReply: '' };
+    const token = (typeof ensureCartToken === 'function') ? ensureCartToken() : ('cart_' + Math.random().toString(36).slice(2,10));
+    const cartLines = (typeof collectCartSummaryLinesDirect === 'function') ? collectCartSummaryLinesDirect() : [];
+    const oneLine = (typeof buildOneLineCartSummary === 'function') ? buildOneLineCartSummary(3) : (cartLines.slice(0,3).join('; ') || '');
+    const tokenBlock = `CartID: ${token}${cartLines.length ? '\nCart:\n' + cartLines.join('\n') : (oneLine ? '\nItems: ' + oneLine : '')}\n\n`;
+
+    // Populate textarea if present
+    if(smsTextarea){
+      smsTextarea.value = tokenBlock + (preview.body || '');
+    } else {
+      console.warn('Prestige: smsTextarea not found; modal textarea missing');
     }
 
-    // Handlers
-    async function handleSms(){
-      askConfirm(async (ok) => {
-        if(!ok) return;
-        const name = (nameInput?.value || '').trim();
-        const phone = (phoneInput?.value || '').trim();
-        const issue = (issueInput?.value || '').trim();
-        const room = genRoom('prestige',8);
-        const roomLink = `${JITSI_BASE}/${room}`;
-        const smsUser = `Prestige Care — join a secure one-time chatroom to complete verification: ${roomLink} — I’ll be there in 30s.`;
-        let smsBody = appendCart(smsUser);
-        hiddenStaff.value = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
-
-        // friendly message for user (short)
-        const friendly = `Prestige Care — we can help verify your purchase and join a secure chatroom: ${roomLink}\n\nIf you prefer, our team can also assist by email or call.`;
-
-        // call robust opener
-        await openPrestigeSms(PRESTIGE_NUMBER, friendly);
-      });
+    // Ensure modal exists
+    if(!modalEl){
+      console.warn('Prestige: modal element not found; falling back to immediate send');
+      // fallback: create message and send immediately
+      const fallbackMsg = tokenBlock + (preview.body || '');
+      await openPrestigeSms(PRESTIGE_NUMBER, fallbackMsg);
+      return;
     }
 
+    // Ensure a visible CartID badge (click to copy)
+    try {
+      let tokenBadge = modalEl.querySelector('.prestige-cartid-badge');
+      if(!tokenBadge){
+        tokenBadge = document.createElement('div');
+        tokenBadge.className = 'prestige-cartid-badge';
+        tokenBadge.style.cssText = 'font-weight:600;margin-bottom:8px;cursor:pointer;padding:6px 8px;border-radius:4px;background:#f3f4f6;border:1px solid #e5e7eb;';
+        modalEl.insertBefore(tokenBadge, modalEl.firstChild);
+      }
+      tokenBadge.textContent = `CartID: ${token}`;
+      tokenBadge.onclick = async () => {
+        try { await navigator.clipboard.writeText(token); tokenBadge.textContent = `CartID: ${token} (copied)`; setTimeout(()=> tokenBadge.textContent = `CartID: ${token}`, 1200); } catch(e){ console.warn('copy token failed', e); }
+      };
+    } catch(e){ console.warn('Prestige: token badge creation failed', e); }
+
+    // Show modal
+    modalEl.classList.add('show');
+    modalEl.style.display = 'block';
+    console.debug('Prestige: modal shown');
+
+    // Find or create Proceed/Cancel buttons inside modal
+    let proceedBtn = modalEl.querySelector('#confirmProceed, .modal-proceed');
+    let cancelBtn = modalEl.querySelector('#confirmCancel, .modal-cancel');
+
+    // If modal lacks controls, create them at the bottom (non-invasive)
+    if(!proceedBtn || !cancelBtn){
+      const footer = modalEl.querySelector('.modal-footer') || modalEl;
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'margin-top:12px;display:flex;gap:8px;justify-content:flex-end;';
+      const cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.className = 'prestige-cancel';
+      cancel.textContent = 'Cancel';
+      const proceed = document.createElement('button');
+      proceed.type = 'button';
+      proceed.className = 'prestige-proceed';
+      proceed.textContent = 'Proceed';
+      proceed.style.cssText = 'font-weight:600;';
+      wrapper.appendChild(cancel);
+      wrapper.appendChild(proceed);
+      footer.appendChild(wrapper);
+      proceedBtn = proceed;
+      cancelBtn = cancel;
+      console.debug('Prestige: injected modal controls');
+    }
+
+    // One-time attach helper
+    function once(el, ev, fn){
+      if(!el) return;
+      const wrapper = function(e){ try { fn(e); } finally { el.removeEventListener(ev, wrapper); } };
+      el.addEventListener(ev, wrapper);
+    }
+
+    // Cancel handler
+    once(cancelBtn, 'click', () => {
+      try { modalEl.classList.remove('show'); modalEl.style.display = 'none'; } catch(e){}
+      console.debug('Prestige: modal cancelled by user');
+    });
+
+    // Proceed handler
+    once(proceedBtn, 'click', async () => {
+      try {
+        console.debug('Prestige: Proceed clicked');
+
+        // Read edited body (user may have changed it)
+        const editedBody = (smsTextarea?.value || preview.body || '').trim();
+
+        // Snapshot with timeout to avoid indefinite stall
+        let snapshotUrl = null;
+        if(typeof createSnapshotAndGetUrl === 'function'){
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(()=> controller.abort(), 6000); // 6s timeout
+            // createSnapshotAndGetUrl should not accept signal; we wrap with Promise.race
+            snapshotUrl = await Promise.race([
+              createSnapshotAndGetUrl(),
+              new Promise((_, rej) => controller.signal.aborted ? rej(new Error('snapshot aborted')) : setTimeout(()=>{}, 0))
+            ]).catch(e => { console.warn('snapshot error/timeout', e); return null; })
+            clearTimeout(timeout);
+          } catch(e){
+            console.warn('snapshot wrapper failed', e);
+            snapshotUrl = null;
+          }
+        }
+
+        // Compose final message
+        let messageToSend = editedBody;
+        if(snapshotUrl) messageToSend += `\n\nDetails: ${snapshotUrl}`;
+        else {
+          const t = (typeof ensureCartToken === 'function') ? ensureCartToken() : token;
+          const one = (typeof buildOneLineCartSummary === 'function') ? buildOneLineCartSummary(3) : oneLine;
+          if(one) messageToSend += `\n\nItems: ${one}`;
+          messageToSend += `\n\nCartID: ${t}`;
+        }
+
+        // Set hidden staff reply
+        try { hiddenStaff.value = preview.staffReply || hiddenStaff.value || ''; } catch(e){}
+
+        // Hand off to opener (which does not touch modal)
+        const res = await openPrestigeSms(PRESTIGE_NUMBER, messageToSend);
+        console.debug('Prestige: openPrestigeSms result', res);
+      } catch(err){
+        console.error('Prestige: error in Proceed handler', err);
+        alert('An error occurred while sending. Check console for details.');
+      } finally {
+        try { modalEl.classList.remove('show'); modalEl.style.display = 'none'; } catch(e){}
+      }
+    });
+
+  } catch(err){
+    console.error('Prestige: handleSms top-level error', err);
+    alert('An error occurred preparing the SMS preview. Check console for details.');
+  }
+}
+
+
+    // Email handler unchanged
     function handleEmail(){
-      askConfirm((ok) => {
-        if(!ok) return;
-        const name = (nameInput?.value || '').trim();
-        const phone = (phoneInput?.value || '').trim();
-        const issue = (issueInput?.value || '').trim();
-        const room = genRoom('prestige',8);
-        const t = buildTemplates ? buildTemplates(name, phone, issue, room) : { subjectStaff: `Prestige Help Request — ${name || '[username]'}`, bodyStaff: `User: ${name}\nPhone: ${phone}\nIssue: ${issue}` };
-        hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${JITSI_BASE}/${room} — I’ll join now.`;
-        openMailto(t.subjectStaff, t.bodyStaff);
-        if(modalEl){ if(smsTextarea) smsTextarea.value = `${t.smsUser || ''}\n\nPrestige Care: ${PRESTIGE_NUMBER}`; modalEl.style.display = 'block'; }
-      });
+      const name = (nameInput?.value || '').trim();
+      const phone = (phoneInput?.value || '').trim();
+      const issue = (issueInput?.value || '').trim();
+      const room = genRoom('prestige',8);
+      const t = (typeof buildTemplates === 'function') ? buildTemplates(name, phone, issue, room) : {
+        subjectStaff: `Prestige Help Request — ${name || '[username]'}`,
+        bodyStaff: `User: ${name}\nPhone: ${phone}\nIssue: ${issue}`
+      };
+      hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${JITSI_BASE}/${room} — I’ll join now.`;
+      if(typeof openMailto === 'function') openMailto(t.subjectStaff, t.bodyStaff);
+      else window.location.href = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(t.subjectStaff)}&body=${encodeURIComponent(t.bodyStaff)}`;
     }
 
-    // Attach idempotently
-    if(smsBtn && !smsBtn._prestigeAttached){ smsBtn.addEventListener('click', handleSms); smsBtn._prestigeAttached = true; }
-    if(emailBtn && !emailBtn._prestigeAttached){ emailBtn.addEventListener('click', handleEmail); emailBtn._prestigeAttached = true; }
+    // Safe attach helper
+    function safeAttach(btn, handler, name){
+      if(!btn || !handler) return;
+      if(btn._prestigeAttached) return;
+      try { btn.type = btn.type || 'button'; } catch(e){}
+      btn.addEventListener('click', function(e){
+        if(e && typeof e.preventDefault === 'function') e.preventDefault();
+        try {
+          const res = handler();
+          if(res && typeof res.then === 'function') res.catch(err => console.error(`${name} handler error`, err));
+        } catch(err){ console.error(`${name} wrapper error`, err); }
+      }, { passive:false });
+      btn._prestigeAttached = true;
+    }
+
+    // Attach handlers
+    safeAttach(smsBtn, handleSms, 'SMS');
+    safeAttach(emailBtn, handleEmail, 'Email');
     if(buzzer && !buzzer._prestigeToggleInstalled){
       buzzer.addEventListener('click', () => { widget?.classList.toggle('prestige-hidden'); (nameInput || widget?.querySelector('input'))?.focus(); buzzer.classList.remove('pulse'); });
       buzzer._prestigeToggleInstalled = true;
@@ -2905,7 +3127,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const issue = (issueInput?.value || '').trim();
         const subject = `Prestige Help Request — ${name || '[username]'}`;
         const body = `User: ${name || '[name]'}\nPhone: ${phone || '[number]'}\nIssue: ${issue || '[short description]'}\n\nPlease respond with Jitsi link via SMS.`;
-        openMailto(subject, body);
+        if(typeof openMailto === 'function') openMailto(subject, body);
+        else window.location.href = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       });
       modalSendEmailBtn._prestigeAttached = true;
     }
@@ -2914,174 +3137,20 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModalBtn._prestigeAttached = true;
     }
 
-    // Expose staff helper
-    window.copyStaffReply = window.copyStaffReply || (async function(){ try { const txt = hiddenStaff.value || ''; if(!txt) return false; await navigator.clipboard.writeText(txt); return true; } catch(e){ return false; } });
+    // Expose debug helpers
+    window.prestige = window.prestige || {};
+    window.prestige.collectCartSummaryLinesDirect = collectCartSummaryLinesDirect;
+    window.prestige.buildSmsPreview = buildSmsPreview;
+    window.prestige.createSnapshotAndGetUrl = createSnapshotAndGetUrl;
+    window.prestige.openPrestigeSms = openPrestigeSms;
+    window.prestige.ensureCartToken = ensureCartToken;
+    window.prestige.buildOneLineCartSummary = buildOneLineCartSummary;
 
-    console.log('Prestige: handlers attached. If SMS still fails on a device, paste navigator.userAgent here.');
+    console.log('Prestige: modal-first SMS handler attached.');
   });
 })();
-  
-  
-  
-  
-(function(){
-  // --- Safe wrapper: ensure buttons are non-submitting and handlers run as user gestures
-  const smsBtn = document.getElementById('pfSendSms');
-  const emailBtn = document.getElementById('pfSendEmail');
-
-  if(smsBtn) smsBtn.type = smsBtn.type || 'button';
-  if(emailBtn) emailBtn.type = emailBtn.type || 'button';
-
-  // --- Helper: safe attach that prevents default and preserves user gesture
-  function safeAttach(btn, handler, name){
-    if(!btn || !handler) return;
-    if(btn._safeAttached) return;
-    btn.addEventListener('click', function(e){
-      try {
-        if(e && typeof e.preventDefault === 'function') e.preventDefault();
-        console.log(`Prestige: ${name} clicked`);
-        // call handler synchronously so browser treats it as a user gesture
-        const res = handler();
-        if(res && typeof res.then === 'function'){
-          res.then(()=> console.log(`Prestige: ${name} handler done`)).catch(err => console.error(err));
-        }
-      } catch(err){
-        console.error(`Prestige: ${name} wrapper error`, err);
-      }
-    }, { passive: false });
-    btn._safeAttached = true;
-  }
-
-  // --- Replace handleSms with a robust version that chooses cart or friendly
-  async function handleSmsReplacement(){
-    // askConfirm compatibility: reuse existing askConfirm if present, otherwise auto-proceed
-    const doAskConfirm = (typeof askConfirm === 'function');
-    const run = async () => {
-      try {
-        console.log('handleSms: start');
-        const nameInput = document.getElementById('pfName');
-        const phoneInput = document.getElementById('pfPhone');
-        const issueInput = document.getElementById('pfIssue');
-
-        const name = (nameInput?.value || '').trim();
-        const phone = (phoneInput?.value || '').trim();
-        const issue = (issueInput?.value || '').trim();
-
-        // generate room (reuse genRoom if available)
-        const room = (typeof genRoom === 'function') ? genRoom('prestige',8) : ('prestige-' + Math.random().toString(36).slice(2,10));
-        const roomLink = (typeof JITSI_BASE !== 'undefined') ? `${JITSI_BASE}/${room}` : `https://meet.jit.si/${room}`;
-
-        // build templates if available, otherwise minimal defaults
-        const t = (typeof buildTemplates === 'function') ? buildTemplates(name, phone, issue, room) : {
-          smsUser: `Prestige Care — join a secure one-time chatroom: ${roomLink}`,
-          staffReply: `Hi ${name||'[name]'}, join here: ${roomLink}`,
-          roomLink
-        };
-
-        // build smsBody with cart lines
-        let smsBody = t.smsUser || `Prestige Care — ${roomLink}`;
-        if(typeof appendCart === 'function') smsBody = appendCart(smsBody);
-        // ensure hidden staff reply exists and is set
-        const hiddenStaff = document.getElementById('prestigeHiddenStaffReply') || (function(){ const ta=document.createElement('textarea'); ta.id='prestigeHiddenStaffReply'; ta.style.display='none'; document.body.appendChild(ta); return ta; })();
-        hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${roomLink}`;
-
-        // friendly fallback
-        const friendly = `Prestige Care — we can help verify your purchase and join a secure chatroom: ${roomLink}\n\nIf you prefer, our team can also assist by email or call.`;
-
-        // decide which message to send: cart if any lines, otherwise friendly
-        const cartLines = (typeof collectCartSummaryLines === 'function') ? collectCartSummaryLines() : [];
-        const messageToSend = (cartLines && cartLines.length) ? smsBody : friendly;
-
-        console.log('handleSms: message chosen', cartLines.length ? 'cart' : 'friendly');
-
-        // call opener (must be defined)
-        if(typeof openPrestigeSms === 'function'){
-          await openPrestigeSms(window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862'), messageToSend);
-        } else if(typeof openSms === 'function'){
-          // fallback to older openSms if present
-          openSms(window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862'), messageToSend);
-        } else {
-          // final fallback: copy to clipboard and show modal/alert
-          try { await navigator.clipboard.writeText(`${messageToSend}\n\nPrestige Care: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`); } catch(e){}
-          const modal = document.getElementById('prestigeModal');
-          if(modal){
-            const ta = document.getElementById('prestigeSmsText');
-            if(ta) ta.value = `${messageToSend}\n\nPrestige Care: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`;
-            modal.style.display = 'block';
-          } else {
-            alert(`${messageToSend}\n\nSend to: ${window.PRESTIGE_NUMBER || (typeof PRESTIGE_NUMBER !== 'undefined' ? PRESTIGE_NUMBER : '+16164391862')}`);
-          }
-        }
-      } catch(err){
-        console.error('handleSms error', err);
-        alert('An error occurred while preparing the SMS. Check console for details.');
-      }
-    };
-
-    if(doAskConfirm){
-      // call existing askConfirm; it should call cb(true) or cb(false)
-      askConfirm(async (ok) => { if(!ok) { console.log('handleSms: user cancelled confirm'); return; } await run(); });
-    } else {
-      // no confirm UI present — proceed immediately
-      await run();
-    }
-  }
-
-  // --- Attach the replacement handler safely
-  safeAttach(smsBtn, handleSmsReplacement, 'SMS');
-
-  // --- Also ensure email button is safe-attached to existing handler if present
-  if(typeof handleEmail === 'function'){
-    safeAttach(emailBtn, handleEmail, 'Email');
-  } else {
-    // if no handleEmail defined, attach a minimal email action that opens mailto with basic info
-    safeAttach(emailBtn, function(){
-      const name = (document.getElementById('pfName')?.value || '').trim();
-      const phone = (document.getElementById('pfPhone')?.value || '').trim();
-      const issue = (document.getElementById('pfIssue')?.value || '').trim();
-      const subject = encodeURIComponent(`Prestige Help Request — ${name || '[username]'}`);
-      const body = encodeURIComponent(`User: ${name || '[name]'}\nPhone: ${phone || '[number]'}\nIssue: ${issue || '[short description]'}\n\nPlease respond with Jitsi link via SMS.`);
-      window.location.href = `mailto:${(typeof SUPPORT_EMAIL !== 'undefined' ? SUPPORT_EMAIL : 'orginator+store@icloud.com')}?subject=${subject}&body=${body}`;
-    }, 'Email (fallback)');
-  }
-
-  console.log('Prestige: handleSmsReplacement attached (cart-aware).');
-})();
- 
-  
-  
-  // Safe attach: make buttons non-submitting and preserve user gesture
-(function(){
-  const smsBtn = document.getElementById('pfSendSms');
-  const emailBtn = document.getElementById('pfSendEmail');
-  if(smsBtn) smsBtn.type = smsBtn.type || 'button';
-  if(emailBtn) emailBtn.type = emailBtn.type || 'button';
-
-  function safeAttach(btn, handler, name){
-    if(!btn || !handler || btn._safeAttached) return;
-    btn.addEventListener('click', function(e){
-      try {
-        if(e && typeof e.preventDefault === 'function') e.preventDefault();
-        // call handler synchronously so browser treats it as a user gesture
-        const res = handler();
-        if(res && typeof res.then === 'function'){
-          res.catch(err => console.error(`${name} handler error`, err));
-        }
-      } catch(err){
-        console.error(`${name} wrapper error`, err);
-      }
-    }, { passive: false });
-    btn._safeAttached = true;
-  }
-
-  // attach to existing functions (or replacements you will paste next)
-  if(typeof handleSmsReplacement === 'function') safeAttach(smsBtn, handleSmsReplacement, 'SMS');
-  else if(typeof handleSms === 'function') safeAttach(smsBtn, handleSms, 'SMS');
-
-  if(typeof handleEmail === 'function') safeAttach(emailBtn, handleEmail, 'Email');
-})();
-
 </script>
+
 
 
 </body>
