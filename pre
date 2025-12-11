@@ -927,6 +927,122 @@
 
   /* Positioning helper (keeps your manual inline --x/--y) */
   .prestige-buzzer.center-over-tap { display:inline-block; transform: translateX(var(--x, 0px)) translateY(var(--y, 0px)); transition: transform .12s ease; z-index:9999; will-change: transform; }
+  
+  /* Modal sizing: limit width and keep it centered like native modal */
+.prestige-modal,
+.prestige-modal.show,
+.prestige-modal[style] {
+  max-width: 720px !important;     /* adjust to desired modal width */
+  width: calc(100% - 48px) !important;
+  box-sizing: border-box !important;
+  margin: 24px auto !important;
+  padding: 18px !important;
+}
+
+/* Make injected controls visually consistent with common modal button styles */
+.prestige-injected-controls .prestige-proceed,
+.prestige-injected-controls .prestige-cancel {
+  min-width: 88px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .12s ease, color .12s ease, transform .06s ease;
+}
+
+/* Primary look for Proceed */
+.prestige-injected-controls .prestige-proceed {
+  background: var(--btn-primary-bg, #0b74de);
+  color: var(--btn-primary-color, #fff);
+  box-shadow: var(--btn-primary-shadow, 0 1px 0 rgba(0,0,0,0.05));
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* Secondary look for Cancel */
+.prestige-injected-controls .prestige-cancel {
+  background: var(--btn-secondary-bg, #fff);
+  color: var(--btn-secondary-color, #111);
+  border: 1px solid var(--btn-secondary-border, #d1d5db);
+}
+
+/* Hover/focus states */
+.prestige-injected-controls .prestige-proceed:hover,
+.prestige-injected-controls .prestige-proceed:focus { filter: brightness(.95); transform: translateY(-1px); }
+.prestige-injected-controls .prestige-cancel:hover,
+.prestige-injected-controls .prestige-cancel:focus { background: #f7f7f8; }
+
+/* If the site uses a dark modal, invert injected controls automatically */
+.prestige-modal.dark .prestige-injected-controls .prestige-proceed {
+  background: var(--btn-primary-bg-dark, #2563eb);
+  color: #fff;
+}
+.prestige-modal.dark .prestige-injected-controls .prestige-cancel {
+  background: transparent;
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* Small responsive tweak */
+@media (max-width:420px){
+  .prestige-injected-controls .prestige-proceed,
+  .prestige-injected-controls .prestige-cancel { flex: 1 1 auto; min-width: 0; }
+  .prestige-injected-controls { flex-direction: column-reverse; gap: 8px; }
+}
+
+/* Frosted ledger style for purchase history */
+#purchaseHistory {
+  margin-top: 18px;
+  padding: 12px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+#purchaseHistory h4 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--accent, #ffd700); /* gold accent */
+}
+
+#purchaseHistory .prestige-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: #eee;
+}
+
+#purchaseHistory .prestige-sheet th {
+  text-align: left;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.12);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+#purchaseHistory .prestige-sheet td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#purchaseHistory .prestige-sheet tr:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+#purchaseHistory .glow-gold {
+  color: #ffd700;
+  font-weight: 600;
+  text-shadow: 0 0 6px #ffd700;
+}
+
+#purchaseHistory .glow-silver {
+  color: #c0c0c0;
+  font-weight: 600;
+  text-shadow: 0 0 6px #c0c0c0;
+}
+  
 </style>
 </head>
 <body>
@@ -953,6 +1069,7 @@
 <section id="userDirectory" class="chamber frost">
   <h4>👥 User Directory</h4>
   <div class="user-grid"></div>
+  <div id="purchaseHistory" class="purchase-history-panel"></div>
   <div class="dir-controls">
     <button id="retrieveBtn" class="cer-btn">Retrieve Account Information</button>
     <button id="logoutBtn" class="cer-btn logout-btn">Log Out</button>
@@ -1970,6 +2087,7 @@ async function fetchRegistry(){
       symbolic:    r.c[4]?.v ?? "0",
       transaction: r.c[5]?.v ?? "",
       status:      r.c[6]?.v ?? "Pending"
+    
     }));
 }
 
@@ -2052,6 +2170,7 @@ async function getUserByAccessCode(code){
 }
 
 // --- Render user card (after login or retrieve) ---
+// --- Render user card (identity + balances only) ---
 async function renderUserCard(){
   const username = sessionStorage.getItem("username");
   const code = sessionStorage.getItem("accessCode");
@@ -2063,28 +2182,30 @@ async function renderUserCard(){
   const grid = document.querySelector("#userDirectory .user-grid");
   if (!grid) return;
 
+  // Directory card: identity + balances
   grid.innerHTML = `
     <div class="user-card frost" data-user-id="${u.accessCode || u.card || u.user}">
       <div class="crest-avatar"></div>
       <div class="user-meta">
         <div class="account-name">${u.user}</div>
         <div class="card-id">PrestigePayCard: ${u.card}</div>
+        <div class="access-code">Access Code: ${u.accessCode}</div>
+        <div class="verified-by">Verified by: ${u.verifiedBy || '—'}</div>
         <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
-        <div class="last-transaction ${u.status==="Finalized"?"glow-gold":"glow-silver"}">
-          ${u.transaction || "—"}
+        <div class="status ${u.status==="Finalized"?"glow-gold":"glow-silver"}">
+          ${u.status}
         </div>
       </div>
     </div>
   `;
 
-  const purchasedEl = document.getElementById("purchasedCount");
-  const symbolicEl  = document.getElementById("symbolicCount");
-  if (purchasedEl) purchasedEl.textContent = u.purchased;
-  if (symbolicEl)  symbolicEl.textContent  = u.symbolic;
-
   // Sync cart and floating UI to match this user immediately
   syncCartFromUser(u, { resetCartCountOnLogin: false });
+
+  // Also render purchase history in a separate panel
+  renderPurchaseHistory(code);
 }
+
 
 // --- Render full ledger table ---
 async function renderLedger(){
@@ -2166,7 +2287,30 @@ try {
 } catch(e){ /* ignore if not present */ }
           
           
-   
+  // --- Render full purchase history for a user ---
+async function renderPurchaseHistory(userCode){
+  const accounts = await fetchRegistry();
+  const history = accounts.filter(r => r.accessCode === userCode);
+  const box = document.getElementById("purchaseHistory");
+  if(!box) return;
+
+  box.innerHTML = `
+    <h4>Purchase History</h4>
+    <table class="prestige-sheet">
+      <tr><th>User</th><th>Card</th><th>Purchased</th><th>Symbolic</th><th>Transaction</th><th>Status</th></tr>
+      ${history.map(h => `
+        <tr>
+          <td>${h.user}</td>
+          <td>${h.card}</td>
+          <td>${h.purchased}</td>
+          <td>${h.symbolic}</td>
+          <td>${h.transaction}</td>
+          <td class="${h.status==="Finalized"?"glow-gold":"glow-silver"}">${h.status}</td>
+        </tr>`).join("")}
+    </table>
+  `;
+}
+ 
           
 </script>
 
@@ -2725,7 +2869,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const $id = id => document.getElementById(id);
     const $q = sel => document.querySelector(sel);
 
-    // Hooks (robust fallbacks)
+    // Hooks
     const buzzer = $id('prestigeBuzzer') || $q('.prestige-buzzer') || $q('#prestigeSlotFinal .prestige-buzzer');
     const widget = $id('prestigeWidgetFinal') || $id('prestigeWidget') || $q('.prestige-widget-final') || $q('.prestige-widget');
     const nameInput = $id('pfName') || widget?.querySelector('input[placeholder*="name"]');
@@ -2748,14 +2892,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalSendEmailBtn = $id('modalSendEmail') || (modalEl && modalEl.querySelector('#modalSendEmail'));
     const closeModalBtn = $id('closeModal') || (modalEl && modalEl.querySelector('#closeModal'));
 
-    // Confirm UI
+    // Confirm UI fallback
     const confirmEl = $id('prestigeConfirm') || $q('.prestige-confirm');
     const confirmProceed = $id('confirmProceed') || (confirmEl && confirmEl.querySelector('#confirmProceed'));
     const confirmCancel = $id('confirmCancel') || (confirmEl && confirmEl.querySelector('#confirmCancel'));
 
     // Basic warnings
     if(!smsBtn) console.warn('Prestige: SMS button not found (pfSendSms).');
-    if(!buzzer) console.warn('Prestige: buzzer not found (prestigeBuzzer).');
     if(!widget) console.warn('Prestige: widget not found (prestigeWidgetFinal).');
 
     // Utility: generate room id
@@ -2766,22 +2909,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return s;
     }
 
-    // Original simple cart reader (kept for compatibility)
-    function collectCartSummaryLines(){
-      const cart = document.querySelector('#cartList');
-      const lines = [];
-      if(!cart) return lines;
-      const nodes = cart.querySelectorAll('.cart-item, .product-card, .cart-row, .cart-entry, .store-item, .item');
-      nodes.forEach(node => {
-        const title = (node.querySelector('.product-title, .title, .name, h4, h3')?.textContent || node.getAttribute('data-title') || '').trim();
-        const price = (node.querySelector('.price, .product-cost, .item-price')?.textContent || node.getAttribute('data-price') || '').trim();
-        const qty = (node.querySelector('.qty, .quantity')?.textContent || node.querySelector('input.qty')?.value || node.getAttribute('data-qty') || '').trim();
-        if(title) lines.push([title, qty ? 'x'+qty : '', price].filter(Boolean).join(' • '));
-      });
-      return lines;
-    }
-
-    // Direct cart reader: reads live DOM and ignores visual-only nodes (preserves shimmer)
+    // CART READERS
     function collectCartSummaryLinesDirect(){
       const container = document.querySelector('#cartList') || document.querySelector('.cart, .cart-list');
       const VISUAL = ['.shimmer','.skeleton','.pending','.visual-only','[data-shimmer]','[data-visual]'];
@@ -2818,97 +2946,75 @@ document.addEventListener('DOMContentLoaded', () => {
       return lines;
     }
 
-    // Append cart (compatibility wrapper)
-    function appendCart(body){
-      const lines = collectCartSummaryLinesDirect();
-      if(lines.length) body += '\n\nCart:\n' + lines.join('\n');
-      return body;
+    function buildOneLineCartSummary(maxItems = 3){
+      try {
+        const lines = collectCartSummaryLinesDirect() || [];
+        if(!lines.length) return '';
+        const sample = lines.slice(0, maxItems).join('; ');
+        return sample.length > 200 ? sample.slice(0,197) + '...' : sample;
+      } catch(e){
+        return '';
+      }
     }
 
-    // Build SMS preview text: includes form fields, cart summary, and always appends friendly message
-   // Replace existing buildSmsPreview with this (no duplicate link)
-function buildSmsPreview(){
-  const name = (nameInput?.value || '').trim();
-  const phone = (phoneInput?.value || '').trim();
-  const issue = (issueInput?.value || '').trim();
-  const room = genRoom('prestige',8);
-  const roomLink = `${JITSI_BASE}/${room}`;
-  const header = [];
-  if(name) header.push(`Name: ${name}`);
-  if(phone) header.push(`Phone: ${phone}`);
-  if(issue) header.push(`Issue: ${issue}`);
-  // single canonical link line
-  header.push(`Join: ${roomLink}`);
-  let body = header.join('\n');
+    // Build SMS preview (no duplicate link)
+    function buildSmsPreview(){
+      const name = (nameInput?.value || '').trim();
+      const phone = (phoneInput?.value || '').trim();
+      const issue = (issueInput?.value || '').trim();
+      const room = genRoom('prestige',8);
+      const roomLink = `${JITSI_BASE}/${room}`;
+      const header = [];
+      if(name) header.push(`Name: ${name}`);
+      if(phone) header.push(`Phone: ${phone}`);
+      if(issue) header.push(`Issue: ${issue}`);
+      header.push(`Join: ${roomLink}`);
+      let body = header.join('\n');
 
-  const cartLines = collectCartSummaryLinesDirect();
-  if(cartLines && cartLines.length) body += '\n\nCart:\n' + cartLines.join('\n');
+      const cartLines = collectCartSummaryLinesDirect();
+      if(cartLines && cartLines.length) body += '\n\nCart:\n' + cartLines.join('\n');
 
-  // Friendly message should NOT repeat the link (refer to the Join line above)
-  const friendly = `\n\nPrestige Care — we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.`;
-  body += friendly;
+      const friendly = `\n\nPrestige Care — we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.`;
+      body += friendly;
 
-  const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
-  return { body, staffReply, roomLink };
-}
+      const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
+      return { body, staffReply, roomLink };
+    }
 
-    
-    
-    
-    // Persist a short cart token in localStorage and return it
-function ensureCartToken(){
-  try {
-    const KEY = 'prestigeCartToken';
-    let token = localStorage.getItem(KEY);
-    if(token && typeof token === 'string' && token.length >= 8) return token;
-    token = 'cart_' + Math.random().toString(36).slice(2,10);
-    localStorage.setItem(KEY, token);
-    return token;
-  } catch(e){
-    console.warn('ensureCartToken failed', e);
-    return 'cart_' + Math.random().toString(36).slice(2,10);
-  }
-}
+    // Client cart token helpers
+    function ensureCartToken(){
+      try {
+        const KEY = 'prestigeCartToken';
+        let token = localStorage.getItem(KEY);
+        if(token && typeof token === 'string' && token.length >= 8) return token;
+        token = 'cart_' + Math.random().toString(36).slice(2,10);
+        localStorage.setItem(KEY, token);
+        return token;
+      } catch(e){
+        console.warn('ensureCartToken failed', e);
+        return 'cart_' + Math.random().toString(36).slice(2,10);
+      }
+    }
 
-// Optional helper to clear token when order completes
-function clearCartToken(){
-  try { localStorage.removeItem('prestigeCartToken'); } catch(e){ /* ignore */ }
-  return true;
-}
-
-// Small helper to build a one-line cart summary for SMS (first N items)
-function buildOneLineCartSummary(maxItems = 3){
-  try {
-    const lines = collectCartSummaryLinesDirect() || [];
-    if(!lines.length) return '';
-    const sample = lines.slice(0, maxItems).join('; ');
-    return sample.length > 200 ? sample.slice(0,197) + '...' : sample;
-  } catch(e){
-    return '';
-  }
-}
-
-
-    // POST cart + form snapshot to server and return short URL (or null)
+    // Snapshot POST
     async function createSnapshotAndGetUrl(){
       try {
         const cartLines = collectCartSummaryLinesDirect();
-       const payload = {
-  token: ensureCartToken(),               // <-- added token
-  name: (nameInput?.value || '').trim(),
-  phone: (phoneInput?.value || '').trim(),
-  issue: (issueInput?.value || '').trim(),
-  cartLines,
-  pageUrl: window.location.href,
-  ts: Date.now()
-};
-
+        const payload = {
+          token: ensureCartToken(),
+          name: (nameInput?.value || '').trim(),
+          phone: (phoneInput?.value || '').trim(),
+          issue: (issueInput?.value || '').trim(),
+          cartLines,
+          pageUrl: window.location.href,
+          ts: Date.now()
+        };
         const res = await fetch('/api/prestige/snapshot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if(!res.ok) { console.warn('snapshot POST failed', res.status); return null; }
+        if(!res.ok){ console.warn('snapshot POST failed', res.status); return null; }
         const json = await res.json();
         if(json.url) return json.url;
         if(json.token) return `${window.location.origin}/p/s/${json.token}`;
@@ -2919,158 +3025,298 @@ function buildOneLineCartSummary(maxItems = 3){
       }
     }
 
-    // Robust SMS opener (share-first, then sms: variants, anchor, clipboard/modal)
-    async function openPrestigeSms(prestigeNumber, messageText){
-      const body = String(messageText || '').trim();
-      const encoded = encodeURIComponent(body);
-      const ua = navigator.userAgent || '';
-      const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-      const isAndroid = /Android/.test(ua);
-      const candidates = [];
-      if(isIOS){
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-      } else if(isAndroid){
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
-      } else {
-        candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
-        candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+    // openPrestigeSms must NOT touch modal UI
+    // --- REPLACE openPrestigeSms WITH THIS ---
+async function openPrestigeSms(prestigeNumber, messageText){
+  const body = String(messageText || '').trim();
+  const encoded = encodeURIComponent(body);
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+
+  const candidates = [];
+  if(isIOS){
+    candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+    candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+  } else {
+    candidates.push(`sms:${prestigeNumber}?body=${encoded}`);
+    candidates.push(`sms:${prestigeNumber}&body=${encoded}`);
+  }
+
+  function tryAnchor(uri){
+    return new Promise((resolve) => {
+      try {
+        const a = document.createElement('a');
+        a.href = uri;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(()=> { try{ a.remove(); }catch(e){}; resolve(true); }, 300);
+      } catch(e){ resolve(false); }
+    });
+  }
+
+  // prefer native share on mobile
+  if(navigator.share && (isIOS || isAndroid)){
+    try { await navigator.share({ title:'Prestige Care', text: body }); return { status:'shared' }; } catch(e){ /* ignore */ }
+  }
+
+  for(const uri of candidates){
+    try {
+      const ok = await tryAnchor(uri);
+      if(ok) return { status:'opened', uri };
+    } catch(e){
+      console.warn('openPrestigeSms tryAnchor error', e);
+    }
+  }
+
+  // fallback: copy to clipboard (do not touch modal here)
+  try { await navigator.clipboard.writeText(`${body}\n\nPrestige Care: ${prestigeNumber}`); } catch(e){ console.warn('clipboard fallback failed', e); }
+  return { status:'fallback' };
+}
+
+// --- REPLACE handleSms WITH THIS ---
+async function handleSms(){
+  try {
+    console.debug('Prestige: handleSms start');
+
+    // Build preview and token block
+    const preview = (typeof buildSmsPreview === 'function') ? buildSmsPreview() : { body: 'Prestige Care', staffReply: '' };
+    const token = (typeof ensureCartToken === 'function') ? ensureCartToken() : ('cart_' + Math.random().toString(36).slice(2,10));
+    const cartLines = (typeof collectCartSummaryLinesDirect === 'function') ? collectCartSummaryLinesDirect() : [];
+    const oneLine = (typeof buildOneLineCartSummary === 'function') ? buildOneLineCartSummary(3) : (cartLines.slice(0,3).join('; ') || '');
+    const tokenBlock = `CartID: ${token}${cartLines.length ? '\nCart:\n' + cartLines.join('\n') : (oneLine ? '\nItems: ' + oneLine : '')}\n\n`;
+
+    // Populate textarea if present
+    if(smsTextarea){
+      smsTextarea.value = tokenBlock + (preview.body || '');
+    } else {
+      console.warn('Prestige: smsTextarea not found; modal textarea missing');
+    }
+
+    // Ensure modal exists
+    if(!modalEl){
+      console.warn('Prestige: modal element not found; falling back to immediate send');
+      // fallback: create message and send immediately
+      const fallbackMsg = tokenBlock + (preview.body || '');
+      await openPrestigeSms(PRESTIGE_NUMBER, fallbackMsg);
+      return;
+    }
+
+    // Ensure a visible CartID badge (click to copy)
+    try {
+      let tokenBadge = modalEl.querySelector('.prestige-cartid-badge');
+      if(!tokenBadge){
+        tokenBadge = document.createElement('div');
+        tokenBadge.className = 'prestige-cartid-badge';
+        tokenBadge.style.cssText = 'font-weight:600;margin-bottom:8px;cursor:pointer;padding:6px 8px;border-radius:4px;background:#f3f4f6;border:1px solid #e5e7eb;';
+        modalEl.insertBefore(tokenBadge, modalEl.firstChild);
       }
-      function tryAnchor(uri){
-        return new Promise((resolve) => {
-          try {
-            const a = document.createElement('a');
-            a.href = uri;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(()=> { try{ a.remove(); }catch(e){}; resolve(true); }, 300);
-          } catch(e){ resolve(false); }
-        });
-      }
-      
-      
-      // ensure modal preview is populated immediately (insert near top of openPrestigeSms)
-try {
-  if(modalEl && smsTextarea){
-    smsTextarea.value = String(messageText || '').trim() + '\n\nPrestige Care: ' + (prestigeNumber || PRESTIGE_NUMBER);
-    // some UIs use a class to show modal; set both
+      tokenBadge.textContent = `CartID: ${token}`;
+      tokenBadge.onclick = async () => {
+        try { await navigator.clipboard.writeText(token); tokenBadge.textContent = `CartID: ${token} (copied)`; setTimeout(()=> tokenBadge.textContent = `CartID: ${token}`, 1200); } catch(e){ console.warn('copy token failed', e); }
+      };
+    } catch(e){ console.warn('Prestige: token badge creation failed', e); }
+
+    // Show modal
     modalEl.classList.add('show');
     modalEl.style.display = 'block';
+    console.debug('Prestige: modal shown');
+
+    // Find or create Proceed/Cancel buttons inside modal
+   // --- Find an existing form proceed/cancel first, otherwise inject modal controls (idempotent) ---
+let proceedBtn = null;
+let cancelBtn = null;
+
+// 1) Try to find a form-based proceed button (common selectors)
+try {
+  // common form containers and submit buttons used by many themes
+  const formSelectors = [
+    'form#prestigeForm', 'form.prestige-form', 'form.checkout', 'form.cart-form',
+    '.prestige-form', '.checkout-form', '.cart-form'
+  ];
+  for(const sel of formSelectors){
+    const f = document.querySelector(sel);
+    if(!f) continue;
+    // prefer explicit submit button
+    const submit = f.querySelector('button[type="submit"], input[type="submit"], .form-proceed, .proceed, .submit');
+    if(submit){
+      proceedBtn = submit;
+      // try to find a cancel/reset in the same form
+      cancelBtn = f.querySelector('button[type="reset"], .form-cancel, .cancel') || null;
+      break;
+    }
+    // fallback: any button that looks like proceed inside the form
+    const anyBtn = f.querySelector('button, input[type="button"], input[type="submit"]');
+    if(anyBtn){
+      proceedBtn = anyBtn;
+      cancelBtn = f.querySelector('button[type="reset"], .form-cancel, .cancel') || null;
+      break;
+    }
   }
-} catch(e){ console.warn('modal populate failed', e); }
+} catch(e){
+  console.warn('Prestige: form lookup failed', e);
+}
 
-      // prefer native share on mobile
-      if(navigator.share && (isIOS || isAndroid)){
-        try { await navigator.share({ title:'Prestige Care', text: body }); } catch(e){ /* ignore */ }
-      }
-      for(const uri of candidates){
-        const ok = await tryAnchor(uri);
-        if(ok) return { status:'opened', uri };
-      }
-      // fallback: copy to clipboard and show modal
-      try { await navigator.clipboard.writeText(`${body}\n\nPrestige Care: ${prestigeNumber}`); } catch(e){}
-      if(modalEl){
-        if(smsTextarea) smsTextarea.value = `${body}\n\nPrestige Care: ${prestigeNumber}`;
-        modalEl.style.display = 'block';
+// 2) If no form proceed found, reuse previously injected modal controls if present
+if(!proceedBtn){
+  // avoid injecting multiple times: mark modalEl._prestigeInjected
+  try {
+    if(modalEl){
+      // if we already injected controls earlier, reuse them
+      if(modalEl._prestigeInjected){
+        proceedBtn = modalEl.querySelector('.prestige-proceed') || modalEl.querySelector('#confirmProceed, .modal-proceed');
+        cancelBtn = modalEl.querySelector('.prestige-cancel') || modalEl.querySelector('#confirmCancel, .modal-cancel');
       } else {
-        alert(`${body}\n\nSend to: ${prestigeNumber}`);
+        // inject controls once
+        const footer = modalEl.querySelector('.modal-footer') || modalEl;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'prestige-injected-controls';
+        wrapper.style.cssText = 'margin-top:12px;display:flex;gap:8px;justify-content:flex-end;';
+        const cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.className = 'prestige-cancel';
+        cancel.textContent = 'Cancel';
+        const proceed = document.createElement('button');
+        proceed.type = 'button';
+        proceed.className = 'prestige-proceed';
+        proceed.textContent = 'Proceed';
+        proceed.style.cssText = 'font-weight:600;';
+        wrapper.appendChild(cancel);
+        wrapper.appendChild(proceed);
+        footer.appendChild(wrapper);
+        proceedBtn = proceed;
+        cancelBtn = cancel;
+        modalEl._prestigeInjected = true;
       }
-      return { status:'fallback' };
     }
+  } catch(e){
+    console.warn('Prestige: modal injection failed', e);
+  }
+}
 
-    // Confirm helper
-    function askConfirm(cb){
-      if(!confirmEl || !confirmProceed || !confirmCancel){ cb(true); return; }
-      confirmEl.style.display = 'block';
-      function cleanup(){ confirmEl.style.display = 'none'; confirmProceed.removeEventListener('click', onProceed); confirmCancel.removeEventListener('click', onCancel); }
-      function onProceed(){ cleanup(); cb(true); }
-      function onCancel(){ cleanup(); cb(false); }
-      confirmProceed.addEventListener('click', onProceed);
-      confirmCancel.addEventListener('click', onCancel);
-    }
-
-    // Main SMS handler
-    async function handleSms(){
-      askConfirm(async (ok) => {
-        if(!ok) return;
-        try {
-          const name = (nameInput?.value || '').trim();
-          const phone = (phoneInput?.value || '').trim();
-          const issue = (issueInput?.value || '').trim();
-          const room = genRoom('prestige',8);
-          const roomLink = `${JITSI_BASE}/${room}`;
-
-          // Build preview (includes cart + friendly)
-          const preview = buildSmsPreview();
-
-          // Best-effort: create server snapshot and get short URL
-          let snapshotUrl = null;
-          if(typeof createSnapshotAndGetUrl === 'function'){
-            try { snapshotUrl = await createSnapshotAndGetUrl(); } catch(e){ console.warn('snapshot failed', e); snapshotUrl = null; }
-          }
-
-          
-          // Compose final message
-let messageToSend = preview.body || (`Prestige Care — join: ${roomLink}`);
-
-// Prefer server snapshot URL when available; otherwise append CartID token
-if(snapshotUrl){
-  messageToSend += `\n\nDetails: ${snapshotUrl}`;
-} else {
-  // append short one-line cart summary and token so staff can look it up
-  const token = ensureCartToken();
-  const oneLine = buildOneLineCartSummary(3);
-  if(oneLine) messageToSend += `\n\nItems: ${oneLine}`;
-  messageToSend += `\n\nCartID: ${token}`;
+// 3) Final safety: if still no proceedBtn, fallback to a global confirm UI
+if(!proceedBtn){
+  proceedBtn = confirmProceed || null;
+  cancelBtn = confirmCancel || null;
 }
 
 
-          // Set hidden staff reply
-          hiddenStaff.value = preview.staffReply || `Hi ${name || '[name]'}, join here: ${roomLink}`;
-
-          // Open share/SMS
-          if(typeof openPrestigeSms === 'function'){
-            await openPrestigeSms(PRESTIGE_NUMBER, messageToSend);
-          } else {
-            try { await navigator.clipboard.writeText(`${messageToSend}\n\nPrestige Care: ${PRESTIGE_NUMBER}`); } catch(e){}
-            if(modalEl){
-              if(smsTextarea) smsTextarea.value = `${messageToSend}\n\nPrestige Care: ${PRESTIGE_NUMBER}`;
-              modalEl.style.display = 'block';
-            } else {
-              alert(`${messageToSend}\n\nSend to: ${PRESTIGE_NUMBER}`);
-            }
-          }
-        } catch(err){
-          console.error('handleSms error', err);
-          alert('An error occurred while preparing the SMS. Check console for details.');
-        }
-      });
+    // One-time attach helper
+    function once(el, ev, fn){
+      if(!el) return;
+      const wrapper = function(e){ try { fn(e); } finally { el.removeEventListener(ev, wrapper); } };
+      el.addEventListener(ev, wrapper);
     }
 
-    // Email handler (keeps existing behavior)
-    function handleEmail(){
-      askConfirm((ok) => {
-        if(!ok) return;
-        const name = (nameInput?.value || '').trim();
-        const phone = (phoneInput?.value || '').trim();
-        const issue = (issueInput?.value || '').trim();
-        const room = genRoom('prestige',8);
-        const t = (typeof buildTemplates === 'function') ? buildTemplates(name, phone, issue, room) : {
-          subjectStaff: `Prestige Help Request — ${name || '[username]'}`,
-          bodyStaff: `User: ${name}\nPhone: ${phone}\nIssue: ${issue}`
-        };
-        hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${JITSI_BASE}/${room} — I’ll join now.`;
-        if(typeof openMailto === 'function'){
-          openMailto(t.subjectStaff, t.bodyStaff);
-        } else {
-          const s = encodeURIComponent(t.subjectStaff);
-          const b = encodeURIComponent(t.bodyStaff);
-          window.location.href = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${s}&body=${b}`;
+    // Cancel handler
+    once(cancelBtn, 'click', () => {
+      try { modalEl.classList.remove('show'); modalEl.style.display = 'none'; } catch(e){}
+      console.debug('Prestige: modal cancelled by user');
+    });
+
+    // Proceed handler
+ // Proceed handler (idempotent; creates snapshot after user confirms)
+if(proceedBtn){
+  // avoid double-attaching
+  if(!proceedBtn._prestigeAttached){
+    proceedBtn._prestigeAttached = true;
+
+    const enclosingForm = proceedBtn.closest ? proceedBtn.closest('form') : null;
+
+    const handler = async function onProceed(e){
+      // prevent multiple clicks
+      try {
+        // If this is a real submit button, prevent immediate submit so we can snapshot first
+        const isSubmit = (proceedBtn.tagName === 'BUTTON' && (proceedBtn.type === 'submit' || proceedBtn.getAttribute('type') === 'submit')) ||
+                         (proceedBtn.tagName === 'INPUT' && proceedBtn.type === 'submit');
+        if(isSubmit && e && typeof e.preventDefault === 'function') e.preventDefault();
+
+        console.debug('Prestige: Proceed clicked (handler)');
+
+        // Read edited body (user may have changed it)
+        const editedBody = (smsTextarea?.value || preview.body || '').trim();
+
+        // show creating state and prevent double clicks
+        const originalText = proceedBtn.textContent;
+        try { proceedBtn.textContent = 'Creating…'; } catch(e){}
+        try { proceedBtn.disabled = true; } catch(e){}
+
+        // Create snapshot AFTER user confirms (with a short timeout)
+        let snapshotUrl = null;
+        try {
+          if(typeof createSnapshotAndGetUrl === 'function'){
+            snapshotUrl = await Promise.race([
+              createSnapshotAndGetUrl(),
+              new Promise((resolve) => setTimeout(()=> resolve(null), 6000))
+            ]);
+          }
+        } catch(err){
+          console.warn('snapshot error', err);
+          snapshotUrl = null;
+        } finally {
+          // always restore button state
+          try { proceedBtn.textContent = originalText; } catch(e){}
+          try { proceedBtn.disabled = false; } catch(e){}
         }
-        if(modalEl){ if(smsTextarea) smsTextarea.value = `${t.smsUser || ''}\n\nPrestige Care: ${PRESTIGE_NUMBER}`; modalEl.style.display = 'block'; }
-      });
+
+        // Compose final message: prefer snapshot URL, otherwise include token
+        let messageToSend = editedBody;
+        if(snapshotUrl){
+          messageToSend += `\n\nDetails: ${snapshotUrl}`;
+          try { hiddenStaff.value = `Snapshot: ${snapshotUrl}`; } catch(e){}
+        } else {
+          const t = (typeof ensureCartToken === 'function') ? ensureCartToken() : token;
+          const one = (typeof buildOneLineCartSummary === 'function') ? buildOneLineCartSummary(3) : oneLine;
+          if(one) messageToSend += `\n\nItems: ${one}`;
+          messageToSend += `\n\nCartID: ${t}`;
+          try { hiddenStaff.value = `CartID: ${t}`; } catch(e){}
+        }
+
+        // Hand off to opener (share / sms / clipboard)
+        const res = await openPrestigeSms(PRESTIGE_NUMBER, messageToSend);
+        console.debug('Prestige: openPrestigeSms result', res);
+
+        // If this was a real form submit button, continue the form submit now
+        if(isSubmit && enclosingForm){
+          setTimeout(()=> {
+            try { enclosingForm.submit(); } catch(e){ console.warn('form.submit failed', e); }
+          }, 250);
+        }
+
+      } catch(err){
+        console.error('Prestige: error in Proceed handler', err);
+        alert('An error occurred while sending. Check console for details.');
+      } finally {
+        try { modalEl.classList.remove('show'); modalEl.style.display = 'none'; } catch(e){}
+      }
+    };
+
+    proceedBtn.addEventListener('click', handler);
+  }
+}
+
+
+  } catch(err){
+    console.error('Prestige: handleSms top-level error', err);
+    alert('An error occurred preparing the SMS preview. Check console for details.');
+  }
+}
+
+
+    // Email handler unchanged
+    function handleEmail(){
+      const name = (nameInput?.value || '').trim();
+      const phone = (phoneInput?.value || '').trim();
+      const issue = (issueInput?.value || '').trim();
+      const room = genRoom('prestige',8);
+      const t = (typeof buildTemplates === 'function') ? buildTemplates(name, phone, issue, room) : {
+        subjectStaff: `Prestige Help Request — ${name || '[username]'}`,
+        bodyStaff: `User: ${name}\nPhone: ${phone}\nIssue: ${issue}`
+      };
+      hiddenStaff.value = t.staffReply || `Hi ${name||'[name]'}, join here: ${JITSI_BASE}/${room} — I’ll join now.`;
+      if(typeof openMailto === 'function') openMailto(t.subjectStaff, t.bodyStaff);
+      else window.location.href = `mailto:${encodeURIComponent(SUPPORT_EMAIL)}?subject=${encodeURIComponent(t.subjectStaff)}&body=${encodeURIComponent(t.bodyStaff)}`;
     }
 
     // Safe attach helper
@@ -3088,7 +3334,7 @@ if(snapshotUrl){
       btn._prestigeAttached = true;
     }
 
-    // Attach handlers idempotently
+    // Attach handlers
     safeAttach(smsBtn, handleSms, 'SMS');
     safeAttach(emailBtn, handleEmail, 'Email');
     if(buzzer && !buzzer._prestigeToggleInstalled){
@@ -3120,54 +3366,69 @@ if(snapshotUrl){
       closeModalBtn._prestigeAttached = true;
     }
 
-    // Expose small API for debugging or external calls
+    // Expose debug helpers
     window.prestige = window.prestige || {};
     window.prestige.collectCartSummaryLinesDirect = collectCartSummaryLinesDirect;
     window.prestige.buildSmsPreview = buildSmsPreview;
     window.prestige.createSnapshotAndGetUrl = createSnapshotAndGetUrl;
     window.prestige.openPrestigeSms = openPrestigeSms;
+    window.prestige.ensureCartToken = ensureCartToken;
+    window.prestige.buildOneLineCartSummary = buildOneLineCartSummary;
 
-    console.log('Prestige: unified handlers attached.');
+    console.log('Prestige: modal-first SMS handler attached.');
   });
 })();
   
-  
-  
-  // Persist a short cart token in localStorage and return it
-function ensureCartToken(){
-  try {
-    const KEY = 'prestigeCartToken';
-    let token = localStorage.getItem(KEY);
-    if(token && typeof token === 'string' && token.length >= 8) return token;
-    // generate compact token: 8 chars base36 (lowercase)
-    token = 'cart_' + Math.random().toString(36).slice(2,10);
-    localStorage.setItem(KEY, token);
-    return token;
-  } catch(e){
-    console.warn('ensureCartToken failed', e);
-    // fallback: ephemeral token
-    return 'cart_' + Math.random().toString(36).slice(2,10);
+  // injection: create controls but copy classes from existing modal buttons if present
+(function injectPrestigeControls(modalEl){
+  if(!modalEl) return null;
+  if(modalEl._prestigeInjected) {
+    return {
+      proceed: modalEl.querySelector('.prestige-proceed'),
+      cancel: modalEl.querySelector('.prestige-cancel')
+    };
   }
-}
 
-// Optional helper to clear token when order completes (call from order success flow)
-function clearCartToken(){
-  try { localStorage.removeItem('prestigeCartToken'); } catch(e){ /* ignore */ }
-  return true;
-}
+  // try to find existing modal buttons to copy classes from
+  const sampleProceed = modalEl.querySelector('button.btn-primary, button.primary, .modal-footer .btn, .modal-footer .primary') ||
+                        document.querySelector('button.btn-primary, button.primary, .modal-footer .btn, .modal-footer .primary');
+  const sampleCancel  = modalEl.querySelector('button.btn-secondary, button.secondary, .modal-footer .btn-secondary, .modal-footer .cancel') ||
+                        document.querySelector('button.btn-secondary, button.secondary, .modal-footer .btn-secondary, .modal-footer .cancel');
 
-// Small helper to build a one-line cart summary for SMS (first N items)
-function buildOneLineCartSummary(maxItems = 3){
+  const footer = modalEl.querySelector('.modal-footer') || modalEl;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'prestige-injected-controls';
+  wrapper.style.cssText = 'margin-top:12px;display:flex;gap:8px;justify-content:flex-end;align-items:center;';
+
+  const cancel = document.createElement('button');
+  cancel.type = 'button';
+  cancel.className = 'prestige-cancel';
+  cancel.textContent = 'Cancel';
+
+  const proceed = document.createElement('button');
+  proceed.type = 'button';
+  proceed.className = 'prestige-proceed';
+  proceed.textContent = 'Proceed';
+
+  // copy class lists from sample buttons if found (preserve site styling)
   try {
-    const lines = collectCartSummaryLinesDirect() || [];
-    if(!lines.length) return '';
-    const sample = lines.slice(0, maxItems).join('; ');
-    return sample.length > 200 ? sample.slice(0,197) + '...' : sample;
-  } catch(e){
-    return '';
-  }
-}
+    if(sampleProceed && sampleProceed.classList && sampleProceed.classList.length){
+      proceed.className = Array.from(sampleProceed.classList).join(' ') + ' prestige-proceed';
+    }
+    if(sampleCancel && sampleCancel.classList && sampleCancel.classList.length){
+      cancel.className = Array.from(sampleCancel.classList).join(' ') + ' prestige-cancel';
+    }
+  } catch(e){ /* ignore copy errors */ }
 
+  wrapper.appendChild(cancel);
+  wrapper.appendChild(proceed);
+  footer.appendChild(wrapper);
+
+  modalEl._prestigeInjected = true;
+  return { proceed, cancel };
+})(modalEl);
+
+  
 </script>
 
 
