@@ -904,7 +904,7 @@
 
   </style>
 <!-- Paste this entire block into the Console -->
-!-- Unified Prestige: HTML hooks, CSS, and JS (paste once before </body>) -->
+<!-- Unified Prestige: HTML hooks, CSS, and JS (paste once before </body>) -->
 <style>
   /* Core UI */
   .prestige-slot-final { display:flex; flex-direction:column; gap:8px; align-items:center; padding:8px; box-sizing:border-box; min-width:220px; }
@@ -1042,7 +1042,108 @@
   font-weight: 600;
   text-shadow: 0 0 6px #c0c0c0;
 }
-  
+
+/* Modal: centered, inert by default, no margin that shifts it down */
+/* Center the modal in the viewport (replace the #prestigeModal block) */
+#prestigeModal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* true center */
+  z-index: 11000;
+  width: min(720px, calc(100% - 48px)); /* responsive, wider if space allows */
+  max-width: 480px;                      /* keep your desired max width */
+  box-sizing: border-box;
+  padding: 18px;
+  background: var(--modal-bg, #fff);
+  color: var(--modal-text, #04131f);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+  max-height: 80vh;
+  overflow: auto;
+  display: block;
+  visibility: hidden;    /* inert until .open */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease, visibility .16s;
+}
+
+/* Visible state (keep this so .open shows the modal) */
+#prestigeModal.open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+/* Ensure SMS preview text remains readable (keep or append to your rules) */
+#prestigeSmsText {
+  color: var(--preview-text, #04131f) !important;
+  background: var(--preview-bg, #f9f9f9) !important;
+  font-family: var(--mono, monospace);
+  white-space: pre-wrap;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-muted, #ccc);
+  height: 240px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  word-break: break-word;
+  caret-color: transparent;
+}
+
+/* Center the action buttons horizontally and keep spacing */
+.prestige-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;   /* center buttons horizontally */
+  align-items: center;
+  margin-top: 12px;
+  flex-wrap: wrap;           /* keep responsive behavior on small screens */
+}
+
+/* Keep button contrast rules intact */
+.prestige-actions .prestige-btn {
+  color: var(--btn-text, #111) !important;
+  background: var(--btn-bg, #eee) !important;
+  border-color: rgba(0,0,0,0.06);
+}
+
+
+/* Make CartID prominent if present */
+#prestigeModal .cart-id,
+.prestige-modal .cart-id {
+  font-weight: 800;
+  color: #ffd87a;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 6px rgba(255,215,0,0.08);
+}
+
+
+/* Buttons and actions: ensure contrast on light modal */
+.prestige-actions .prestige-btn {
+  color: var(--btn-text, #111) !important;
+  background: var(--btn-bg, #eee) !important;
+  border-color: rgba(0,0,0,0.06);
+}
+
+
+/* Dark mode fallback */
+@media (prefers-color-scheme: dark) {
+  #prestigeSmsText {
+    color: var(--preview-text-dark, #eaf3ff);
+    background: var(--preview-bg-dark, rgba(255,255,255,0.03));
+    border-color: rgba(255,255,255,0.06);
+  }
+}
+/* Increase vertical separation between top actions and confirm row inside the modal */
+#prestigeModal .prestige-actions { margin-bottom: 36px; }
+#prestigeModal .prestige-confirm,
+#prestigeModal #prestigeConfirm { margin-top: 36px; }
+
 </style>
 </head>
 <body>
@@ -1243,7 +1344,7 @@
 </div>
 
   <!-- Status -->
-  <div class="object-status pending">Pending • Awaiting Prestige verification</div>
+  <div class="object-status pending">Pending ~ Awaiting Prestige verification</div>
 </div>
 
           <h4>🏛 Commerce Chamber</h4>
@@ -1463,7 +1564,16 @@
 <textarea id="prestigeHiddenStaffReply" style="display:none"></textarea>
 
 <div class="prestige-modal" id="prestigeModal" aria-hidden="true">
-  <div style="font-weight:800;margin-bottom:8px">Prefilled SMS text</div>
+  <div class="prestige-modal-header">
+  <span class="prestige-crest" aria-hidden="true">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <circle cx="12" cy="12" r="11" fill="#ffd87a"/>
+      <path d="M12 6l2.6 3.8L18 11l-3 2.2L15.6 18 12 15.6 8.4 18 9 13.2 6 11l3.4-1.2L12 6z" fill="#0b2a3a"/>
+    </svg>
+  </span>
+  <div class="prestige-modal-title">PREFILLED SMS TEXT</div>
+</div>
+
   <textarea id="prestigeSmsText" readonly></textarea>
   <div class="prestige-actions">
     <button id="copySms" class="prestige-btn ghost">Copy SMS</button>
@@ -1578,6 +1688,9 @@
 </nav>
 
 
+<div id="userCard"></div>
+<div id="ledger"></div>
+<div id="purchaseHistory"></div>
 
 
    
@@ -1821,7 +1934,7 @@ function unlockItem(id, className, cost){
 
   const status = card.querySelector('.object-status');
   if (status){
-    status.textContent = 'Unlocked • Awaiting member finalization';
+    status.textContent = 'Unlocked ~ Awaiting member finalization';
     status.classList.remove('pending');
     status.classList.add('finalized');
   }
@@ -1840,16 +1953,70 @@ function displayInViewer(className, title){
 
 
 <script>
+// --- Shared counters ---
 let cartTokenTotal = 0, cartCrystalTotal = 0, cartItems = 0;
 
+// --- Generic sheet fetcher ---
+async function fetchSheet(gid, mapper){
+  const url = `https://docs.google.com/spreadsheets/d/1eskbyxg5KOvTyOb68_Zdt5W1YeyfOuvBABqnMBN79xM/gviz/tq?tqx=out:json&gid=${gid}`;
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47).slice(0, -2));
+  const rows = json.table.rows || [];
+  return rows.map(mapper);
+}
+
+// --- Specific sheet helpers ---
+async function fetchUserDirectory(){
+  return fetchSheet(0, r => ({
+    user:        r.c[0]?.v ?? "",
+    accessCode:  r.c[1]?.v ?? "",
+    card:        r.c[2]?.v ?? "",
+    purchased:   r.c[3]?.v ?? "0",
+    symbolic:    r.c[4]?.v ?? "0",
+    status:      r.c[5]?.v ?? "Pending"
+  }));
+}
+
+async function fetchPurchaseHistory(){
+  return fetchSheet(238239380, r => ({
+    user:        r.c[0]?.v ?? "",   // Column A
+    transaction: r.c[1]?.v ?? "",   // Column B
+    status:      r.c[2]?.v ?? "Pending", // Column C
+    verifiedBy:  r.c[3]?.v ?? "",   // Column D
+    date:        r.c[4]?.v ?? "",   // Column E
+    notes:       r.c[5]?.v ?? ""    // Column F
+  }));
+}
+
+async function fetchFinalizedLedger(){
+  return fetchSheet(1547074840, r => ({
+    user:          r.c[0]?.v ?? "",
+    transaction:   r.c[1]?.v ?? "",
+    verifiedBy:    r.c[2]?.v ?? "",
+    status:        r.c[3]?.v ?? "Pending",
+    finalizeCode:  r.c[4]?.v ?? "",
+    finalizeExpiry:r.c[5]?.v ?? "",
+    purchased:     r.c[6]?.v ?? "0",
+    symbolic:      r.c[7]?.v ?? "0"
+  }));
+}
+
+// --- Cart functions ---
 function addToCart(name, tokenCost, crystalCost, type){
   const cart = document.getElementById('cartList');
   const item = document.createElement('div');
   item.className = 'cart-item shimmer';
+
+  // Attach lookup keys for ledger matching
+  const user = sessionStorage.getItem("username") || "Guest";
+  item.setAttribute('data-user', user);
+  item.setAttribute('data-transaction', name);
+
   item.innerHTML = `
     <div class="cart-title">${name}</div>
-    ${type !== 'crystal' ? `<div>💰 ${tokenCost} purchased tokens</div>` : ''}
-    ${type !== 'token' ? `<div>♦️ ${crystalCost} symbolic crystals</div>` : ''}
+    ${type !== 'crystal' ? `<div class="cost-row token"><span class="cost-value">${tokenCost}</span> 🪙 purchased tokens</div>` : ''}
+    ${type !== 'token' ? `<div class="cost-row crystal"><span class="cost-value">${crystalCost}</span> ♦️ symbolic crystals</div>` : ''}
     <div class="cart-status">Pending • Awaiting Prestige verification</div>
   `;
   cart.appendChild(item);
@@ -1868,30 +2035,37 @@ function updateCartDisplay(){
 
   if (badge) badge.textContent = cartItems;
   if (floatBadge) floatBadge.textContent = cartItems;
-  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴>`;
+  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️`;
 }
 
 function finalizeCart(){
   const viewer = document.getElementById('receiptViewer');
   if (viewer) {
     viewer.className = 'info-img shimmer';
-    viewer.innerHTML = `<div class="receipt-confirm">🧾 Submitted • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴><br>Awaiting Prestige verification</div>`;
+    viewer.innerHTML = `<div class="receipt-confirm">🧾 Submitted • ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️<br>Awaiting Prestige verification</div>`;
   }
-(document.getElementById('confirmFinalizeBtn')||document.querySelector('.finalize-btn')||document.querySelector('[data-finalize-btn]')||document.querySelector('button.finalize-btn')).addEventListener('click', ()=>window.promptAndConsumeAccessCode());
+
+  (document.getElementById('confirmFinalizeBtn')
+   || document.querySelector('.finalize-btn')
+   || document.querySelector('[data-finalize-btn]')
+   || document.querySelector('button.finalize-btn'))
+  ?.addEventListener('click', ()=>window.promptAndConsumeAccessCode());
 
   document.querySelectorAll('.cart-item').forEach(item => {
     item.classList.add('shimmer');
     item.classList.remove('finalized');
-    
     const s = item.querySelector('.cart-status');
-    if (s) s.textContent = 'Pending • Awaiting Prestige verification';
+    if (s) s.textContent = 'Pending ~ Awaiting Prestige verification';
   });
 
-  // Do NOT deduct balances yet—wait for sheet confirmation
+  // Reset counters AFTER snapshot
   cartTokenTotal = 0;
   cartCrystalTotal = 0;
   cartItems = 0;
   updateCartDisplay();
+
+  // Sync with ledger
+  updateCartFromLedger();
 }
 
 function emptyCart(){
@@ -1909,7 +2083,34 @@ function emptyCart(){
   }
 
   const total = document.getElementById('receiptTotal');
-  if (total) total.textContent = `Total: 0 🪙 + 0 <🔴>`;
+  if (total) total.textContent = `Total: 0 🪙 + 0 ♦️`;
+}
+
+// --- Shimmer sync against ledger ---
+async function updateCartFromLedger(){
+  const ledger = await fetchFinalizedLedger();
+
+  document.querySelectorAll('.cart-item').forEach(item => {
+    const user = item.getAttribute('data-user');
+    const transaction = item.getAttribute('data-transaction');
+
+    const match = ledger.find(l =>
+      String(l.user).trim() === String(user).trim() &&
+      String(l.transaction).trim() === String(transaction).trim()
+    );
+
+    if (match && String(match.status).toLowerCase() === "finalized") {
+      item.classList.remove('shimmer','pending','glow-silver');
+      item.classList.add('finalized','glow-gold');
+      const s = item.querySelector('.cart-status');
+      if (s) s.textContent = ` Finalized by ${match.verifiedBy || "Prestige Member"}`;
+    } else {
+      item.classList.remove('glow-gold');
+      item.classList.add('shimmer','glow-silver');
+      const s = item.querySelector('.cart-status');
+      if (s) s.textContent = 'Pending ~ Awaiting Prestige verification';
+    }
+  });
 }
 
 </script>
@@ -2007,6 +2208,47 @@ function revealNextFaith(){
   faithIndex++;
 }
 
+  
+  
+  
+  
+  
+  
+  // --- Master controller ---
+async function renderController(action, options = {}){
+  switch(action){
+    case "login":
+      await renderUserCard();
+      if (options.userName) {
+        await renderPurchaseHistory(options.userName);
+      }
+      break;
+    case "logout":
+      await renderLedger();
+      break;
+    case "finalize":
+      await renderLedger();
+      if (options.userName) {
+        await renderPurchaseHistory(options.userName);
+      }
+      break;
+    case "viewHistory":
+      if (options.userName) {
+        await renderPurchaseHistory(options.userName);
+      }
+      break;
+    case "refreshAll":
+      await Promise.all([
+        renderUserCard(),
+        renderLedger(),
+        options.userName ? renderPurchaseHistory(options.userName) : Promise.resolve()
+      ]);
+      break;
+    default:
+      console.warn("Unknown render action:", action);
+  }
+}
+
 // --- Initialize all feeds ---
 document.addEventListener("DOMContentLoaded", () => {
   initCommunityFeed();
@@ -2043,21 +2285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Click → add to cart
-    card.addEventListener("click", () => {
-      cartCount++;
-      if (cartCountEl) cartCountEl.textContent = cartCount;
-
-      if (cartLog){
-        const item = document.createElement("div");
-        item.className = "feed-item fadeSlide";
-        item.textContent = `🛒 Added: ${title}`;
-        cartLog.prepend(item);
-        while (cartLog.children.length > 5) cartLog.lastChild.remove();
-      }
-    });
-  });
-});
+    
   
   
 </script>
@@ -2066,45 +2294,32 @@ document.addEventListener("DOMContentLoaded", () => {
   <button class="ghost-btn" onclick="showChamber('checkoutPanel')">Checkout</button>
 </div>
 </script><script>
-// --- Config: set your Sheet ID and GID (tab ID) ---
-const SHEET_ID = "2PACX-1vQ4o3D2FZ3wrqNxhsgv9shjeulUmqb5Uo0hhJK7axuEpUNPxEk7bgmrVqO-PGvUjZfXtHPt1lhWL2XR";
-const GID = "0"; // replace with your tab's gid
-
-// --- Fetch live registry from gviz JSON ---
-async function fetchRegistry(){
-  const res = await fetch("https://docs.google.com/spreadsheets/d/1eskbyxg5KOvTyOb68_Zdt5W1YeyfOuvBABqnMBN79xM/gviz/tq?tqx=out:json&gid=0");
-  const text = await res.text();
-  const json = JSON.parse(text.substring(47).slice(0, -2));
-  const rows = json.table.rows;
-
-  return rows
-    .filter(r => r.c && r.c[0]?.v && r.c[1]?.v) // require User and AccessCode
-    .map(r => ({
-      user:        r.c[0]?.v ?? "",
-      accessCode:  r.c[1]?.v ?? "",
-      card:        r.c[2]?.v ?? "",
-      purchased:   r.c[3]?.v ?? "0",
-      symbolic:    r.c[4]?.v ?? "0",
-      transaction: r.c[5]?.v ?? "",
-      status:      r.c[6]?.v ?? "Pending"
-    
-    }));
+function getCurrentCartItems(){
+  return Array.from(document.querySelectorAll('.cart-item')).map(el => {
+    return {
+      name: el.querySelector('.cart-name')?.textContent || "Unknown",
+      tokenCost: Number(el.querySelector('.cart-tokens')?.textContent || 0),
+      crystalCost: Number(el.querySelector('.cart-crystals')?.textContent || 0),
+      finalized: el.classList.contains('finalized'),
+      verifiedBy: el.getAttribute('data-verified-by') || null
+    };
+  });
 }
 
-// --- Cart sync helper (use the user object from the sheet) ---
+
+
+// --- Cart sync helper ---
 function syncCartFromUser(u, opts = { resetCartCountOnLogin: false }){
   if(!u) return;
-  // ensure session identity is set
   sessionStorage.setItem('activeAccountId', u.accessCode || u.card || u.user);
   window.currentUserId = sessionStorage.getItem('activeAccountId');
 
-  // header counters
+  
   const purchasedEl = document.getElementById('purchasedCount');
   const symbolicEl  = document.getElementById('symbolicCount');
   if(purchasedEl) purchasedEl.textContent = Number(u.purchased || 0);
   if(symbolicEl)  symbolicEl.textContent  = Number(u.symbolic || 0);
 
-  // floating cart / checkout balance rows
   document.querySelectorAll('.floating-cart, .checkout-cart').forEach(container => {
     let row = container.querySelector('.cart-balance-row');
     if(!row){
@@ -2121,7 +2336,6 @@ function syncCartFromUser(u, opts = { resetCartCountOnLogin: false }){
                      <div><strong>Symbolic</strong>: <span class="cart-bal-symbolic">${Number(u.symbolic||0)}</span></div>`;
   });
 
-  // optional: reset cart item counters on login
   if(opts.resetCartCountOnLogin){
     const cartCount = document.getElementById('cartCount');
     const floatBadge = document.getElementById('floatingCartCount');
@@ -2130,7 +2344,9 @@ function syncCartFromUser(u, opts = { resetCartCountOnLogin: false }){
   }
 }
 
-// --- Validate login against live sheet ---
+// --- Validate login ---
+          
+// --- Validate login ---
 async function loginUser(e){
   e?.preventDefault?.();
   const username = document.getElementById("loginUser").value.trim();
@@ -2140,22 +2356,20 @@ async function loginUser(e){
   statusEl.textContent = "… Checking access code";
   statusEl.className = "status pending";
 
-  const registry = await fetchRegistry();
-  const match = registry.find(r => r.accessCode === code && r.user === username);
+  const accounts = await fetchUserDirectory();   // <-- use User Directory
+  const match = accounts.find(r => r.accessCode === code && r.user === username);
 
   if (match){
     sessionStorage.setItem("username", match.user);
     sessionStorage.setItem("accessCode", match.accessCode);
 
-    statusEl.textContent = "✅ Login successful";
+    statusEl.textContent = "Login successful";
     statusEl.className = "status finalized";
 
     document.getElementById("userDirectory")?.classList.add("active");
     document.getElementById("loginPanel")?.classList.remove("active");
 
-    // render user card and sync cart immediately
-    await renderUserCard(); // pulls live from sheet and updates DOM
-    // ensure cart mirrors the same user object (reset cart count on login)
+    await renderUserCard();
     syncCartFromUser(match, { resetCartCountOnLogin: true });
   } else {
     statusEl.textContent = "✗ INVALID USERNAME OR ACCESS CODE";
@@ -2163,97 +2377,248 @@ async function loginUser(e){
   }
 }
 
-// --- Lookup user by access code (from live feed) ---
+// --- Lookup user by access code ---
 async function getUserByAccessCode(code){
-  const accounts = await fetchRegistry();
+  const accounts = await fetchUserDirectory();   // <-- use User Directory
   return accounts.find(acc => String(acc.accessCode).trim() === String(code).trim()) || null;
 }
 
-// --- Render user card (after login or retrieve) ---
-// --- Render user card (identity + balances only) ---
+
+// --- Render user card ---
 async function renderUserCard(){
   const username = sessionStorage.getItem("username");
   const code = sessionStorage.getItem("accessCode");
   if (!username || !code) return;
 
-  const u = await getUserByAccessCode(code);
+  // Pull user basics from User Directory
+  const accounts = await fetchUserDirectory();
+  const u = accounts.find(acc => String(acc.accessCode).trim() === String(code).trim());
   if (!u) return;
 
-  const grid = document.querySelector("#userDirectory .user-grid");
-  if (!grid) return;
+  // Pull current finalized status from Finalized Ledger (truth source)
+const ledger = await fetchFinalizedLedger();
+const finalizedRow = ledger.find(row => String(row.user).trim() === String(u.user).trim());
+const status = finalizedRow ? finalizedRow.status : "Pending";
+const glowClass = String(status).toLowerCase() === "finalized" ? "glow-gold" : "glow-silver";
 
-  // Directory card: identity + balances
-  grid.innerHTML = `
-    <div class="user-card frost" data-user-id="${u.accessCode || u.card || u.user}">
-      <div class="crest-avatar"></div>
-      <div class="user-meta">
-        <div class="account-name">${u.user}</div>
-        <div class="card-id">PrestigePayCard: ${u.card}</div>
-        <div class="access-code">Access Code: ${u.accessCode}</div>
-        <div class="verified-by">Verified by: ${u.verifiedBy || '—'}</div>
-        <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
-        <div class="status ${u.status==="Finalized"?"glow-gold":"glow-silver"}">
-          ${u.status}
-        </div>
+const grid = document.querySelector("#userDirectory .user-grid");
+if (!grid) return;
+
+grid.innerHTML = `
+  <div class="user-card frost" data-user-id="${u.card || u.user}">
+    <div class="crest-avatar"></div>
+    <div class="user-meta">
+      <div class="account-name">${u.user}</div>
+      <div class="card-id">PrestigePayCard: ${u.card}</div>
+      <div class="verified-by">
+        Verified by: ${finalizedRow ? (finalizedRow.verifiedBy || "Prestige Member") : "—"}
       </div>
+      <div class="token-balance">🪙 ${u.purchased} | ♦️ ${u.symbolic}</div>
+      <div class="status ${glowClass}"></div>
     </div>
-  `;
+  </div>
+`;
 
-  // Sync cart and floating UI to match this user immediately
+
+  // Sync balances to cart UI from User Directory (not from ledger)
   syncCartFromUser(u, { resetCartCountOnLogin: false });
 
-  // Also render purchase history in a separate panel
-  renderPurchaseHistory(code);
+  // Render history from Purchase History
+  renderPurchaseHistory(u.user);
 }
 
 
-// --- Render full ledger table ---
+// --- Render ledger ---
+// --- Render ledger ---
 async function renderLedger(){
-  const accounts = await fetchRegistry();
+  const ledger = await fetchFinalizedLedger();
   const grid = document.getElementById("ledgerGrid");
   if (!grid) return;
 
+  // Detect if purchased/symbolic columns exist in the data
+  const hasBalances = ledger.some(u => u.purchased !== undefined || u.symbolic !== undefined);
+
   grid.innerHTML = `
-    <table class="prestige-sheet">
-      <tr><th>User</th><th>Card</th><th>Purchased</th><th>Symbolic</th><th>Transaction</th><th>Status</th></tr>
-      ${accounts.map(u => `
+  <table class="prestige-sheet">
+    <tr>
+      <th>User</th>
+      <th>Transaction</th>
+      <th>Status</th>
+      <th>Verified By</th>
+      <th>Finalize Code</th>
+      <th>Finalize Expiry</th>
+      ${hasBalances ? `<th>Purchased 🪙</th><th>Symbolic ♦️</th>` : ""}
+    </tr>
+    ${ledger.map(l => {
+      const ledgerStatus = String(l.status || "Pending").trim();
+      const ledgerVerifiedBy = l.verifiedBy || "—";
+      const glowClass = ledgerStatus.toLowerCase() === "finalized" ? "glow-gold" : "glow-silver";
+
+      return `
         <tr>
-          <td>${u.user}</td>
-          <td>${u.card}</td>
-          <td>${u.purchased}</td>
-          <td>${u.symbolic}</td>
-          <td>${u.transaction}</td>
-          <td class="${u.status==="Finalized"?"glow-gold":"glow-silver"}">${u.status}</td>
-        </tr>`).join("")}
+          <td>${l.user}</td>
+          <td>${l.transaction}</td>
+          <td class="${glowClass}">${ledgerStatus}</td>
+          <td>${ledgerVerifiedBy}</td>
+          <td>${l.finalizeCode || ""}</td>
+          <td>${l.finalizeExpiry || ""}</td>
+          ${hasBalances ? `<td>${l.purchased || "0"}</td><td>${l.symbolic || "0"}</td>` : ""}
+        </tr>`;
+    }).join("")}
+  </table>
+`;
+
+}
+
+
+
+
+// --- Render purchase history ---
+// --- Render purchase history ---
+async function renderPurchaseHistory(userName){
+  const history = await fetchPurchaseHistory();
+  const ledger  = await fetchFinalizedLedger();
+
+  const rows = history.filter(r => String(r.user).trim() === String(userName).trim());
+  const box = document.getElementById("purchaseHistory");
+  if(!box) return;
+
+  box.innerHTML = `
+    <h4>Purchase History</h4>
+    <table class="prestige-sheet">
+      <tr>
+        <th>User</th>
+        <th>Transaction</th>
+        <th>Status</th>
+        <th>Verified By</th>
+        <th>Date</th>
+        <th>Notes</th>
+      </tr>
+      ${rows.map(h => {
+  // Scoped variables for Purchase History
+  const historyStatus = String(h.status || "Pending").trim().toLowerCase();
+  const historyVerifiedBy = h.verifiedBy || "—";
+  const glowClass = historyStatus === "finalized" ? "history-gold" : "history-silver";
+
+  return `
+    <tr>
+      <td>${h.user}</td>
+      <td>${h.transaction}</td>
+      <td class="${glowClass}">${historyStatus}</td>
+      <td>${historyVerifiedBy}</td>
+      <td>${h.date || ""}</td>
+      <td>${h.notes || ""}</td>
+    </tr>`;
+}).join("")}
+
     </table>
   `;
 }
 
+
+
+
+// --- NEW: Finalize handler (continued) ---
+async function consumeFinalizeCodeFromSheet(code){
+  const ledger = await fetchFinalizedLedger();
+  const history = await fetchPurchaseHistory();
+
+  const match = ledger.find(r => String(r.finalizeCode || "").trim() === String(code).trim());
+  if (!match) {
+    setFinalizeStatus("✗ FINALIZE CODE INVALID", "glow-silver");
+    return false;
+  }
+
+  if (match.finalizeExpiry){
+    const expiry = new Date(match.finalizeExpiry);
+    if (Date.now() > expiry.getTime()){
+      setFinalizeStatus("✗ CODE EXPIRED", "glow-silver");
+      return false;
+    }
+  }
+
+  // 🔎 Check Purchase History tab for this user/transaction
+  const historyMatch = history.find(h =>
+    String(h.user).trim() === String(match.user).trim() &&
+    String(h.transaction).trim() === String(match.transaction).trim()
+  );
+
+  const status = historyMatch ? historyMatch.status : "Pending";
+  const normalized = String(status || "Pending").trim().toLowerCase();
+  const glowClass = normalized === "finalized" ? "glow-gold" : "glow-silver";
+  const verifiedBy = match.verifiedBy || "Prestige Member";
+
+  setFinalizeStatus(` ${status} by ${verifiedBy}`, glowClass);
+
+  // Refresh panels
+  await renderUserCard();
+  await renderPurchaseHistory(match.user);
+  await renderLedger();
+
+  // 🔑 Flip shimmer to gold only if Purchase History says Finalized
+  if (normalized === "finalized") {
+    document.querySelectorAll('.cart-item').forEach(el => {
+      const codeAttr = el.getAttribute('data-finalize-code');
+      if (String(codeAttr).trim() === String(match.finalizeCode).trim()) {
+        el.classList.remove('pending','shimmer','glow-silver');
+        el.classList.add('finalized','glow-gold');
+        const statusEl = el.querySelector('.cart-status');
+        if (statusEl) {
+          statusEl.textContent = ` Finalized by ${verifiedBy}`;
+        }
+      }
+    });
+    console.info("Shimmer flipped to gold for finalized items (Purchase History confirmed).");
+  }
+
+  return true;
+}
+
+
+function setFinalizeStatus(text, cssClass){
+  const el = document.getElementById("finalizeStatus");
+  if (!el) return;
+  el.textContent = text;
+  el.className = `status ${cssClass}`;
+}
+
 // --- Wiring ---
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("loginBtn")?.addEventListener("click", loginUser);
+  // Login
+  ddocument.getElementById("loginBtn")?.addEventListener("click", async () => {
+  const username = sessionStorage.getItem("username");
+  if (username) {
+    await renderController("login", { userName: username });
+  }
+});
+
   document.getElementById("loginCode")?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") loginUser(e);
   });
-
-  document.getElementById("retrieveBtn")?.addEventListener("click", renderUserCard);
-
+  // Logout
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     sessionStorage.clear();
     document.getElementById("userDirectory")?.classList.remove("active");
     document.getElementById("loginPanel")?.classList.add("active");
     renderLedger();
-    // clear header/cart balances on logout
-    const purchasedEl = document.getElementById("purchasedCount");
-    const symbolicEl  = document.getElementById("symbolicCount");
+
+    // Clear header/cart balances
+    const purchasedEl = document.getElementById('purchasedCount');
+    const symbolicEl  = document.getElementById('symbolicCount');
     if (purchasedEl) purchasedEl.textContent = '0';
     if (symbolicEl)  symbolicEl.textContent  = '0';
     const cartCount = document.getElementById('cartCount');
     const floatBadge = document.getElementById('floatingCartCount');
     if(cartCount) cartCount.textContent = '0';
     if(floatBadge) floatBadge.textContent = '0';
-    // clear floating cart balance rows
     document.querySelectorAll('.cart-balance-row').forEach(r => r.remove());
+  });
+
+  // Finalize
+  document.getElementById("finalizeBtn")?.addEventListener("click", async () => {
+    const entered = document.getElementById("finalizeCode")?.value.trim();
+    if (!entered) return;
+    await consumeFinalizeCodeFromSheet(entered);
   });
 });
 
@@ -2282,37 +2647,14 @@ try {
   if (status) {
     status.classList.remove('pending');
     status.classList.add('finalized');
-    status.textContent = '✅ Finalized in Prestige Ledger';
+    status.textContent = ' Finalized in Prestige Ledger';
   }
 } catch(e){ /* ignore if not present */ }
-          
-          
-  // --- Render full purchase history for a user ---
-async function renderPurchaseHistory(userCode){
-  const accounts = await fetchRegistry();
-  const history = accounts.filter(r => r.accessCode === userCode);
-  const box = document.getElementById("purchaseHistory");
-  if(!box) return;
-
-  box.innerHTML = `
-    <h4>Purchase History</h4>
-    <table class="prestige-sheet">
-      <tr><th>User</th><th>Card</th><th>Purchased</th><th>Symbolic</th><th>Transaction</th><th>Status</th></tr>
-      ${history.map(h => `
-        <tr>
-          <td>${h.user}</td>
-          <td>${h.card}</td>
-          <td>${h.purchased}</td>
-          <td>${h.symbolic}</td>
-          <td>${h.transaction}</td>
-          <td class="${h.status==="Finalized"?"glow-gold":"glow-silver"}">${h.status}</td>
-        </tr>`).join("")}
-    </table>
-  `;
-}
- 
-          
 </script>
+
+
+          
+
 
 
   <script>
@@ -2328,7 +2670,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
   // Update status message
   const statusEl = document.getElementById("loginStatus");
   if (statusEl){
-    statusEl.textContent = "✅ Logout successful";
+    statusEl.textContent = "Logout successful";
     statusEl.className = "status finalized";
   }
 
@@ -2365,7 +2707,7 @@ function unlockFrostedObject(){
 
   const status = document.querySelector('#imgVoid .object-status');
   if (status){
-    status.textContent = 'Unlocked • Awaiting member finalization';
+    status.textContent = 'Unlocked ~ Awaiting member finalization';
     status.classList.remove('finalized');
     status.classList.add('pending');
   }
@@ -2377,7 +2719,7 @@ function applyFinalizedState(){
   const status = container?.querySelector('.object-status');
   if (container) container.classList.add('finalized');
   if (status){
-    status.textContent = '✅ Finalized in Prestige Ledger';
+    status.textContent = ' Finalized in Prestige Ledger';
     status.classList.remove('pending');
     status.classList.add('finalized');
   }
@@ -2448,292 +2790,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 
-/* Robust prompt-and-consume helper
-   - Exposes: setOneTimeAccessCode(code), addOneTimeCode(code), promptAndConsumeAccessCode()
-   - Reads/writes obf at static_one_time_obf and keeps an internal records array
-   - Auto-attaches to confirm buttons and always prompts when triggered
-*/
-(function(){
-  const KEY_OBF = 'static_one_time_obf';
-  const KEY_RECORDS = 'static_one_time_records_simple';
-  const KEY_USED = 'static_one_time_used_simple';
-  const VALID_MS = 24 * 60 * 60 * 1000;
-
-  // small safety so reloading this script won't double-attach
-  if(window.__oneTimeHelperLoaded) return;
-  window.__oneTimeHelperLoaded = true;
-
-  // --- crypto helper
-  async function sha256Hex(text){
-    const enc = new TextEncoder().encode(String(text));
-    const d = await crypto.subtle.digest('SHA-256', enc);
-    return Array.from(new Uint8Array(d)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  }
-
-  // --- obf helpers (same scheme you used)
-  function b64(s){ return btoa(s); }
-  function unb64(s){ try { return atob(s); } catch(e){ return null; } }
-  function obfFromHashes(hashes){
-    return hashes.map(h=>{
-      const chunks = (h.match(/.{1,8}/g) || []);
-      return b64(chunks.reverse().join(''));
-    }).join('|');
-  }
-  function hashesFromObf(payload){
-    if(!payload) return [];
-    return payload.split('|').map(p=>{
-      const rev = unb64(p);
-      if(!rev) return null;
-      const chunks = rev.match(/.{1,8}/g) || [];
-      return chunks.reverse().join('');
-    }).filter(Boolean);
-  }
-
-  // --- storage helpers
-  function loadRecords(){
-    try { return JSON.parse(localStorage.getItem(KEY_RECORDS) || '[]'); } catch(e){ return []; }
-  }
-  function saveRecords(arr){
-    localStorage.setItem(KEY_RECORDS, JSON.stringify(arr || []));
-    // keep obf in sync for portability
-    const raw = (arr || []).filter(r => !r.usedAt).map(r => r.hash);
-    localStorage.setItem(KEY_OBF, raw.length ? obfFromHashes(raw) : '');
-  }
-  function loadUsed(){ try { return JSON.parse(localStorage.getItem(KEY_USED) || '[]'); } catch(e){ return []; } }
-  function saveUsed(arr){ localStorage.setItem(KEY_USED, JSON.stringify(arr || [])); }
-
-  // hydrate from obf if records empty
-  (function hydrate(){
-    const recs = loadRecords();
-    if(recs.length) return;
-    const obf = localStorage.getItem(KEY_OBF) || '';
-    if(!obf) return;
-    const raw = hashesFromObf(obf);
-    const now = new Date().toISOString();
-    const records = raw.map(h => ({ hash: h, createdAt: now }));
-    saveRecords(records);
-  })();
-
-  // watch for external updates to static_one_time_obf and merge in new hashes
-  let lastObf = localStorage.getItem(KEY_OBF) || '';
-  setInterval(()=>{
-    const obf = localStorage.getItem(KEY_OBF) || '';
-    if(obf && obf !== lastObf){
-      lastObf = obf;
-      const raw = hashesFromObf(obf);
-      const recs = loadRecords();
-      const existing = new Set(recs.map(r=>r.hash.toLowerCase()));
-      const now = new Date().toISOString();
-      raw.forEach(h => { if(!existing.has(h.toLowerCase())) recs.push({ hash: h, createdAt: now }); });
-      saveRecords(recs);
-      console.info('One-time helper merged new obf payload into records');
-    }
-  }, 1200);
-
-  // --- admin helpers
-  async function setOneTimeAccessCode(code){
-    if(!code || typeof code !== 'string') return console.warn('Provide a string code');
-    const h = await sha256Hex(code);
-    const recs = loadRecords().filter(r => r.hash !== h);
-    recs.unshift({ hash: h, createdAt: new Date().toISOString() });
-    saveRecords(recs);
-    // clear used for this hash
-    const used = loadUsed().filter(u => u !== h);
-    saveUsed(used);
-    console.info('One-time access code set (hash stored).');
-    return h;
-  }
-  async function addOneTimeCode(code){
-    if(!code || typeof code !== 'string') return console.warn('Provide a string code');
-    const h = await sha256Hex(code);
-    const recs = loadRecords();
-    if(recs.some(r=>r.hash.toLowerCase()===h.toLowerCase())) return console.warn('Code already present');
-    recs.push({ hash: h, createdAt: new Date().toISOString() });
-    saveRecords(recs);
-    console.info('Added one-time code (hash stored).');
-    return h;
-  }
-  window.setOneTimeAccessCode = setOneTimeAccessCode;
-  window.addOneTimeCode = addOneTimeCode;
-
-  // --- verify and consume
-  function isExpired(rec){
-    try { return (Date.now() - new Date(rec.createdAt).getTime()) > VALID_MS; } catch(e){ return true; }
-  }
-  async function verifyAndConsume(code){
-    const hash = await sha256Hex(code);
-    const recs = loadRecords();
-    const idx = recs.findIndex(r => r.hash.toLowerCase() === hash.toLowerCase());
-    if(idx === -1) return { ok:false, reason:'no-match' };
-    const rec = recs[idx];
-    if(rec.usedAt) return { ok:false, reason:'used' };
-    if(isExpired(rec)) return { ok:false, reason:'expired' };
-    rec.usedAt = new Date().toISOString();
-    recs[idx] = rec;
-    saveRecords(recs);
-    const used = loadUsed();
-    if(!used.includes(rec.hash)) used.push(rec.hash);
-    saveUsed(used);
-    // update obf to remove consumed hashes
-    const remaining = recs.filter(r=>!r.usedAt).map(r=>r.hash);
-    localStorage.setItem(KEY_OBF, remaining.length ? obfFromHashes(remaining) : '');
-    return { ok:true, record: rec };
-  }
-
-  // --- UI finalize helper (minimal)
-  function applyFinalizedUI(){
-    try {
-      document.querySelectorAll('.status.pending').forEach(el=>{ el.classList.remove('pending'); el.classList.add('finalized'); el.textContent = 'Finalized'; });
-      document.querySelectorAll('.shimmer, .cart-item').forEach(el=>{ el.classList.remove('shimmer'); el.classList.add('finalized'); });
-      document.querySelectorAll('.counter.silver').forEach(el=>{ el.classList.remove('silver'); el.classList.add('gold'); });
-      document.querySelectorAll('.frost-container').forEach(el=>el.classList.add('finalized'));
-    } catch(e){ console.error('applyFinalizedUI error', e); }
-  }
-  window.applyFinalizedUI = applyFinalizedUI;
-
-  // --- prompt wrapper (exposed exactly as older version)
-  if(!window.promptAndConsumeAccessCode){
-    window.promptAndConsumeAccessCode = async function(finalizeCallback){
-      // prevent double prompts
-      if(window.__oneTimePromptActive) return false;
-      window.__oneTimePromptActive = true;
-      try {
-        const code = prompt('Enter one-time finalize access code');
-        if(code === null){ window.__oneTimePromptActive = false; return false; }
-        if(!code){ alert('No code entered'); window.__oneTimePromptActive = false; return false; }
-        const res = await verifyAndConsume(code);
-        if(!res.ok){
-          if(res.reason === 'no-match') alert('Access code invalid');
-          else if(res.reason === 'used') alert('Code already used');
-          else if(res.reason === 'expired') alert('Code expired (24h)');
-          else alert('Access code invalid or not available');
-          window.__oneTimePromptActive = false;
-          return false;
-        }
-        // finalize action
-        try {
-          if(typeof finalizeCallback === 'function') finalizeCallback();
-          else if(typeof window.adminFinalizeAll === 'function') window.adminFinalizeAll();
-          else if(typeof window.activateAllFinalized === 'function') window.activateAllFinalized();
-          else {
-            // fallback: mark local accounts finalized
-            try {
-              const KEY_ACCOUNTS = 'static_accounts_registry';
-              const accounts = JSON.parse(localStorage.getItem(KEY_ACCOUNTS) || '{}');
-              Object.keys(accounts).forEach(k => accounts[k].status = 'Finalized');
-              localStorage.setItem(KEY_ACCOUNTS, JSON.stringify(accounts));
-            } catch(e){}
-          }
-          applyFinalizedUI();
-          alert('Access accepted — finalized applied');
-          window.__oneTimePromptActive = false;
-          return true;
-        } catch(e){
-          console.error('finalize callback error', e);
-          alert('Finalization failed; check console');
-          window.__oneTimePromptActive = false;
-          return false;
-        }
-      } catch(e){
-        console.error('promptAndConsumeAccessCode error', e);
-        window.__oneTimePromptActive = false;
-        return false;
-      }
-    };
-  }
-
-  // --- attach to confirm buttons (ensures prompt shows)
-  function attachConfirm(){
-    const selectors = ['#confirmFinalizeBtn','#confirmBtn','.confirm-btn','[data-confirm]'];
-    selectors.forEach(sel=>{
-      const el = document.querySelector(sel);
-      if(el && !el.__oneTimeAttached){
-        el.addEventListener('click', function(ev){
-          ev.preventDefault();
-          // always call promptAndConsumeAccessCode so prompt appears
-          window.promptAndConsumeAccessCode().then(accepted=>{
-            if(accepted){
-              const form = el.closest('form');
-              if(form) form.submit();
-            }
-          });
-        });
-        el.__oneTimeAttached = true;
-      }
-    });
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attachConfirm);
-  else attachConfirm();
-
-  // expose verify helper for debugging
-  window.verifyAndConsumeOneTime = verifyAndConsume;
-
-  // info
-  console.info('One-time helper loaded. Use setOneTimeAccessCode(code), addOneTimeCode(code), promptAndConsumeAccessCode().');
-})();
-  
-  // Patch to prevent multiple prompts after acceptance
-(function(){
-  const SELECTORS = ['#confirmFinalizeBtn','#confirmBtn','.confirm-btn','[data-confirm]'];
-  // cooldown in ms after a successful accept to ignore extra clicks
-  const COOLDOWN_MS = 1200;
-
-  // ensure single delegated listener
-  if(!window.__oneTimeDelegatedListenerInstalled){
-    document.addEventListener('click', function delegatedOneTimeHandler(ev){
-      try {
-        // find nearest confirm element
-        const el = ev.target.closest(SELECTORS.join(','));
-        if(!el) return; // not a confirm click
-        // prevent default only for matched confirm elements
-        ev.preventDefault();
-
-        // global reentrancy guard used by your verifier
-        if(window.__oneTimePromptActive) return;
-
-        // short cooldown guard to avoid multiple rapid triggers
-        const last = window.__oneTimeLastTrigger || 0;
-        if(Date.now() - last < COOLDOWN_MS) return;
-        window.__oneTimeLastTrigger = Date.now();
-
-        // call the existing prompt function once
-        // if your page uses promptAndConsumeAccessCode, call that; otherwise call the fallback
-        const fn = window.promptAndConsumeAccessCode || window.promptAndVerifyThenFinalize || window.verifyAndConsumeOneTime;
-        if(typeof fn === 'function'){
-          // call and ignore repeated resolves; the function itself prevents reentry
-          fn().catch(()=>{/* ignore errors */});
-        } else {
-          // fallback: show prompt and call verify helper if available
-          (async function(){
-            const code = prompt('Enter one-time finalize access code');
-            if(!code) return;
-            if(typeof window.verifyAndConsumeOneTime === 'function'){
-              const res = await window.verifyAndConsumeOneTime(code);
-              if(res && res.ok){
-                if(typeof window.applyFinalizedUI === 'function') window.applyFinalizedUI();
-                alert('Access accepted — finalized applied');
-              } else {
-                alert('Access code invalid or already used');
-              }
-            } else {
-              alert('Verifier not available');
-            }
-          })();
-        }
-      } catch(e){
-        console.error('delegatedOneTimeHandler error', e);
-      }
-    }, { capture: false, passive: false });
-
-    window.__oneTimeDelegatedListenerInstalled = true;
-    console.info('One-time delegated confirm handler installed');
-  } else {
-    console.info('Delegated handler already installed');
-  }
-})();
-
-</script><script>
-
 // Cart-scoped markItemsGold — finalizes only items inside cart containers
 (function(){
   if(window.__markItemsGoldCartScoped) return;
@@ -2774,86 +2830,53 @@ document.addEventListener('DOMContentLoaded', () => {
   window.markItemsGoldInCart = markItemsGoldInCart;
 
   // auto-hook after verification (safe: only calls cart-scoped function)
-  if(typeof window.promptAndConsumeAccessCode === 'function' && !window.__markItemsGoldCartHooked){
-    const orig = window.promptAndConsumeAccessCode;
-    window.promptAndConsumeAccessCode = async function(...args){
-      const ok = await orig.apply(this, args);
-      if(ok){
-        setTimeout(()=> { try { window.markItemsGoldInCart(); } catch(e){ console.error(e); } }, 120);
-      }
-      return ok;
-    };
-    window.__markItemsGoldCartHooked = true;
-  }
-
-  console.info('markItemsGoldInCart installed — call markItemsGoldInCart() to finalize cart items only.');
-})();
+  
 
 
 </script><script>
-// Cart-scoped updateVerificationText — only updates status text inside cart containers
+/
+// Cart-scoped markItemsGold — finalizes only items inside cart containers
 (function(){
-  if(window.__updateVerificationTextCartScoped) return;
-  window.__updateVerificationTextCartScoped = true;
+  if(window.__markItemsGoldCartScoped) return;
+  window.__markItemsGoldCartScoped = true;
 
+  // update this list to match your cart container(s)
   const CART_CONTAINERS = ['#checkoutPanel', '.checkout-cart', '.cart-list', '#cartPanel', '.floating-cart'];
 
-  function updateVerificationTextInCart(){
-    try {
-      const containers = CART_CONTAINERS.map(s => document.querySelector(s)).filter(Boolean);
-      if(!containers.length) { console.info('updateVerificationTextInCart: no cart containers found'); return false; }
-
-      const statusSelectors = ['.status', '.product-status', '.object-status', '.badge', '[data-ledger-status]'];
-      let changed = 0;
-
-      containers.forEach(root => {
-        statusSelectors.forEach(sel => {
-          root.querySelectorAll(sel).forEach(el => {
-            const text = (el.textContent || '').trim();
-            if(/AWAITING|PENDING|VERIFICATION/i.test(text)){
-              el.textContent = 'Verified';
-              changed++;
-            }
-          });
-        });
-
-        // also replace inline text nodes inside the cart container only (defensive)
-        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
-        const nodes = [];
-        while(walker.nextNode()){
-          const n = walker.currentNode;
-          if(!n.nodeValue || !n.nodeValue.trim()) continue;
-          if(/\bAWAITING\s+PRESTIGE\s+VERIFICATION\b/i.test(n.nodeValue) || /\bPENDING\b/i.test(n.nodeValue)){
-            nodes.push(n);
-          }
-        }
-        nodes.forEach(n => { n.nodeValue = n.nodeValue.replace(/\bAWAITING\s+PRESTIGE\s+VERIFICATION\b/gi, 'Verified').replace(/\bPENDING\b/gi, 'Verified'); changed++; });
-      });
-
-      console.info('updateVerificationTextInCart: updated', changed, 'node(s).');
-      return changed > 0;
-    } catch(e){
-      console.error('updateVerificationTextInCart error', e);
-      return false;
-    }
+  function _applyGoldToCartItem(el){
+    if(!el || el.__goldAppliedCart) return;
+    el.__goldAppliedCart = true;
+    // only change classes/text inside the cart item
+    el.classList.remove('pending','shimmer','status-pend');
+    el.classList.add('finalized','gold');
+    const status = el.querySelector('.status, .product-status, .badge');
+    if(status) status.textContent = 'Verified';
+    // counters inside card
+    el.querySelectorAll('.counter, .price, .product-status').forEach(c=>{
+      c.classList.remove('silver');
+      c.classList.add('gold');
+    });
+    // visual tweak limited to this element
+    try { el.style.boxShadow = el.style.boxShadow || '0 0 12px rgba(255,216,122,0.28)'; } catch(e){}
   }
 
-  // expose and auto-hook after verification
-  window.updateVerificationTextInCart = updateVerificationTextInCart;
-  if(typeof window.promptAndConsumeAccessCode === 'function' && !window.__updateVerificationTextCartHooked){
-    const orig = window.promptAndConsumeAccessCode;
-    window.promptAndConsumeAccessCode = async function(...args){
-      const ok = await orig.apply(this, args);
-      if(ok){
-        setTimeout(()=> { try { window.updateVerificationTextInCart(); } catch(e){ console.error(e); } }, 80);
-      }
-      return ok;
-    };
-    window.__updateVerificationTextCartHooked = true;
+  function markItemsGoldInCart(){
+    const containers = CART_CONTAINERS.map(s => document.querySelector(s)).filter(Boolean);
+    if(!containers.length) { console.info('markItemsGoldInCart: no cart containers found'); return false; }
+    const nodes = new Set();
+    containers.forEach(c => c.querySelectorAll('.cart-item, .product-card').forEach(n => nodes.add(n)));
+    if(!nodes.size) { console.info('markItemsGoldInCart: no cart items found'); return false; }
+    nodes.forEach(_applyGoldToCartItem);
+    console.info('markItemsGoldInCart: finalized', nodes.size, 'cart item(s).');
+    return true;
   }
 
-  console.info('updateVerificationTextInCart installed — call updateVerificationTextInCart() to update cart-only verification text.');
+  // expose for sheet finalize handler
+  window.markItemsGoldInCart = markItemsGoldInCart;
+
+  console.info('markItemsGoldInCart installed — call markItemsGoldInCart() after sheet verification.');
 })();
+
 
 </script>
 <script>
@@ -2912,7 +2935,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // CART READERS
     function collectCartSummaryLinesDirect(){
       const container = document.querySelector('#cartList') || document.querySelector('.cart, .cart-list');
-      const VISUAL = ['.shimmer','.skeleton','.pending','.visual-only','[data-shimmer]','[data-visual]'];
+      const VISUAL = ['.skeleton','.visual-only','[data-shimmer]','[data-visual]'];
+
       const lines = [];
       if(!container) return lines;
       const items = container.querySelectorAll('.cart-item, .product-card, .cart-row, .cart-entry, .store-item, .item');
@@ -2974,7 +2998,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cartLines = collectCartSummaryLinesDirect();
       if(cartLines && cartLines.length) body += '\n\nCart:\n' + cartLines.join('\n');
 
-      const friendly = `\n\nPrestige Care — we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.`;
+      const friendly = `\n\nPrestige Care , we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.{Prestige members may take 15 ~ 30 minutes to respond}`;
       body += friendly;
 
       const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
@@ -3080,28 +3104,34 @@ async function handleSms(){
   try {
     console.debug('Prestige: handleSms start');
 
-    // Build preview and token block
-    const preview = (typeof buildSmsPreview === 'function') ? buildSmsPreview() : { body: 'Prestige Care', staffReply: '' };
-    const token = (typeof ensureCartToken === 'function') ? ensureCartToken() : ('cart_' + Math.random().toString(36).slice(2,10));
-    const cartLines = (typeof collectCartSummaryLinesDirect === 'function') ? collectCartSummaryLinesDirect() : [];
-    const oneLine = (typeof buildOneLineCartSummary === 'function') ? buildOneLineCartSummary(3) : (cartLines.slice(0,3).join('; ') || '');
-    const tokenBlock = `CartID: ${token}${cartLines.length ? '\nCart:\n' + cartLines.join('\n') : (oneLine ? '\nItems: ' + oneLine : '')}\n\n`;
+ // Build preview and token block
+const preview = (typeof buildSmsPreview === 'function')
+  ? buildSmsPreview()
+  : { body: 'Prestige Care', staffReply: '' };
 
-    // Populate textarea if present
-    if(smsTextarea){
-      smsTextarea.value = tokenBlock + (preview.body || '');
-    } else {
-      console.warn('Prestige: smsTextarea not found; modal textarea missing');
-    }
+const token = (typeof ensureCartToken === 'function')
+  ? ensureCartToken()
+  : ('cart_' + Math.random().toString(36).slice(2,10));
 
-    // Ensure modal exists
-    if(!modalEl){
-      console.warn('Prestige: modal element not found; falling back to immediate send');
-      // fallback: create message and send immediately
-      const fallbackMsg = tokenBlock + (preview.body || '');
-      await openPrestigeSms(PRESTIGE_NUMBER, fallbackMsg);
-      return;
-    }
+// Only include CartID here, not cart lines (to avoid duplication)
+const tokenBlock = `CartID: ${token}\n\n`;
+
+// Populate textarea if present
+if (smsTextarea) {
+  smsTextarea.value = tokenBlock + (preview.body || '');
+} else {
+  console.warn('Prestige: smsTextarea not found; modal textarea missing');
+}
+
+// Ensure modal exists
+if (!modalEl) {
+  console.warn('Prestige: modal element not found; falling back to immediate send');
+  // fallback: create message and send immediately
+  const fallbackMsg = tokenBlock + (preview.body || '');
+  await openPrestigeSms(PRESTIGE_NUMBER, fallbackMsg);
+  return;
+}
+
 
     // Ensure a visible CartID badge (click to copy)
     try {
@@ -3431,6 +3461,23 @@ if(proceedBtn){
   
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sms = document.getElementById('pfSendSms') || document.getElementById('smsBtn');
+  const modal = document.getElementById('prestigeModal') || document.querySelector('.prestige-modal');
+  if (!sms || !modal) return;
+  if (sms.tagName === 'BUTTON') sms.type = 'button';
+  sms.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    modal.classList.toggle('open');
+    modal.setAttribute('aria-hidden', modal.classList.contains('open') ? 'false' : 'true');
+  });
+  // close button inside modal (if present)
+  const close = modal.querySelector('#closeModal') || modal.querySelector('.close-btn');
+  close?.addEventListener('click', e => { e.preventDefault(); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
+});
+</script>
 
 
 </body>
