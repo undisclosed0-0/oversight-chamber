@@ -3542,159 +3542,176 @@ if(proceedBtn){
 (function () {
   const STORAGE_KEY = 'prestigeCartItems';
   const UPDATED_AT = 'prestigeCartUpdatedAt';
-  const CASH_PER_PRESTIGE = 0.25; // <-- set your USD (or cash) per Prestige token here
+  const CASH_PER_PRESTIGE = 0.25;
 
-  function safeParse(v) {
-    try { return JSON.parse(v || '[]'); } catch (e) { return []; }
-  }
+  const RIGHT_LIST = '#cartList';
+  const TABLE_BODY = '#cartItems, #cartTable tbody';
+  const RECEIPT = '#receiptTotal';
+  const BADGE = '#floatingCartBadge, .floating-cart-badge';
+  const MAIN_COUNT = '#mainCartCount, .main-cart-count';
+  const SHIMMER = '#cartList';
 
-  function normalizeItem(it) {
-    const denomNum = parseFloat(String(it.denomination ?? it.amount ?? "0").replace(/[^\d.-]/g, "")) || 0;
-    const cash = denomNum * CASH_PER_PRESTIGE;
+  const safeParse = v => { try { return JSON.parse(v || '[]'); } catch (e) { return []; } };
+  const readStored = () => safeParse(localStorage.getItem(STORAGE_KEY));
+  const writeStored = arr => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); localStorage.setItem(UPDATED_AT, String(Date.now())); } catch (e) {} };
+
+  function normalize(it) {
+    const denom = parseFloat(String(it.denomination ?? it.amount ?? "0").replace(/[^\d.-]/g, '')) || 0;
+    const cash = denom * CASH_PER_PRESTIGE;
     return {
-      denomination: denomNum.toFixed(2),
-      currency: String(it.currency ?? it.token ?? "Prestige"),
-      serial: String(it.serial ?? it.id ?? ""),
-      issued: String(it.issued ?? it.date ?? ""),
-      redeem_url: String(it.redeem_url ?? it.url ?? ""),
-      cashValue: Number.isFinite(cash) ? cash.toFixed(2) : "0.00"
+      denomination: denom.toFixed(2),
+      currency: String(it.currency ?? it.token ?? 'Prestige'),
+      serial: String(it.serial ?? it.id ?? ''),
+      issued: String(it.issued ?? it.date ?? ''),
+      redeem_url: String(it.redeem_url ?? it.url ?? ''),
+      cashValue: Number.isFinite(cash) ? cash.toFixed(2) : '0.00'
     };
   }
 
-  function readStored() {
-    return safeParse(localStorage.getItem(STORAGE_KEY));
-  }
-
-  function writeStored(arr) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-      localStorage.setItem(UPDATED_AT, String(Date.now()));
-    } catch (e) {
-      console.error('persist write error', e);
-    }
-  }
-
-  function pushAndPersist(item) {
-    const normalized = normalizeItem(item);
-    const stored = readStored();
-    stored.push(normalized);
-    writeStored(stored);
+  function persistArray(arr) {
+    const normalized = arr.map(normalize);
+    writeStored(normalized);
     return normalized;
   }
 
-  function renderIntoCart(items) {
-    // Clear UI first (caller should clear before calling if needed)
-    items.forEach(item => {
-      const payload = normalizeItem(item);
-
-      // Pass cashValue to your cart API so UI can show money
-      const payloadForCart = { ...payload, cashValue: payload.cashValue };
-
-      if (typeof window.cartAddItem === 'function') {
-        try { window.cartAddItem(payloadForCart); } catch (e) { console.error('cartAddItem error', e); }
-      } else if (typeof window.addToCart === 'function') {
-        try { window.addToCart(payloadForCart); } catch (e) { console.error('addToCart error', e); }
-      } else {
-        // Fallback: inject into visible table
-        const tbody = document.querySelector('#cartItems') || document.querySelector('#cartTable tbody');
-        if (tbody) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${payload.denomination} ${payload.currency}</td>
-            <td>${payload.serial}</td>
-            <td>${payload.issued}</td>
-            <td>${payload.cashValue ? '$' + payload.cashValue : ''}</td>
-            <td>${payload.redeem_url ? `<a href="${payload.redeem_url}" target="_blank">Redeem</a>` : ''}</td>
-          `;
-          tbody.appendChild(tr);
-        }
-      }
-
-      // Persist each item so canonical storage always contains cashValue
-      const stored = readStored();
-      // avoid duplicating if already present (simple serial check)
-      if (!stored.some(s => s.serial === payload.serial)) {
-        stored.push(payload);
-        writeStored(stored);
-      }
-
-      // Notify listeners
-      document.dispatchEvent(new CustomEvent('cart:itemAdded', { detail: payloadForCart }));
-    });
-
-    // Update totals and badges explicitly
-    const storedNow = readStored();
-    const totalPrestige = storedNow.reduce((s, it) => s + (parseFloat(it.denomination) || 0), 0);
-    const totalCash = storedNow.reduce((s, it) => s + (parseFloat(it.cashValue) || 0), 0);
-    const count = storedNow.length;
-
-    const receipt = document.getElementById('receiptTotal');
-    if (receipt) receipt.textContent = `Total: ${totalPrestige.toFixed(2)} Prestige 🪙 • $${totalCash.toFixed(2)} USD (${count} item${count !== 1 ? 's' : ''})`;
-
-    const floatBadge = document.querySelector('#floatingCartBadge') || document.querySelector('.floating-cart-badge');
-    if (floatBadge) floatBadge.textContent = String(count);
-
-    const mainCount = document.querySelector('#mainCartCount') || document.querySelector('.main-cart-count');
-    if (mainCount) mainCount.textContent = String(count);
+  function pushAndPersist(item) {
+    const n = normalize(item);
+    const stored = readStored();
+    if (!stored.some(s => s.serial === n.serial)) {
+      stored.push(n);
+      writeStored(stored);
+    }
+    return n;
   }
 
   function clearCartUI() {
     const tbody = document.querySelector('#cartItems') || document.querySelector('#cartTable tbody');
     if (tbody) tbody.innerHTML = '';
-    // Optionally clear cart UI elements your cart API manages (not done here)
-  }
-
-  function loadAndRender() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const items = safeParse(raw).map(normalizeItem);
-    clearCartUI();
-    if (items.length > 0) renderIntoCart(items);
-  }
-
-  function loadFromUrlIfPresent() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('items')) {
-      try {
-        const parsed = JSON.parse(params.get('items'));
-        if (Array.isArray(parsed) && parsed.length) {
-          // normalize and persist so cashValue is stored
-          const normalized = parsed.map(normalizeItem);
-          writeStored(normalized);
-        }
-      } catch (e) {
-        console.error('URL items parse error', e);
-      }
-    }
-  }
-
-  // Listen for storage events from other tabs/windows
-  window.addEventListener('storage', (ev) => {
-    if (ev.key === STORAGE_KEY || ev.key === UPDATED_AT) {
-      loadAndRender();
-    }
-  });
-
-  // On load: prefer URL fallback then stored canonical state
-  window.addEventListener('load', () => {
-    loadFromUrlIfPresent();
-    loadAndRender();
-  });
-
-  // Expose helpers for debugging
-  window.refreshPrestigeCartFromStorage = loadAndRender;
-  window.clearPrestigeStoredCart = function () {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(UPDATED_AT);
-    clearCartUI();
-    const floatBadge = document.querySelector('#floatingCartBadge') || document.querySelector('.floating-cart-badge');
+    const list = document.querySelector(RIGHT_LIST);
+    if (list) list.innerHTML = '';
+    const floatBadge = document.querySelector(BADGE);
     if (floatBadge) floatBadge.textContent = '0';
-    const mainCount = document.querySelector('#mainCartCount') || document.querySelector('.main-cart-count');
+    const mainCount = document.querySelector(MAIN_COUNT);
     if (mainCount) mainCount.textContent = '0';
-    const receipt = document.getElementById('receiptTotal');
+    const receipt = document.querySelector(RECEIPT);
     if (receipt) receipt.textContent = 'Total: 0.00 Prestige 🪙 (0 items)';
-  };
+  }
+
+  function renderIntoCart(items) {
+    // clear UI
+    const listEl = document.querySelector(RIGHT_LIST);
+    if (listEl) listEl.innerHTML = '';
+    const tbody = document.querySelector(TABLE_BODY);
+    if (tbody) tbody.innerHTML = '';
+
+    // render each item
+    items.forEach(item => {
+      const payload = normalize(item);
+      const payloadForCart = { ...payload, cashValue: payload.cashValue };
+
+      // prefer cart API
+      if (typeof window.cartAddItem === 'function') {
+        try { window.cartAddItem(payloadForCart); } catch (e) { console.error('cartAddItem error', e); }
+      } else if (typeof window.addToCart === 'function') {
+        try { window.addToCart(payloadForCart); } catch (e) { console.error('addToCart error', e); }
+      } else {
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${payload.denomination} ${payload.currency}</td><td>${payload.serial}</td><td>${payload.issued}</td><td>${payload.cashValue ? '$' + payload.cashValue : ''}</td><td>${payload.redeem_url ? `<a href="${payload.redeem_url}" target="_blank">Redeem</a>` : ''}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+
+      if (listEl) {
+        const row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML = `<div class="cart-row-left"><div class="cart-amount">${payload.denomination} ${payload.currency}</div><div class="cart-serial">${payload.serial}</div></div><div class="cart-row-right"><div class="cart-cash">$${payload.cashValue}</div>${payload.redeem_url ? `<a class="cart-redeem" href="${payload.redeem_url}" target="_blank">Redeem</a>` : ''}</div>`;
+        listEl.appendChild(row);
+      }
+
+      // persist canonical
+      const stored = readStored();
+      if (!stored.some(s => s.serial === payload.serial)) {
+        stored.push(payload);
+        writeStored(stored);
+      }
+
+      // notify listeners
+      document.dispatchEvent(new CustomEvent('cart:itemAdded', { detail: payloadForCart }));
+    });
+
+    // update totals & badges
+    const storedNow = readStored();
+    const totalPrestige = storedNow.reduce((s, it) => s + (parseFloat(it.denomination) || 0), 0);
+    const totalCash = storedNow.reduce((s, it) => s + (parseFloat(it.cashValue) || 0), 0);
+    const count = storedNow.length;
+
+    const receipt = document.querySelector(RECEIPT);
+    if (receipt) receipt.textContent = `Total: ${totalPrestige.toFixed(2)} Prestige 🪙 • $${totalCash.toFixed(2)} USD (${count} item${count !== 1 ? 's' : ''})`;
+
+    const floatBadge = document.querySelector(BADGE);
+    if (floatBadge) floatBadge.textContent = String(count);
+    const mainCount = document.querySelector(MAIN_COUNT);
+    if (mainCount) mainCount.textContent = String(count);
+
+    // shimmer pulse
+    const shimmerEl = document.querySelector(SHIMMER);
+    if (shimmerEl) { shimmerEl.classList.remove('shimmer-pulse'); void shimmerEl.offsetWidth; shimmerEl.classList.add('shimmer-pulse'); }
+  }
+
+  function renderFromStorage() {
+    const raw = readStored();
+    const normalized = raw.map(normalize);
+    if (normalized.length === 0) { clearCartUI(); return; }
+    renderIntoCart(normalized);
+  }
+
+  function loadUrlItems() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('items')) return null;
+    try {
+      const parsed = JSON.parse(params.get('items'));
+      if (Array.isArray(parsed) && parsed.length) return persistArray(parsed);
+    } catch (e) { console.error('URL parse', e); }
+    return null;
+  }
+
+  function wrapIfExists(name) {
+    const orig = window[name];
+    if (typeof orig !== 'function') return false;
+    window[name] = function (payload) {
+      try {
+        const res = orig.apply(this, arguments);
+        try { pushAndPersist(payload); } catch (e) { console.error(e); }
+        renderFromStorage();
+        return res;
+      } catch (e) {
+        console.error(name + ' error', e);
+        try { pushAndPersist(payload); renderFromStorage(); } catch (err) { console.error(err); }
+      }
+    };
+    return true;
+  }
+
+  // events
+  window.addEventListener('storage', ev => { if (ev.key === STORAGE_KEY || ev.key === UPDATED_AT) renderFromStorage(); });
+  document.addEventListener('cart:itemAdded', ev => { if (ev && ev.detail) { try { pushAndPersist(ev.detail); } catch (e) {} renderFromStorage(); } });
+
+  // public helpers
+  window.refreshPrestigeCartFromStorage = renderFromStorage;
+  window.clearPrestigeStoredCart = function () { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(UPDATED_AT); clearCartUI(); };
+
+  // init
+  window.addEventListener('load', () => {
+    const fromUrl = loadUrlItems();
+    if (fromUrl) { renderIntoCart(fromUrl); return; }
+    renderFromStorage();
+    wrapIfExists('cartAddItem');
+    wrapIfExists('addToCart');
+  });
 })();
 </script>
+
 
 
 
