@@ -782,74 +782,7 @@
   }
 }
 
-.checkout-btn {
-  position: fixed;
-  bottom: 60px;   /* above sticky bar */
-  right: 12px;
-  background: #2ed573;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-.cart-btn {
-  margin-bottom: 60px; /* lifts cart above sticky nav */
-}
 
-/* Hide on larger screens */
-@media (min-width: 768px) {
-  .checkout-btn {
-    display: none;
-  }
-}
-.user-login {
-  width: 100%;      /* default full width */
-  max-width: 400px; /* desktop size */
-  margin: 0 auto;
-}
-
-/* Mobile half size */
-@media (max-width: 480px) {
-  .user-login {
-    width: 50%;     /* half screen width */
-    margin: 0 auto;
-  }
-}
-/* Desktop checkout button */
-.checkout-btn-desktop {
-  display: inline-block;
-}
-
-/* Hide desktop checkout on mobile */
-@media (max-width: 767px) {
-  .checkout-btn-desktop {
-    display: none;
-  }
-}
-
-/* Mobile checkout button */
-.checkout-btn-mobile {
-  display: none;
-  position: fixed;
-  bottom: 60px;   /* above sticky bar */
-  right: 12px;
-  background: #2ed573;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-
-/* Show mobile checkout only on small screens */
-@media (max-width: 767px) {
-  .checkout-btn-mobile {
-    display: block;
-  }
-}
 .billboard-container {
   display: flex;
   flex-wrap: nowrap;
@@ -1188,9 +1121,387 @@
 #loginStatus.status.finalized { color: #ffd700; font-weight: 700; }
 
   
+/* shimmer + verification visuals */
+.shimmer-pulse { animation: shimmerPulse 900ms ease; }
+@keyframes shimmerPulse { 0%{opacity:.9}50%{opacity:1;transform:translateY(-3px)}100%{opacity:.95} }
+.finalized-glow { box-shadow: 0 0 12px rgba(212,175,55,0.25); }
+
+/* header + cards */
+.shimmer-header { font-weight:700; margin-bottom:8px; color:#fff; }
+.shimmer-cards { display:flex; flex-direction:column; gap:8px; }
+.prestige-card { display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:8px; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.card-pending .prestige-state { color:#9aa0a6; font-size:0.75rem; }
+.card-finalized { border:1px solid rgba(212,175,55,0.15); }
+.prestige-amount { font-weight:700; color:#fff; }
+.prestige-cash { font-weight:700; color:#d4f1d4; }
+.prestige-state { margin-top:6px; font-size:0.75rem; color:#cfcfcf; }
+
+  /* Prestige button styles: visible, accessible, consistent */
+.prestige-card-right { display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+
+.prestige-redeem,
+.prestige-copy {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  font-size:13px;
+  font-weight:600;
+  border-radius:6px;
+  border:0;
+  cursor:pointer;
+  text-decoration:none;
+  color:#fff;
+  box-shadow:0 1px 0 rgba(0,0,0,0.25);
+}
+
+
+
+/* Small visual states */
+.prestige-redeem:hover, .prestige-copy:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+.prestige-redeem:active, .prestige-copy:active { transform:translateY(0); box-shadow:0 2px 6px rgba(0,0,0,0.12); }
+.prestige-redeem[disabled], .prestige-copy[disabled] { opacity:0.6; cursor:not-allowed; }
+
+/* Optional: centralize ID/comments styles */
+.prestige-id-panel { margin-top:12px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:#e6eef8; }
+.prestige-id-panel .prestige-id-field { width:100%; box-sizing:border-box; }
+.prestige-divider { height:1px; background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); margin:12px 0; border-radius:2px; }
+
   
+/* Tunables */
+:root{
+  --rail-size: 120px;        /* tile size */
+  --rail-gap: 28px;          /* pathway width between tiles */
+  --fluor-a: #7af0ff;        /* bright accent */
+  --fluor-b: #9eff7a;        /* secondary accent */
+  --fluor-c: #ffd87a;        /* warm accent */
+  --pathway: rgba(6,12,18,0.72);
+  --glow-alpha: 0.14;
+}
+
+/* Grid: left aligned 2x2 with pathways */
+.checkout-rails-grid{
+  display: grid;
+  grid-template-columns: repeat(2, var(--rail-size));
+  grid-auto-rows: var(--rail-size);
+  gap: var(--rail-gap);
+  justify-content: start;    /* far left alignment */
+  align-content: start;
+  padding: 12px 0 0 0;
+  box-sizing: border-box;
+}
+
+/* Make checkout background show as pathway */
+#checkoutPanel, #checkoutPanel .chamber-grid { background-color: var(--pathway); }
+
+/* Tile base: square, softened corners, layered fluorescent gradient */
+.checkout-rails-grid .rail{
+  width: var(--rail-size);
+  height: var(--rail-size);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:8px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 12px 36px rgba(2,6,23,0.55),
+    inset 0 2px 8px rgba(255,255,255,0.03);
+  overflow:hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  color: #04131f;
+}
+
+/* Distinct layered gradients per tile (fluorescent + soft vignette) */
+.checkout-rails-grid .rail:nth-child(1){
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.02)),
+    radial-gradient(60% 60% at 20% 20%, rgba(122,240,255,0.18), transparent 20%),
+    linear-gradient(135deg, var(--fluor-a), #bff9ff 40%, rgba(255,255,255,0.06) 60%);
+  border-color: rgba(122,240,255,0.28);
+  box-shadow: 0 14px 40px rgba(10,30,40,0.6), 0 0 40px rgba(122,240,255,var(--glow-alpha));
+}
+.checkout-rails-grid .rail:nth-child(2){
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.02)),
+    radial-gradient(60% 60% at 80% 20%, rgba(255,216,122,0.16), transparent 20%),
+    linear-gradient(135deg, #ffd87a, #fff6d6 40%, rgba(255,255,255,0.04) 60%);
+  border-color: rgba(255,216,122,0.28);
+  box-shadow: 0 14px 40px rgba(20,18,10,0.6), 0 0 40px rgba(255,216,122,var(--glow-alpha));
+}
+.checkout-rails-grid .rail:nth-child(3){
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.02)),
+    radial-gradient(60% 60% at 20% 80%, rgba(158,255,122,0.14), transparent 20%),
+    linear-gradient(135deg, var(--fluor-b), #eaffc8 40%, rgba(255,255,255,0.04) 60%);
+  border-color: rgba(158,255,122,0.28);
+  box-shadow: 0 14px 40px rgba(10,20,10,0.6), 0 0 40px rgba(158,255,122,var(--glow-alpha));
+}
+.checkout-rails-grid .rail:nth-child(4){
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.02)),
+    radial-gradient(60% 60% at 80% 80%, rgba(174,227,255,0.14), transparent 20%),
+    linear-gradient(135deg, #aee3ff, #eaf9ff 40%, rgba(255,255,255,0.04) 60%);
+  border-color: rgba(174,227,255,0.28);
+  box-shadow: 0 14px 40px rgba(10,18,30,0.6), 0 0 40px rgba(174,227,255,var(--glow-alpha));
+}
+/* --- Position grid to far right inside checkout panel --- */
+.checkout-rails-grid {
+  justify-content: end;        /* push grid to the far right */
+  margin-left: 0;
+  margin-right: 0;
+  padding: 12px 0 0 0;
+}
+
+/* Ensure the checkout right column is the target background (pathways remain visible) */
+#checkoutPanel .chamber-grid { background-color: rgba(6,12,18,0.72); }
+
+/* --- Tile visual: keep fluorescent gradient but add readable text panel --- */
+.checkout-rails-grid .rail {
+  width: var(--rail-size, 220px);
+  height: var(--rail-size, 220px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:12px;
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+  color: #04131f; /* dark text for contrast on bright gradients */
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+
+/* Text panel inside tile to guarantee legibility over gradients */
+.checkout-rails-grid .rail .text-wrap {
+  width: 100%;
+  background: rgba(255,255,255,0.86); /* near-opaque so text is readable */
+  padding: 8px 10px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  color: #04131f;
+  text-align:center;
+}
+
+/* Keep title and description compact and readable */
+.checkout-rails-grid .rail strong {
+  display:block;
+  font-size:15px;
+  line-height:1.05;
+  margin:0 0 4px 0;
+  font-weight:800;
+}
+.checkout-rails-grid .rail p {
+  margin:0;
+  font-size:13px;
+  color: rgba(4,19,31,0.95);
+  line-height:1.15;
+  max-height: 3.6em; /* ~3 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sigil: round, centered, high contrast */
+.checkout-rails-grid .rail .emblem-sigil {
+  width:64px; height:64px; border-radius:50%;
+  background-size:cover; background-position:center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.06);
+  flex:0 0 auto;
+}
+
+/* Hover effect */
+.checkout-rails-grid .rail:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 56px rgba(2,6,23,0.65), 0 0 40px rgba(255,255,255,0.04);
+}
+
+/* Preserve fluorescent layered gradients (example overrides) */
+.checkout-rails-grid .rail:nth-child(1){ /* Prestige Pay */ }
+.checkout-rails-grid .rail:nth-child(2){ /* COD */ }
+.checkout-rails-grid .rail:nth-child(3){ /* Money Order */ }
+.checkout-rails-grid .rail:nth-child(4){ /* Checkout Cart */ }
+
+/* --- Buzzer label under bell: make it readable --- */
+/* This is the element under the bell (the "Need help? Tap the buzzer" label). */
+.prestige-buzzer-label-final {
+  display:block;
+  font-size:13px;
+  color:#eaf3ff;
+  background: rgba(2,8,18,0.6);
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid rgba(136,204,255,0.12);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+  max-width: 220px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* If you want the label to sit to the right of the bell on narrow widths */
+@media (max-width:720px) {
+  .prestige-buzzer-wrap { display:flex; gap:8px; align-items:center; }
+  .prestige-buzzer-label-final { white-space:normal; font-size:12px; }
+}
+
+/* Responsive: keep tiles scrollable on small screens */
+@media (max-width:720px) {
+  .checkout-rails-grid { display:flex; gap:14px; overflow-x:auto; padding:8px; justify-content:flex-end; }
+  .checkout-rails-grid .rail { flex:0 0 var(--rail-size,160px); height:var(--rail-size,160px); }
+}
+
+/* Sigil: round, centered, high-contrast on fluorescent gradient */
+.checkout-rails-grid .rail .emblem-sigil{
+  width:64px; height:64px; border-radius:50%;
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.06);
+  flex:0 0 auto;
+}
+
+/* Title/description: dark text for contrast */
+:root { --rail-text-title: #ffffff; --rail-text-body: #cfd8e3; }
+
+.checkout-rails-grid .rail strong { color: var(--rail-text-title); font-size:15px; margin:0; }
+.checkout-rails-grid .rail p      { color: var(--rail-text-body);  font-size:13px; margin:0; }
+
+
+/* Hover: lift + intensified glow */
+.checkout-rails-grid .rail:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 26px 56px rgba(2,6,23,0.65), 0 0 60px rgba(255,255,255,0.06);
+}
+
+/* Pathway spacing preserved */
+.checkout-rails-grid{ gap: var(--rail-gap); }
+
+/* Responsive: horizontal scroll of equal squares on narrow screens */
+@media (max-width:720px){
+  :root{ --rail-size:160px; --rail-gap:14px; }
+  .checkout-rails-grid{ display:flex; gap:var(--rail-gap); overflow-x:auto; padding:8px; justify-content:flex-start; }
+  .checkout-rails-grid .rail{ flex:0 0 var(--rail-size); height:var(--rail-size); }
+}
+
+/* --- Dark cast and readable text patch --- */
+:root {
+  --tile-cast-alpha: 0.48;   /* darkness of the cast behind tile content */
+  --tile-text-bg: rgba(0,0,0,0.56); /* panel behind text */
+  --tile-text-pad: 10px;
+}
+
+/* create a soft dark cast inside each tile (sits under content) */
+.checkout-rails-grid .rail {
+  position: relative; /* ensure pseudo sits under content */
+  overflow: visible;
+}
+
+/* pseudo element provides the dark cast / vignette */
+.checkout-rails-grid .rail::before {
+  content: "";
+  position: absolute;
+  inset: 8px;                     /* inset so cast doesn't touch outer edge */
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(0,0,0,var(--tile-cast-alpha)), rgba(0,0,0,0.18));
+  pointer-events: none;
+  z-index: 0;                     /* behind tile content */
+  filter: blur(6px);              /* softens the cast */
+  transition: opacity .18s ease;
+}
+
+/* ensure tile content sits above the cast */
+.checkout-rails-grid .rail > * { position: relative; z-index: 1; }
+
+/* add a semi-opaque text panel for guaranteed legibility */
+.checkout-rails-grid .rail .text-wrap {
+  background: var(--tile-text-bg);
+  padding: var(--tile-text-pad);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  color: #fff;                     /* high contrast text */
+  max-width: calc(100% - 24px);
+  margin: 0 auto;
+  backdrop-filter: blur(4px) saturate(1.05);
+  line-height: 1.15;
+}
+
+/* tighten title/body contrast */
+.checkout-rails-grid .rail .text-wrap strong { color: #fff; font-weight:800; display:block; margin-bottom:6px; }
+.checkout-rails-grid .rail .text-wrap p { color: rgba(255,255,255,0.92); margin:0; font-size:13px; }
+
+/* reduce cast on hover for a subtle lift effect */
+.checkout-rails-grid .rail:hover::before { opacity: 0.85; transform: translateY(-2px); }
+
+/* responsive: keep same behavior on small screens */
+@media (max-width:720px) {
+  .checkout-rails-grid .rail::before { inset: 6px; filter: blur(4px); }
+  .checkout-rails-grid .rail .text-wrap { padding:8px; }
+}
+
+
+/* Make the archive shell behave like a modal sub-panel */
+.prestige-archive-shell {
+  position: relative;
+  z-index: 1200;
+  background: transparent;
+  margin: 12px 0 0 0;
+  box-sizing: border-box;
+}
+
+/* Controls column (Add/Clear/Copy) aligned inside modal */
+.prestige-archive-shell .prestige-controls {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:stretch;
+  pointer-events:auto;
+}
+
+/* Ensure search sits above archive list and is full width inside modal */
+.prestige-archive-shell #prestigeArchiveSearch {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Archive list should be scrollable but constrained to modal height */
+.prestige-archive-shell #prestigeArchiveList {
+  max-height: 28vh;
+  overflow:auto;
+  box-sizing: border-box;
+}
+
+/* Buttons: consistent sizing and not clipped */
+.prestige-archive-shell button.prestige-btn {
+  min-width: 110px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Small-screen adjustments: stack controls under textarea */
+@media (max-width:720px) {
+  .prestige-archive-shell > .prestige-archive { flex-direction: column; }
+  .prestige-archive-shell .prestige-controls { flex-direction: row; gap:8px; justify-content:space-between; }
+}
+
   
-  
+  /* Mobile-friendly archive list */
+#prestigeArchiveList .archive-item { padding: 12px 10px; }
+#prestigeArchiveList .archive-item .archive-apply,
+#prestigeArchiveList .archive-item .archive-delete { min-width: 64px; padding:10px 12px; font-size:14px; }
+#prestigeArchiveList .archive-item .archive-select { width:24px; height:24px; }
+
+/* Responsive stacking */
+@media (max-width:720px) {
+  #prestigeArchiveList .archive-item { flex-direction:column; align-items:flex-start; gap:8px; }
+  #prestigeArchiveList .archive-item > div:last-child { width:100%; display:flex; gap:8px; }
+  .prestige-archive { flex-direction:column; gap:10px; }
+  .prestige-archive-shell textarea#prestigePasteArea { min-height:96px; }
+}
+
   
 </style>
 </head>
@@ -1449,7 +1760,9 @@
             </div>
           </div>
 
- 
+
+
+
 </section>
 
     <section id="gamified" class="chamber frost">
@@ -1469,6 +1782,7 @@
     <div class="product-title">Quest Badge</div>
     <div class="product-cost">💰 20 purchased tokens</div>
     <div class="product-cost">♦️ 5 symbolic crystals</div>
+     <div class="product-cost">💵 $0.00 value</div>
     <div class="product-status pending">Pending Verification</div>
   </div>
   <div class="product-action">Click to add to cart</div>
@@ -1536,6 +1850,179 @@
           </div>
         </div>
       </div>
+      
+        <!-- keep these hidden so they don't affect layout --> <div id="prestigeHiddenProducts" style="display:none"> 
+      <!-- Converted product-cards for each denomination -->
+<div class="store-panel">
+  <h4>Store</h4>
+  <div class="status pending">Pending verification</div>
+  <br>
+  <div class="product-grid">
+
+    <div class="product-card"
+         data-serial="PRG-0.01-0001"
+         data-product-id="PRG-0.01-0001"
+         data-denomination="0.01"
+         data-tokencount="0.01"
+         data-cashvalue="0.00"
+         data-title="0.01 PRESTIGE"
+         onclick="addToCart('0.01 PRESTIGE', 0.01, 0, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">0.01 PRESTIGE</div>
+        <div class="product-cost">💰 0.01 purchased tokens</div>
+        <div class="product-cost">💵 $0.00 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-0.10-0001"
+         data-product-id="PRG-0.10-0001"
+         data-denomination="0.10"
+         data-tokencount="0.10"
+         data-cashvalue="0.03"
+         data-title="0.10 PRESTIGE"
+         onclick="addToCart('0.10 PRESTIGE', 0.10, 0, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">0.10 PRESTIGE</div>
+        <div class="product-cost">💰 0.10 purchased tokens</div>
+        <div class="product-cost">💵 $0.03 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-0.25-0001"
+         data-product-id="PRG-0.25-0001"
+         data-denomination="0.25"
+         data-tokencount="0.25"
+         data-cashvalue="0.06"
+         data-title="0.25 PRESTIGE"
+         onclick="addToCart('0.25 PRESTIGE', 0.25, 1, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">0.25 PRESTIGE</div>
+        <div class="product-cost">💰 0.25 purchased tokens</div>
+        <div class="product-cost">💵 $0.06 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-1.00-0001"
+         data-product-id="PRG-1.00-0001"
+         data-denomination="1.00"
+         data-tokencount="1.00"
+         data-cashvalue="0.25"
+         data-title="1.00 PRESTIGE"
+         onclick="addToCart('1.00 PRESTIGE', 1, 3, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">1.00 PRESTIGE</div>
+        <div class="product-cost">💰 1 purchased token</div>
+        <div class="product-cost">💵 $0.25 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-5.00-0001"
+         data-product-id="PRG-5.00-0001"
+         data-denomination="5.00"
+         data-tokencount="5.00"
+         data-cashvalue="1.25"
+         data-title="5.00 PRESTIGE"
+         onclick="addToCart('5.00 PRESTIGE', 5, 0, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">5.00 PRESTIGE</div>
+        <div class="product-cost">💰 5 purchased tokens</div>
+        <div class="product-cost">💵 $1.25 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-10.00-0001"
+         data-product-id="PRG-10.00-0001"
+         data-denomination="10.00"
+         data-tokencount="10.00"
+         data-cashvalue="2.50"
+         data-title="10.00 PRESTIGE"
+         onclick="addToCart('10.00 PRESTIGE', 10, 25, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">10.00 PRESTIGE</div>
+        <div class="product-cost">💰 10 purchased tokens</div>
+        <div class="product-cost">💵 $2.50 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-20.00-0001"
+         data-product-id="PRG-20.00-0001"
+         data-denomination="20.00"
+         data-tokencount="20.00"
+         data-cashvalue="5.00"
+         data-title="20.00 PRESTIGE"
+         onclick="addToCart('20.00 PRESTIGE', 20, 50, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">20.00 PRESTIGE</div>
+        <div class="product-cost">💰 20 purchased tokens</div>
+        <div class="product-cost">💵 $5.00 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-50.00-0001"
+         data-product-id="PRG-50.00-0001"
+         data-denomination="50.00"
+         data-tokencount="50.00"
+         data-cashvalue="12.50"
+         data-title="50.00 PRESTIGE"
+         onclick="addToCart('50.00 PRESTIGE', 50, 0, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">50.00 PRESTIGE</div>
+        <div class="product-cost">💰 50 purchased tokens</div>
+        <div class="product-cost">💵 $12.50 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+    <div class="product-card"
+         data-serial="PRG-100.00-0001"
+         data-product-id="PRG-100.00-0001"
+         data-denomination="100.00"
+         data-tokencount="100.00"
+         data-cashvalue="25.00"
+         data-title="100.00 PRESTIGE"
+         onclick="addToCart('100.00 PRESTIGE', 100, 250, 'parsed')">
+      <div class="product-icon ring-crest"></div>
+      <div class="product-meta">
+        <div class="product-title">100.00 PRESTIGE</div>
+        <div class="product-cost">💰 100 purchased tokens</div>
+        <div class="product-cost">💵 $25.00 value</div>
+        <div class="product-status pending">Pending Verification</div>
+      </div>
+      <div class="product-action">Click to add to cart</div>
+    </div>
+
+  </div>
+</div>
     </section>
 
     <section id="faith" class="chamber frost">
@@ -1563,7 +2050,7 @@
           
 <!-- Cart Chamber -->
 <section id="checkoutPanel" class="chamber frost" >
-  <button class="checkout-btn">Checkout</button>
+  
   <div class="chamber-grid">
     
     <!-- LEFT: Receipt viewer -->
@@ -1603,7 +2090,34 @@
     </div>
     <div class="row">
       <input id="pfPhone" class="input" placeholder="Phone (optional)" />
+    </div>  <!-- ID info area (paste before comments panel) -->
+<!-- Paste & Archive area for long ID/JSON blocks -->
+<div class="prestige-archive-shell" style="margin-top:12px;">
+  <label style="display:block;font-size:13px;color:#9fb0d6;margin-bottom:6px">Paste IDs or JSON (keeps archive)</label>
+  <div class="prestige-archive" style="margin-top:12px;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+    <strong style="font-size:13px;color:#e6eef8">Archive</strong>
+    <input id="prestigeArchiveSearch" placeholder="Search archive" style="margin-left:8px;padding:6px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#e6eef8;font-size:13px;flex:1" />
+  </div>
+
+  <!-- Saved count sits directly under the search -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+    <div style="font-size:12px;color:#9fb0d6">Saved items:</div>
+    <div id="prestigeArchiveCount" style="font-size:12px;color:#e6eef8">0</div>
+  </div>
+<!-- Paste area + action buttons -->
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <textarea id="prestigePasteArea" placeholder="Paste JSON or identifiers here..." style="flex:1;min-height:72px;max-height:36vh;padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#e6eef8;resize:vertical;overflow:auto"></textarea>
+  <div id="prestigeArchiveList" style="max-height:28vh;overflow:auto;border-radius:6px;padding:6px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.01)"></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+      <button id="prestigeAddArchive" class="prestige-btn primary" style="padding:8px 10px;white-space:nowrap">Add to archive</button>
+      <button id="prestigePasteClear" class="prestige-btn ghost" style="padding:8px 10px;white-space:nowrap">Clear</button>
+      <button id="prestigePasteCopy" class="prestige-btn ghost" style="padding:8px 10px;white-space:nowrap">Copy</button>
     </div>
+  </div>
+  
+
     <div>
       <input id="pfIssue" class="input" placeholder="Short issue description (optional)" />
     </div>
@@ -1644,35 +2158,54 @@
     <button id="confirmProceed" class="prestige-btn primary">Proceed</button>
   </div>
 </div>
-           
-           
-</div>
-    <br>
-    <div class="rail">
-    <div class="emblem-sigil prestige-pay"></div>
+   
+   <!-- Floating rails panel (replace your existing .lower section) -->
+<div class="text-wrap">
+<!-- inside #checkoutPanel (place where you want the tiles to appear) -->
+<div id="checkoutRails" class="checkout-rails-grid" aria-hidden="true">
+  <div class="rail">
+    
+     <div class="emblem-sigil prestige-pay" aria-hidden="true"></div>
+  
     <strong>Prestige Pay</strong>
     <p>Friendly flow. Finalization confirmed by ledger glow. Requires ceremonial desk approval.</p>
   </div>
-   
+
   <div class="rail">
-    <div class="emblem-sigil cod"></div>
+    
+     <div class="emblem-sigil  cod" aria-hidden="true"></div>
+  
     <strong>Cash on Delivery</strong>
     <p>Verified post-receipt. Status shimmer appears after member confirmation.</p>
   </div>
-    <br>
+
   <div class="rail">
-    <div class="emblem-sigil money-order"></div>
+    
+     <div class="emblem-sigil money-order" aria-hidden="true"></div>
+ 
     <strong>Money Order</strong>
     <p>Accepted with pacing. Ledger updates once received and verified.</p>
   </div>
+
   <div class="rail">
-    <div class="emblem-sigil chckout-cart"></div>
+    
+     <div class="emblem-sigil chckout-cart" aria-hidden="true"></div>
+  
     <strong>Checkout Cart</strong>
     <p>View all pending purchases. Shimmer silver until finalized by Prestige member.</p>
   </div>
-  </div>
+</div>
+  
+  
+ <!--<div class="emblem-sigil prestige-pay" aria-hidden="true">
+  small inline SVG centered and sized by CSS 
+  <svg viewBox="0 0 64 64" width="64" height="64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <circle cx="32" cy="32" r="30" fill="#ffd87a"/>
+    <path d="M20 36 L28 24 L44 40" stroke="#1b1b1b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>-->
+
 </section>
-      
      
     
           
@@ -1746,9 +2279,14 @@
 <div id="ledger"></div>
 <div id="purchaseHistory"></div>
 
+           
+           
+           
+           
+           
 
-   
-      
+
+
   <script>
     // Static reveal via class toggling (.active). Anchors also work.
     function showChamber(id){
@@ -2004,32 +2542,99 @@ function displayInViewer(className, title){
   
 </script>
 <script>
+/* Clear password on logout — idempotent and defensive */
+(function ensurePasswordClearedOnLogout(){
+  if (window.__prestige_clear_password_installed) return;
+  window.__prestige_clear_password_installed = true;
 
-// Hard fake logout on every page load (refresh)
-window.addEventListener('load', () => {
-  // stop polling and abort in-flight requests if you have these globals
-  try { if (typeof stopPolling === 'function') stopPolling(); } catch(e){/*ignore*/}
+  const $id = id => document.getElementById(id);
 
-  // abort any global controller if present
-  try { if (window.pollController) { window.pollController.abort(); window.pollController = null; } } catch(e){}
+  // Helper: clear the password input and remove any transient storage of it
+  function clearPasswordField() {
+    try {
+      const pwd = $id('loginCode') || document.querySelector('#accessCodeWrapper input[type="password"]');
+      if (pwd) {
+        // clear value and blur to reduce chance of accidental reads or clipboard copy
+        pwd.value = '';
+        try { pwd.blur(); } catch(e){}
+        // mark as non-parsable so other scripts skip it
+        if (!pwd.hasAttribute('data-prestige-no-parse')) pwd.setAttribute('data-prestige-no-parse', 'true');
+        // remove any session key that might store the code
+        try { sessionStorage.removeItem('accessCode'); } catch(e){}
+      }
+    } catch (e) { /* ignore */ }
+  }
 
-  // clear session-only keys so app appears logged out
-  sessionStorage.removeItem('accessCode');
-  sessionStorage.removeItem('username');
+  // Helper: perform the broader cleanup you already had, but targeted
+  function basicLogoutCleanup({ notify = true } = {}) {
+    // stop polling and abort in-flight requests if present
+    try { if (typeof stopPolling === 'function') stopPolling(); } catch(e){}
+    try { if (window.pollController) { window.pollController.abort(); window.pollController = null; } } catch(e){}
 
-  // update UI to login state
-  document.getElementById('userDirectory')?.classList.remove('active');
-  document.getElementById('loginPanel')?.classList.add('active');
+    // targeted session clears (avoid sessionStorage.clear())
+    try { sessionStorage.removeItem('accessCode'); } catch(e){}
+    try { sessionStorage.removeItem('username'); } catch(e){}
 
-  // clear any in-memory user state your app uses
-  window.__currentUser = null;
+    // clear in-memory user state
+    try { window.__currentUser = null; } catch(e){}
 
-  // notify other modules
-  window.dispatchEvent(new CustomEvent('fakeLogout', { detail: { reason: 'page-refresh' } }));
-});
+    // update UI to login state
+    try {
+      $id('userDirectory')?.classList.remove('active');
+      $id('loginPanel')?.classList.add('active');
+    } catch(e){}
 
+    // ensure password field is cleared and neutralized
+    clearPasswordField();
 
-</script><script>
+    // notify other modules if requested
+    if (notify) {
+      try { window.dispatchEvent(new CustomEvent('fakeLogout', { detail: { reason: 'cleanup' } })); } catch(e){}
+    }
+  }
+
+  // Wire to page load (preserve your existing behavior)
+  window.addEventListener('load', () => {
+    // run the targeted cleanup on load so the page appears logged out
+    basicLogoutCleanup({ notify: true });
+  });
+
+  // Wire to your logout button(s) idempotently
+  function wireLogoutButtons() {
+    const selectors = ['#logoutBtn', '.logout-btn', 'button.logout', 'a.logout'];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(btn => {
+        if (btn.__prestige_clear_pwd_wired) return;
+        btn.addEventListener('click', (ev) => {
+          // run cleanup first so UI and state are safe
+          basicLogoutCleanup({ notify: true });
+          // allow other handlers to run afterwards
+        }, { capture: true });
+        btn.__prestige_clear_pwd_wired = true;
+      });
+    });
+  }
+  wireLogoutButtons();
+
+  // Also respond to programmatic fakeLogout events
+  if (!document.__prestige_fake_logout_wired) {
+    window.addEventListener('fakeLogout', (ev) => {
+      basicLogoutCleanup({ notify: false });
+    }, { capture: true });
+    document.__prestige_fake_logout_wired = true;
+  }
+
+  // Re-scan periodically for dynamically inserted logout buttons (stops after 30s)
+  const scanInterval = setInterval(wireLogoutButtons, 1500);
+  setTimeout(() => clearInterval(scanInterval), 30_000);
+
+  // Expose a small API for manual invocation
+  window.Prestige = window.Prestige || {};
+  window.Prestige.clearPasswordAndLogout = basicLogoutCleanup;
+
+})();
+</script>
+<script>
 // --- Shared counters ---
 let cartTokenTotal = 0, cartCrystalTotal = 0, cartItems = 0;
 
@@ -2112,7 +2717,7 @@ function updateCartDisplay(){
 
   if (badge) badge.textContent = cartItems;
   if (floatBadge) floatBadge.textContent = cartItems;
-  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} ♦️`;
+  if (total) total.textContent = `Total: ${cartTokenTotal} 🪙 + ${cartCrystalTotal} <🔴>`;
 }
 
 function finalizeCart(){
@@ -2160,7 +2765,7 @@ function emptyCart(){
   }
 
   const total = document.getElementById('receiptTotal');
-  if (total) total.textContent = `Total: 0 🪙 + 0 ♦️`;
+  if (total) total.textContent = `Total: 0 🪙 + 0 <🔴>`;
 }
 
 // --- Shimmer sync against ledger ---
@@ -2188,6 +2793,139 @@ async function updateCartFromLedger(){
       if (s) s.textContent = 'Pending ~ Awaiting Prestige verification';
     }
   });
+}
+/* ---------- Backwards compatible renderer with optional crystals ---------- */
+
+// Config: set to true to keep crystals hidden entirely for store products with zero crystals
+const HIDE_ZERO_CRYSTALS = false; // set true to hide row; false to show "zeo"
+
+// Format helpers
+function formatUSD(value) {
+  const n = Number(value || 0);
+  return `$${n.toFixed(2)}`;
+}
+function emojiFor(kind) {
+  if (kind === 'token') return '🪙';
+  if (kind === 'usd') return '💵';
+  if (kind === 'crystal') return '♦️';
+  return '';
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+}
+
+/* Render cart item without removing existing content.
+   If crystals are zero, show "zeo" (literal) unless HIDE_ZERO_CRYSTALS is true.
+*/
+function renderCartItem(payload) {
+  if (!payload) return null;
+  const cart = document.getElementById('cartList');
+  if (!cart) return null;
+
+  const serial = String(payload.serial || payload.product_id || `PRG-${(payload.denomination||0).toFixed(2)}-${Date.now()}`);
+  const title = payload.title || `${Number(payload.denomination||0).toFixed(2)} PRESTIGE`;
+  const tokenCount = Number(payload.tokenCount ?? payload.denomination ?? 0);
+  const cashValue = Number(payload.cashValue ?? (Number(payload.denomination||0) * (window.CASH_PER_PRESTIGE || 0.25)));
+  const crystalsRaw = payload.crystals ?? Math.round(tokenCount * (window.CRYSTAL_MULTIPLIER || 2.5));
+  const crystals = Number(crystalsRaw || 0);
+  const statusText = payload.status || 'Pending • Awaiting Prestige verification';
+
+  // idempotent: reuse existing node if present
+  let item = cart.querySelector(`.cart-item[data-serial="${serial}"]`);
+  if (!item) {
+    item = document.createElement('div');
+    item.className = 'cart-item';
+    item.setAttribute('data-serial', serial);
+    item.setAttribute('data-product-id', payload.product_id || serial);
+    item.setAttribute('data-transaction', title);
+    item.setAttribute('data-user', sessionStorage.getItem('username') || 'Guest');
+    cart.appendChild(item);
+  }
+
+  // Build crystal row according to config and value
+  let crystalRowHtml = '';
+  if (crystals > 0) {
+    crystalRowHtml = `<div class="cost-row crystal"><span class="cost-value">${escapeHtml(String(crystals))}</span> ${emojiFor('crystal')} symbolic crystals</div>`;
+  } else {
+    if (!HIDE_ZERO_CRYSTALS) {
+      // show "zeo" exactly as requested
+      crystalRowHtml = `<div class="cost-row crystal"><span class="cost-value">0</span> ${emojiFor('crystal')} symbolic crystals</div>`;
+    } else {
+      crystalRowHtml = ''; // hide the row entirely
+    }
+  }
+
+  // Preserve any existing extra content inside item by not clobbering attributes other than innerHTML
+  item.innerHTML = `
+    <div class="cart-title">${escapeHtml(title)}</div>
+    <div class="cost-row token"><span class="cost-value">${escapeHtml(String(tokenCount))}</span> ${emojiFor('token')} purchased tokens</div>
+    <div class="cost-row usd"><span class="cost-value">${escapeHtml(formatUSD(cashValue))}</span> ${emojiFor('usd')} value</div>
+    ${crystalRowHtml}
+    <div class="cart-status">${escapeHtml(statusText)}</div>
+  `;
+
+  // visual state
+  item.classList.remove('finalized','glow-gold');
+  item.classList.add('shimmer','glow-silver');
+
+  return { node: item, tokenCount, crystals, cashValue, serial, title };
+}
+
+/* ---------- Non-destructive addToCart wrapper ---------- */
+/* This wrapper uses renderCartItem and persists canonical payload.
+   It will not remove existing cart items unless they match by serial/product_id.
+*/
+function addToCart(name, tokenCost, crystalCost, type){
+  const denom = Number(tokenCost || 0);
+  const crystals = (crystalCost !== undefined && crystalCost !== null) ? Number(crystalCost) : Math.round(denom * (window.CRYSTAL_MULTIPLIER || 2.5));
+  const payload = {
+    serial: `PRG-${denom.toFixed(2)}-${Date.now()}`,
+    product_id: name,
+    title: name,
+    denomination: denom,
+    tokenCount: denom,
+    cashValue: Number((denom * (window.CASH_PER_PRESTIGE || 0.25)).toFixed(2)),
+    crystals,
+    status: 'Pending'
+  };
+
+  // Render or update cart item
+  const rendered = renderCartItem(payload);
+  if (rendered) {
+    // update counters only once per add
+    if (type !== 'crystal') cartTokenTotal += Number(rendered.tokenCount || 0);
+    if (type !== 'token') cartCrystalTotal += Number(rendered.crystals || 0);
+    cartItems += 1;
+    updateCartDisplay();
+  }
+
+  // Persist to localStorage without overwriting unrelated entries
+  try {
+    const existing = JSON.parse(localStorage.getItem('prestigeCartItems') || '[]');
+    // dedupe only if exact serial or product_id matches; otherwise keep existing entries
+    const key = String(payload.serial || payload.product_id || '');
+    const filtered = existing.filter(it => String(it.serial || it.product_id || '') !== key);
+    filtered.push(payload);
+    localStorage.setItem('prestigeCartItems', JSON.stringify(filtered));
+    localStorage.setItem('prestigeCartUpdatedAt', String(Date.now()));
+  } catch (e) { console.warn('persist to localStorage failed', e); }
+
+  // Persist to in-memory STORE if available, but do not remove other entries unless they share the same serial/product_id
+  try {
+    const norm = (typeof normalize === 'function') ? normalize(payload) : payload;
+    if (typeof persist === 'function') {
+      const existingStore = Array.isArray(STORE) ? STORE.slice() : [];
+      const deduped = existingStore.filter(it => String(it.serial || it.product_id || '') !== String(norm.serial || norm.product_id));
+      deduped.unshift(norm);
+      persist(deduped);
+    } else {
+      window.STORE = (Array.isArray(window.STORE) ? window.STORE.filter(it => String(it.serial || it.product_id || '') !== String(norm.serial || norm.product_id)) : []).concat([norm]);
+      try { window.USE_MAP = (window.STORE||[]).reduce((m,p)=>{ m[String(p.product_id||p.serial)] = p; return m; }, {}); } catch(e){}
+    }
+    if (typeof renderFromStorage === 'function') renderFromStorage();
+  } catch (e) { console.warn('persist canonical failed', e); }
+
+  try { document.dispatchEvent(new CustomEvent('prestige:cartItemAdded', { detail: { payload } })); } catch (e) {}
 }
 
 </script>
@@ -2364,8 +3102,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
   
-  
-</script>
+  // --- DO NOT TOUCH,CART & ACCESS CAUSES A RIFF ---
+
+  </script>
 <div id="floatingCart" class="floating-cart frost">
   🛒 <span id="floatingCartCount">0</span> items
   <button class="ghost-btn" onclick="showChamber('checkoutPanel')">Checkout</button>
@@ -2382,6 +3121,7 @@ function getCurrentCartItems(){
     };
   });
 }
+
 
 
 
@@ -2978,6 +3718,472 @@ document.addEventListener('DOMContentLoaded', () => {
     const smsBtn = $id('pfSendSms') || widget?.querySelector('#pfSendSms, .send, .prestige-send');
     const emailBtn = $id('pfSendEmail') || widget?.querySelector('#pfSendEmail, .send:nth-of-type(2), .prestige-send.ghost');
 
+    // Unified issue textarea: stretchy auto-expand + wrap/typewriter toggle (autosize works in both modes)
+(function installPrestigeIssueEnhancements_v2(){
+  if (window.__prestige_issue_enhancements_v2_installed) return;
+  window.__prestige_issue_enhancements_v2_installed = true;
+
+  const MODE_KEY = 'prestigeIssueWrapMode'; // 'wrap' or 'typewriter'
+  const STYLE_ID = 'prestige-issue-style-v2';
+  const TOGGLE_STYLE_ID = 'prestige-issue-wrap-style-v2';
+
+  // Base textarea styles
+  if (!document.getElementById(STYLE_ID)) {
+    const s = document.createElement('style');
+    s.id = STYLE_ID;
+    s.textContent = `
+      .prestige-issue-textarea {
+        min-height: 96px;
+        max-height: 70vh;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(33,50,74,0.9);
+        background: #071028;
+        color: #e6eef8;
+        resize: vertical;
+        overflow: auto;
+        font-size: 14px;
+        line-height: 1.4;
+        transition: background-color 120ms ease;
+        white-space: pre-wrap; /* default */
+        overflow-wrap: break-word;
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // Toggle UI styles
+  if (!document.getElementById(TOGGLE_STYLE_ID)) {
+    const style = document.createElement('style');
+    style.id = TOGGLE_STYLE_ID;
+    style.textContent = `
+      .prestige-issue-textarea.prestige-wrap {
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        overflow-x: hidden;
+        font-family: inherit;
+      }
+      .prestige-issue-textarea.prestige-typewriter {
+        white-space: pre; /* preserve spaces and line breaks, no wrapping */
+        overflow-x: auto;
+        overflow-y: auto;
+        resize: horizontal;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      }
+      .prestige-issue-toggle {
+        display:inline-flex;
+        gap:8px;
+        align-items:center;
+        margin-top:8px;
+        font-size:13px;
+        color:#9fb0d6;
+      }
+      .prestige-issue-toggle button {
+        background:transparent;
+        border:1px solid rgba(255,255,255,0.06);
+        color:#e6eef8;
+        padding:6px 8px;
+        border-radius:6px;
+        cursor:pointer;
+      }
+      .prestige-issue-toggle button.active {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.12);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Find original input/textarea
+  function findOriginal() {
+    return document.getElementById('pfIssue')
+      || document.querySelector('.prestige-widget input[placeholder*="issue"], .prestige-widget textarea[placeholder*="issue"], input[placeholder*="issue"], textarea[placeholder*="issue"]')
+      || document.querySelector('input[name="issue"], textarea[name="issue"]');
+  }
+
+  // Create or normalize textarea
+  function ensureTextarea() {
+    const orig = findOriginal();
+    if (!orig) return null;
+
+    if (orig.tagName === 'TEXTAREA' && orig.classList.contains('prestige-issue-textarea')) {
+      return orig;
+    }
+
+    if (orig.tagName === 'TEXTAREA') {
+      orig.classList.add('prestige-issue-textarea');
+      attachAutosize(orig);
+      return orig;
+    }
+
+    const ta = document.createElement('textarea');
+    ta.className = (orig.className ? orig.className + ' ' : '') + 'prestige-issue-textarea';
+    ta.id = orig.id || 'pfIssue';
+    if (orig.name) ta.name = orig.name;
+    if (orig.placeholder) ta.placeholder = orig.placeholder;
+    if (orig.getAttribute('aria-label')) ta.setAttribute('aria-label', orig.getAttribute('aria-label'));
+    if (orig.getAttribute('aria-describedby')) ta.setAttribute('aria-describedby', orig.getAttribute('aria-describedby'));
+    try { Object.keys(orig.dataset || {}).forEach(k => { ta.dataset[k] = orig.dataset[k]; }); } catch(e){}
+    ta.value = (orig.value || orig.textContent || '').trim();
+
+    try { orig.parentNode && orig.parentNode.replaceChild(ta, orig); } catch(e){ console.warn('prestige: replace issue input failed', e); return null; }
+
+    attachAutosize(ta);
+    return ta;
+  }
+
+  // Autosize: works in both modes. It measures scrollHeight and sets height.
+  function attachAutosize(textarea) {
+    if (!textarea || textarea.__prestige_autosize) return;
+    textarea.__prestige_autosize = true;
+
+    function resizeNow() {
+      try {
+        // Always allow autosize: measure scrollHeight and set height.
+        // For typewriter mode (white-space: pre), long single lines will increase scrollWidth,
+        // but scrollHeight still grows when user inserts newlines; we still expand vertically.
+        textarea.style.height = 'auto';
+        const sh = textarea.scrollHeight;
+        textarea.style.height = Math.max(96, sh) + 'px';
+      } catch(e){}
+    }
+
+    // initial resize
+    setTimeout(resizeNow, 0);
+
+    textarea.addEventListener('input', resizeNow, { passive: true });
+    textarea.addEventListener('change', resizeNow, { passive: true });
+    window.addEventListener('resize', resizeNow, { passive: true });
+
+    // expose manual trigger
+    textarea.__prestige_resizeNow = resizeNow;
+  }
+
+  // Toggle UI: create and insert after textarea (idempotent)
+  function ensureToggleUI() {
+    const ta = ensureTextarea();
+    if (!ta) return null;
+
+    let container = ta.parentNode && ta.parentNode.querySelector('.prestige-issue-toggle');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'prestige-issue-toggle';
+      container.innerHTML = `
+        <div style="font-size:12px;color:#9fb0d6">Input mode:</div>
+        <button type="button" data-mode="wrap" title="Wrap lines (recommended)">Wrap</button>
+        <button type="button" data-mode="typewriter" title="Typewriter: horizontal scroll">Typewriter</button>
+      `;
+      try { ta.parentNode.insertBefore(container, ta.nextSibling); } catch(e){ ta.parentNode.appendChild(container); }
+    }
+
+    const wrapBtn = container.querySelector('button[data-mode="wrap"]');
+    const typeBtn = container.querySelector('button[data-mode="typewriter"]');
+
+    // Apply saved mode
+    const saved = localStorage.getItem(MODE_KEY) || 'wrap';
+    applyMode(ta, saved, { skipSave:true });
+
+    // Attach handlers idempotently
+    if (!wrapBtn.__prestige_bound) {
+      wrapBtn.addEventListener('click', () => applyMode(ensureTextarea(), 'wrap'), true);
+      wrapBtn.__prestige_bound = true;
+    }
+    if (!typeBtn.__prestige_bound) {
+      typeBtn.addEventListener('click', () => applyMode(ensureTextarea(), 'typewriter'), true);
+      typeBtn.__prestige_bound = true;
+    }
+
+    return { container, wrapBtn, typeBtn };
+  }
+
+  // Apply mode to textarea; autosize remains active in both modes
+  function applyMode(textarea, mode, opts = {}) {
+    if (!textarea) return;
+    mode = (mode === 'typewriter') ? 'typewriter' : 'wrap';
+    const wrapBtn = textarea.parentNode && textarea.parentNode.querySelector('.prestige-issue-toggle button[data-mode="wrap"]');
+    const typeBtn = textarea.parentNode && textarea.parentNode.querySelector('.prestige-issue-toggle button[data-mode="typewriter"]');
+
+    textarea.classList.remove('prestige-wrap', 'prestige-typewriter');
+
+    if (mode === 'wrap') {
+      textarea.classList.add('prestige-wrap');
+      // keep autosize active
+      textarea.style.resize = 'vertical';
+      // ensure wrapping behavior
+      textarea.style.whiteSpace = '';
+      textarea.style.overflowX = 'hidden';
+      // trigger autosize
+      if (typeof textarea.__prestige_resizeNow === 'function') textarea.__prestige_resizeNow();
+    } else {
+      textarea.classList.add('prestige-typewriter');
+      // typewriter: preserve spaces/newlines, allow horizontal scroll, but still autosize vertically
+      textarea.style.whiteSpace = 'pre';
+      textarea.style.overflowX = 'auto';
+      textarea.style.resize = 'horizontal';
+      // autosize still runs to expand vertically when user adds newlines
+      if (typeof textarea.__prestige_resizeNow === 'function') textarea.__prestige_resizeNow();
+    }
+
+    if (wrapBtn) wrapBtn.classList.toggle('active', mode === 'wrap');
+    if (typeBtn) typeBtn.classList.toggle('active', mode === 'typewriter');
+
+    if (!opts.skipSave) {
+      try { localStorage.setItem(MODE_KEY, mode); } catch(e){}
+    }
+  }
+
+  // Initialization
+  function initOnce() {
+    const ta = ensureTextarea();
+    if (!ta) {
+      setTimeout(initOnce, 200);
+      return;
+    }
+    ensureToggleUI();
+    // apply saved mode
+    const saved = localStorage.getItem(MODE_KEY) || 'wrap';
+    applyMode(ta, saved, { skipSave:true });
+  }
+  initOnce();
+
+  // Observe DOM for dynamic replacements
+  const mo = new MutationObserver((mutations) => {
+    let needs = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        for (const n of m.addedNodes) {
+          if (n instanceof Element) {
+            if (n.matches && (n.matches('#pfIssue') || n.matches('input[placeholder*="issue"], textarea') || n.matches('.prestige-issue-textarea'))) { needs = true; break; }
+            if (n.querySelector && (n.querySelector('#pfIssue') || n.querySelector('input[placeholder*="issue"], textarea, .prestige-issue-textarea'))) { needs = true; break; }
+          }
+        }
+      }
+      if (needs) break;
+    }
+    if (needs) setTimeout(() => { initOnce(); }, 80);
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  // Public API
+  window.Prestige = window.Prestige || {};
+  window.Prestige.ensureIssueTextarea = ensureTextarea;
+  window.Prestige.setIssueInputMode = function(mode){ const ta = ensureTextarea(); if (ta) applyMode(ta, mode); };
+  window.Prestige.getIssueInputMode = function(){ return localStorage.getItem(MODE_KEY) || 'wrap'; };
+
+})();
+
+    // Toggle: wrap vs typewriter mode for pfIssue textarea (idempotent)
+(function addIssueWrapToggle(){
+  if (window.__prestige_issue_wrap_toggle_installed) return;
+  window.__prestige_issue_wrap_toggle_installed = true;
+
+  const KEY = 'prestigeIssueWrapMode'; // 'wrap' or 'typewriter'
+
+  // Ensure the stylesheet for modes exists
+  if (!document.getElementById('prestige-issue-wrap-style')) {
+    const style = document.createElement('style');
+    style.id = 'prestige-issue-wrap-style';
+    style.textContent = `
+      /* Wrap mode (default) */
+      .prestige-issue-textarea.prestige-wrap {
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        overflow-x: hidden;
+        font-family: inherit;
+      }
+      /* Typewriter mode: single-line flow with horizontal scroll */
+      .prestige-issue-textarea.prestige-typewriter {
+        white-space: pre;
+        overflow-x: auto;
+        overflow-y: auto;
+        resize: horizontal;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+      }
+      /* Small toggle UI */
+      .prestige-issue-toggle {
+        display:inline-flex;
+        gap:8px;
+        align-items:center;
+        margin-top:8px;
+        font-size:13px;
+        color:#9fb0d6;
+      }
+      .prestige-issue-toggle button {
+        background:transparent;
+        border:1px solid rgba(255,255,255,0.06);
+        color:#e6eef8;
+        padding:6px 8px;
+        border-radius:6px;
+        cursor:pointer;
+      }
+      .prestige-issue-toggle button.active {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.12);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Helper: find the textarea (uses the same selector as your code)
+  function findTextarea() {
+    return document.querySelector('.prestige-issue-textarea') ||
+           document.getElementById('pfIssue') ||
+           document.querySelector('.prestige-widget textarea[placeholder*="issue"], textarea[placeholder*="issue"]');
+  }
+
+  // Create toggle UI and insert after textarea (idempotent)
+  function ensureToggle() {
+    const ta = findTextarea();
+    if (!ta) return null;
+
+    // wrap class default if missing
+    if (!ta.classList.contains('prestige-wrap') && !ta.classList.contains('prestige-typewriter')) {
+      ta.classList.add('prestige-wrap');
+    }
+
+    // don't duplicate toggle
+    let container = ta.parentNode && ta.parentNode.querySelector('.prestige-issue-toggle');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'prestige-issue-toggle';
+      container.innerHTML = `
+        <div style="font-size:12px;color:#9fb0d6">Input mode:</div>
+        <button type="button" data-mode="wrap" title="Wrap lines (recommended)">Wrap</button>
+        <button type="button" data-mode="typewriter" title="Typewriter: horizontal scroll">Typewriter</button>
+      `;
+      // insert after textarea
+      try { ta.parentNode.insertBefore(container, ta.nextSibling); } catch(e){ ta.parentNode.appendChild(container); }
+    }
+
+    const wrapBtn = container.querySelector('button[data-mode="wrap"]');
+    const typeBtn = container.querySelector('button[data-mode="typewriter"]');
+
+    // Apply saved mode
+    const saved = localStorage.getItem(KEY) || 'wrap';
+    applyMode(ta, saved, { skipSave:true });
+
+    // click handlers
+    wrapBtn.addEventListener('click', () => applyMode(findTextarea(), 'wrap'), true);
+    typeBtn.addEventListener('click', () => applyMode(findTextarea(), 'typewriter'), true);
+
+    // expose for manual use
+    return { container, wrapBtn, typeBtn };
+  }
+
+  // Apply mode to textarea
+  function applyMode(textarea, mode, opts = {}) {
+    if (!textarea) return;
+    const wrapBtn = textarea.parentNode && textarea.parentNode.querySelector('.prestige-issue-toggle button[data-mode="wrap"]');
+    const typeBtn = textarea.parentNode && textarea.parentNode.querySelector('.prestige-issue-toggle button[data-mode="typewriter"]');
+
+    // normalize
+    mode = (mode === 'typewriter') ? 'typewriter' : 'wrap';
+
+    // remove both classes then add the chosen one
+    textarea.classList.remove('prestige-wrap', 'prestige-typewriter');
+    if (mode === 'wrap') {
+      textarea.classList.add('prestige-wrap');
+      // enable autosize behavior if present
+      if (typeof textarea.__prestige_autosize !== 'undefined') {
+        // trigger autosize: set height auto then call input event
+        textarea.style.height = 'auto';
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      // allow vertical resize (keeps previous behavior)
+      textarea.style.resize = 'vertical';
+    } else {
+      textarea.classList.add('prestige-typewriter');
+      // in typewriter mode, keep a reasonable height and allow horizontal scroll
+      textarea.style.height = Math.max(96, textarea.scrollHeight || 96) + 'px';
+      // disable autosize if it was attached (so height doesn't jump)
+      // we don't remove listeners, but we prevent autosize by setting a flag
+      textarea.__prestige_autosize_block = true;
+      // allow horizontal resize
+      textarea.style.resize = 'horizontal';
+    }
+
+    // update toggle UI active state
+    if (wrapBtn) wrapBtn.classList.toggle('active', mode === 'wrap');
+    if (typeBtn) typeBtn.classList.toggle('active', mode === 'typewriter');
+
+    // persist unless explicitly skipped
+    if (!opts.skipSave) {
+      try { localStorage.setItem(KEY, mode); } catch(e){}
+    }
+
+    // cleanup: if switching back to wrap, remove the autosize block after a tick
+    if (mode === 'wrap') {
+      setTimeout(() => { if (textarea) textarea.__prestige_autosize_block = false; }, 200);
+    }
+  }
+
+  // Patch autosize attach to respect __prestige_autosize_block if present
+  // (If your existing attachAutosize sets textarea.__prestige_autosize, we just wrap input handler)
+  function patchAutosizeBehavior() {
+    const ta = findTextarea();
+    if (!ta) return;
+    // if autosize already attached and we haven't wrapped it, wrap input handler
+    if (ta.__prestige_autosize && !ta.__prestige_autosize_wrapped) {
+      const origHandler = function resizeNow() {
+        try {
+          if (ta.__prestige_autosize_block) return; // do nothing in typewriter mode
+          ta.style.height = 'auto';
+          const sh = ta.scrollHeight;
+          ta.style.height = Math.max(96, sh) + 'px';
+        } catch(e){}
+      };
+      // remove existing input listeners by re-adding a safe one (best-effort)
+      ta.addEventListener('input', origHandler, { passive: true });
+      ta.addEventListener('change', origHandler, { passive: true });
+      ta.__prestige_autosize_wrapped = true;
+      // initial call
+      setTimeout(origHandler, 0);
+    }
+  }
+
+  // Initial ensure and attach observer for dynamic changes
+  function init() {
+    const ta = findTextarea();
+    if (!ta) {
+      // try again later if textarea not present yet
+      setTimeout(init, 200);
+      return;
+    }
+    ensureToggle();
+    patchAutosizeBehavior();
+    // apply saved mode (ensures UI matches)
+    const saved = localStorage.getItem(KEY) || 'wrap';
+    applyMode(ta, saved, { skipSave:true });
+  }
+
+  init();
+
+  // Observe DOM for replacements of the textarea (re-run ensureToggle when it appears)
+  const mo = new MutationObserver((mutations) => {
+    let needs = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        for (const n of m.addedNodes) {
+          if (n instanceof Element && (n.matches && (n.matches('#pfIssue') || n.matches('textarea') || n.querySelector && n.querySelector('.prestige-issue-textarea')))) {
+            needs = true; break;
+          }
+        }
+      }
+      if (needs) break;
+    }
+    if (needs) setTimeout(() => { init(); }, 80);
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  // expose API
+  window.Prestige = window.Prestige || {};
+  window.Prestige.setIssueInputMode = function(mode){ const ta = findTextarea(); if (ta) applyMode(ta, mode); };
+  window.Prestige.getIssueInputMode = function(){ return localStorage.getItem(KEY) || 'wrap'; };
+
+})();
+
     // Modal and hidden staff reply
     let hiddenStaff = $id('prestigeHiddenStaffReply');
     if(!hiddenStaff){
@@ -3057,30 +4263,98 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
       }
     }
+// Replace existing buildSmsPreview with this
+function buildSmsPreview(){
+ // prefer the enhanced textarea if present
+const enhanced = document.querySelector('.prestige-issue-textarea');
+const rawIssue = (enhanced ? enhanced.value : (issueInput?.value || '')) || '';
+const issue = String(rawIssue).trim();
 
-    // Build SMS preview (no duplicate link)
-    function buildSmsPreview(){
-      const name = (nameInput?.value || '').trim();
-      const phone = (phoneInput?.value || '').trim();
-      const issue = (issueInput?.value || '').trim();
-      const room = genRoom('prestige',8);
-      const roomLink = `${JITSI_BASE}/${room}`;
-      const header = [];
-      if(name) header.push(`Name: ${name}`);
-      if(phone) header.push(`Phone: ${phone}`);
-      if(issue) header.push(`Issue: ${issue}`);
-      header.push(`Join: ${roomLink}`);
-      let body = header.join('\n');
+const name = (nameInput?.value || '').trim();
+const phone = (phoneInput?.value || '').trim();
 
-      const cartLines = collectCartSummaryLinesDirect();
-      if(cartLines && cartLines.length) body += '\n\nCart:\n' + cartLines.join('\n');
+// parse paste area for JSON and identifiers
+const pasteArea = document.getElementById('prestigePasteArea') || document.querySelector('textarea#prestigePasteArea');
+const pasteText = (pasteArea?.value || '').trim();
 
-      const friendly = `\n\nPrestige Care , we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call.{Prestige members may take 15 ~ 30 minutes to respond}`;
-      body += friendly;
+// try to parse JSON safely
+let parsedJson = null;
+try {
+  if (pasteText) {
+    parsedJson = JSON.parse(pasteText);
+  }
+} catch (e) {
+  parsedJson = null;
+}
 
-      const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
-      return { body, staffReply, roomLink };
-    }
+// identifier extraction: PRG- style and generic token-like strings
+const ids = [];
+if (pasteText) {
+  // PRG- style identifiers
+  const prgRe = /\bPRG[-_][A-Z0-9-]+\b/gi;
+  let m;
+  while ((m = prgRe.exec(pasteText)) !== null) ids.push(m[0]);
+
+  // fallback: token-like uppercase alphanum sequences (6+ chars)
+  const tokenRe = /\b[A-Z0-9]{6,}\b/g;
+  while ((m = tokenRe.exec(pasteText)) !== null) {
+    // avoid duplicating PRG matches
+    if (!ids.includes(m[0])) ids.push(m[0]);
+  }
+}
+
+// generate room link
+const room = genRoom('prestige', 8);
+const roomLink = `${JITSI_BASE}/${room}`;
+
+// build header lines (preserve internal newlines for issue)
+const header = [];
+if (name) header.push(`Name: ${name}`);
+if (phone) header.push(`Phone: ${phone}`);
+if (issue) header.push(`Issue: ${issue}`);
+
+// include parsed JSON when present (pretty-printed, single-line safe fallback)
+if (parsedJson) {
+  try {
+    header.push(`JSON: ${JSON.stringify(parsedJson)}`);
+  } catch (e) {
+    header.push(`JSON: (parsed)`);
+  }
+}
+
+// include identifiers if any
+if (ids.length) header.push(`Identifiers: ${ids.join(', ')}`);
+
+// always include join link last
+header.push(`Join: ${roomLink}`);
+
+// final header string (you can join with '\n\n' or another separator where you use it)
+const headerText = header.join('\n\n');
+
+  // join header with single newlines; issue already contains internal newlines
+  let body = header.join('\n');
+
+  // cart summary (keeps each line on its own line)
+  const cartLines = collectCartSummaryLinesDirect();
+  if (cartLines && cartLines.length) {
+    body += '\n\nCart:\n' + cartLines.join('\n');
+  }
+
+  // friendly footer
+  const friendly = `\n\nPrestige Care, we can help verify your purchase and join a secure chatroom (see Join link above).\n\nIf you prefer, our team can also assist by email or call. Prestige members may take 15~30 minutes to respond.`;
+  body += friendly;
+
+  // staff reply (short)
+  const staffReply = `Hi ${name || '[name]'}, join here: ${roomLink} — I’ll join now.`;
+
+  // Safety: if the issue text already contains the room link, avoid adding it twice
+  // (we already added roomLink in header; this is just a guard if users pasted it)
+  if (issue && issue.includes(roomLink)) {
+    // nothing extra to do; header already contains the link
+  }
+
+  return { body, staffReply, roomLink };
+}
 
     // Client cart token helpers
     function ensureCartToken(){
@@ -3535,188 +4809,2108 @@ if(proceedBtn){
   return { proceed, cancel };
 })(modalEl);
 
-  
+ 
 </script>
-
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', () => {
+  const sms = document.getElementById('pfSendSms') || document.getElementById('smsBtn');
+  const modal = document.getElementById('prestigeModal') || document.querySelector('.prestige-modal');
+  if (!sms || !modal) return;
+  if (sms.tagName === 'BUTTON') sms.type = 'button';
+  sms.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    modal.classList.toggle('open');
+    modal.setAttribute('aria-hidden', modal.classList.contains('open') ? 'false' : 'true');
+  });
+  // close button inside modal (if present)
+  const close = modal.querySelector('#closeModal') || modal.querySelector('.close-btn');
+  close?.addEventListener('click', e => { e.preventDefault(); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
+});
+</script>
+          
+          
+<script>
+/* Single drop-in: Prestige cart integrator (paste after page load) */
+(function PrestigeDropIn() {
   const STORAGE_KEY = 'prestigeCartItems';
   const UPDATED_AT = 'prestigeCartUpdatedAt';
-  const CASH_PER_PRESTIGE = 0.25;
+  const USE_MAP_KEY = 'prestige_use_map';
+  const CASH_PER_PRESTIGE = 0.25; // $ per 1 PRESTIGE (adjust if needed)
+// add this after your consts
+let STORE = [];
 
-  const RIGHT_LIST = '#cartList';
-  const TABLE_BODY = '#cartItems, #cartTable tbody';
-  const RECEIPT = '#receiptTotal';
-  const BADGE = '#floatingCartBadge, .floating-cart-badge';
-  const MAIN_COUNT = '#mainCartCount, .main-cart-count';
-  const SHIMMER = '#cartList';
+  const SELECTORS = {
+    shimmerCandidates: ['#cartList', '.cart-list', '#cart-panel', '#cart'],
+    tableBody: ['#cartItems', '#cartTable tbody'],
+    receiptCandidates: ['#receiptTotal', '.receipt-total'],
+    badgeSelectors: ['#floatingCartBadge', '.floating-cart-badge'],
+    mainCountSelectors: ['#mainCartCount', '.main-cart-count']
+  };
 
-  const safeParse = v => { try { return JSON.parse(v || '[]'); } catch (e) { return []; } };
-  const readStored = () => safeParse(localStorage.getItem(STORAGE_KEY));
-  const writeStored = arr => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); localStorage.setItem(UPDATED_AT, String(Date.now())); } catch (e) {} };
+  function safeParse(v, fallback) { try { return JSON.parse(v || 'null'); } catch (e) { return fallback; } }
+  function nowIso() { return new Date().toISOString(); }
+  function nowId() { return String(Date.now()); }
+  function pickFirst(selectors) { for (const s of selectors) { const el = document.querySelector(s); if (el) return s; } return selectors[0]; }
 
-  function normalize(it) {
-    const denom = parseFloat(String(it.denomination ?? it.amount ?? "0").replace(/[^\d.-]/g, '')) || 0;
-    const cash = denom * CASH_PER_PRESTIGE;
+  // Ensure primitive, consistent shape
+  function normalize(item) {
+    const denomRaw = String(item.denomination ?? item.amount ?? item.tokenCount ?? "0");
+    const denom = parseFloat(denomRaw.replace(/[^\d.-]/g, '')) || 0;
+    const rawCash = (item.cashValue !== undefined && item.cashValue !== null) ? item.cashValue : (denom * CASH_PER_PRESTIGE);
+    const cash = parseFloat(String(rawCash).replace(/[^\d.-]/g, '')) || 0;
+    let serial = String(item.serial ?? item.product_id ?? item.id ?? '').trim();
+    if (!serial) serial = `PRG-${denom.toFixed(2)}-${nowId()}`;
+    const status = (String(item.status || item.finalized || '').toLowerCase() === 'finalized' || item.finalized === true) ? 'finalized' : 'pending';
     return {
       denomination: denom.toFixed(2),
-      currency: String(it.currency ?? it.token ?? 'Prestige'),
-      serial: String(it.serial ?? it.id ?? ''),
-      issued: String(it.issued ?? it.date ?? ''),
-      redeem_url: String(it.redeem_url ?? it.url ?? ''),
-      cashValue: Number.isFinite(cash) ? cash.toFixed(2) : '0.00'
+      tokenCount: String(Math.round(denom)),
+      product_id: serial,
+      serial,
+      currency: String(item.currency ?? 'Prestige'),
+      issued: String(item.issued ?? item.date ?? nowIso()),
+      redeem_url: String(item.redeem_url ?? item.url ?? ''),
+      cashValue: cash.toFixed(2),
+      status,
+      title: String(item.title ?? `${denom.toFixed(2)} PRESTIGE`),
+      subtitle: String(item.subtitle ?? `$${cash.toFixed(2)} USD`)
     };
   }
 
-  function persistArray(arr) {
-    const normalized = arr.map(normalize);
-    writeStored(normalized);
-    return normalized;
-  }
+  // Collect items: hidden nodes -> select -> URL -> fallback seed
+  function collectItems() {
+    const out = [];
 
-  function pushAndPersist(item) {
-    const n = normalize(item);
-    const stored = readStored();
-    if (!stored.some(s => s.serial === n.serial)) {
-      stored.push(n);
-      writeStored(stored);
-    }
-    return n;
-  }
-
-  function clearCartUI() {
-    const tbody = document.querySelector('#cartItems') || document.querySelector('#cartTable tbody');
-    if (tbody) tbody.innerHTML = '';
-    const list = document.querySelector(RIGHT_LIST);
-    if (list) list.innerHTML = '';
-    const floatBadge = document.querySelector(BADGE);
-    if (floatBadge) floatBadge.textContent = '0';
-    const mainCount = document.querySelector(MAIN_COUNT);
-    if (mainCount) mainCount.textContent = '0';
-    const receipt = document.querySelector(RECEIPT);
-    if (receipt) receipt.textContent = 'Total: 0.00 Prestige 🪙 (0 items)';
-  }
-
-  function renderIntoCart(items) {
-    // clear UI
-    const listEl = document.querySelector(RIGHT_LIST);
-    if (listEl) listEl.innerHTML = '';
-    const tbody = document.querySelector(TABLE_BODY);
-    if (tbody) tbody.innerHTML = '';
-
-    // render each item
-    items.forEach(item => {
-      const payload = normalize(item);
-      const payloadForCart = { ...payload, cashValue: payload.cashValue };
-
-      // prefer cart API
-      if (typeof window.cartAddItem === 'function') {
-        try { window.cartAddItem(payloadForCart); } catch (e) { console.error('cartAddItem error', e); }
-      } else if (typeof window.addToCart === 'function') {
-        try { window.addToCart(payloadForCart); } catch (e) { console.error('addToCart error', e); }
-      } else {
-        if (tbody) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${payload.denomination} ${payload.currency}</td><td>${payload.serial}</td><td>${payload.issued}</td><td>${payload.cashValue ? '$' + payload.cashValue : ''}</td><td>${payload.redeem_url ? `<a href="${payload.redeem_url}" target="_blank">Redeem</a>` : ''}</td>`;
-          tbody.appendChild(tr);
-        }
-      }
-
-      if (listEl) {
-        const row = document.createElement('div');
-        row.className = 'cart-row';
-        row.innerHTML = `<div class="cart-row-left"><div class="cart-amount">${payload.denomination} ${payload.currency}</div><div class="cart-serial">${payload.serial}</div></div><div class="cart-row-right"><div class="cart-cash">$${payload.cashValue}</div>${payload.redeem_url ? `<a class="cart-redeem" href="${payload.redeem_url}" target="_blank">Redeem</a>` : ''}</div>`;
-        listEl.appendChild(row);
-      }
-
-      // persist canonical
-      const stored = readStored();
-      if (!stored.some(s => s.serial === payload.serial)) {
-        stored.push(payload);
-        writeStored(stored);
-      }
-
-      // notify listeners
-      document.dispatchEvent(new CustomEvent('cart:itemAdded', { detail: payloadForCart }));
+    // hidden nodes
+    document.querySelectorAll('#prestigeHiddenProducts .prestige-hidden').forEach(n => {
+      try {
+        const viewRaw = safeParse(n.dataset.view, {});
+        const useRaw = safeParse(n.dataset.use, {});
+        const tokens = Number(viewRaw.tokenCount ?? viewRaw.denomination ?? 0) || 0;
+        const denom = Number(viewRaw.denomination ?? tokens).toFixed(2);
+        const cash = (Number(viewRaw.cashValue) || (tokens * CASH_PER_PRESTIGE)).toFixed(2);
+        const serial = String(viewRaw.product_id || viewRaw.serial || n.dataset.serial || `PRG-${nowId()}`).trim();
+        const view = { product_id: serial, serial, denomination: denom, tokenCount: String(tokens), cashValue: cash, status: String(viewRaw.status || 'pending'), title: String(viewRaw.title || `${denom} PRESTIGE`), redeem_url: String(viewRaw.redeem_url || '') };
+        const normalized = normalize(view);
+        normalized.__prestige_use_raw = Object.assign({}, normalized, useRaw || {}, { __prestige_use: true });
+        out.push(normalized);
+      } catch (e) { console.error('hidden parse error', e); }
     });
 
-    // update totals & badges
-    const storedNow = readStored();
-    const totalPrestige = storedNow.reduce((s, it) => s + (parseFloat(it.denomination) || 0), 0);
-    const totalCash = storedNow.reduce((s, it) => s + (parseFloat(it.cashValue) || 0), 0);
-    const count = storedNow.length;
-
-    const receipt = document.querySelector(RECEIPT);
-    if (receipt) receipt.textContent = `Total: ${totalPrestige.toFixed(2)} Prestige 🪙 • $${totalCash.toFixed(2)} USD (${count} item${count !== 1 ? 's' : ''})`;
-
-    const floatBadge = document.querySelector(BADGE);
-    if (floatBadge) floatBadge.textContent = String(count);
-    const mainCount = document.querySelector(MAIN_COUNT);
-    if (mainCount) mainCount.textContent = String(count);
-
-    // shimmer pulse
-    const shimmerEl = document.querySelector(SHIMMER);
-    if (shimmerEl) { shimmerEl.classList.remove('shimmer-pulse'); void shimmerEl.offsetWidth; shimmerEl.classList.add('shimmer-pulse'); }
-  }
-
-  function renderFromStorage() {
-    const raw = readStored();
-    const normalized = raw.map(normalize);
-    if (normalized.length === 0) { clearCartUI(); return; }
-    renderIntoCart(normalized);
-  }
-
-  function loadUrlItems() {
-    const params = new URLSearchParams(window.location.search);
-    if (!params.has('items')) return null;
-    try {
-      const parsed = JSON.parse(params.get('items'));
-      if (Array.isArray(parsed) && parsed.length) return persistArray(parsed);
-    } catch (e) { console.error('URL parse', e); }
-    return null;
-  }
-
-  function wrapIfExists(name) {
-    const orig = window[name];
-    if (typeof orig !== 'function') return false;
-    window[name] = function (payload) {
-      try {
-        const res = orig.apply(this, arguments);
-        try { pushAndPersist(payload); } catch (e) { console.error(e); }
-        renderFromStorage();
-        return res;
-      } catch (e) {
-        console.error(name + ' error', e);
-        try { pushAndPersist(payload); renderFromStorage(); } catch (err) { console.error(err); }
+    // denomination select fallback
+    if (!out.length) {
+      const sel = document.querySelector('#denominationSelect');
+      if (sel) {
+        Array.from(sel.options).forEach((opt, i) => {
+          if (!opt.value) return;
+          const denom = Number(opt.value).toFixed(2);
+          const serial = `PRG-${denom}-${nowId()}-${i}`;
+          const view = { product_id: serial, serial, denomination: denom, tokenCount: String(Math.round(Number(denom))), cashValue: (Number(denom) * CASH_PER_PRESTIGE).toFixed(2), status: 'pending', title: `${denom} PRESTIGE`, redeem_url: `https://prestige.exchange/redeem/${serial}` };
+          const n = normalize(view);
+          n.__prestige_use_raw = Object.assign({}, n, { __prestige_use: true });
+          out.push(n);
+        });
       }
-    };
-    return true;
+    }
+
+    // URL items param fallback (ephemeral)
+    if (!out.length) {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('items')) {
+          const parsed = safeParse(params.get('items'), []);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(p => {
+              const n = normalize(p);
+              n.__prestige_use_raw = Object.assign({}, n, p.__prestige_use ? p : { __prestige_use: true });
+              out.push(n);
+            });
+          }
+        }
+      } catch (e) {}
+    }
+
+  
+    return out;
   }
 
-  // events
-  window.addEventListener('storage', ev => { if (ev.key === STORAGE_KEY || ev.key === UPDATED_AT) renderFromStorage(); });
-  document.addEventListener('cart:itemAdded', ev => { if (ev && ev.detail) { try { pushAndPersist(ev.detail); } catch (e) {} renderFromStorage(); } });
+  // Persist primitives and use map
+ // replace persist(...) with this
+function persist(items) {
+  const normalized = items.map(normalize);
+  STORE = normalized; // keep in-memory only
+  // do not write to localStorage/sessionStorage
+  return normalized;
+}
 
-  // public helpers
-  window.refreshPrestigeCartFromStorage = renderFromStorage;
-  window.clearPrestigeStoredCart = function () { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(UPDATED_AT); clearCartUI(); };
 
-  // init
-  window.addEventListener('load', () => {
-    const fromUrl = loadUrlItems();
-    if (fromUrl) { renderIntoCart(fromUrl); return; }
+  // Compute dual totals and token equivalent from cash
+  function computeTotals(items) {
+    const tokenTotal = items.reduce((s, it) => s + (parseFloat(it.denomination) || 0), 0);
+    const cashTotal = items.reduce((s, it) => s + (parseFloat(it.cashValue) || 0), 0);
+    const tokenEquivalentFromCash = (CASH_PER_PRESTIGE > 0) ? (cashTotal / CASH_PER_PRESTIGE) : 0;
+    return { tokenTotal: tokenTotal.toFixed(2), cashTotal: cashTotal.toFixed(2), tokenEquivalentFromCash: tokenEquivalentFromCash.toFixed(2) };
+  }
+
+  // Render shimmer, cards, totals, badges
+  
+ // replace renderFromStorage() with this
+function renderFromStorage() {
+  const items = Array.isArray(STORE) ? STORE.map(normalize) : [];
+  const totals = computeTotals(items);
+  const count = items.length;
+
+  const cardsHtml = items.map(it => {
+    const stateClass = it.status === 'finalized' ? 'card-finalized' : 'card-pending';
+    const badgeText = it.status === 'finalized' ? 'FINALIZED' : 'PENDING';
+    return `
+      <div class="prestige-card ${stateClass}" data-serial="${it.serial}" data-product_id="${it.product_id}">
+        <div class="prestige-card-left">
+          <div class="prestige-amount">${it.denomination} <span class="prestige-token">PRESTIGE</span></div>
+          <div class="prestige-serial">${it.serial}</div>
+          <div class="prestige-state">${badgeText}</div>
+        </div>
+        <div class="prestige-card-right">
+          <div class="prestige-cash">$${it.cashValue}</div>
+          ${it.redeem_url ? `<a class="prestige-redeem" href="${it.redeem_url}" target="_blank">Redeem</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const headerHtml = `
+    <div class="shimmer-header" style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+      <div class="shimmer-left">
+        <div style="font-size:12px;color:#aaa">Tokens total</div>
+        <div style="font-weight:700">${totals.tokenTotal} PRESTIGE</div>
+        <div style="font-size:11px;color:#888">(${totals.tokenEquivalentFromCash} PRESTIGE from $${totals.cashTotal} USD)</div>
+      </div>
+      <div class="shimmer-right" style="text-align:right">
+        <div style="font-size:12px;color:#aaa">Use total</div>
+        <div style="font-weight:700">$${totals.cashTotal} USD</div>
+        <div style="font-size:11px;color:#888">($${totals.cashTotal} ≈ ${totals.tokenEquivalentFromCash} PRESTIGE)</div>
+      </div>
+      <div style="margin-left:12px;font-size:12px;color:#aaa">(${count} item${count !== 1 ? 's' : ''})</div>
+    </div>
+  `;
+
+  // same DOM insertion logic as before, but using items from STORE
+  let shimmerEl = null;
+  for (const s of SELECTORS.shimmerCandidates) { const el = document.querySelector(s); if (el) { shimmerEl = el; break; } }
+
+  if (shimmerEl) {
+    shimmerEl.innerHTML = headerHtml + `<div class="shimmer-cards">${cardsHtml}</div>`;
+    const hasPending = items.some(i => i.status === 'pending');
+    shimmerEl.classList.remove('shimmer-pulse', 'finalized-glow');
+    if (hasPending) shimmerEl.classList.add('shimmer-pulse'); else shimmerEl.classList.add('finalized-glow');
+  } else {
+    let fb = document.querySelector('.prestige-fallback-cards');
+    if (!fb) { fb = document.createElement('div'); fb.className = 'prestige-fallback-cards'; fb.style.padding = '8px'; fb.style.background = '#0b0b0b'; fb.style.color = '#fff'; document.body.insertBefore(fb, document.body.firstChild); }
+    fb.innerHTML = headerHtml + `<div class="shimmer-cards">${cardsHtml}</div>`;
+  }
+
+  // table fallback and receipt/badge updates (same as before) but using items from STORE
+  for (const sel of SELECTORS.tableBody) {
+    const tbody = document.querySelector(sel);
+    if (tbody) {
+      tbody.innerHTML = '';
+      items.forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${it.denomination} ${it.currency}</td><td>${it.serial}</td><td>${it.issued}</td><td>${it.cashValue ? '$' + it.cashValue : ''}</td><td>${it.redeem_url ? `<a href="${it.redeem_url}" target="_blank">Redeem</a>` : ''}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  for (const sel of SELECTORS.receiptCandidates) {
+    const r = document.querySelector(sel);
+    if (r) r.textContent = `Tokens: ${totals.tokenTotal} PRESTIGE • Use: $${totals.cashTotal} USD (${count} item${count !== 1 ? 's' : ''})`;
+  }
+
+  try { SELECTORS.badgeSelectors.forEach(s => document.querySelectorAll(s).forEach(el => el.textContent = String(count))); } catch (e) {}
+  try { SELECTORS.mainCountSelectors.forEach(s => document.querySelectorAll(s).forEach(el => el.textContent = String(count))); } catch (e) {}
+
+  return { items, totals };
+}
+
+  // Interceptor: redeem click -> apply use payload or navigate
+  function installInterceptor() {
+    if (window.__prestige_interceptor_installed) return;
+    window.__prestige_interceptor_installed = true;
+
+    function readUseMap() { try { return safeParse(sessionStorage.getItem(USE_MAP_KEY), {}); } catch (e) { return {}; } }
+    function applyUsePayload(usePayload) {
+      if (!usePayload) return false;
+      try { if (typeof window.cartUseItem === 'function') { window.cartUseItem(usePayload); console.log('applied via cartUseItem', usePayload.serial); return true; } } catch (e) {}
+      try { if (typeof window.redeemItem === 'function') { window.redeemItem(usePayload); console.log('applied via redeemItem', usePayload.serial); return true; } } catch (e) {}
+      try { document.dispatchEvent(new CustomEvent('cart:itemUse', { detail: usePayload })); console.log('dispatched cart:itemUse', usePayload.serial); return true; } catch (e) {}
+      return false;
+    }
+
+    document.addEventListener('click', function (ev) {
+      const a = ev.target.closest && ev.target.closest('.prestige-redeem, .redeem, a.redeem, button.prestige-redeem');
+      if (!a) return;
+      const card = a.closest && a.closest('.prestige-card');
+      if (!card) return;
+      const serial = card.dataset && (card.dataset.serial || card.dataset.productId || card.dataset.product_id);
+      if (!serial) return;
+      const useMap = readUseMap();
+      const usePayload = useMap[serial];
+      if (!usePayload) return;
+      ev.preventDefault(); ev.stopPropagation();
+      console.log('redeem click intercepted for', serial);
+      const applied = applyUsePayload(usePayload);
+      if (!applied && usePayload.redeem_url) window.location.href = usePayload.redeem_url;
+    }, true);
+
+    document.addEventListener('cart:itemUse', function (ev) {
+      if (!ev || !ev.detail) return;
+      const serial = ev.detail.serial || ev.detail.product_id || ev.detail.id;
+      if (!serial) return;
+      const useMap = readUseMap();
+      const usePayload = useMap[serial];
+      if (!usePayload) return;
+      ev.stopImmediatePropagation && ev.stopImmediatePropagation();
+      try { console.log('cart:itemUse intercepted for', serial); applyUsePayload(usePayload); } catch (e) {}
+    }, true);
+  }
+
+  
+  
+  
+/* Patch: per-card "Add to Archive" button that captures parsed URL/PRG — idempotent */
+(function prestige_card_add_button_patch(){
+  if (window.__prestige_card_add_button_patch_installed) return;
+  window.__prestige_card_add_button_patch_installed = true;
+
+  const ARCHIVE_KEY = 'prestige_archive_session_v1';
+  const $id = id => document.getElementById(id);
+
+  function safeParseJson(s, fallback = null){ try { return JSON.parse(s); } catch(e){ return fallback; } }
+  function loadArchive(){ try { return JSON.parse(sessionStorage.getItem(ARCHIVE_KEY) || '[]'); } catch(e){ return []; } }
+  function saveArchive(arr){ try { sessionStorage.setItem(ARCHIVE_KEY, JSON.stringify(Array.isArray(arr)?arr:[])); } catch(e){} }
+
+  function nowIso(){ return new Date().toISOString(); }
+  function makeId(){ return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,9); }
+
+  // parse query string into object
+  function parseQuery(url){
+    try {
+      const u = new URL(url, window.location.origin);
+      const obj = {};
+      for (const [k,v] of u.searchParams.entries()) {
+        if (obj[k] === undefined) obj[k] = v;
+        else if (Array.isArray(obj[k])) obj[k].push(v);
+        else obj[k] = [obj[k], v];
+      }
+      return { href: u.href, pathname: u.pathname, host: u.host, params: obj };
+    } catch(e){
+      // fallback: try simple split
+      const q = (String(url||'').split('?')[1] || '');
+      const params = {};
+      q.split('&').filter(Boolean).forEach(pair => {
+        const [k,v] = pair.split('=').map(decodeURIComponent);
+        if (!k) return;
+        if (params[k] === undefined) params[k] = v;
+        else if (Array.isArray(params[k])) params[k].push(v);
+        else params[k] = [params[k], v];
+      });
+      return { href: String(url||''), pathname: '', host: '', params };
+    }
+  }
+
+  // normalize item to archive shape
+  function buildItemFromCard(card){
+    const title = card.dataset?.title || (card.querySelector && (card.querySelector('.title')?.textContent || card.querySelector('h3')?.textContent)) || card.textContent?.slice(0,60) || 'archive-item';
+    // find a URL: prefer data-url, then anchor href inside card, then dataset.redeemUrl
+    const url = card.dataset?.url || (card.querySelector && (card.querySelector('a[href]')?.getAttribute('href'))) || card.dataset?.redeemUrl || card.dataset?.redeem_url || null;
+    const parsed = url ? parseQuery(url) : null;
+    const serial = card.dataset?.serial || card.dataset?.productId || card.dataset?.product_id || (parsed && parsed.params && (parsed.params.serial || parsed.params.id)) || null;
+    const item = {
+      id: makeId(),
+      createdAt: nowIso(),
+      title: String(title).trim().slice(0,120),
+      url: url || '',
+      parsed: parsed || {},
+      serial: serial || '',
+      rawCardHtml: card.innerHTML?.slice(0,200) || ''
+    };
+    return item;
+  }
+
+  // add item to archive using existing API if present, else fallback
+  async function addItemToArchive(item){
+    try {
+      // prefer existing robust API
+      if (window.Prestige?.archive?.addRobust) {
+        // addRobust expects raw input or array; pass array of normalized items
+        const res = window.Prestige.archive.addRobust([item]);
+        // if returns promise, await
+        if (res && typeof res.then === 'function') await res;
+        // dispatch event
+        try { window.dispatchEvent(new CustomEvent('prestige:archiveAdded', { detail: { items: [item] } })); } catch(e){}
+        return true;
+      }
+    } catch(e){ /* fallthrough to fallback */ }
+
+    // fallback: direct sessionStorage merge
+    try {
+      const arr = loadArchive();
+      arr.unshift(item);
+      saveArchive(arr);
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveAdded', { detail: { items: [item] } })); } catch(e){}
+      // try to call render if available
+      if (typeof window.renderArchiveList === 'function') try { window.renderArchiveList(); } catch(e){}
+      return true;
+    } catch(e){
+      console.warn('[prestige] addItemToArchive fallback failed', e);
+      return false;
+    }
+  }
+
+  // create Add button and append to card (idempotent)
+ // create Add button and append to card (idempotent, style-matching)
+function injectAddButtonsIntoCards(){
+  const selectors = ['.prestige-card', '.card.prestige', '.card', '.product-card', '.prestige-item'];
+  const nodes = [];
+  selectors.forEach(sel => Array.from(document.querySelectorAll(sel)).forEach(n => nodes.push(n)));
+  const unique = Array.from(new Set(nodes));
+  unique.forEach(card => {
+    if (!card || card.__prestige_add_button_wired) return;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'prestige-card-add-btn';
+    btn.textContent = 'Add to Archive';
+    btn.title = 'Add this item (parsed URL/PRG) to the archive';
+
+    // Try to find a Redeem-like button in the same card to copy visual style
+    (function applyMatchingStyle() {
+      try {
+        // prefer common redeem selectors inside the card
+        const redeem = card.querySelector('.redeem, .prestige-redeem, button.redeem, a.redeem, button.prestige-redeem');
+        if (redeem) {
+          const cs = window.getComputedStyle(redeem);
+          // copy only visual properties that affect font/spacing/colors
+          const props = [
+            'fontFamily','fontSize','fontWeight','lineHeight','color',
+            'backgroundColor','border','borderRadius','paddingTop','paddingRight','paddingBottom','paddingLeft',
+            'marginTop','marginRight','marginBottom','marginLeft','textTransform','letterSpacing','boxShadow'
+          ];
+          props.forEach(p => {
+            try { btn.style[p] = cs[p]; } catch(e){}
+          });
+          // ensure pointer cursor and small adjustments
+          btn.style.cursor = cs.cursor || 'pointer';
+          btn.style.display = 'inline-block';
+          btn.style.verticalAlign = 'middle';
+          return;
+        }
+      } catch(e){ /* ignore and fall back */ }
+
+      // Fallback compact style (minimal layout impact)
+      btn.style.cssText = [
+        'padding:4px 8px',
+        'font-size:13px',
+        'line-height:1.2',
+        'font-family:inherit',
+        'background:transparent',
+        'color:inherit',
+        'border:1px solid rgba(0,0,0,0.08)',
+        'border-radius:4px',
+        'margin-left:6px',
+        'cursor:pointer'
+      ].join(';');
+    })();
+
+    btn.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      try {
+        const item = buildItemFromCard(card);
+        const ok = await addItemToArchive(item);
+        const original = btn.textContent;
+        btn.textContent = ok ? 'Added' : 'Add';
+        setTimeout(()=>{ try { btn.textContent = original; } catch(e){} }, 1200);
+      } catch(err){
+        console.warn('[prestige] add button click failed', err);
+      }
+    }, { capture: true });
+
+    const actions = card.querySelector && (card.querySelector('.card-actions') || card.querySelector('.actions') || card.querySelector('.prestige-actions'));
+    try {
+      if (actions) actions.appendChild(btn);
+      else card.appendChild(btn);
+    } catch(e){
+      try { card.appendChild(btn); } catch(e){}
+    }
+
+    card.__prestige_add_button_wired = true;
+  });
+}
+
+
+  // run injection now and watch for dynamic cards
+  injectAddButtonsIntoCards();
+  const scan = setInterval(injectAddButtonsIntoCards, 900);
+  setTimeout(()=>clearInterval(scan), 30000);
+
+  // expose helper to add current pfIssue text as an archive item (useful for UI "Add" elsewhere)
+  window.Prestige = window.Prestige || {};
+  window.Prestige.archive = window.Prestige.archive || {};
+  window.Prestige.archive.addPfIssueAsItem = async function(){
+    const pf = $id('pfIssue') || $id('prestigeShortNote');
+    if (!pf) return false;
+    const text = String(pf.value || '').trim();
+    if (!text) return false;
+    const item = {
+      id: makeId(),
+      createdAt: nowIso(),
+      title: text.slice(0,120),
+      url: '',
+      parsed: {},
+      serial: '',
+      rawCardHtml: ''
+    };
+    return await addItemToArchive(item);
+  };
+
+})();
+
+
+  // Modal snapshot: notify site listeners without persisting
+  
+  function addCopyButtons() {
+  document.querySelectorAll('.prestige-card').forEach(card => {
+    if (card.querySelector('.prestige-copy')) return; // already added
+
+    // create button
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'prestige-copy';
+    btn.textContent = 'Copy';
+    btn.style.marginLeft = '8px';
+    btn.style.padding = '4px 8px';
+    btn.style.fontSize = '12px';
+    btn.setAttribute('aria-label', 'Copy item info');
+
+    // attach next to redeem link if present, otherwise append to right column
+    const right = card.querySelector('.prestige-card-right') || card;
+    const redeem = right.querySelector('.prestige-redeem');
+    if (redeem && redeem.parentNode) redeem.parentNode.insertBefore(btn, redeem.nextSibling);
+    else right.appendChild(btn);
+
+    // click handler: build minimal payload and copy
+    btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      const payload = {
+        serial: card.getAttribute('data-serial') || card.dataset.serial || (card.querySelector('.prestige-serial')?.textContent || '').trim(),
+        product_id: card.getAttribute('data-product_id') || card.dataset.productId || card.getAttribute('data-product-id') || '',
+        denomination: Number((card.querySelector('.prestige-amount')?.textContent || '').trim().split(/\s+/)[0]) || 0,
+        cashValue: Number((card.querySelector('.prestige-cash')?.textContent || '').replace(/[^0-9.-]+/g,'') || 0),
+        status: (card.querySelector('.prestige-state')?.textContent || '').trim() || (card.classList.contains('card-finalized') ? 'finalized' : 'pending'),
+        redeem_url: card.querySelector('.prestige-redeem')?.href || ''
+      };
+
+      const text = JSON.stringify(payload, null, 2);
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(() => btn.textContent = prev, 1200);
+        }).catch(() => window.prompt('Copy item info (Ctrl+C / Cmd+C):', text));
+      } else {
+        window.prompt('Copy item info (Ctrl+C / Cmd+C):', text);
+      }
+    }, true);
+  });
+}
+
+// call this after renderFromStorage runs
+addCopyButtons();
+
+  // replace snapshotToModal with this
+function snapshotToModal() {
+  const items = Array.isArray(STORE) ? STORE.slice() : [];
+  try {
+    items.forEach(p => {
+      const detail = Object.assign({}, p, { __prestige_internal: true });
+      document.dispatchEvent(new CustomEvent('cart:itemAdded', { detail }));
+    });
+    console.log('snapshotToModal dispatched', items.length, 'items (in-memory only)');
+  } catch (e) { console.error('snapshotToModal', e); }
+}
+
+// replace finalizeSerial with this
+function finalizeSerial(serial) {
+  try {
+    let changed = false;
+    STORE = (Array.isArray(STORE) ? STORE : []).map(it => {
+      if ((it.serial === serial || it.product_id === serial) && it.status !== 'finalized') {
+        it.status = 'finalized';
+        changed = true;
+      }
+      return it;
+    });
+    if (changed) {
+      renderFromStorage();
+      console.log('finalizeSerial applied to', serial);
+      return true;
+    }
+  } catch (e) { console.error('finalizeSerial', e); }
+  return false;
+}
+
+  // Public API
+  window.Prestige = window.Prestige || {};
+  window.Prestige.importAndRender = function () { const items = collectItems(); const persisted = persist(items); renderFromStorage(); installInterceptor(); return persisted; };
+  window.Prestige.snapshotToModal = snapshotToModal;
+  window.Prestige.finalizeSerial = finalizeSerial;
+  window.Prestige.render = renderFromStorage;
+
+  // Auto-run
+  try {
+    const items = collectItems();
+    persist(items);
     renderFromStorage();
-    wrapIfExists('cartAddItem');
-    wrapIfExists('addToCart');
+    installInterceptor();
+    console.log('PrestigeDropIn initialized. Use window.Prestige for API.');
+    console.log('Diagnostics: view array:', safeParse(localStorage.getItem(STORAGE_KEY), []), 'use map:', safeParse(sessionStorage.getItem(USE_MAP_KEY), {}));
+  } catch (e) { console.error('PrestigeDropIn init error', e); }
+})();
+
+// Robust auto-inject + styling (idempotent)
+(function installPrestigeCopyAuto() {
+  if (window.__prestige_copy_auto_installed) return;
+  window.__prestige_copy_auto_installed = true;
+
+  // Ensure addCopyButtons exists (use your implementation if present)
+  function addCopyButtonsOnce() {
+    document.querySelectorAll('.prestige-card').forEach(card => {
+      if (card.querySelector('.prestige-copy')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'prestige-copy';
+      btn.textContent = 'Copy';
+      btn.style.marginLeft = '8px';
+      btn.style.padding = '4px 8px';
+      btn.style.fontSize = '12px';
+      btn.style.cursor = 'pointer';
+      btn.setAttribute('aria-label', 'Copy item info');
+
+      const right = card.querySelector('.prestige-card-right') || card;
+      const redeem = right.querySelector('.prestige-redeem');
+      if (redeem && redeem.parentNode) redeem.parentNode.insertBefore(btn, redeem.nextSibling);
+      else right.appendChild(btn);
+
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault(); ev.stopPropagation();
+        const payload = {
+          serial: card.getAttribute('data-serial') || card.dataset.serial || (card.querySelector('.prestige-serial')?.textContent || '').trim(),
+          product_id: card.getAttribute('data-product_id') || card.dataset.productId || card.getAttribute('data-product-id') || '',
+          denomination: Number((card.querySelector('.prestige-amount')?.textContent || '').trim().split(/\s+/)[0]) || 0,
+          cashValue: Number((card.querySelector('.prestige-cash')?.textContent || '').replace(/[^0-9.-]+/g,'') || 0),
+          status: (card.querySelector('.prestige-state')?.textContent || '').trim() || (card.classList.contains('card-finalized') ? 'finalized' : 'pending'),
+          redeem_url: card.querySelector('.prestige-redeem')?.href || ''
+        };
+        const text = JSON.stringify(payload, null, 2);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            const prev = btn.textContent;
+            btn.textContent = 'Copied';
+            setTimeout(() => btn.textContent = prev, 1200);
+          }).catch(() => window.prompt('Copy item info (Ctrl+C / Cmd+C):', text));
+        } else {
+          window.prompt('Copy item info (Ctrl+C / Cmd+C):', text);
+        }
+      }, true);
+    });
+  }
+
+  // initial pass
+  addCopyButtonsOnce();
+
+  // observe for new cards or re-renders
+  const root = document.body;
+  const mo = new MutationObserver((mutations) => {
+    let added = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        for (const n of m.addedNodes) {
+          if (n instanceof Element && (n.matches('.prestige-card') || n.querySelector && n.querySelector('.prestige-card'))) {
+            added = true; break;
+          }
+        }
+      }
+      if (added) break;
+    }
+    if (added) addCopyButtonsOnce();
+  });
+  mo.observe(root, { childList: true, subtree: true });
+
+  // small CSS to ensure visibility
+  const styleId = 'prestige-copy-style';
+  if (!document.getElementById(styleId)) {
+    const s = document.createElement('style');
+    s.id = styleId;
+    s.textContent = `
+      .prestige-copy { background:#1f6feb; color:#fff; border:none; border-radius:4px; }
+      .prestige-copy:active { transform:translateY(1px); }
+      .prestige-copy[disabled] { opacity:0.6; cursor:not-allowed; }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // expose manual trigger
+  window.addCopyButtons = addCopyButtonsOnce;
+})();
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  // ---------- Edit/Add modal and helpers (idempotent) ----------
+(function installPrestigeEditor() {
+  if (window.__prestige_editor_installed) return;
+  window.__prestige_editor_installed = true;
+
+  // Create modal DOM once
+  function createModal() {
+    if (document.getElementById('prestige-editor-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'prestige-editor-modal';
+    modal.style.position = 'fixed';
+    modal.style.inset = '0';
+    modal.style.display = 'none';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.background = 'rgba(0,0,0,0.5)';
+    modal.style.zIndex = 99999;
+    modal.innerHTML = `
+      <div class="prestige-editor-panel" role="dialog" aria-modal="true" aria-labelledby="prestige-editor-title" style="width:520px;max-width:94%;background:#0f1724;color:#e6eef8;border-radius:10px;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,0.6);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div>
+            <div id="prestige-editor-title" style="font-weight:700;font-size:16px">Edit Prestige Item</div>
+            <div id="prestige-editor-sub" style="font-size:12px;color:#9fb0d6">Modify fields and click Save</div>
+          </div>
+          <button id="prestige-editor-close" aria-label="Close" style="background:transparent;border:none;color:#9fb0d6;font-size:18px;cursor:pointer">✕</button>
+        </div>
+
+        <form id="prestige-editor-form" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <label style="grid-column:1/3;font-size:12px;color:#9fb0d6">Serial (id)</label>
+          <input name="serial" required style="grid-column:1/3;padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff" />
+
+          <label style="font-size:12px;color:#9fb0d6">Product id</label>
+          <input name="product_id" style="padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff" />
+
+          <label style="font-size:12px;color:#9fb0d6">Denomination (PRESTIGE)</label>
+          <input name="denomination" type="number" step="0.01" style="padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff" />
+
+          <label style="font-size:12px;color:#9fb0d6">Cash value (USD)</label>
+          <input name="cashValue" type="number" step="0.01" style="padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff" />
+
+          <label style="font-size:12px;color:#9fb0d6">Status</label>
+          <select name="status" style="padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff">
+            <option value="pending">pending</option>
+            <option value="finalized">finalized</option>
+          </select>
+
+          <label style="grid-column:1/3;font-size:12px;color:#9fb0d6">Redeem URL (optional)</label>
+          <input name="redeem_url" style="grid-column:1/3;padding:8px;border-radius:6px;border:1px solid #21324a;background:#071028;color:#fff" />
+
+          <div style="grid-column:1/3;display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+            <button type="button" id="prestige-editor-delete" style="background:#7f1d1d;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer">Delete</button>
+            <button type="button" id="prestige-editor-save" style="background:#059669;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer">Save</button>
+            <button type="button" id="prestige-editor-addnew" style="background:#2563eb;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer">Add New</button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // handlers
+    const closeBtn = modal.querySelector('#prestige-editor-close');
+    const saveBtn = modal.querySelector('#prestige-editor-save');
+    const deleteBtn = modal.querySelector('#prestige-editor-delete');
+    const addNewBtn = modal.querySelector('#prestige-editor-addnew');
+    const form = modal.querySelector('#prestige-editor-form');
+
+    function getFormData() {
+      const fd = new FormData(form);
+      return {
+        serial: String(fd.get('serial') || '').trim(),
+        product_id: String(fd.get('product_id') || '').trim(),
+        denomination: Number(fd.get('denomination') || 0),
+        cashValue: Number(fd.get('cashValue') || 0),
+        status: String(fd.get('status') || 'pending'),
+        redeem_url: String(fd.get('redeem_url') || '').trim()
+      };
+    }
+
+    function setFormData(obj) {
+      form.serial.value = obj.serial || '';
+      form.product_id.value = obj.product_id || '';
+      form.denomination.value = obj.denomination ?? '';
+      form.cashValue.value = obj.cashValue ?? '';
+      form.status.value = obj.status || 'pending';
+      form.redeem_url.value = obj.redeem_url || '';
+    }
+
+    function showModal(initial = null) {
+      // initial: payload to populate, or null for blank (add)
+      if (initial) setFormData(initial);
+      else setFormData({ serial:'', product_id:'', denomination:0, cashValue:0, status:'pending', redeem_url:'' });
+      modal.style.display = 'flex';
+      // focus serial
+      setTimeout(()=> form.serial.focus(), 50);
+    }
+
+    function hideModal() {
+      modal.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', hideModal, true);
+    modal.addEventListener('click', (ev) => { if (ev.target === modal) hideModal(); }, true);
+
+    // Save handler: update or insert into STORE and localStorage, then re-render
+    saveBtn.addEventListener('click', () => {
+      const data = getFormData();
+      if (!data.serial) { alert('Serial is required'); return; }
+      try {
+        window.STORE = Array.isArray(window.STORE) ? window.STORE : [];
+        // find existing by serial or product_id
+        const idx = window.STORE.findIndex(it => (it.serial === data.serial || it.product_id === data.serial || it.product_id === data.product_id));
+        const normalized = Object.assign({}, data);
+        normalized.issued = normalized.issued || (new Date()).toISOString();
+        if (idx >= 0) {
+          window.STORE[idx] = Object.assign({}, window.STORE[idx], normalized);
+        } else {
+          window.STORE.push(normalized);
+        }
+        // persist to localStorage canonical key if used
+        try {
+          localStorage.setItem('prestigeCartItems', JSON.stringify(window.STORE));
+        } catch(e){}
+        // re-render and close
+        if (typeof renderFromStorage === 'function') renderFromStorage();
+        hideModal();
+      } catch (e) { console.error('save failed', e); alert('Save failed'); }
+    }, true);
+
+    // Delete handler
+    deleteBtn.addEventListener('click', () => {
+      const data = getFormData();
+      if (!data.serial) { alert('Serial required to delete'); return; }
+      if (!confirm(`Delete item ${data.serial}?`)) return;
+      try {
+        window.STORE = Array.isArray(window.STORE) ? window.STORE.filter(it => (it.serial !== data.serial && it.product_id !== data.serial)) : [];
+        try { localStorage.setItem('prestigeCartItems', JSON.stringify(window.STORE)); } catch(e){}
+        if (typeof renderFromStorage === 'function') renderFromStorage();
+        hideModal();
+      } catch (e) { console.error('delete failed', e); alert('Delete failed'); }
+    }, true);
+
+    // Add New: clears form and focuses
+    addNewBtn.addEventListener('click', () => {
+      setFormData({ serial:'', product_id:'', denomination:0, cashValue:0, status:'pending', redeem_url:'' });
+      form.serial.focus();
+    }, true);
+
+    // Expose show/hide on window for programmatic use
+    window.Prestige = window.Prestige || {};
+    window.Prestige.showEditor = showModal;
+    window.Prestige.hideEditor = hideModal;
+    window.Prestige.getEditorFormData = getFormData;
+    window.Prestige.setEditorFormData = setFormData;
+  }
+
+  // Add Edit button to each card (idempotent)
+  function addEditButtons() {
+    document.querySelectorAll('.prestige-card').forEach(card => {
+      if (card.querySelector('.prestige-edit')) return;
+      const right = card.querySelector('.prestige-card-right') || card;
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'prestige-edit';
+      edit.textContent = 'Edit';
+      edit.style.marginLeft = '8px';
+      edit.style.padding = '6px 10px';
+      edit.style.borderRadius = '6px';
+      edit.style.border = 'none';
+      edit.style.cursor = 'pointer';
+      edit.style.background = '#f59e0b';
+      edit.style.color = '#071028';
+      // place next to redeem/copy if present
+      const redeem = right.querySelector('.prestige-redeem');
+      if (redeem && redeem.parentNode) redeem.parentNode.insertBefore(edit, redeem.nextSibling);
+      else right.appendChild(edit);
+
+      edit.addEventListener('click', (ev) => {
+        ev.preventDefault(); ev.stopPropagation();
+        const serial = card.getAttribute('data-serial') || card.querySelector('.prestige-serial')?.textContent?.trim() || '';
+        // find item in STORE or build from DOM
+        let item = null;
+        if (Array.isArray(window.STORE)) item = window.STORE.find(it => it.serial === serial || it.product_id === serial);
+        if (!item) {
+          item = {
+            serial: serial || '',
+            product_id: card.getAttribute('data-product_id') || card.dataset.productId || '',
+            denomination: Number((card.querySelector('.prestige-amount')?.textContent||'').trim().split(/\s+/)[0]) || 0,
+            cashValue: Number((card.querySelector('.prestige-cash')?.textContent||'').replace(/[^0-9.-]+/g,'') || 0),
+            status: (card.querySelector('.prestige-state')?.textContent||'').trim() || 'pending',
+            redeem_url: card.querySelector('.prestige-redeem')?.href || ''
+          };
+        }
+        // show modal with item
+        window.Prestige.showEditor(item);
+      }, true);
+    });
+  }
+
+  // Ensure modal exists and buttons are added now
+  createModal();
+  addEditButtons();
+
+  // Observe DOM so new cards get Edit buttons automatically
+  const mo = new MutationObserver((mutations) => {
+    let added = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        for (const n of m.addedNodes) {
+          if (n instanceof Element && (n.matches('.prestige-card') || n.querySelector && n.querySelector('.prestige-card'))) { added = true; break; }
+        }
+      }
+      if (added) break;
+    }
+    if (added) addEditButtons();
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
+  // expose manual trigger
+  window.Prestige = window.Prestige || {};
+  window.Prestige.addEditButtons = addEditButtons;
+})();
+
+</script><script>
+
+(function unifyPrestigeButtons() {
+  if (window.__prestige_unify_buttons_installed) return;
+  window.__prestige_unify_buttons_installed = true;
+
+  // Which computed style properties to copy (keeps it focused and safe)
+  const STYLE_PROPS = [
+    'background-color','background-image','background-size','background-position',
+    'color','border','border-radius','padding','font-size','font-weight',
+    'box-shadow','text-decoration','display','align-items','gap','cursor'
+  ];
+
+  // Create copy button if missing and ensure redeem has class .prestige-redeem
+  function ensureButtonsAndSync() {
+    document.querySelectorAll('.prestige-card').forEach(card => {
+      const right = card.querySelector('.prestige-card-right') || card;
+      // find redeem element (link or button)
+      let redeem = right.querySelector('.prestige-redeem') 
+                   || right.querySelector('a[href*="redeem"], a.redeem, button.redeem, .redeem');
+      // normalize redeem: if found but missing class, add it
+      if (redeem && !redeem.classList.contains('prestige-redeem')) redeem.classList.add('prestige-redeem');
+
+      // ensure copy button exists
+      let copyBtn = right.querySelector('.prestige-copy');
+      if (!copyBtn) {
+        copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'prestige-copy';
+        copyBtn.textContent = 'Copy';
+        copyBtn.setAttribute('aria-label','Copy item info');
+        // place next to redeem if present
+        if (redeem && redeem.parentNode) redeem.parentNode.insertBefore(copyBtn, redeem.nextSibling);
+        else right.appendChild(copyBtn);
+
+        // minimal copy behavior (serial JSON) if no other handler exists
+        copyBtn.addEventListener('click', (ev) => {
+          ev.preventDefault(); ev.stopPropagation();
+          const cardEl = copyBtn.closest('.prestige-card');
+          const serial = cardEl?.getAttribute('data-serial') || cardEl?.querySelector('.prestige-serial')?.textContent?.trim() || '';
+          const payload = JSON.stringify({ serial }, null, 2);
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(payload).then(()=> {
+              const prev = copyBtn.textContent; copyBtn.textContent = 'Copied'; setTimeout(()=>copyBtn.textContent = prev, 1200);
+            }).catch(()=> window.prompt('Copy:', payload));
+          } else {
+            window.prompt('Copy:', payload);
+          }
+        }, true);
+      }
+
+      // If redeem exists, copy its classes and computed styles to copyBtn
+      if (redeem) {
+        // copy class list (preserve prestige-copy)
+        Array.from(redeem.classList).forEach(c => {
+          if (c && c !== 'prestige-redeem') copyBtn.classList.add(c);
+        });
+
+        // copy focused computed styles
+        try {
+          const cs = window.getComputedStyle(redeem);
+          STYLE_PROPS.forEach(prop => {
+            const val = cs.getPropertyValue(prop);
+            if (val) copyBtn.style.setProperty(prop, val);
+          });
+          // ensure display/align for inline layout
+          if (!copyBtn.style.display) copyBtn.style.display = cs.getPropertyValue('display') || 'inline-flex';
+          copyBtn.style.alignItems = cs.getPropertyValue('align-items') || 'center';
+        } catch (e) {
+          // ignore style copy errors
+        }
+
+        // copy role/aria if redeem uses them
+        if (redeem.getAttribute('role') && !copyBtn.getAttribute('role')) copyBtn.setAttribute('role', redeem.getAttribute('role'));
+      } else {
+        // fallback visible style if no redeem found
+        copyBtn.style.background = '#2563eb';
+        copyBtn.style.color = '#fff';
+        copyBtn.style.border = 'none';
+        copyBtn.style.borderRadius = '6px';
+        copyBtn.style.padding = '6px 10px';
+        copyBtn.style.cursor = 'pointer';
+      }
+    });
+  }
+
+  // initial run
+  ensureButtonsAndSync();
+
+  // observe DOM changes so new cards get synced
+  const mo = new MutationObserver((mutations) => {
+    let needs = false;
+    for (const m of mutations) {
+      if (m.addedNodes && m.addedNodes.length) {
+        for (const n of m.addedNodes) {
+          if (n instanceof Element && (n.matches('.prestige-card') || n.querySelector && n.querySelector('.prestige-card'))) { needs = true; break; }
+        }
+      }
+      if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName?.startsWith('data-'))) needs = true;
+      if (needs) break;
+    }
+    if (needs) ensureButtonsAndSync();
+  });
+  mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class','data-serial','data-product_id','data-product-id'] });
+
+  // expose manual trigger
+  window.Prestige = window.Prestige || {};
+  window.Prestige.syncButtonStyles = ensureButtonsAndSync;
+})();
+          </script>
+
+
+<script>
+/* Auto-match URL items to visible product-cards and add them to cart */
+(function autoPickUrlItemsToCards() {
+  const DELAY_MS = 350; // delay between each add
+  const MAX_TO_ADD = 20;
+
+  function safeParse(s) {
+    try { return JSON.parse(s); } catch (e) { return null; }
+  }
+
+  function parseUrlItems() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('items')) return [];
+      const raw = params.get('items');
+      const parsed = safeParse(decodeURIComponent(raw));
+      if (!Array.isArray(parsed)) return [];
+      return parsed.slice(0, MAX_TO_ADD);
+    } catch (e) { return []; }
+  }
+
+  function normalizeItem(raw) {
+    return {
+      serial: String(raw.serial || raw.product_id || '').trim(),
+      denomination: Number(raw.denomination || raw.tokenCount || 0),
+      title: String(raw.title || '').trim(),
+      raw
+    };
+  }
+
+  function findCards() {
+    return Array.from(document.querySelectorAll('.product-card'));
+  }
+
+  function cardDenomination(card) {
+    const d = card.dataset && (card.dataset.denomination || card.dataset.tokencount || card.getAttribute('data-denomination'));
+    return d ? Number(d) : NaN;
+  }
+
+  function cardSerial(card) {
+    return String(card.dataset && (card.dataset.serial || card.getAttribute('data-serial') || '')).trim();
+  }
+
+  function bestMatchCardFor(item, cards) {
+    // 1) exact serial match
+    if (item.serial) {
+      const bySerial = cards.find(c => cardSerial(c) && cardSerial(c) === item.serial);
+      if (bySerial) return bySerial;
+    }
+
+    // 2) exact denomination match
+    const exact = cards.find(c => !Number.isNaN(cardDenomination(c)) && Number(cardDenomination(c)) === Number(item.denomination));
+    if (exact) return exact;
+
+    // 3) closest denomination (smallest absolute difference)
+    let best = null;
+    let bestDiff = Infinity;
+    cards.forEach(c => {
+      const cd = cardDenomination(c);
+      if (Number.isNaN(cd)) return;
+      const diff = Math.abs(cd - item.denomination);
+      if (diff < bestDiff) { bestDiff = diff; best = c; }
+    });
+    return best;
+  }
+
+  function callCardAdd(card, item) {
+    try {
+      // If card has inline add args in data-addargs, prefer that
+      const addargsRaw = card.getAttribute && card.getAttribute('data-addargs');
+      if (addargsRaw) {
+        try {
+          const args = JSON.parse(addargsRaw);
+          if (typeof window.addToCart === 'function') {
+            window.addToCart.apply(null, args);
+            return true;
+          }
+        } catch (e) {}
+      }
+
+      // If card has an onclick handler (inline or assigned), call it
+      if (typeof card.onclick === 'function') {
+        card.onclick();
+        return true;
+      }
+
+      // If addToCart exists, call with best-effort mapping:
+      // addToCart(title, denom, crystalsOrCount, type)
+      if (typeof window.addToCart === 'function') {
+        const title = card.querySelector('.product-title')?.textContent?.trim() || item.title || `PRESTIGE ${item.denomination}`;
+        const denom = Number(card.dataset.denomination || item.denomination || 0);
+        // try to infer crystals/count from data attributes or use denom*some factor
+        const crystals = Number(card.dataset.crystals || card.dataset.crystalCount || card.dataset.tokencount || Math.round(denom * 2.5));
+        window.addToCart(title, denom, crystals, 'parsed');
+        return true;
+      }
+
+      // fallback: dispatch a click event on the card
+      const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
+      card.dispatchEvent(ev);
+      return true;
+    } catch (err) {
+      console.warn('callCardAdd failed', err);
+      return false;
+    }
+  }
+
+  function persistToLocalStorage(item) {
+    try {
+      const existing = JSON.parse(localStorage.getItem('prestigeCartItems') || '[]');
+      // dedupe by serial
+      const key = String(item.serial || item.raw?.serial || item.raw?.product_id || '');
+      const filtered = existing.filter(it => String(it.serial || it.product_id || '') !== key);
+      filtered.push(item.raw || item);
+      localStorage.setItem('prestigeCartItems', JSON.stringify(filtered));
+      localStorage.setItem('prestigeCartUpdatedAt', String(Date.now()));
+    } catch (e) { /* ignore */ }
+  }
+
+  function alreadyAdded(serial, addedSet) {
+    if (!serial) return false;
+    return addedSet.has(serial);
+  }
+
+  // main runner
+  function runAutoPick(options = {}) {
+    const itemsRaw = parseUrlItems();
+    if (!itemsRaw.length) return { picked: 0, reason: 'no-items-in-url' };
+
+    const items = itemsRaw.map(normalizeItem);
+    const cards = findCards();
+    if (!cards.length) return { picked: 0, reason: 'no-product-cards-found' };
+
+    const addedSerials = new Set();
+    const scheduled = [];
+
+    items.forEach((it, idx) => {
+      // skip duplicates in URL or already in STORE/localStorage
+      const key = it.serial || `${it.denomination}-${idx}`;
+      if (alreadyAdded(it.serial, addedSerials)) return;
+      // schedule
+      scheduled.push({ it, idx });
+      addedSerials.add(it.serial || key);
+    });
+
+    scheduled.slice(0, options.limit || 10).forEach((job, i) => {
+      setTimeout(() => {
+        const { it } = job;
+        const match = bestMatchCardFor(it, cards);
+        if (match) {
+          const ok = callCardAdd(match, it);
+          // persist for cross-page pickup and for cart page listeners
+          persistToLocalStorage(it);
+          // if you have a central handler, call it too
+          try {
+            const handler = window.Prestige?.handleSelectPayload || window.handleSelectPayload;
+            if (typeof handler === 'function') handler(it);
+          } catch (e) {}
+          // emit event
+          try { document.dispatchEvent(new CustomEvent('prestige:autoPicked', { detail: { item: it, matchedCard: match } })); } catch (e) {}
+        } else {
+          // no match found: persist raw so store can import it
+          persistToLocalStorage(it);
+        }
+      }, i * (options.delayMs || DELAY_MS));
+    });
+
+    return { scheduled: scheduled.length, limit: options.limit || 10 };
+  }
+
+  // run after DOM ready
+  function onReady(fn) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') return fn();
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  // Expose API and auto-run once (only if items present)
+  window.Prestige = window.Prestige || {};
+  window.Prestige.autoPickUrlToCards = runAutoPick;
+
+  onReady(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('items')) {
+      // run with defaults; limit 10 adds
+      runAutoPick({ delayMs: 350, limit: 10 });
+    }
   });
 })();
 </script>
 
+<script>
+(function ensureRailsInCheckout(){
+  if (window.__ensureRailsInCheckout) return;
+  window.__ensureRailsInCheckout = true;
+
+  const RAILS_ID = 'checkoutRails';
+  const CHECKOUT_SELECTOR = '#checkoutPanel';
+  const VISIBLE = 'visible';
+  const HIDDEN = 'hidden';
+  const rails = document.getElementById(RAILS_ID);
+  if (!rails) return;
+
+  function checkoutVisible() {
+    const el = document.querySelector(CHECKOUT_SELECTOR);
+    if (!el) return false;
+    const style = getComputedStyle(el);
+    return style.display !== 'none' && style.visibility !== 'hidden' && el.getAttribute('aria-hidden') !== 'true' && el.offsetParent !== null;
+  }
+
+  function ensureInside() {
+    const checkout = document.querySelector(CHECKOUT_SELECTOR);
+    if (!checkout) return false;
+    const target = checkout.querySelector('.chamber-grid, .checkout-dock-panel, #checkoutPanelInner') || checkout;
+    if (rails.parentElement !== target) {
+      target.appendChild(rails);
+      const pos = getComputedStyle(target).position;
+      if (!pos || pos === 'static') target.style.position = target.style.position || 'relative';
+    }
+    return true;
+  }
+
+  function apply() {
+    const attached = ensureInside();
+    const show = attached && checkoutVisible();
+    rails.classList.toggle(VISIBLE, show);
+    rails.classList.toggle(HIDDEN, !show);
+    rails.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+
+  // Observe checkout for visibility changes
+  const el = document.querySelector(CHECKOUT_SELECTOR);
+  if (el) {
+    const mo = new MutationObserver(apply);
+    mo.observe(el, { attributes: true, attributeFilter: ['class','style','aria-hidden'] });
+  }
+  // body observer to catch late insertion
+  const bodyMo = new MutationObserver(() => { apply(); });
+  bodyMo.observe(document.body, { childList: true, subtree: true });
+
+  apply();
+})();
+
+  
+  (function placeRailsRight(){
+  if (window.__placeRailsRight) return;
+  window.__placeRailsRight = true;
+  const rails = document.getElementById('checkoutRails') || document.querySelector('.checkout-rails-grid');
+  const checkout = document.getElementById('checkoutPanel');
+  if (!rails || !checkout) return;
+  // target the right column of the chamber-grid (second column)
+  const rightCol = checkout.querySelector('.chamber-grid > :nth-child(2)') || checkout.querySelector('.store-panel') || checkout;
+  if (rightCol && rails.parentElement !== rightCol) {
+    rightCol.appendChild(rails);
+    // ensure rightCol is positioned for absolute children if needed
+    const pos = getComputedStyle(rightCol).position;
+    if (!pos || pos === 'static') rightCol.style.position = rightCol.style.position || 'relative';
+  }
+  // ensure grid aligns to the far right
+  rails.style.justifySelf = 'end';
+})();
+
+})();
+
+</script>
+    
+<script>
+/* Combined bundle: robust add, search dropdown, pfIssue update — idempotent */
+(function prestige_combined_bundle(){
+  if (window.__prestige_combined_bundle_installed) return;
+  window.__prestige_combined_bundle_installed = true;
+
+  const ARCHIVE_KEY = 'prestige_archive_session_v1';
+  const HOSE_PREFIX = 'prestige_archive_';
+  const $id = id => document.getElementById(id);
+
+  /* ---------- storage helpers ---------- */
+  function loadArchive(hoseName = null){
+    const key = hoseName ? (HOSE_PREFIX + hoseName) : ARCHIVE_KEY;
+    try { return JSON.parse(sessionStorage.getItem(key) || '[]'); } catch(e){ return []; }
+  }
+  function saveArchive(arr, hoseName = null){
+    const key = hoseName ? (HOSE_PREFIX + hoseName) : ARCHIVE_KEY;
+    try { sessionStorage.setItem(key, JSON.stringify(Array.isArray(arr)?arr:[])); } catch(e){}
+  }
+
+  /* ---------- robust add to archive ---------- */
+  (function replaceAddToArchive(){
+    if (window.__prestige_add_fix_installed) return;
+    window.__prestige_add_fix_installed = true;
+
+    // helpers (reuse existing parser if available)
+    const parseInput = (raw) => {
+      if (window.Prestige?.archive?.parseInputToItems) return window.Prestige.archive.parseInputToItems(raw);
+      try {
+        const p = JSON.parse(raw);
+        if (Array.isArray(p)) return p;
+        if (p && typeof p === 'object') return [p];
+      } catch(e){}
+      return String(raw || '').split(/\r?\n{1,}|\|\|/).map(s=>s.trim()).filter(Boolean).map(s=>{
+        try { return JSON.parse(s); } catch(e){ return { raw: s }; }
+      });
+    };
+
+    function nowIso(){ return new Date().toISOString(); }
+    function makeId(){ return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,9); }
+
+    function normalize(it, snapshotFlag, noteText){
+      const obj = Object.assign({}, it || {});
+      if (!obj.id) obj.id = makeId();
+      if (!obj.createdAt) obj.createdAt = nowIso();
+      if (snapshotFlag) obj.snapshot = true;
+      if (noteText && !obj.note) obj.note = noteText;
+      if (!obj.title) obj.title = (obj.title || obj.SERIAL || obj.PRODUCT_ID || obj.name || obj.raw || obj.id).toString().slice(0,60);
+      return obj;
+    }
+
+    function robustAddFromPaste(rawInput){
+      const pasteArea = $id('prestigePasteArea');
+      const snapshotToggle = $id('prestigeSnapshotToggle');
+      const shortNoteEl = $id('prestigeShortNote');
+
+      const raw = rawInput == null ? (pasteArea?.value || '') : rawInput;
+      const parsed = Array.isArray(raw) ? raw : parseInput(String(raw || '').trim());
+      if (!parsed || !parsed.length) return [];
+
+      const snapshotFlag = !!(snapshotToggle?.checked);
+      const noteText = String(shortNoteEl?.value || '').trim();
+
+      const items = parsed.map(p => normalize(p, snapshotFlag, noteText));
+
+      // prepend new items so newest appear first
+      const existing = loadArchive();
+      const merged = items.concat(existing);
+      saveArchive(merged);
+
+      // clear paste area and optional note/toggle
+      try { if (pasteArea) pasteArea.value = ''; } catch(e){}
+      try { if (shortNoteEl) shortNoteEl.value = ''; } catch(e){}
+      try { if (snapshotToggle) snapshotToggle.checked = false; } catch(e){}
+
+      // re-render if available
+      if (typeof window.renderArchiveList === 'function') {
+        try { window.renderArchiveList(); } catch(e){}
+      } else {
+        const countEl = $id('prestigeArchiveCount');
+        if (countEl) countEl.textContent = String(merged.length);
+      }
+
+      // emit events
+      try { window.dispatchEvent(new CustomEvent('prestige:archivePrepared', { detail: { items } })); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveUpdated', { detail: { count: merged.length } })); } catch(e){}
+
+      return items;
+    }
+
+    // wire Add button idempotently
+    const addBtn = $id('prestigeAddArchive');
+    if (addBtn && !addBtn.__prestige_robust_add_wired) {
+      addBtn.addEventListener('click', () => robustAddFromPaste(), { capture: true });
+      addBtn.__prestige_robust_add_wired = true;
+    }
+
+    // expose API
+    window.Prestige = window.Prestige || {};
+    window.Prestige.archive = window.Prestige.archive || {};
+    window.Prestige.archive.addRobust = robustAddFromPaste;
+
+  })();
+
+  /* ---------- search dropdown + fill short note (and pfIssue) ---------- */
+  (function prestige_search_to_shortnote(){
+    if (window.__prestige_search_to_shortnote_installed) return;
+    window.__prestige_search_to_shortnote_installed = true;
+
+    function findSearchInput(){
+      return $id('prestigeArchiveSearch') || document.querySelector('input[placeholder*="Search archive"]') || document.querySelector('input[aria-label*="archive"]') || document.querySelector('input[type="search"]');
+    }
+
+    function ensureDropdown(root){
+      let dd = root._prestige_search_dropdown;
+      if (dd && document.body.contains(dd)) return dd;
+      dd = document.createElement('div');
+      dd.className = 'prestige-archive-search-dropdown';
+      dd.style.position = 'absolute';
+      dd.style.zIndex = 99999;
+      dd.style.background = '#071028';
+      dd.style.color = '#cfe6ff';
+      dd.style.border = '1px solid rgba(255,255,255,0.04)';
+      dd.style.borderRadius = '6px';
+      dd.style.boxShadow = '0 6px 18px rgba(0,0,0,0.6)';
+      dd.style.maxHeight = '260px';
+      dd.style.overflow = 'auto';
+      dd.style.minWidth = '320px';
+      dd.style.padding = '6px';
+      dd.style.fontSize = '13px';
+      dd.style.display = 'none';
+      document.body.appendChild(dd);
+      root._prestige_search_dropdown = dd;
+      return dd;
+    }
+
+    function positionDropdown(input, dd){
+      const r = input.getBoundingClientRect();
+      dd.style.left = (window.scrollX + r.left) + 'px';
+      dd.style.top = (window.scrollY + r.bottom + 6) + 'px';
+      dd.style.width = Math.max(320, r.width) + 'px';
+    }
+
+    function matchArchive(query){
+      if (!query) return [];
+      const q = String(query).trim().toLowerCase();
+      const arr = loadArchive();
+      if (!arr.length) return [];
+      const results = arr.filter(it => {
+        const fields = [it.title, it.serial, it.id, it.raw, it.SERIAL, it.PRODUCT_ID].filter(Boolean).map(s => String(s).toLowerCase());
+        return fields.some(f => f.includes(q));
+      });
+      return results.slice(0, 200);
+    }
+
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function escapeAttr(s){ return String(s||'').replace(/"/g,'&quot;'); }
+
+    function buildRowHtml(it){
+      const title = (it.title || it.SERIAL || it.id || '').toString();
+      const serial = it.serial ? ` • ${it.serial}` : '';
+      const snap = it.snapshot ? ' <span style="background:#ffd24d;color:#071018;padding:2px 6px;border-radius:6px;font-weight:700;margin-left:8px">SNAP</span>' : '';
+      return `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="min-width:0;overflow:hidden">
+          <div style="font-weight:700;color:#e6eef8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(title)}</div>
+          <div style="font-size:12px;color:#9fb0d6;margin-top:4px">${escapeHtml(String(it.id||''))}${escapeHtml(serial)}</div>
+        </div>
+        <div style="flex:0 0 auto">${snap}<button class="prestige-search-fill-btn" data-id="${escapeAttr(it.id)}" style="margin-left:8px;padding:6px 8px;border-radius:6px;background:#2b6cff;color:#fff;border:0;cursor:pointer">Fill</button></div>
+      </div>`;
+    }
+
+    // short-field getter: prefer pfIssue, fallback to prestigeShortNote
+    function getShortField() {
+      return $id('pfIssue') || $id('prestigeShortNote') || null;
+    }
+
+    function fillShortNoteFromItems(items){
+      if (!items || !items.length) return false;
+      const shortNoteEl = getShortField();
+      if (!shortNoteEl) return false;
+      const parts = items.map(it => {
+        const qty = (it.qty && Number(it.qty) > 1) ? `${it.qty}x ` : '';
+        const title = String(it.title || it.SERIAL || it.id).slice(0,40);
+        const serial = it.serial ? ` (S:${String(it.serial).slice(0,12)})` : '';
+        return `${qty}${title}${serial}`;
+      });
+      let text = parts.join('; ');
+      if (text.length > 240) text = text.slice(0,237) + '...';
+      shortNoteEl.value = text;
+      try { shortNoteEl.focus(); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveSearchFilled', { detail: { count: items.length } })); } catch(e){}
+      return true;
+    }
+
+    function wireSearch() {
+      const input = findSearchInput();
+      if (!input) return;
+      if (input.__prestige_search_wired) return;
+      const dd = ensureDropdown(input);
+
+      let lastQuery = '';
+      let lastResults = [];
+
+      function renderResults(results, query){
+        dd.innerHTML = '';
+        if (!results.length) {
+          dd.innerHTML = `<div style="padding:8px;color:#9fb0d6">No matches for "${escapeHtml(query)}"</div>`;
+          dd.style.display = 'block';
+          positionDropdown(input, dd);
+          return;
+        }
+        // header with actions (includes Update button appended later by integrated patch)
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+        header.style.marginBottom = '6px';
+        header.innerHTML = `<div style="color:#9fb0d6;font-size:12px">${results.length} match${results.length>1?'es':''}</div>
+          <div style="display:flex;gap:6px">
+            <button id="prestigeSearchSelectAll" style="padding:6px 8px;border-radius:6px;background:#2b6cff;color:#fff;border:0;cursor:pointer">Select all</button>
+            <button id="prestigeSearchFillMatches" style="padding:6px 8px;border-radius:6px;background:#ffd24d;color:#071018;border:0;cursor:pointer">Fill Short Description</button>
+          </div>`;
+        dd.appendChild(header);
+
+        // list
+        const list = document.createElement('div');
+        list.style.display = 'grid';
+        list.style.gap = '6px';
+        results.forEach(it => {
+          const row = document.createElement('div');
+          row.className = 'prestige-search-row';
+          row.style.padding = '8px';
+          row.style.borderRadius = '6px';
+          row.style.cursor = 'pointer';
+          row.style.background = 'transparent';
+          row.innerHTML = buildRowHtml(it);
+          row.dataset.id = it.id;
+          // click row fills short note for that single item
+          row.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            fillShortNoteFromItems([it]);
+            dd.style.display = 'none';
+          });
+          list.appendChild(row);
+        });
+        dd.appendChild(list);
+        dd.style.display = 'block';
+        positionDropdown(input, dd);
+
+        // wire header buttons
+        dd.querySelector('#prestigeSearchSelectAll')?.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const ids = results.map(r => r.id);
+          dd._selectedIds = ids;
+          Array.from(dd.querySelectorAll('.prestige-search-row')).forEach(r => r.style.background = 'rgba(255,255,255,0.02)');
+        });
+        dd.querySelector('#prestigeSearchFillMatches')?.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const ids = dd._selectedIds && dd._selectedIds.length ? dd._selectedIds : results.map(r => r.id);
+          const archive = loadArchive();
+          const items = archive.filter(i => ids.includes(i.id));
+          if (items.length) fillShortNoteFromItems(items);
+          dd.style.display = 'none';
+        });
+      }
+
+      // keyboard navigation and escape
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { dd.style.display = 'none'; input.blur(); }
+      });
+
+      // input handler with debounce
+      let timer = null;
+      input.addEventListener('input', (e) => {
+        const q = String(input.value || '').trim();
+        if (q === lastQuery) return;
+        lastQuery = q;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          if (!q) { dd.style.display = 'none'; return; }
+          const results = matchArchive(q);
+          lastResults = results;
+          renderResults(results, q);
+          try { window.dispatchEvent(new CustomEvent('prestige:archiveSearchMatched', { detail: { query: q, count: results.length } })); } catch(e){}
+        }, 180);
+      });
+
+      // click outside closes dropdown
+      document.addEventListener('click', (ev) => {
+        if (!dd.contains(ev.target) && ev.target !== input) dd.style.display = 'none';
+      });
+
+      // reposition on resize/scroll
+      window.addEventListener('resize', () => { if (dd.style.display === 'block') positionDropdown(input, dd); });
+      window.addEventListener('scroll', () => { if (dd.style.display === 'block') positionDropdown(input, dd); }, true);
+
+      input.__prestige_search_wired = true;
+    }
+
+    wireSearch();
+    const scan = setInterval(wireSearch, 1000);
+    setTimeout(() => clearInterval(scan), 30_000);
+
+    // expose helper
+    window.Prestige = window.Prestige || {};
+    window.Prestige.archive = window.Prestige.archive || {};
+    window.Prestige.archive.searchAndFillShortNote = function(query){
+      const results = matchArchive(query);
+      if (!results.length) return false;
+      const archive = loadArchive();
+      const ids = results.map(r => r.id);
+      const items = archive.filter(i => ids.includes(i.id));
+      return fillShortNoteFromItems(items);
+    };
+
+  })();
+
+  /* ---------- pfIssue patch + Update button integration ---------- */
+  (function prestige_integrated_pfIssue_patch(){
+    if (window.__prestige_integrated_pfIssue_patch_installed) return;
+    window.__prestige_integrated_pfIssue_patch_installed = true;
+
+    function buildCompactText(items, maxChars = 240) {
+      if (!items || !items.length) return '';
+      const parts = items.map(it => {
+        const qty = (it.qty && Number(it.qty) > 1) ? `${it.qty}x ` : '';
+        const title = String(it.title || it.SERIAL || it.id).slice(0,40);
+        const serial = it.serial ? ` (S:${String(it.serial).slice(0,12)})` : '';
+        return `${qty}${title}${serial}`;
+      });
+      let text = parts.join('; ');
+      if (text.length > maxChars) text = text.slice(0, maxChars - 3) + '...';
+      return text;
+    }
+
+    function getShortField() {
+      return $id('pfIssue') || $id('prestigeShortNote') || null;
+    }
+
+    function fillPfIssueFromItems(items){
+      if (!items || !items.length) return false;
+      const field = getShortField();
+      if (!field) return false;
+      field.value = buildCompactText(items);
+      try { field.focus(); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveSearchFilled', { detail: { count: items.length } })); } catch(e){}
+      return true;
+    }
+
+    // enhance dropdowns: add Update button and ensure Fill buttons target pfIssue
+    function enhanceDropdowns() {
+      const dropdowns = Array.from(document.querySelectorAll('.prestige-archive-search-dropdown'));
+      dropdowns.forEach(dd => {
+        if (dd.__prestige_pf_update_added) return;
+        const header = dd.querySelector('div');
+        if (header) {
+          const updateBtn = document.createElement('button');
+          updateBtn.type = 'button';
+          updateBtn.textContent = 'Update';
+          updateBtn.style.cssText = 'padding:6px 8px;border-radius:6px;background:#20c997;color:#071018;border:0;cursor:pointer;margin-left:6px';
+          updateBtn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            const rows = Array.from(dd.querySelectorAll('.prestige-search-row'));
+            const ids = rows.map(r => r.dataset.id).filter(Boolean);
+            const archive = loadArchive();
+            const items = ids.length ? archive.filter(i => ids.includes(i.id)) : archive.slice(0,10);
+            if (items.length) fillPfIssueFromItems(items);
+            dd.style.display = 'none';
+          }, { capture: true });
+          const actions = header.querySelector('div') || header;
+          actions.appendChild(updateBtn);
+        }
+        Array.from(dd.querySelectorAll('.prestige-search-fill-btn')).forEach(btn => {
+          if (btn.__prestige_pf_fill_wired) return;
+          btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            if (!id) return;
+            const archive = loadArchive();
+            const item = archive.find(i => String(i.id) === String(id));
+            if (item) fillPfIssueFromItems([item]);
+            try { dd.style.display = 'none'; } catch(e){}
+          }, { capture: true });
+          btn.__prestige_pf_fill_wired = true;
+        });
+        dd.__prestige_pf_update_added = true;
+      });
+    }
+
+    enhanceDropdowns();
+    const ddScan = setInterval(enhanceDropdowns, 700);
+    setTimeout(() => clearInterval(ddScan), 30000);
+
+    // prepared event fills pfIssue
+    if (!window.__prestige_prepared_pfIssue_wired) {
+      window.addEventListener('prestige:archivePrepared', (e) => {
+        try {
+          const items = e?.detail?.items || null;
+          if (items && items.length) fillPfIssueFromItems(items);
+        } catch(err){ console.warn('[prestige] prepared->pfIssue fill failed', err); }
+      });
+      window.__prestige_prepared_pfIssue_wired = true;
+    }
+
+    // expose API
+    window.Prestige = window.Prestige || {};
+    window.Prestige.archive = window.Prestige.archive || {};
+    Object.assign(window.Prestige.archive, {
+      searchAndFillPfIssue: function(query){
+        if (!query) return false;
+        const q = String(query).trim().toLowerCase();
+        const arr = loadArchive();
+        if (!arr.length) return false;
+        const results = arr.filter(it => {
+          const fields = [it.title, it.serial, it.id, it.raw, it.SERIAL, it.PRODUCT_ID].filter(Boolean).map(s => String(s).toLowerCase());
+          return fields.some(f => f.includes(q));
+        });
+        if (!results.length) return false;
+        return fillPfIssueFromItems(results);
+      },
+      fillPfIssueFromItems,
+      buildCompactText
+    });
+
+  })();
+
+  /* ---------- final: ensure Add/Clear/Copy wiring exists (defensive) ---------- */
+  (function ensure_basic_buttons(){
+    // Clear button
+    function doClearArchive({ confirmBefore = true } = {}) {
+      if (confirmBefore && !confirm('Clear all saved archive items? This will remove them from this session.')) return false;
+      try {
+        saveArchive([]);
+        if (typeof window.renderArchiveList === 'function') try { window.renderArchiveList(); } catch(e){}
+        const sn = $id('prestigeShortNote'); if (sn) sn.value = '';
+        const pf = $id('pfIssue'); if (pf) pf.value = '';
+        try { window.dispatchEvent(new CustomEvent('prestige:archiveUpdated', { detail: { cleared: true } })); } catch(e){}
+        return true;
+      } catch(e){ console.warn('[prestige] doClearArchive failed', e); return false; }
+    }
+
+    async function doCopyArchive({ onlyIds = false } = {}) {
+      try {
+        const arr = loadArchive();
+        const payload = onlyIds ? arr.map(i => i.id) : arr;
+        const text = JSON.stringify(payload, null, 2);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        }
+        try { window.dispatchEvent(new CustomEvent('prestige:archiveCopied', { detail: { count: arr.length } })); } catch(e){}
+        if (arr && arr.length) {
+          const pf = $id('pfIssue') || $id('prestigeShortNote');
+          if (pf) pf.value = (typeof window.Prestige?.archive?.buildCompactText === 'function') ? window.Prestige.archive.buildCompactText(arr.slice(0,10)) : arr.slice(0,10).map(i=>i.title||i.id).join('; ');
+        }
+        return true;
+      } catch(e){ console.warn('[prestige] doCopyArchive failed', e); return false; }
+    }
+
+    // wire buttons defensively
+    function wireButtons() {
+      const clearCandidates = [$id('prestigeClearArchive'), $id('prestigeClear'), ...Array.from(document.querySelectorAll('button, a')).filter(el => el.textContent && el.textContent.trim().toLowerCase() === 'clear')].filter(Boolean);
+      clearCandidates.forEach(btn => {
+        if (btn.__prestige_clear_wired) return;
+        btn.addEventListener('click', (ev) => { ev.preventDefault(); doClearArchive({ confirmBefore: true }); }, { capture: true });
+        btn.__prestige_clear_wired = true;
+      });
+
+     // Updated, non-destructive copy wiring (idempotent)
+(function prestige_copy_wiring_update(){
+  // guard
+  if (window.__prestige_copy_wiring_update_installed) return;
+  window.__prestige_copy_wiring_update_installed = true;
+
+  const $id = id => document.getElementById(id);
+
+  // helper: copy text to clipboard
+  async function _copyText(text){
+    try {
+      if (!text) return false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      return true;
+    } catch(e){ console.warn('[prestige] _copyText failed', e); return false; }
+  }
+
+  // built-in behaviors (use existing programmatic helpers if present)
+  async function copyPfIssue(){
+    const pf = $id('pfIssue') || $id('prestigeShortNote');
+    const text = pf ? String(pf.value || '') : '';
+    const ok = await _copyText(text);
+    try { window.dispatchEvent(new CustomEvent('prestige:pfIssueCopied', { detail: { ok: !!ok, length: text.length || 0 } })); } catch(e){}
+    return ok;
+  }
+
+  async function copyArchive(onlyIds = false){
+    // prefer existing programmatic helper if available
+    if (window.Prestige?.archive?.doCopyArchive) {
+      try { return await window.Prestige.archive.doCopyArchive({ onlyIds }); } catch(e){ /* fallthrough */ }
+    }
+    // fallback: read sessionStorage directly
+    try {
+      const arr = JSON.parse(sessionStorage.getItem('prestige_archive_session_v1') || '[]');
+      const payload = onlyIds ? arr.map(i => i.id) : arr;
+      return await _copyText(JSON.stringify(payload, null, 2));
+    } catch(e){ console.warn('[prestige] copyArchive fallback failed', e); return false; }
+  }
+
+  // determine mode and run
+  async function runMode(mode, el){
+    if (!mode || mode === 'pf') return await copyPfIssue();
+    if (mode === 'archive') return await copyArchive(false);
+    if (mode === 'ids') return await copyArchive(true);
+    // custom function reference like "window.myFn"
+    if (typeof mode === 'string' && mode.startsWith('window.')) {
+      try {
+        const fn = mode.split('.').slice(1).reduce((o,k)=>o && o[k], window);
+        if (typeof fn === 'function') return await Promise.resolve(fn(el));
+      } catch(e){ console.warn('[prestige] custom copy fn failed', e); }
+    }
+    return false;
+  }
+
+  // Build candidate list conservatively: explicit ids and opt-in attributes only
+  function gatherCopyCandidates(){
+    const set = new Set();
+    const explicit = [$id('prestigeCopyArchive'), $id('prestigeCopy')];
+    explicit.forEach(e => { if (e) set.add(e); });
+    // any element that explicitly opts in with data-copy-type or data-copy-fn
+    document.querySelectorAll('[data-copy-type], [data-copy-fn]').forEach(e => set.add(e));
+    return Array.from(set);
+  }
+
+  // Wire candidates idempotently
+  function wireCopyCandidates(){
+    const candidates = gatherCopyCandidates();
+    candidates.forEach(btn => {
+      if (!btn || btn.__prestige_copy_wired) return;
+      // determine mode: attribute preferred; fall back to sensible defaults
+      let mode = btn.getAttribute && btn.getAttribute('data-copy-type');
+      const custom = btn.getAttribute && btn.getAttribute('data-copy-fn');
+      if (custom) mode = custom;
+      if (!mode) {
+        // default mapping: #prestigeCopyArchive -> archive, #prestigeCopy -> pf, otherwise pf
+        if (btn.id === 'prestigeCopyArchive') mode = 'archive';
+        else if (btn.id === 'prestigeCopy') mode = 'pf';
+        else mode = 'pf';
+      }
+
+      // attach handler (non-destructive: does not clone or remove other handlers)
+      btn.addEventListener('click', async (ev) => {
+        // allow opt-out
+        if (btn.getAttribute && btn.getAttribute('data-copy-skip') === 'true') return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        const ok = await runMode(mode, btn);
+        // brief visual feedback
+        try {
+          const original = btn.textContent;
+          btn.textContent = ok ? 'Copied' : (original || 'Copy');
+          setTimeout(()=>{ try { btn.textContent = original; } catch(e){} }, 1200);
+        } catch(e){}
+      }, { capture: false });
+
+      btn.__prestige_copy_wired = true;
+    });
+  }
+
+  // initial wiring and short re-scan for dynamic DOM
+  wireCopyCandidates();
+  const _scan = setInterval(wireCopyCandidates, 900);
+  setTimeout(()=>clearInterval(_scan), 30000);
+
+  // expose helpers
+  window.Prestige = window.Prestige || {};
+  window.Prestige.archive = window.Prestige.archive || {};
+  Object.assign(window.Prestige.archive, {
+    copyPfIssue,
+    doCopyArchive: copyArchive,
+    _copyModeStatus: function(){
+      return gatherCopyCandidates().map(el => ({ id: el.id || null, text: (el.textContent||'').trim().slice(0,40), dataCopyType: el.getAttribute && el.getAttribute('data-copy-type'), dataCopyFn: el.getAttribute && el.getAttribute('data-copy-fn'), wired: !!el.__prestige_copy_wired }));
+    }
+  });
+
+})();
+
+      // ensure Add button wired to addRobust if present
+      const addBtn = $id('prestigeAddArchive');
+      if (addBtn && !addBtn.__prestige_add_wired_safe) {
+        addBtn.addEventListener('click', async (ev) => {
+          ev.preventDefault();
+          const pasteArea = $id('prestigePasteArea');
+          const raw = pasteArea?.value || null;
+          let items = [];
+          try {
+            if (window.Prestige?.archive?.addRobust) {
+              const res = window.Prestige.archive.addRobust(raw);
+              items = (res && typeof res.then === 'function') ? await res : res || [];
+            } else {
+              // fallback: simple save
+              const now = new Date().toISOString();
+              const parsed = raw ? [ { raw } ] : [];
+              items = parsed.map(p => Object.assign({ id: Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9), createdAt: now, title: p.title || p.SERIAL || p.raw || p.id }, p));
+              const existing = loadArchive();
+              saveArchive(items.concat(existing));
+            }
+          } catch(e){ console.warn('[prestige] add fallback failed', e); }
+          // update UI and pfIssue
+          if (items && items.length) {
+            if (typeof window.Prestige?.archive?.fillPfIssueFromItems === 'function') window.Prestige.archive.fillPfIssueFromItems(items);
+            else {
+              const pf = $id('pfIssue') || $id('prestigeShortNote');
+              if (pf) pf.value = items.map(i=>i.title||i.id).slice(0,10).join('; ');
+            }
+          }
+          try { if (pasteArea) pasteArea.value = ''; } catch(e){}
+          if (typeof window.renderArchiveList === 'function') try { window.renderArchiveList(); } catch(e){}
+          try { window.dispatchEvent(new CustomEvent('prestige:archiveAdded', { detail: { items } })); } catch(e){}
+        }, { capture: true });
+        addBtn.__prestige_add_wired_safe = true;
+      }
+    }
+
+    wireButtons();
+    const scan = setInterval(wireButtons, 1000);
+    setTimeout(() => clearInterval(scan), 30000);
+
+    // expose helpers
+    window.Prestige = window.Prestige || {};
+    window.Prestige.archive = window.Prestige.archive || {};
+    Object.assign(window.Prestige.archive, {
+      doClearArchive,
+      doCopyArchive
+    });
+
+  })();
+
+})();
+  
+  
+  
+  
+  
+  
+  /* Patch: Clear only archive and add per-item delete controls — idempotent */
+(function prestige_clear_and_delete_patch(){
+  if (window.__prestige_clear_and_delete_patch_installed) return;
+  window.__prestige_clear_and_delete_patch_installed = true;
+
+  const ARCHIVE_KEY = 'prestige_archive_session_v1';
+  const $id = id => document.getElementById(id);
+
+  function loadArchive(){ try { return JSON.parse(sessionStorage.getItem(ARCHIVE_KEY) || '[]'); } catch(e){ return []; } }
+  function saveArchive(arr){ try { sessionStorage.setItem(ARCHIVE_KEY, JSON.stringify(Array.isArray(arr)?arr:[])); } catch(e){} }
+
+  // Replace existing clear so it does NOT clear pfIssue or prestigeShortNote
+  function doClearArchiveOnly({ confirmBefore = true } = {}) {
+    if (confirmBefore && !confirm('Clear all saved archive items? This will remove them from this session.')) return false;
+    try {
+      saveArchive([]);
+      // refresh UI if available
+      if (typeof window.renderArchiveList === 'function') try { window.renderArchiveList(); } catch(e){}
+      // emit events but do NOT touch pfIssue or prestigeShortNote
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveUpdated', { detail: { cleared: true } })); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveCleared', { detail: {} })); } catch(e){}
+      // re-render delete controls if present
+      try { window.Prestige.archive.renderDeleteControls(); } catch(e){}
+      return true;
+    } catch(err){ console.warn('[prestige] doClearArchiveOnly failed', err); return false; }
+  }
+
+  // Delete a single item by id
+  function deleteArchiveItem(id){
+    if (!id) return false;
+    try {
+      const arr = loadArchive();
+      const idx = arr.findIndex(i => String(i.id) === String(id));
+      if (idx === -1) return false;
+      arr.splice(idx, 1);
+      saveArchive(arr);
+      // refresh UI
+      if (typeof window.renderArchiveList === 'function') try { window.renderArchiveList(); } catch(e){}
+      // remove any DOM row with matching data-id and class
+      try {
+        const row = document.querySelector(`.prestige-archive-row[data-id="${CSS.escape(String(id))}"]`) || document.querySelector(`[data-id="${CSS.escape(String(id))}"]`);
+        if (row) row.remove();
+      } catch(e){}
+      // re-render delete controls
+      try { window.Prestige.archive.renderDeleteControls(); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveDeleted', { detail: { id } })); } catch(e){}
+      try { window.dispatchEvent(new CustomEvent('prestige:archiveUpdated', { detail: { count: loadArchive().length } })); } catch(e){}
+      return true;
+    } catch(err){ console.warn('[prestige] deleteArchiveItem failed', err); return false; }
+  }
+
+  // Create or update per-item delete buttons inside existing archive list rows
+  function injectDeleteButtonsIntoRows(){
+    try {
+      const list = $id('prestigeArchiveList') || document.querySelector('.archive-list') || null;
+      if (!list) return false;
+      // For each child row that has data-id or data-id attribute, add a delete button
+      Array.from(list.children).forEach(row => {
+        // determine id
+        const id = row.dataset?.id || row.getAttribute('data-id') || null;
+        if (!id) return;
+        // mark row for styling and future selection
+        row.classList.add('prestige-archive-row');
+        row.setAttribute('data-id', id);
+        // skip if already has delete button
+        if (row.querySelector('.prestige-archive-delete')) return;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'prestige-archive-delete';
+        btn.textContent = 'Delete';
+        btn.style.cssText = 'margin-left:8px;padding:4px 8px;border-radius:6px;background:#ff6b6b;color:#fff;border:0;cursor:pointer';
+        btn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          if (!confirm('Delete this archive item?')) return;
+          deleteArchiveItem(id);
+        }, { capture: true });
+        // append to row (try to place at end)
+        try { row.appendChild(btn); } catch(e){}
+      });
+      return true;
+    } catch(e){ console.warn('[prestige] injectDeleteButtonsIntoRows failed', e); return false; }
+  }
+
+  // Fallback management panel if archive list DOM is not present or rows lack data-id
+  function renderArchiveManagementPanel(){
+    try {
+      let panel = $id('prestigeArchiveManagePanel');
+      if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'prestigeArchiveManagePanel';
+        panel.style.cssText = 'margin-top:8px;padding:8px;border:1px solid rgba(255,255,255,0.04);border-radius:6px;background:rgba(7,16,40,0.6);color:#cfe6ff';
+        const paste = $id('prestigePasteArea');
+        if (paste && paste.parentNode) paste.parentNode.insertBefore(panel, paste.nextSibling);
+        else document.body.appendChild(panel);
+      }
+      const arr = loadArchive();
+      if (!arr.length) {
+        panel.innerHTML = '<div style="color:#9fb0d6">No saved archive items</div>';
+        return panel;
+      }
+      // build list
+      const rows = arr.map(it => {
+        const title = escapeHtml(String(it.title || it.SERIAL || it.id).slice(0,60));
+        const id = escapeHtml(String(it.id));
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.02)">
+          <div style="min-width:0;overflow:hidden"><div style="font-weight:700">${title}</div><div style="font-size:12px;color:#9fb0d6">${id}</div></div>
+          <div style="flex:0 0 auto"><button class="prestige-manage-delete" data-id="${id}" style="padding:6px 8px;border-radius:6px;background:#ff6b6b;color:#fff;border:0;cursor:pointer">Delete</button></div>
+        </div>`;
+      }).join('');
+      panel.innerHTML = `<div style="font-weight:700;margin-bottom:6px">Archive Manager</div>${rows}`;
+      // wire delete buttons
+      Array.from(panel.querySelectorAll('.prestige-manage-delete')).forEach(btn => {
+        if (btn.__wired) return;
+        btn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const id = btn.getAttribute('data-id');
+          if (!id) return;
+          if (!confirm('Delete this archive item?')) return;
+          deleteArchiveItem(id);
+        }, { capture: true });
+        btn.__wired = true;
+      });
+      return panel;
+    } catch(e){ console.warn('[prestige] renderArchiveManagementPanel failed', e); return null; }
+  }
+
+  // Public API to render delete controls (tries row injection first, then management panel)
+  function renderDeleteControls(){
+    const ok = injectDeleteButtonsIntoRows();
+    if (!ok) renderArchiveManagementPanel();
+  }
+
+  // Wire the existing Clear button(s) to the new clear function (idempotent)
+  function wireClearButtonsToArchiveOnly(){
+    const candidates = [$id('prestigeClearArchive'), $id('prestigeClear'), ...Array.from(document.querySelectorAll('button, a')).filter(el => el.textContent && el.textContent.trim().toLowerCase() === 'clear')].filter(Boolean);
+    candidates.forEach(btn => {
+      if (btn.__prestige_clear_rewired) return;
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        doClearArchiveOnly({ confirmBefore: true });
+      }, { capture: true });
+      btn.__prestige_clear_rewired = true;
+    });
+  }
+
+  // run wiring now and re-run briefly to catch dynamic DOM
+  renderDeleteControls();
+  wireClearButtonsToArchiveOnly();
+  const scanInterval = setInterval(() => { renderDeleteControls(); wireClearButtonsToArchiveOnly(); }, 1000);
+  setTimeout(() => clearInterval(scanInterval), 30000);
+
+  // expose API
+  window.Prestige = window.Prestige || {};
+  window.Prestige.archive = window.Prestige.archive || {};
+  Object.assign(window.Prestige.archive, {
+    deleteItem: deleteArchiveItem,
+    renderDeleteControls: renderDeleteControls,
+    clearArchiveOnly: doClearArchiveOnly
+  });
+
+})();
+  
+  
+  
+</script>
 
 
-
-
-
+    
+    
+  
 
 </body>
 </html>
